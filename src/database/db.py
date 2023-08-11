@@ -6,7 +6,10 @@ from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from config import conf
-# from db.repositories import AuthorRepo, BookRepo, GenreRepo
+from database.repositories import (
+    UserRepo, OrderRepo,
+    CurrencyRepo, PaymentOptionRepo,
+)
 
 
 def create_async_engine(url: Union[URL, str]) -> AsyncEngine:
@@ -38,26 +41,33 @@ class Database:
     and can be used in the handlers or any other bot-side functions
     """
 
-    author: AuthorRepo
-    """ Author repository """
+    user: UserRepo
+    """ User repository """
 
-    book: BookRepo
-    """ Book repository """
+    order: OrderRepo
+    """ Order repository """
 
-    genre: GenreRepo
-    """ Genre repository """
+    currency: CurrencyRepo
+    """ Currency repository """
+
+    payment_option: PaymentOptionRepo
+    """ Payment option repository """
 
     session: AsyncSession
 
     def __init__(
         self,
         session: AsyncSession = Depends(create_session_maker()),
-        author: AuthorRepo = None,
-        book: BookRepo = None,
-        genre: GenreRepo = None,
+        user: UserRepo = None,
+        order: OrderRepo = None,
+        currency: CurrencyRepo = None,
+        payment_option: PaymentOptionRepo = None,
     ) -> None:
 
         self.session = session
-        self.author = author or AuthorRepo(session=session)
-        self.book = book or BookRepo(session=session)
-        self.genre = genre or GenreRepo(session=session)
+        self.user = user or UserRepo(session=session)
+        self.order = order or OrderRepo(session=session)
+        self.currency = currency or CurrencyRepo(session=session)
+        self.payment_option = payment_option or PaymentOptionRepo(
+            session=session
+        )

@@ -3,7 +3,7 @@ from .currency import Currency
 from .payment_opt import PaymentOption
 from sqlalchemy.orm import Mapped, mapped_column
 import sqlalchemy as sa
-from user import User
+from .user import User
 import datetime
 from .order_status import Status
 
@@ -34,7 +34,7 @@ class Order(Base):
         sa.ForeignKey("currency.tikker")
     )
     payment_option: Mapped[PaymentOption] = mapped_column(
-        sa.ForeignKey("paymentoption.name")
+        sa.ForeignKey("payment_option.name")
     )
     date: Mapped[datetime.datetime] = mapped_column(
         sa.DateTime,

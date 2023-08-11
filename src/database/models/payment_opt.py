@@ -5,7 +5,7 @@ import sqlalchemy as sa
 
 
 class PaymentOption(Base):
-    __tablename__ = "paymentoptions"
+    __tablename__ = "payment_option"
 
     id: Mapped[int] = mapped_column(
         sa.BigInteger,
