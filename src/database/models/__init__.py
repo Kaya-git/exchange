@@ -4,6 +4,8 @@ from .order import Order
 from .payment_opt import PaymentOption
 from .user import User, Role
 from .order_status import Status
+from .commissions import Commissions
+from .pending_order import PendingOrder
 
 __all__ = [
     "Base",
@@ -13,4 +15,6 @@ __all__ = [
     "User",
     "Status",
     "Role",
+    "Commissions",
+    "PendingOrder",
 ]

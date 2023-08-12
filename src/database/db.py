@@ -9,6 +9,7 @@ from config import conf
 from database.repositories import (
     UserRepo, OrderRepo,
     CurrencyRepo, PaymentOptionRepo,
+    CommissionsRepo, PendingOrderRepo
 )
 
 
@@ -29,7 +30,7 @@ def create_session_maker(engine: AsyncEngine = None) -> sessionmaker:
     :return:
     """
     return sessionmaker(
-        engine or create_async_engine(conf.db.build_connection_str),
+        engine or create_async_engine(conf.db.build_connection_str()),
         class_=AsyncSession,
         expire_on_commit=False
     )
@@ -53,6 +54,12 @@ class Database:
     payment_option: PaymentOptionRepo
     """ Payment option repository """
 
+    commissions: CommissionsRepo
+    """ Commissions option repository """
+
+    pending_order: PendingOrderRepo
+    """ Pending order option repository """
+
     session: AsyncSession
 
     def __init__(
@@ -62,6 +69,8 @@ class Database:
         order: OrderRepo = None,
         currency: CurrencyRepo = None,
         payment_option: PaymentOptionRepo = None,
+        commissions: CommissionsRepo = None,
+        pending_order: PendingOrderRepo = None,
     ) -> None:
 
         self.session = session
@@ -69,5 +78,11 @@ class Database:
         self.order = order or OrderRepo(session=session)
         self.currency = currency or CurrencyRepo(session=session)
         self.payment_option = payment_option or PaymentOptionRepo(
+            session=session
+        )
+        self.commissions = commissions or CommissionsRepo(
+            session=session
+        )
+        self.pending_order = pending_order or PendingOrderRepo(
             session=session
         )

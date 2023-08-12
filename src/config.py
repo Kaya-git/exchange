@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from dataclasses import dataclass
 from sqlalchemy.engine import URL
-
+import yadisk_async
 
 load_dotenv()
 
@@ -45,7 +45,7 @@ class RedisConfig:
 @dataclass
 class ParserConfiguration:
     """ Parser URL's """
-    api_key = os.environ.get("API_KEY")
+    api_key = os.environ.get("BINANCE_API_KEY")
     secret_key_binance = os.environ.get("SECRET_KEY_BINANCE")
 
 
@@ -53,6 +53,10 @@ class ParserConfiguration:
 class ImageStorageConfiguration:
     "Yadisk Image"
     yadisk_token = os.environ.get("YADISKTOKEN")
+
+    def build_image_storage(self):
+        image_storage = yadisk_async.YaDisk(token=self.yadisk_token)
+        return image_storage
 
 
 @dataclass
