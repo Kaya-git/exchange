@@ -2,7 +2,7 @@ from .base import Base
 import sqlalchemy as sa
 from sqlalchemy.orm import mapped_column, Mapped
 import datetime
-from .order_status import Status
+from .order_status import PendingStatus
 
 
 class PendingOrder(Base):
@@ -42,8 +42,7 @@ class PendingOrder(Base):
         nullable=False,
         default=datetime.datetime.utcnow(),
     )
-    status: Mapped[Status] = mapped_column(
-        sa.Enum,
-        nullable=False,
-        default=Status.Pending,
+    status: Mapped[PendingStatus] = mapped_column(
+        sa.Enum(PendingStatus),
+        default=PendingStatus.InProcess,
     )

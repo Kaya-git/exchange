@@ -6,6 +6,8 @@ from .user import User, Role
 from .order_status import Status
 from .commissions import Commissions
 from .pending_order import PendingOrder
+from .order_status import PendingStatus
+
 
 __all__ = [
     "Base",
@@ -17,4 +19,5 @@ __all__ = [
     "Role",
     "Commissions",
     "PendingOrder",
+    "PendingStatus",
 ]

@@ -6,10 +6,10 @@ from fastapi_users.db import SQLAlchemyBaseUserTable
 import enum
 
 
-class Role(enum.IntEnum):
-    User = 1
-    Moderator = 2
-    Admin = 3
+class Role(enum.StrEnum):
+    User = "user"
+    Moderator = "moderator"
+    Admin = "admin"
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
@@ -57,5 +57,5 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     )
     role: Mapped[Role] = mapped_column(
         sa.Enum(Role),
-        default=Role.User
+        default=Role.User,
     )

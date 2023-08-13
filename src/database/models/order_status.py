@@ -1,8 +1,14 @@
 import enum
 
 
-class Status(enum.IntEnum):
-    Pending = 0
-    Canceled = 1
-    Timeout = 2
-    Completed = 3
+class Status(enum.StrEnum):
+    Pending = "pending"
+    Canceled = "canceled"
+    Timeout = "timeout"
+    Completed = "completed"
+
+
+class PendingStatus(enum.IntEnum):
+    Canceled = "canceled"
+    InProcess = "inprocess"
+    Approved = "approved"
