@@ -2,7 +2,7 @@ from fastapi import APIRouter, Form, UploadFile
 from fastapi.responses import RedirectResponse
 from .sevices import Count
 from .constants import LTC_PRICE
-from .sevices import RedisValues, EmailQueue
+from .sevices import services
 from .constants import MARGIN, GAS
 import secrets
 from config import conf
@@ -46,7 +46,7 @@ async def order_crypto_fiat(
             print("Error in send value")
 
     try:
-        RedisValues.set_email_values(
+        services.redis_values.set_email_values(
             email=email,
             value_list=[send_value, get_value, cc_num, cc_holder]
         )
@@ -54,7 +54,7 @@ async def order_crypto_fiat(
         print("Redis Error")
 
     try:
-        EmailQueue.push(email)
+        services.email_queue.push(email)
     except SyntaxError:
         print("EmailQueue error")
     return RedirectResponse("/confirm_cc")
@@ -65,8 +65,8 @@ async def order_crypto_fiat(
 async def confirm_cc(
     cc_image: UploadFile,
 ):
-    email = EmailQueue.pop()
-    does_exist = await RedisValues.redis_conn.exists(email)
+    email = services.email_queue.pop()
+    does_exist = await services.redis_values.redis_conn.exists(email)
     # Проверяем есть ли ключи в реддисе
     if does_exist != 1:
         # Меняем статус ордера на время вышло
@@ -95,7 +95,7 @@ async def confirm_cc(
     # Добавляем все значения в базу на PendingOrder модель для админа
     # Меняем статус ордера в модели ордер на в процессе
     send_value, get_value, cc_num, cc_holder = (
-        await RedisValues.redis_conn.get(email)
+        await services.redis_values.redis_conn.get(email)
     )
     new_pending_order = await db.pending_order.new(
         email=email,

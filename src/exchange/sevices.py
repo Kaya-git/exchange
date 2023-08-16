@@ -23,7 +23,11 @@ class RedisValues:
 
     redis_conn = redis.Redis(host=conf.redis.host, port=conf.redis.port)
 
-    async def set_email_values(self, email: str, value_list: List[int]):
+    async def set_email_values(
+        self,
+        email: str,
+        value_list: List[int],
+    ):
         await self.redis_conn.set(f"{email}", value_list)
         self.redis_conn.expire(f"{email}", 300)
         await self.redis_conn.close
@@ -42,3 +46,11 @@ class EmailQueue:
             return None
         removed = self.queue.pop(0)
         return removed
+
+
+class Services:
+    email_queue = EmailQueue()
+    redis_values = RedisValues()
+
+
+services = Services()

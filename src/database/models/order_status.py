@@ -8,7 +8,7 @@ class Status(enum.StrEnum):
     Completed = "completed"
 
 
-class PendingStatus(enum.IntEnum):
+class PendingStatus(enum.StrEnum):
     Canceled = "canceled"
     InProcess = "inprocess"
     Approved = "approved"
