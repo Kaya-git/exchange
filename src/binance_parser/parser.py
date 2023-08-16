@@ -11,6 +11,6 @@ class Parser:
             )
             depth = await client.get_order_book(symbol=ticker)
             price = depth["bids"][0][0]
-            return price
+            return float(price)
         finally:
             await client.close_connection()

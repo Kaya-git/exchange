@@ -26,9 +26,9 @@ async def order_crypto_fiat(
 
     if send_value != 0:
         try:
-            get_value = Count.count_get_value(
+            get_value = await Count.count_get_value(
                 send_value=send_value,
-                coin_price=LTC_PRICE,
+                coin_price=await LTC_PRICE,
                 margin=MARGIN,
                 gas=GAS,
             )
@@ -36,9 +36,9 @@ async def order_crypto_fiat(
             print("Error in send value")
     if send_value == 0:
         try:
-            send_value = Count.count_send_value(
+            send_value = await Count.count_send_value(
                 get_value=get_value,
-                coin_price=LTC_PRICE,
+                coin_price=await LTC_PRICE,
                 margin=MARGIN,
                 gas=GAS,
             )
@@ -46,7 +46,7 @@ async def order_crypto_fiat(
             print("Error in send value")
 
     try:
-        services.redis_values.set_email_values(
+        await services.redis_values.set_email_values(
             email=email,
             value_list=[send_value, get_value, cc_num, cc_holder]
         )
@@ -54,7 +54,7 @@ async def order_crypto_fiat(
         print("Redis Error")
 
     try:
-        services.email_queue.push(email)
+        await services.email_queue.push(email)
     except SyntaxError:
         print("EmailQueue error")
     return RedirectResponse("/confirm_cc")
@@ -65,7 +65,7 @@ async def order_crypto_fiat(
 async def confirm_cc(
     cc_image: UploadFile,
 ):
-    email = services.email_queue.pop()
+    email = await services.email_queue.pop()
     does_exist = await services.redis_values.redis_conn.exists(email)
     # Проверяем есть ли ключи в реддисе
     if does_exist != 1:
