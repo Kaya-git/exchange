@@ -1,4 +1,3 @@
-from typing import List
 import redis.asyncio as redis
 from config import conf
 
@@ -26,10 +25,20 @@ class RedisValues:
     async def set_email_values(
         self,
         email: str,
-        value_list: List[int],
+        send_value: float,
+        get_value: float,
+        cc_num: int,
+        cc_holder: str,
     ):
-        await self.redis_conn.set(f"{email}", value_list)
-        self.redis_conn.expire(f"{email}", 300)
+        await self.redis_conn.lpush(
+            'ValidationList',
+            f"{email}",
+            f"{send_value}",
+            f"{get_value}",
+            f"{cc_num}",
+            f"{cc_holder}",
+        )
+        self.redis_conn.expire('ValidationList', 300)
         await self.redis_conn.close
 
 

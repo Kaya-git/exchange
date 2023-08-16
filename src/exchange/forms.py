@@ -48,11 +48,13 @@ async def order_crypto_fiat(
     try:
         await services.redis_values.set_email_values(
             email=email,
-            value_list=[send_value, get_value, cc_num, cc_holder]
+            send_value=send_value,
+            get_value=get_value,
+            cc_num=cc_num,
+            cc_holder=cc_holder,
         )
     except SyntaxError:
         print("Redis Error")
-
     try:
         await services.email_queue.push(email)
     except SyntaxError:
@@ -66,7 +68,7 @@ async def confirm_cc(
     cc_image: UploadFile,
 ):
     email = await services.email_queue.pop()
-    does_exist = await services.redis_values.redis_conn.exists(email)
+    does_exist = await services.redis_values.redis_conn.exists('ValidationList')
     # Проверяем есть ли ключи в реддисе
     if does_exist != 1:
         # Меняем статус ордера на время вышло
