@@ -23,7 +23,8 @@ async def order_crypto_fiat(
     cc_num: str = Form(),
     cc_holder: str = Form(),
 ):
-
+    print(f"маржа: {MARGIN}")
+    print(f"Стоимость за перевод: {GAS}")
     if send_value != 0:
         try:
             get_value = await Count.count_get_value(
@@ -32,6 +33,7 @@ async def order_crypto_fiat(
                 margin=MARGIN,
                 gas=GAS,
             )
+            print(f"Сумма рублей за лтс: {get_value}")
         except SyntaxError:
             print("Error in send value")
     if send_value == 0:
@@ -59,7 +61,8 @@ async def order_crypto_fiat(
         await services.email_queue.push(email)
     except SyntaxError:
         print("EmailQueue error")
-    return RedirectResponse("/confirm_cc")
+    print("succes")
+    # return RedirectResponse("exchange_router/confirm_cc")
 
 
 # Форма для верификации карты по фото
@@ -68,7 +71,7 @@ async def confirm_cc(
     cc_image: UploadFile,
 ):
     email = await services.email_queue.pop()
-    does_exist = await services.redis_values.redis_conn.exists('ValidationList')
+    does_exist = await services.redis_values.redis_conn.exists(f'{email}')
     # Проверяем есть ли ключи в реддисе
     if does_exist != 1:
         # Меняем статус ордера на время вышло

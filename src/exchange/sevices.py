@@ -31,15 +31,14 @@ class RedisValues:
         cc_holder: str,
     ):
         await self.redis_conn.lpush(
-            'ValidationList',
-            f"{email}",
+            f'{email}',
             f"{send_value}",
             f"{get_value}",
             f"{cc_num}",
             f"{cc_holder}",
         )
-        self.redis_conn.expire('ValidationList', 300)
-        await self.redis_conn.close
+        await self.redis_conn.expire(f'{email}', 300)
+        self.redis_conn.close
 
 
 # Очередь для сохранения pending_order_emails
@@ -48,12 +47,12 @@ class EmailQueue:
         self.queue = []
 
     async def push(self, item):
-        await self.queue.append(item)
+        self.queue.append(item)
 
     async def pop(self):
         if len(self.queue) == 0:
             return None
-        removed = await self.queue.pop(0)
+        removed = self.queue.pop(0)
         return removed
 
 

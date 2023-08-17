@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends
 from config import conf
-from exchange.forms import forms_router
+from exchange import forms_router, exhange_router
 from sqladmin import Admin
 from database.db import create_async_engine
 from admin import UserAdmin
@@ -15,7 +15,13 @@ admin = Admin(
 
 admin.add_view(UserAdmin)
 
+
+@app.get("/")
+async def exchange():
+    return "Первая страница с формами на обмен"
+
 app.include_router(forms_router)
+app.include_router(exhange_router)
 
 if __name__ == "__main__":
     import uvicorn
