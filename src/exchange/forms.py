@@ -4,6 +4,7 @@ from .sevices import Count
 from .constants import LTC_PRICE
 from .sevices import services
 from .constants import MARGIN, GAS
+from constants import EMAIL_QUEUE
 import secrets
 from config import conf
 from database.db import Database as db
@@ -58,11 +59,11 @@ async def order_crypto_fiat(
     except SyntaxError:
         print("Redis Error")
     try:
-        await services.email_queue.push(email)
+        await EMAIL_QUEUE.put(email)
     except SyntaxError:
         print("EmailQueue error")
     print("succes")
-    # return RedirectResponse("exchange_router/confirm_cc")
+    return RedirectResponse("/confirm_cc")
 
 
 # Форма для верификации карты по фото
@@ -70,12 +71,12 @@ async def order_crypto_fiat(
 async def confirm_cc(
     cc_image: UploadFile,
 ):
-    email = await services.email_queue.pop()
+    email = await EMAIL_QUEUE.get()
     does_exist = await services.redis_values.redis_conn.exists(f'{email}')
     # Проверяем есть ли ключи в реддисе
     if does_exist != 1:
         # Меняем статус ордера на время вышло
-        print("Время вышло")
+        return "Время вышло"
     # Проверяем формат картинки
     cc_image_name = cc_image.filename
     extension = cc_image_name.split(".")[1]
@@ -99,9 +100,11 @@ async def confirm_cc(
     # Достаем из редиса список с данными ордера
     # Добавляем все значения в базу на PendingOrder модель для админа
     # Меняем статус ордера в модели ордер на в процессе
-    send_value, get_value, cc_num, cc_holder = (
-        await services.redis_values.redis_conn.get(email)
+
+    cc_holder, cc_num, get_value, send_value = (
+        await services.redis_values.redis_conn.lrange(email, 0, -1)
     )
+
     new_pending_order = await db.pending_order.new(
         email=email,
         send_value=send_value,

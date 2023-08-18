@@ -1,6 +1,5 @@
 from binance import AsyncClient
 from config import conf
-from pprint import pprint
 
 
 class Parser:

@@ -37,27 +37,11 @@ class RedisValues:
             f"{cc_num}",
             f"{cc_holder}",
         )
-        await self.redis_conn.expire(f'{email}', 300)
+        await self.redis_conn.expire(name=f'{email}', time=300)
         self.redis_conn.close
 
 
-# Очередь для сохранения pending_order_emails
-class EmailQueue:
-    def __init__(self):
-        self.queue = []
-
-    async def push(self, item):
-        self.queue.append(item)
-
-    async def pop(self):
-        if len(self.queue) == 0:
-            return None
-        removed = self.queue.pop(0)
-        return removed
-
-
 class Services:
-    email_queue = EmailQueue()
     redis_values = RedisValues()
 
 
