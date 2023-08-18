@@ -60,6 +60,13 @@ class ImageStorageConfiguration:
 
 
 @dataclass
+class Auth:
+    "JWT secret"
+    jwt_token = os.environ.get("SECRET_JWT")
+    user_menager = os.environ.get("SECRET_USER_MENAGER")
+
+
+@dataclass
 class Configuration:
     """ All in one's configuration class """
     secret_key = os.environ.get("SECRET_KEY")
@@ -70,6 +77,7 @@ class Configuration:
     parser = ParserConfiguration()
     redis = RedisConfig()
     db = DataBaseConfig()
+    auth = Auth()
 
 
 conf = Configuration()

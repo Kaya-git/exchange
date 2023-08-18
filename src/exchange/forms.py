@@ -3,8 +3,7 @@ from fastapi.responses import RedirectResponse
 from .sevices import Count
 from .constants import LTC_PRICE
 from .sevices import services
-from .constants import MARGIN, GAS
-from constants import EMAIL_QUEUE
+from .constants import MARGIN, GAS, EMAIL_QUEUE
 import secrets
 from config import conf
 from database.db import Database as db

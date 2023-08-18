@@ -10,3 +10,4 @@ exhange_router = APIRouter(
 @exhange_router.get("/confirm_cc")
 async def confirm_cc():
     email = await EMAIL_QUEUE.get()
+    return f"{email}"
