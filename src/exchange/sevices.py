@@ -22,8 +22,9 @@ class RedisValues:
 
     redis_conn = redis.Redis(host=conf.redis.host, port=conf.redis.port)
 
-    async def set_email_values(
+    async def set_order_info(
         self,
+        cookies_id: str,
         email: str,
         send_value: float,
         get_value: float,
@@ -31,7 +32,8 @@ class RedisValues:
         cc_holder: str,
     ):
         await self.redis_conn.lpush(
-            f'{email}',
+            f"{cookies_id}"
+            f"{email}",
             f"{send_value}",
             f"{get_value}",
             f"{cc_num}",

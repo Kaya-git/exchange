@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Form, UploadFile
+from fastapi import APIRouter, Form, UploadFile, Cookie
 from fastapi.responses import RedirectResponse
 from .sevices import Count
 from .constants import LTC_PRICE
 from .sevices import services
-from .constants import MARGIN, GAS, EMAIL_QUEUE
+from .constants import MARGIN, GAS
 import secrets
 from config import conf
 from database.db import Database as db
+
 
 forms_router = APIRouter(
     prefix="/forms",
@@ -22,6 +23,7 @@ async def order_crypto_fiat(
     email: str = Form(),
     cc_num: str = Form(),
     cc_holder: str = Form(),
+    cookies_id: str = Cookie(),
 ):
     print(f"маржа: {MARGIN}")
     print(f"Стоимость за перевод: {GAS}")
@@ -48,7 +50,8 @@ async def order_crypto_fiat(
             print("Error in send value")
 
     try:
-        await services.redis_values.set_email_values(
+        await services.redis_values.set_order_info(
+            cookies_id=cookies_id,
             email=email,
             send_value=send_value,
             get_value=get_value,
@@ -57,11 +60,6 @@ async def order_crypto_fiat(
         )
     except SyntaxError:
         print("Redis Error")
-    try:
-        await EMAIL_QUEUE.put(email)
-    except SyntaxError:
-        print("EmailQueue error")
-    print("succes")
     return RedirectResponse("/confirm_cc")
 
 
@@ -69,9 +67,9 @@ async def order_crypto_fiat(
 @forms_router.post("/confirm_cc_form")
 async def confirm_cc(
     cc_image: UploadFile,
+    cookies_id: str = Cookie(),
 ):
-    email = await EMAIL_QUEUE.get()
-    does_exist = await services.redis_values.redis_conn.exists(f'{email}')
+    does_exist = await services.redis_values.redis_conn.exists(cookies_id)
     # Проверяем есть ли ключи в реддисе
     if does_exist != 1:
         # Меняем статус ордера на время вышло
@@ -100,8 +98,8 @@ async def confirm_cc(
     # Добавляем все значения в базу на PendingOrder модель для админа
     # Меняем статус ордера в модели ордер на в процессе
 
-    cc_holder, cc_num, get_value, send_value = (
-        await services.redis_values.redis_conn.lrange(email, 0, -1)
+    cc_holder, cc_num, get_value, send_value, email = (
+        await services.redis_values.redis_conn.lrange(cookies_id, 0, -1)
     )
 
     new_pending_order = await db.pending_order.new(

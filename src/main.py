@@ -6,8 +6,8 @@ from database.db import create_async_engine
 from admin import (UserAdmin,
                    PendingAdmin,
                    CommissionsAdmin,
-                   OrdersHistoryAdmin
-)
+                   OrdersHistoryAdmin,
+                   )
 from fastapi_users import FastAPIUsers
 from auth.auth import auth_backend
 from auth.schemas import UserRead, UserCreate
@@ -38,8 +38,8 @@ admin.add_view(OrdersHistoryAdmin)
 
 @app.get("/")
 async def root(response: Response):
-    user_id = uuid.uuid4()
-    response.set_cookie(key="user_id", value=user_id)
+    cookies_id = uuid.uuid4()
+    response.set_cookie(key="user_id", value=cookies_id)
     return "установили куки"
 
 app.include_router(forms_router)
