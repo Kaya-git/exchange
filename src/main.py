@@ -1,14 +1,21 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Response
 from config import conf
 from exchange import forms_router, exhange_router
 from sqladmin import Admin
 from database.db import create_async_engine
-from admin import UserAdmin
+from admin import (UserAdmin,
+                   PendingAdmin,
+                   CommissionsAdmin,
+                   OrdersHistoryAdmin
+)
 from fastapi_users import FastAPIUsers
 from auth.auth import auth_backend
 from auth.schemas import UserRead, UserCreate
 from auth.manager import get_user_manager
 from database.models import User
+import uuid
+
+async_engine = create_async_engine(conf.db.build_connection_str())
 
 
 fastapi_users = FastAPIUsers[User, int](
@@ -20,15 +27,20 @@ app = FastAPI(
 )
 admin = Admin(
     app=app,
-    engine=Depends(create_async_engine(conf.db.build_connection_str()))
+    engine=async_engine
 )
 
 admin.add_view(UserAdmin)
+admin.add_view(PendingAdmin)
+admin.add_view(CommissionsAdmin)
+admin.add_view(OrdersHistoryAdmin)
 
 
 @app.get("/")
-async def exchange():
-    return "Первая страница с формами на обмен"
+async def root(response: Response):
+    user_id = uuid.uuid4()
+    response.set_cookie(key="user_id", value=user_id)
+    return "установили куки"
 
 app.include_router(forms_router)
 app.include_router(exhange_router)

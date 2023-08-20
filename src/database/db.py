@@ -11,6 +11,7 @@ from database.repositories import (
     CurrencyRepo, PaymentOptionRepo,
     CommissionsRepo, PendingOrderRepo
 )
+from typing import AsyncGenerator
 
 
 def create_async_engine(url: Union[URL, str]) -> AsyncEngine:
@@ -34,6 +35,11 @@ def create_session_maker(engine: AsyncEngine = None) -> sessionmaker:
         class_=AsyncSession,
         expire_on_commit=False
     )
+
+
+async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+    async with create_session_maker() as session:
+        yield session
 
 
 class Database:
@@ -64,7 +70,7 @@ class Database:
 
     def __init__(
         self,
-        session: AsyncSession = Depends(create_session_maker()),
+        session: AsyncSession = Depends(get_async_session()),
         user: UserRepo = None,
         order: OrderRepo = None,
         currency: CurrencyRepo = None,
