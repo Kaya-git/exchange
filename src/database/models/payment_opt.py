@@ -12,16 +12,24 @@ class PaymentOption(Base):
         primary_key=True,
         autoincrement=True,
     )
-    name: Mapped[str] = mapped_column(
-        sa.Text,
-        unique=True,
-        nullable=False,
-    )
     currency: Mapped[Currency] = mapped_column(
         sa.ForeignKey("currency.tikker")
     )
-    banking_acc_number: Mapped[str] = mapped_column(
+    sum: Mapped[float] = mapped_column(
+        sa.Float,
+        nullable=False,
+    )
+    cc_num: Mapped[str] = mapped_column(
         sa.Text,
         unique=True,
         nullable=False,
+    )
+    cc_holder: Mapped[str] = mapped_column(
+        sa.Text,
+        unique=False,
+        nullable=True
+    )
+    image_name: Mapped[str] = mapped_column(
+        sa.Text,
+        nullable=True
     )

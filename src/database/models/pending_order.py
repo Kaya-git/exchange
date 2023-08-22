@@ -3,6 +3,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import mapped_column, Mapped
 import datetime
 from .order_status import PendingStatus
+from .payment_opt import PaymentOption
 
 
 class PendingOrder(Base):
@@ -17,25 +18,11 @@ class PendingOrder(Base):
         sa.String,
         nullable=False,
     )
-    get_value: Mapped[float] = mapped_column(
-        sa.Float,
-        nullable=False
+    payment_from: Mapped[PaymentOption] = mapped_column(
+        sa.ForeignKey("payment_option.id")
     )
-    send_value: Mapped[float] = mapped_column(
-        sa.Float,
-        nullable=False
-    )
-    cc_num: Mapped[int] = mapped_column(
-        sa.BigInteger,
-        nullable=False
-    )
-    cc_holder: Mapped[str] = mapped_column(
-        sa.Text,
-        nullable=False,
-    )
-    cc_image_name: Mapped[str] = mapped_column(
-        sa.Text,
-        nullable=False
+    payment_to: Mapped[PaymentOption] = mapped_column(
+        sa.ForeignKey("payment_option.id")
     )
     date: Mapped[datetime.datetime] = mapped_column(
         sa.DateTime,

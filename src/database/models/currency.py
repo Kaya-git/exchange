@@ -11,8 +11,17 @@ class Currency(Base):
         primary_key=True,
         autoincrement=True,
     )
+    name: Mapped[str] = mapped_column(
+        sa.Text,
+        nullable=False,
+        unique=True,
+    )
     tikker: Mapped[str] = mapped_column(
         sa.Text,
         nullable=False,
         unique=True,
+    )
+    rezerve: Mapped[float] = mapped_column(
+        sa.Float,
+        default=0,
     )

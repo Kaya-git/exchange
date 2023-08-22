@@ -40,7 +40,8 @@ admin.add_view(OrdersHistoryAdmin)
 async def root(response: Response):
     cookies_id = uuid.uuid4()
     response.set_cookie(key="user_id", value=cookies_id)
-    return "установили куки"
+
+    return f"установили куки: {cookies_id}"
 
 app.include_router(forms_router)
 app.include_router(exhange_router)

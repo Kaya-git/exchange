@@ -21,10 +21,12 @@ async def order_crypto_fiat(
     send_value: int = Form(default=0),
     get_value: int = Form(default=0),
     email: str = Form(),
+    cwallet: str = Form(),
     cc_num: str = Form(),
     cc_holder: str = Form(),
-    cookies_id: str = Cookie(),
+    cookies_id: str | None = Cookie(default=None),
 ):
+    print(f"куки: {cookies_id}")
     print(f"маржа: {MARGIN}")
     print(f"Стоимость за перевод: {GAS}")
     if send_value != 0:
@@ -35,9 +37,8 @@ async def order_crypto_fiat(
                 margin=MARGIN,
                 gas=GAS,
             )
-            print(f"Сумма рублей за лтс: {get_value}")
         except SyntaxError:
-            print("Error in send value")
+            print("Error in get value")
     if send_value == 0:
         try:
             send_value = await Count.count_send_value(
@@ -54,13 +55,16 @@ async def order_crypto_fiat(
             cookies_id=cookies_id,
             email=email,
             send_value=send_value,
+            send_curr="СберБанк RUB",
             get_value=get_value,
+            get_curr="Litecoin LTC",
             cc_num=cc_num,
             cc_holder=cc_holder,
+            wallet_num=cwallet,
         )
     except SyntaxError:
         print("Redis Error")
-    return RedirectResponse("/confirm_cc")
+    return RedirectResponse("/confirm")
 
 
 # Форма для верификации карты по фото
@@ -98,9 +102,16 @@ async def confirm_cc(
     # Добавляем все значения в базу на PendingOrder модель для админа
     # Меняем статус ордера в модели ордер на в процессе
 
-    cc_holder, cc_num, get_value, send_value, email = (
-        await services.redis_values.redis_conn.lrange(cookies_id, 0, -1)
-    )
+    (
+        wallet_num,
+        cc_holder,
+        cc_num,
+        get_curr,
+        get_value,
+        send_curr,
+        send_value,
+        email
+    ) = await services.redis_values.redis_conn.lrange(cookies_id, 0, -1)
 
     new_pending_order = await db.pending_order.new(
         email=email,
