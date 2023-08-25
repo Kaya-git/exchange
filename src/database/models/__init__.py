@@ -7,7 +7,7 @@ from .order_status import Status
 from .commissions import Commissions
 from .pending_order import PendingOrder
 from .order_status import PendingStatus
-
+from .reviews import Review, Mark
 
 __all__ = [
     "Base",
@@ -20,4 +20,6 @@ __all__ = [
     "Commissions",
     "PendingOrder",
     "PendingStatus",
+    "Review",
+    "Mark",
 ]

@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Cookie
 from .sevices import services
 from database.models.router_enum import Tikker
+from .constants import LTC_RUB_PRICE, BTC_RUB_PRICE
+from database.db import Database as db
+from database.models import Currency, Review
 
 
 currency_router = APIRouter(
@@ -67,12 +70,19 @@ async def siterules():
 
 @menu_router.get("/reserve")
 async def reserve():
-    ...
+    currency_list = await db.currency.get_all()
+    return_dict = {}
+    for currency in currency_list:
+        return_dict[currency.name] = (currency.name, currency.reserve)
+    return return_dict
 
 
 @menu_router.get("/tarifs")
 async def tarifs():
-    ...
+    return {
+        "btc": BTC_RUB_PRICE,
+        "ltc": LTC_RUB_PRICE,
+    }
 
 
 @menu_router.get("/faq")
@@ -82,7 +92,11 @@ async def faq():
 
 @menu_router.get("/reviews/list")
 async def reviews_all():
-    ...
+    try:
+        reviews = await db.review.get_many(limit=10, order_by=Review.data)
+        return reviews
+    except KeyError:
+        return ("Ошибка в получении ревью")
 
 
 @menu_router.get("/contacts")
@@ -92,5 +106,23 @@ async def contacts():
 
 @currency_router.get("/{give_tikker}/{get_tikker}")
 async def give_get_tikker(give_tikker: Tikker, get_tikker: Tikker):
-    if give_tikker is Tikker.SBRUR and get_tikker is Tikker.LTC:
-        ...
+    try:
+        give = await db.currency.get_by_where(
+            whereclause=(Currency.tikker == give_tikker)
+        )
+        give_min = give.min
+        give_max = give.max
+        if get_tikker == "LTC":
+            rate = LTC_RUB_PRICE
+        if get_tikker == "BTC":
+            rate = BTC_RUB_PRICE
+    except KeyError:
+        return ("Ошибка в обменном роутере")
+    finally:
+        return {
+            "rate": rate,
+            "give_tikker": give_tikker,
+            "get_tikker": get_tikker,
+            "give_min": give_min,
+            "give_max": give_max
+        }

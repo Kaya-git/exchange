@@ -18,16 +18,20 @@ class PaymentOptionRepo(Repository[PaymentOption]):
 
     async def new(
         self,
-        name: str,
         currency: Currency,
-        banking_acc_number: str,
+        amount: float,
+        cc_num_x_wallet: str,
+        cc_holder: str,
+        image_name: str,
     ) -> None:
 
         new_payment_opt = await self.session.merge(
             PaymentOption(
-                name=name,
                 currency=currency,
-                banking_acc_number=banking_acc_number,
+                amount=amount,
+                cc_num_x_wallet=cc_num_x_wallet,
+                cc_holder=cc_holder,
+                image_name=image_name,
             )
         )
         return new_payment_opt

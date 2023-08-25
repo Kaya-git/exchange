@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Response
+from fastapi.responses import RedirectResponse
 from config import conf
 from exchange import forms_router, exhange_router
 from sqladmin import Admin
@@ -40,8 +41,7 @@ admin.add_view(OrdersHistoryAdmin)
 async def root(response: Response):
     cookies_id = uuid.uuid4()
     response.set_cookie(key="user_id", value=cookies_id)
-
-    return f"установили куки: {cookies_id}"
+    return RedirectResponse("/SBERRUB/LTC")
 
 app.include_router(forms_router)
 app.include_router(exhange_router)

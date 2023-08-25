@@ -42,6 +42,15 @@ class Repository(Generic[AbstractModel]):
         statement = select(self.type_model).where(whereclause)
         return (await self.session.execute(statement)).one_or_none()
 
+    async def get_all(
+        self,
+        order_by=None,
+    ) -> List[AbstractModel]:
+        statement = select(self.type_model)
+        if order_by:
+            statement = statement.order_by(order_by)
+        return (await self.session.scalars(statement)).all()
+
     async def get_many(
         self, whereclause, limit: int = 100, order_by=None
     ) -> List[AbstractModel]:

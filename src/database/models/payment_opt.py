@@ -15,11 +15,11 @@ class PaymentOption(Base):
     currency: Mapped[Currency] = mapped_column(
         sa.ForeignKey("currency.tikker")
     )
-    sum: Mapped[float] = mapped_column(
+    amount: Mapped[float] = mapped_column(
         sa.Float,
         nullable=False,
     )
-    cc_num: Mapped[str] = mapped_column(
+    cc_num_x_wallet: Mapped[str] = mapped_column(
         sa.Text,
         unique=True,
         nullable=False,
@@ -27,9 +27,9 @@ class PaymentOption(Base):
     cc_holder: Mapped[str] = mapped_column(
         sa.Text,
         unique=False,
-        nullable=True
+        default=None
     )
     image_name: Mapped[str] = mapped_column(
         sa.Text,
-        nullable=True
+        default=None
     )

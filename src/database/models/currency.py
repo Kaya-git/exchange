@@ -21,7 +21,15 @@ class Currency(Base):
         nullable=False,
         unique=True,
     )
-    rezerve: Mapped[float] = mapped_column(
+    reserve: Mapped[float] = mapped_column(
         sa.Float,
         default=0,
+    )
+    min: Mapped[int] = mapped_column(
+        sa.Integer,
+        default=0
+    )
+    max: Mapped[int] = mapped_column(
+        sa.Integer,
+        default=0
     )

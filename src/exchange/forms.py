@@ -113,13 +113,29 @@ async def confirm_cc(
         email
     ) = await services.redis_values.redis_conn.lrange(cookies_id, 0, -1)
 
-    new_pending_order = await db.pending_order.new(
-        email=email,
-        send_value=send_value,
-        get_value=get_value,
-        cc_num=cc_num,
+    payment_from = await db.payment_option.new(
+        currency=send_curr,
+        amount=send_value,
+        cc_num_x_wallet=cc_num,
         cc_holder=cc_holder,
-        cc_image_name=new_file_name,
+        image_name=new_file_name,
     )
-    await db.session.commit(new_pending_order)
-    return RedirectResponse("/pending")
+
+    payment_to = await db.payment_option.new(
+        currency=get_curr,
+        amount=get_value,
+        cc_num_x_wallet=wallet_num,
+    )
+    await db.session.add_all([payment_from, payment_to])
+
+    pending_order = await db.pending_order.new(
+        email=email,
+        payment_from=payment_from.id,
+        payment_to=payment_to.id,
+    )
+    await db.session.add(pending_order)
+    await db.session.commit()
+    return "Ожидайте подтверждения кредитной карты, обычно это занимает небольше 5 мин"
+
+    # Ожидаем валидации карты от администратора
+    # Если изменился статус pending order на аппрувд, то редирект на кошелек сервиса

@@ -9,7 +9,8 @@ from config import conf
 from database.repositories import (
     UserRepo, OrderRepo,
     CurrencyRepo, PaymentOptionRepo,
-    CommissionsRepo, PendingOrderRepo
+    CommissionsRepo, PendingOrderRepo,
+    ReviewRepo,
 )
 from typing import AsyncGenerator
 
@@ -66,6 +67,8 @@ class Database:
     pending_order: PendingOrderRepo
     """ Pending order option repository """
 
+    review: ReviewRepo
+
     session: AsyncSession
 
     def __init__(
@@ -77,6 +80,7 @@ class Database:
         payment_option: PaymentOptionRepo = None,
         commissions: CommissionsRepo = None,
         pending_order: PendingOrderRepo = None,
+        review: ReviewRepo = None,
     ) -> None:
 
         self.session = session
@@ -90,5 +94,8 @@ class Database:
             session=session
         )
         self.pending_order = pending_order or PendingOrderRepo(
+            session=session
+        )
+        self.review = review or ReviewRepo(
             session=session
         )
