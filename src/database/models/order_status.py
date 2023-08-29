@@ -12,3 +12,4 @@ class PendingStatus(enum.StrEnum):
     Canceled = "canceled"
     InProcess = "inprocess"
     Approved = "approved"
+    Completed = "completed"

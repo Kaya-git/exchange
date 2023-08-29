@@ -1,8 +1,8 @@
-"""create tables
+"""empty message
 
-Revision ID: 30f2bd421d1a
+Revision ID: aaedaa705421
 Revises: 
-Create Date: 2023-08-13 21:15:32.652707
+Create Date: 2023-08-29 14:49:53.467202
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '30f2bd421d1a'
+revision: str = 'aaedaa705421'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -28,21 +28,14 @@ def upgrade() -> None:
     )
     op.create_table('currency',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
+    sa.Column('name', sa.Text(), nullable=False),
     sa.Column('tikker', sa.Text(), nullable=False),
+    sa.Column('reserve', sa.Float(), nullable=False),
+    sa.Column('min', sa.Integer(), nullable=False),
+    sa.Column('max', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name'),
     sa.UniqueConstraint('tikker')
-    )
-    op.create_table('pending_order',
-    sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
-    sa.Column('email', sa.String(), nullable=False),
-    sa.Column('get_value', sa.Float(), nullable=False),
-    sa.Column('send_value', sa.Float(), nullable=False),
-    sa.Column('cc_num', sa.BigInteger(), nullable=False),
-    sa.Column('cc_holder', sa.Text(), nullable=False),
-    sa.Column('cc_image_name', sa.Text(), nullable=False),
-    sa.Column('date', sa.DateTime(), nullable=False),
-    sa.Column('status', sa.Enum('Canceled', 'InProcess', 'Approved', name='pendingstatus'), nullable=False),
-    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
@@ -60,28 +53,55 @@ def upgrade() -> None:
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     op.create_table('payment_option',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
-    sa.Column('name', sa.Text(), nullable=False),
     sa.Column('currency', sa.Text(), nullable=False),
-    sa.Column('banking_acc_number', sa.Text(), nullable=False),
+    sa.Column('amount', sa.Float(), nullable=False),
+    sa.Column('cc_num_x_wallet', sa.Text(), nullable=False),
+    sa.Column('cc_holder', sa.Text(), nullable=False),
+    sa.Column('image_name', sa.Text(), nullable=False),
     sa.ForeignKeyConstraint(['currency'], ['currency.tikker'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('banking_acc_number'),
-    sa.UniqueConstraint('name')
+    sa.UniqueConstraint('cc_num_x_wallet')
+    )
+    op.create_table('review',
+    sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
+    sa.Column('author', sa.BigInteger(), nullable=False),
+    sa.Column('text', sa.Text(), nullable=False),
+    sa.Column('data', sa.Date(), nullable=False),
+    sa.Column('mark', sa.Enum('Good', 'Bad', name='mark'), nullable=False),
+    sa.ForeignKeyConstraint(['author'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('service_pm',
+    sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
+    sa.Column('currency', sa.Text(), nullable=False),
+    sa.Column('cc_num_x_wallet', sa.Text(), nullable=False),
+    sa.Column('cc_holder', sa.Text(), nullable=False),
+    sa.ForeignKeyConstraint(['currency'], ['currency.tikker'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('cc_num_x_wallet')
     )
     op.create_table('order',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
     sa.Column('user', sa.BigInteger(), nullable=False),
-    sa.Column('ammount_get', sa.Float(), nullable=False),
-    sa.Column('get_currency', sa.Text(), nullable=False),
-    sa.Column('ammount_give', sa.Float(), nullable=False),
-    sa.Column('give_currency', sa.Text(), nullable=False),
-    sa.Column('payment_option', sa.Text(), nullable=False),
+    sa.Column('payment_from', sa.BigInteger(), nullable=False),
+    sa.Column('payment_to', sa.BigInteger(), nullable=False),
     sa.Column('date', sa.DateTime(), nullable=False),
     sa.Column('status', sa.Enum('Pending', 'Canceled', 'Timeout', 'Completed', name='status'), nullable=False),
-    sa.ForeignKeyConstraint(['get_currency'], ['currency.tikker'], ),
-    sa.ForeignKeyConstraint(['give_currency'], ['currency.tikker'], ),
-    sa.ForeignKeyConstraint(['payment_option'], ['payment_option.name'], ),
+    sa.ForeignKeyConstraint(['payment_from'], ['payment_option.id'], ),
+    sa.ForeignKeyConstraint(['payment_to'], ['payment_option.id'], ),
     sa.ForeignKeyConstraint(['user'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('pending_order',
+    sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
+    sa.Column('email', sa.String(), nullable=False),
+    sa.Column('payment_from', sa.BigInteger(), nullable=False),
+    sa.Column('payment_to', sa.BigInteger(), nullable=False),
+    sa.Column('date', sa.DateTime(), nullable=False),
+    sa.Column('status', sa.Enum('Canceled', 'InProcess', 'Approved', 'Completed', name='pendingstatus'), nullable=False),
+    sa.Column('user_uuid', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['payment_from'], ['payment_option.id'], ),
+    sa.ForeignKeyConstraint(['payment_to'], ['payment_option.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
@@ -89,11 +109,13 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_table('pending_order')
     op.drop_table('order')
+    op.drop_table('service_pm')
+    op.drop_table('review')
     op.drop_table('payment_option')
     op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
-    op.drop_table('pending_order')
     op.drop_table('currency')
     op.drop_table('commissions')
     # ### end Alembic commands ###

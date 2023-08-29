@@ -6,6 +6,7 @@ from .user_repo import UserRepo
 from .commissions_repo import CommissionsRepo
 from .pending_order_repo import PendingOrderRepo
 from .review_repo import ReviewRepo
+from .servicepm_repo import ServicePMRepo
 
 
 __all__ = [
@@ -16,5 +17,6 @@ __all__ = [
     "UserRepo",
     "CommissionsRepo",
     "PendingOrderRepo",
-    "ReviewRepo"
+    "ReviewRepo",
+    "ServicePMRepo",
 ]

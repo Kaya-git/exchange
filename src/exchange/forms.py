@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Form, UploadFile, Cookie
 from fastapi.responses import RedirectResponse
 from .sevices import Count
-from .constants import LTC_PRICE
+from .constants import LTC_RUB_PRICE
 from .sevices import services
 from .constants import MARGIN, GAS
 import secrets
@@ -24,16 +24,16 @@ async def order_crypto_fiat(
     cwallet: str = Form(),
     cc_num: str = Form(),
     cc_holder: str = Form(),
-    cookies_id: str | None = Cookie(default=None),
+    user_id: str = Cookie(),
 ):
-    print(f"куки: {cookies_id}")
+    print(f"куки: {user_id}")
     print(f"маржа: {MARGIN}")
     print(f"Стоимость за перевод: {GAS}")
     if send_value != 0:
         try:
             get_value = await Count.count_get_value(
                 send_value=send_value,
-                coin_price=await LTC_PRICE,
+                coin_price=await LTC_RUB_PRICE,
                 margin=MARGIN,
                 gas=GAS,
             )
@@ -43,7 +43,7 @@ async def order_crypto_fiat(
         try:
             send_value = await Count.count_send_value(
                 get_value=get_value,
-                coin_price=await LTC_PRICE,
+                coin_price=await LTC_RUB_PRICE,
                 margin=MARGIN,
                 gas=GAS,
             )
@@ -52,7 +52,7 @@ async def order_crypto_fiat(
 
     try:
         await services.redis_values.set_order_info(
-            cookies_id=cookies_id,
+            cookies_id=user_id,
             email=email,
             send_value=send_value,
             send_curr="СберБанк RUB",
@@ -64,7 +64,8 @@ async def order_crypto_fiat(
         )
     except SyntaxError:
         print("Redis Error")
-    return RedirectResponse("/confirm")
+    return "Redis - OK"
+    # return RedirectResponse("/confirm")
 
 
 # Форма для верификации карты по фото
@@ -125,17 +126,15 @@ async def confirm_cc(
         currency=get_curr,
         amount=get_value,
         cc_num_x_wallet=wallet_num,
+        user_uuid=cookies_id
     )
     await db.session.add_all([payment_from, payment_to])
 
     pending_order = await db.pending_order.new(
         email=email,
-        payment_from=payment_from.id,
-        payment_to=payment_to.id,
+        payment_from=payment_from,
+        payment_to=payment_to,
     )
     await db.session.add(pending_order)
     await db.session.commit()
-    return "Ожидайте подтверждения кредитной карты, обычно это занимает небольше 5 мин"
-
-    # Ожидаем валидации карты от администратора
-    # Если изменился статус pending order на аппрувд, то редирект на кошелек сервиса
+    return RedirectResponse("/exchange/await")

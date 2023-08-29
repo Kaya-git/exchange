@@ -34,13 +34,13 @@ class CommissionsAdmin(ModelView, model=Commissions):
 
 class PendingAdmin(ModelView, model=PendingOrder):
     column_list = [
+        PendingOrder.id,
+        PendingOrder.date,
         PendingOrder.email,
-        PendingOrder.get_value,
-        PendingOrder.send_value,
-        PendingOrder.cc_holder,
-        PendingOrder.cc_num,
-        PendingOrder.cc_image_name,
-        PendingOrder.date
+        PendingOrder.payment_from,
+        PendingOrder.payment_to,
+        PendingOrder.status,
+        PendingOrder.user_uuid,
     ]
     can_create = False
     can_edit = False
@@ -57,13 +57,10 @@ class OrdersHistoryAdmin(ModelView, model=Order):
     column_list = [
         Order.id,
         Order.user,
-        Order.ammount_get,
-        Order.get_currency,
-        Order.ammount_give,
-        Order.give_currency,
-        Order.payment_option,
         Order.date,
-        Order.status
+        Order.status,
+        Order.payment_from,
+        Order.payment_to,
     ]
     can_create = False
     can_edit = False

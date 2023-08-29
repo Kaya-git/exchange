@@ -33,3 +33,7 @@ class PendingOrder(Base):
         sa.Enum(PendingStatus),
         default=PendingStatus.InProcess,
     )
+    user_uuid: Mapped[str] = mapped_column(
+        sa.String,
+        nullable=False,
+    )

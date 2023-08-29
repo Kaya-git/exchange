@@ -3,6 +3,7 @@ from config import conf
 
 
 class Parser:
+
     async def find_price(ticker: str) -> float:
         try:
             client = await AsyncClient.create(

@@ -8,6 +8,8 @@ from .commissions import Commissions
 from .pending_order import PendingOrder
 from .order_status import PendingStatus
 from .reviews import Review, Mark
+from .service_pm import ServicePM
+
 
 __all__ = [
     "Base",
@@ -22,4 +24,5 @@ __all__ = [
     "PendingStatus",
     "Review",
     "Mark",
+    "ServicePM",
 ]

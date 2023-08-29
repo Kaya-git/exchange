@@ -1,9 +1,15 @@
-from fastapi import APIRouter, Cookie
+from fastapi import APIRouter, Cookie, Response
+from fastapi.responses import RedirectResponse
 from .sevices import services
 from database.models.router_enum import Tikker
 from .constants import LTC_RUB_PRICE, BTC_RUB_PRICE
 from database.db import Database as db
-from database.models import Currency, Review
+from database.models import (
+    Currency, Review,
+    PendingOrder, PendingStatus,
+    ServicePM, Status,
+)
+import time
 
 
 currency_router = APIRouter(
@@ -59,6 +65,74 @@ async def confirm_cc(cookies_id: str | None = Cookie(default=None)):
         "send_value": send_value,
         "email": email
     }
+
+
+@exhange_router.get("/await")
+async def conformation_await(
+    user_uuid: str | None = Cookie(default=None)
+) -> RedirectResponse:
+    while True:
+        await time.sleep(30)
+        order = await db.pending_order.get_by_where(
+            PendingOrder.user_uuid == user_uuid
+        )
+        if order.status == PendingStatus.Approved:
+            return RedirectResponse(f"/exchange/order/{order.id}")
+        if order.status == PendingStatus.Canceled:
+            return RedirectResponse("/cancel")
+
+
+@exhange_router.get("/order/{order_id}")
+async def requisites(
+    order_id: int,
+    response: Response,
+):
+    order = await db.pending_order.get_by_where(
+        PendingOrder.id == order_id
+    )
+    service_pm = await db.payment_option.get_by_where(
+        ServicePM.currency == order.payment_from.currency
+    )
+
+    response.set_cookie(key="order_id", value=order_id)
+    return {
+        "oder_id": order_id,
+        "service_pm": service_pm.cc_num_x_wallet,
+        "cc_holder": service_pm.cc_holder
+    }
+
+
+@exhange_router.get("/payed")
+async def payed_button(order_id: str | None = Cookie(default=None)):
+    while True:
+        await time.sleep(30)
+        pending_order = await db.pending_order.get_by_where(
+            PendingOrder.id == order_id
+        )
+        if pending_order.status == PendingStatus.Completed:
+            completed_order = db.order.new(
+                user=pending_order.user_uuid,
+                payment_from=pending_order.payment_from,
+                payment_to=pending_order.payment_to,
+                date=pending_order.date,
+                status=Status.Completed
+                )
+            db.session.add(completed_order)
+            db.pending_order.delete(PendingOrder.id == order_id)
+            db.session.commit()
+            return f"Заявка {order_id} обработана"
+        if pending_order.status == PendingStatus.Canceled:
+            completed_order = db.order.new(
+                user=pending_order.user_uuid,
+                payment_from=pending_order.payment_from,
+                payment_to=pending_order.payment_to,
+                date=pending_order.date,
+                status=Status.Canceled
+                )
+            db.session.add(completed_order)
+            db.pending_order.delete(PendingOrder.id == order_id)
+            db.session.commit()
+
 
 # -----------------------------------------------------------------------------
 

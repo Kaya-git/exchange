@@ -10,7 +10,7 @@ from database.repositories import (
     UserRepo, OrderRepo,
     CurrencyRepo, PaymentOptionRepo,
     CommissionsRepo, PendingOrderRepo,
-    ReviewRepo,
+    ReviewRepo, ServicePMRepo,
 )
 from typing import AsyncGenerator
 
@@ -69,6 +69,8 @@ class Database:
 
     review: ReviewRepo
 
+    service_pm: ServicePMRepo
+
     session: AsyncSession
 
     def __init__(
@@ -81,6 +83,7 @@ class Database:
         commissions: CommissionsRepo = None,
         pending_order: PendingOrderRepo = None,
         review: ReviewRepo = None,
+        service_pm: ServicePMRepo = None,
     ) -> None:
 
         self.session = session
@@ -97,5 +100,8 @@ class Database:
             session=session
         )
         self.review = review or ReviewRepo(
+            session=session
+        )
+        self.service_pm = service_pm or ServicePMRepo(
             session=session
         )

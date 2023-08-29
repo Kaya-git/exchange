@@ -1,7 +1,8 @@
 """ Order repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
-from ..models import Order, User, Currency, PaymentOption, Status
+from ..models import Order, User, PaymentOption, Status
 from .abstract import Repository
+import datetime
 
 
 class OrderRepo(Repository[Order]):
@@ -18,22 +19,18 @@ class OrderRepo(Repository[Order]):
     async def new(
         self,
         user: User,
-        ammount_get: float,
-        get_currency: Currency,
-        ammount_give: float,
-        give_currency: Currency,
-        payment_option: PaymentOption,
-        status: Status
+        payment_from: PaymentOption,
+        payment_to: PaymentOption,
+        date: datetime.datetime,
+        status: Status,
     ) -> None:
 
         new_order = await self.session.merge(
             Order(
                 user=user,
-                ammount_get=ammount_get,
-                get_currency=get_currency,
-                ammount_give=ammount_give,
-                give_currency=give_currency,
-                payment_option=payment_option,
+                payment_from=payment_from,
+                payment_to=payment_to,
+                date=date,
                 status=status,
             )
         )

@@ -1,12 +1,10 @@
 from .base import Base
-from .currency import Currency
 from .payment_opt import PaymentOption
 from sqlalchemy.orm import Mapped, mapped_column
 import sqlalchemy as sa
 from .user import User
 import datetime
 from .order_status import Status
-
 
 
 class Order(Base):
@@ -18,24 +16,14 @@ class Order(Base):
         autoincrement=True,
     )
     user: Mapped[User] = mapped_column(
-        sa.ForeignKey("user.id")
+        sa.ForeignKey("user.id"),
+        default=None,
     )
-    ammount_get: Mapped[float] = mapped_column(
-        sa.Float,
-        nullable=False,
+    payment_from: Mapped[PaymentOption] = mapped_column(
+        sa.ForeignKey("payment_option.id")
     )
-    get_currency: Mapped[Currency] = mapped_column(
-        sa.ForeignKey("currency.tikker")
-    )
-    ammount_give: Mapped[float] = mapped_column(
-        sa.Float,
-        nullable=False,
-    )
-    give_currency: Mapped[Currency] = mapped_column(
-        sa.ForeignKey("currency.tikker")
-    )
-    payment_option: Mapped[PaymentOption] = mapped_column(
-        sa.ForeignKey("payment_option.name")
+    payment_to: Mapped[PaymentOption] = mapped_column(
+        sa.ForeignKey("payment_option.id")
     )
     date: Mapped[datetime.datetime] = mapped_column(
         sa.DateTime,
