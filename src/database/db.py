@@ -75,7 +75,7 @@ class Database:
 
     def __init__(
         self,
-        session: AsyncSession = Depends(get_async_session()),
+        session: AsyncSession = Depends(create_session_maker()),
         user: UserRepo = None,
         order: OrderRepo = None,
         currency: CurrencyRepo = None,
@@ -105,3 +105,6 @@ class Database:
         self.service_pm = service_pm or ServicePMRepo(
             session=session
         )
+
+
+database = Database()
