@@ -153,13 +153,15 @@ async def confirm_cc(
         user_id=user_id
     )
     db.session.add_all([payment_from, payment_to])
-
-    # pending_order = await db.pending_order.new(
-    #     email=email,
-    #     payment_from=payment_from,
-    #     payment_to=payment_to,
-    # )
-    # db.session.add(pending_order)
     await db.session.commit()
-    return " Payments added"
+    print(" Payments added")
     # return RedirectResponse("/exchange/await")
+    pending_order = await db.pending_order.new(
+        email=email,
+        payment_from=payment_from.id,
+        payment_to=payment_to.id,
+        user_uuid=user_id,
+    )
+    db.session.add(pending_order)
+    await db.session.commit()
+    return "Pending order created"

@@ -35,5 +35,5 @@ class PendingOrder(Base):
     )
     user_uuid: Mapped[str] = mapped_column(
         sa.String,
-        nullable=False,
+        nullable=True,
     )
