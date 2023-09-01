@@ -21,7 +21,7 @@ class PendingOrderRepo(Repository[PendingOrder]):
         email: str,
         payment_from: PaymentOption,
         payment_to: PaymentOption,
-        user_uuid: str
+        user_uuid: str = None
     ) -> None:
 
         new_pending_order = await self.session.merge(

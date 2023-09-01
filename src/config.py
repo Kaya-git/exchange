@@ -56,6 +56,7 @@ class ImageStorageConfiguration:
 
     def build_image_storage(self):
         image_storage = yadisk_async.YaDisk(token=self.yadisk_token)
+        print(image_storage.check_token())
         return image_storage
 
 

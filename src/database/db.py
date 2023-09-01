@@ -1,10 +1,8 @@
-from typing import Union
+# from typing import Union
 
-from fastapi import Depends
-from sqlalchemy.engine import URL
+# from sqlalchemy.engine import URL
 from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from config import conf
 from database.repositories import (
     UserRepo, OrderRepo,
@@ -12,35 +10,31 @@ from database.repositories import (
     CommissionsRepo, PendingOrderRepo,
     ReviewRepo, ServicePMRepo,
 )
-from typing import AsyncGenerator
+from database.models import Base
 
 
-def create_async_engine(url: Union[URL, str]) -> AsyncEngine:
-    """
-    :param url:
-    :return:
-    """
-    return _create_async_engine(
-        url=url, echo=conf.debug,
-        pool_pre_ping=True
-    )
+engine = _create_async_engine(
+    url=conf.db.build_connection_str(),
+    echo=conf.debug,
+    pool_pre_ping=True
+)
 
 
-def create_session_maker(engine: AsyncEngine = None) -> sessionmaker:
-    """
-    :param url:
-    :return:
-    """
-    return sessionmaker(
-        engine or create_async_engine(conf.db.build_connection_str()),
-        class_=AsyncSession,
-        expire_on_commit=False
-    )
+async_session_maker = async_sessionmaker(
+    engine, class_=AsyncSession,
+    expire_on_commit=False
+)
 
 
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    async with create_session_maker() as session:
+async def get_async_session():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    session = async_session_maker()
+    try:
         yield session
+    finally:
+        await session.close()
 
 
 class Database:
@@ -75,7 +69,7 @@ class Database:
 
     def __init__(
         self,
-        session: AsyncSession = Depends(create_session_maker()),
+        session: AsyncSession,
         user: UserRepo = None,
         order: OrderRepo = None,
         currency: CurrencyRepo = None,
@@ -105,6 +99,3 @@ class Database:
         self.service_pm = service_pm or ServicePMRepo(
             session=session
         )
-
-
-database = Database()

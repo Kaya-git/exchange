@@ -2,6 +2,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..models import Currency, PaymentOption
 from .abstract import Repository
+from typing import Optional
 
 
 class PaymentOptionRepo(Repository[PaymentOption]):
@@ -21,8 +22,9 @@ class PaymentOptionRepo(Repository[PaymentOption]):
         currency: Currency,
         amount: float,
         cc_num_x_wallet: str,
-        cc_holder: str,
-        image_name: str,
+        cc_holder: str = None,
+        image_name: str = None,
+        user_id: Optional[str] = None,
     ) -> None:
 
         new_payment_opt = await self.session.merge(
@@ -32,6 +34,7 @@ class PaymentOptionRepo(Repository[PaymentOption]):
                 cc_num_x_wallet=cc_num_x_wallet,
                 cc_holder=cc_holder,
                 image_name=image_name,
+                user_id=user_id
             )
         )
         return new_payment_opt

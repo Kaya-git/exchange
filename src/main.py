@@ -1,13 +1,14 @@
 from fastapi import FastAPI, Response
-from fastapi.responses import RedirectResponse
+# from fastapi.responses import RedirectResponse
 from config import conf
 from exchange import forms_router, exhange_router
 from sqladmin import Admin
-from database.db import create_async_engine
+from database.db import engine
 from admin import (UserAdmin,
                    PendingAdmin,
                    CommissionsAdmin,
                    OrdersHistoryAdmin,
+                   CurrencyAdmin,
                    )
 from fastapi_users import FastAPIUsers
 from auth.auth import auth_backend
@@ -15,8 +16,6 @@ from auth.schemas import UserRead, UserCreate
 from auth.manager import get_user_manager
 from database.models import User
 import uuid
-
-async_engine = create_async_engine(conf.db.build_connection_str())
 
 
 fastapi_users = FastAPIUsers[User, int](
@@ -28,13 +27,14 @@ app = FastAPI(
 )
 admin = Admin(
     app=app,
-    engine=async_engine
+    engine=engine
 )
 
 admin.add_view(UserAdmin)
 admin.add_view(PendingAdmin)
 admin.add_view(CommissionsAdmin)
 admin.add_view(OrdersHistoryAdmin)
+admin.add_view(CurrencyAdmin)
 
 
 @app.get("/")

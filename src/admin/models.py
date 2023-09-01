@@ -1,5 +1,5 @@
 from sqladmin import ModelView
-from database.models import User, Commissions, PendingOrder, Order
+from database.models import User, Commissions, PendingOrder, Order, Currency
 
 
 class UserAdmin(ModelView, model=User):
@@ -71,3 +71,23 @@ class OrdersHistoryAdmin(ModelView, model=Order):
     class Metadata:
         name = "История заказа"
         name_plural = "История заказов"
+
+
+class CurrencyAdmin(ModelView, model=Currency):
+    column_list = [
+        Currency.id,
+        Currency.name,
+        Currency.tikker,
+        Currency.max,
+        Currency.min,
+        Currency.reserve
+    ]
+    can_create = True
+    can_edit = True
+    can_delete = True
+    can_export = True
+    can_view_details = True
+
+    class Metadata:
+        name = "Валюта"
+        name_plural = "Валюты"

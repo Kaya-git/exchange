@@ -70,6 +70,7 @@ class PaymentOptionBase(BaseModel):
     cc_num_x_wallet: str
     cc_holder: str
     image_name: str
+    user_id: str
 
 
 class PaymentOptionCreate(PaymentOptionBase):

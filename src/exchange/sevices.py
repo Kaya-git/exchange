@@ -49,7 +49,7 @@ class RedisValues:
             f"{cc_holder}",
             f"{wallet_num}"
         )
-        await self.redis_conn.expire(name=f'{cookies_id}', time=300)
+        await self.redis_conn.expire(name=f'{cookies_id}', time=900)
         self.redis_conn.close
 
 

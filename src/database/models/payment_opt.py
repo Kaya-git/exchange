@@ -2,6 +2,7 @@ from .base import Base
 from .currency import Currency
 from sqlalchemy.orm import Mapped, mapped_column
 import sqlalchemy as sa
+from typing import Optional
 
 
 class PaymentOption(Base):
@@ -21,15 +22,21 @@ class PaymentOption(Base):
     )
     cc_num_x_wallet: Mapped[str] = mapped_column(
         sa.Text,
-        unique=True,
         nullable=False,
     )
     cc_holder: Mapped[str] = mapped_column(
         sa.Text,
         unique=False,
-        default=None
+        default=None,
+        nullable=True
     )
     image_name: Mapped[str] = mapped_column(
         sa.Text,
-        default=None
+        default=None,
+        nullable=True
+    )
+    user_id: Mapped[Optional[str]] = mapped_column(
+        sa.Text,
+        default=None,
+        nullable=True,
     )

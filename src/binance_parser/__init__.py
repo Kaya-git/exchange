@@ -1,4 +1,4 @@
-from .parser import Parser
+from .parser import find_price
 
 
-__all__ = ["Parser", ]
+__all__ = ["find_price", ]
