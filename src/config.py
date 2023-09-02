@@ -54,9 +54,9 @@ class ImageStorageConfiguration:
     "Yadisk Image"
     yadisk_token = os.environ.get("YADISKTOKEN")
 
-    def build_image_storage(self):
+    async def build_image_storage(self):
         image_storage = yadisk_async.YaDisk(token=self.yadisk_token)
-        print(image_storage.check_token())
+        print(f" Яндекс диск права: {await image_storage.check_token()}")
         return image_storage
 
 

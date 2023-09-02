@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Form, UploadFile, Cookie, Depends
 from fastapi.responses import RedirectResponse
+import os
 from .sevices import Count
 from .constants import LTC_RUB_PRICE
 from .sevices import services
@@ -97,10 +98,11 @@ async def confirm_cc(
     with open(new_file_name, "wb") as file:
         file.write(cc_image_content)
 
-    image_storage = conf.image_storage.build_image_storage()
+    image_storage = await conf.image_storage.build_image_storage()
 
-    image_storage.upload(new_file_name, "/exchange")
+    await image_storage.upload(new_file_name, f"/exchange/{new_file_name}")
     await image_storage.close()
+    os.remove(f"{new_file_name}")
 
     # Достаем из редиса список с данными ордера
     # Добавляем все значения в базу на PendingOrder модель для админа
@@ -155,7 +157,7 @@ async def confirm_cc(
     db.session.add_all([payment_from, payment_to])
     await db.session.commit()
     print(" Payments added")
-    # return RedirectResponse("/exchange/await")
+
     pending_order = await db.pending_order.new(
         email=email,
         payment_from=payment_from.id,
@@ -165,3 +167,4 @@ async def confirm_cc(
     db.session.add(pending_order)
     await db.session.commit()
     return "Pending order created"
+    # return RedirectResponse("/exchange/await")
