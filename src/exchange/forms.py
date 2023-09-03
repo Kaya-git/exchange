@@ -2,14 +2,12 @@ from fastapi import APIRouter, Form, UploadFile, Cookie, Depends
 from fastapi.responses import RedirectResponse
 import os
 from .sevices import Count
-from .constants import LTC_RUB_PRICE
 from .sevices import services
-from .constants import MARGIN, GAS
 import secrets
 from config import conf
 from database.db import Database, get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from binance_parser import find_price
 
 forms_router = APIRouter(
     prefix="/forms",
@@ -26,18 +24,19 @@ async def order_crypto_fiat(
     cwallet: str = Form(),
     cc_num: str = Form(),
     cc_holder: str = Form(),
-    user_id: str = Cookie(),
+    user_id: str | None = Cookie(default=None),
+    session: AsyncSession = Depends(get_async_session),
 ):
-    print(f"куки: {user_id}")
-    print(f"маржа: {MARGIN}")
-    print(f"Стоимость за перевод: {GAS}")
+    db = Database(session=session)
+    commissions = await db.commissions.get(1)
+    ltc_rub_price = await find_price("LTCRUB")
     if send_value != 0:
         try:
             get_value = await Count.count_get_value(
                 send_value=send_value,
-                coin_price=await LTC_RUB_PRICE,
-                margin=MARGIN,
-                gas=GAS,
+                coin_price=ltc_rub_price,
+                margin=commissions.margin,
+                gas=commissions.gas,
             )
         except SyntaxError:
             print("Error in get value")
@@ -45,9 +44,9 @@ async def order_crypto_fiat(
         try:
             send_value = await Count.count_send_value(
                 get_value=get_value,
-                coin_price=await LTC_RUB_PRICE,
-                margin=MARGIN,
-                gas=GAS,
+                coin_price=ltc_rub_price,
+                margin=commissions.margin,
+                gas=commissions.gas,
             )
         except SyntaxError:
             print("Error in send value")
@@ -74,7 +73,7 @@ async def order_crypto_fiat(
 @forms_router.post("/confirm_cc_form")
 async def confirm_cc(
     cc_image: UploadFile,
-    user_id: str = Cookie(),
+    user_id: str | None = Cookie(default=None),
     session: AsyncSession = Depends(get_async_session)
 ):
     does_exist = await services.redis_values.redis_conn.exists(user_id)
@@ -127,15 +126,6 @@ async def confirm_cc(
     send_curr = str(send_curr, 'UTF-8')
     send_value = float(send_value)
     email = str(email, 'UTF-8')
-
-    print(f'{wallet_num}: {type(wallet_num)},\n'
-          f'{cc_holder}: {type(cc_holder)},\n'
-          f'{cc_num}: {type(cc_num)},\n'
-          f'{get_curr}: {type(get_curr)},\n'
-          f'{get_value}: {type(get_value)},\n'
-          f'{send_curr}: {type(send_curr)},\n'
-          f'{send_value}: {type(send_value)},\n'
-          f'{email}: {type(email)},\n')
 
     db = Database(session=session)
 

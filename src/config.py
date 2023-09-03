@@ -71,6 +71,7 @@ class Auth:
 class Configuration:
     """ All in one's configuration class """
     secret_key = os.environ.get("SECRET_KEY")
+    admin_auth = os.environ.get("ADMIN_AUTH")
     debug = bool(os.environ.get("DEBUG"))
     logging_level = int(os.environ.get("LOGGING_LEVEL"))
 

@@ -1,15 +1,15 @@
-from fastapi import APIRouter, Cookie, Response
+from fastapi import APIRouter, Cookie, Response, Depends
 from fastapi.responses import RedirectResponse
 from .sevices import services
 from database.models.router_enum import Tikker
-from .constants import LTC_RUB_PRICE, BTC_RUB_PRICE
-from database.db import Database as db
+from database.db import Database, get_async_session
 from database.models import (
     Currency, Review,
     PendingOrder, PendingStatus,
     ServicePM, Status,
 )
 import time
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 currency_router = APIRouter(
@@ -26,6 +26,7 @@ exhange_router = APIRouter(
 )
 
 
+# -----------------------------------------------------------------------------
 @exhange_router.get("/confirm")
 async def confirm_cc(cookies_id: str | None = Cookie(default=None)):
     does_exist = await services.redis_values.redis_conn.exists(cookies_id)
@@ -45,6 +46,14 @@ async def confirm_cc(cookies_id: str | None = Cookie(default=None)):
         email
     ) = await services.redis_values.redis_conn.lrange(cookies_id, 0, -1)
 
+    wallet_num = str(wallet_num, 'UTF-8')
+    cc_holder = str(cc_holder, 'UTF-8')
+    cc_num = str(cc_num, 'UTF-8')
+    get_curr = str(get_curr, 'UTF-8')
+    get_value = float(get_value)
+    send_curr = str(send_curr, 'UTF-8')
+    send_value = float(send_value)
+    email = str(email, 'UTF-8')
     bart_for_one = (send_curr * 1) / get_curr
 
     # f"Направление обмена: {send_curr}/{get_curr}\n"
@@ -69,12 +78,14 @@ async def confirm_cc(cookies_id: str | None = Cookie(default=None)):
 
 @exhange_router.get("/await")
 async def conformation_await(
-    user_uuid: str | None = Cookie(default=None)
+    user_id: str | None = Cookie(default=None),
+    async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
+    db = Database(session=async_session)
     while True:
         await time.sleep(30)
         order = await db.pending_order.get_by_where(
-            PendingOrder.user_uuid == user_uuid
+            PendingOrder.user_uuid == user_id
         )
         if order.status == PendingStatus.Approved:
             return RedirectResponse(f"/exchange/order/{order.id}")
@@ -86,7 +97,9 @@ async def conformation_await(
 async def requisites(
     order_id: int,
     response: Response,
+    async_session: AsyncSession = Depends(get_async_session)
 ):
+    db = Database(session=async_session)
     order = await db.pending_order.get_by_where(
         PendingOrder.id == order_id
     )
@@ -103,7 +116,11 @@ async def requisites(
 
 
 @exhange_router.get("/payed")
-async def payed_button(order_id: str | None = Cookie(default=None)):
+async def payed_button(
+    order_id: str | None = Cookie(default=None),
+    async_session: AsyncSession = Depends(get_async_session)
+):
+    db = Database(session=async_session)
     while True:
         await time.sleep(30)
         pending_order = await db.pending_order.get_by_where(
@@ -143,7 +160,10 @@ async def siterules():
 
 
 @menu_router.get("/reserve")
-async def reserve():
+async def reserve(
+    async_session: AsyncSession = Depends(get_async_session)
+):
+    db = Database(async_session)
     currency_list = await db.currency.get_all()
     return_dict = {}
     for currency in currency_list:
@@ -165,7 +185,10 @@ async def faq():
 
 
 @menu_router.get("/reviews/list")
-async def reviews_all():
+async def reviews_all(
+    async_session: AsyncSession = Depends(get_async_session)
+):
+    db = Database(session=async_session)
     try:
         reviews = await db.review.get_many(limit=10, order_by=Review.data)
         return reviews
@@ -179,7 +202,12 @@ async def contacts():
 
 
 @currency_router.get("/{give_tikker}/{get_tikker}")
-async def give_get_tikker(give_tikker: Tikker, get_tikker: Tikker):
+async def give_get_tikker(
+    give_tikker: Tikker,
+    get_tikker: Tikker,
+    async_session: AsyncSession = Depends(get_async_session)
+):
+    db = Database(session=async_session)
     try:
         give = await db.currency.get_by_where(
             whereclause=(Currency.tikker == give_tikker)

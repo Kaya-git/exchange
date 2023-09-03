@@ -8,7 +8,7 @@ from admin import (UserAdmin,
                    PendingAdmin,
                    CommissionsAdmin,
                    OrdersHistoryAdmin,
-                   CurrencyAdmin,
+                   CurrencyAdmin, AdminAuth
                    )
 from fastapi_users import FastAPIUsers
 from auth.auth import auth_backend
@@ -25,9 +25,14 @@ fastapi_users = FastAPIUsers[User, int](
 app = FastAPI(
     title="Exchange"
 )
+authentication_backend = AdminAuth(
+    secret_key=conf.admin_auth
+)
+
 admin = Admin(
     app=app,
-    engine=engine
+    engine=engine,
+    authentication_backend=authentication_backend
 )
 
 admin.add_view(UserAdmin)

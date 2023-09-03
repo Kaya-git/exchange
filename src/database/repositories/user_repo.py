@@ -21,7 +21,7 @@ class UserRepo(Repository[User]):
         user_name: str,
         email: str,
         hashed_password: str,
-        role: Role,
+        role: Role = Role.User,
     ) -> None:
 
         new_user = await self.session.merge(

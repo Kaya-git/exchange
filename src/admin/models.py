@@ -1,8 +1,37 @@
 from sqladmin import ModelView
 from database.models import User, Commissions, PendingOrder, Order, Currency
+from sqladmin.authentication import AuthenticationBackend
+from fastapi import Request
+from fastapi.responses import RedirectResponse
+from typing import Optional
+
+
+class AdminAuth(AuthenticationBackend):
+    async def login(
+        self,
+        request: Request,
+    ) -> bool:
+        request.session.update({"token": "..."})
+        return True
+
+    async def logout(self, request: Request) -> bool:
+        request.session.clear()
+        return True
+
+    async def authenticate(
+        self,
+        request: Request
+    ) -> Optional[RedirectResponse]:
+        if "token" not in request.session:
+            return RedirectResponse(
+                request.url_for("admin:login"),
+                status_code=302
+                )
 
 
 class UserAdmin(ModelView, model=User):
+    name = "Пользователь"
+    name_plural = "Пользователи"
     column_list = [
         User.id, User.user_name,
     ]
@@ -12,27 +41,23 @@ class UserAdmin(ModelView, model=User):
     can_export = True
     can_view_details = True
 
-    class Metadata:
-        name = "Пользователь"
-        name_plural = "Пользователи"
-
 
 class CommissionsAdmin(ModelView, model=Commissions):
+    name = "Коммиссия"
+    name_plural = "Коммиссии"
     column_list = [
         Commissions.gas, Commissions.margin
     ]
-    can_create = False
+    can_create = True
     can_delete = False
     can_edit = True
     can_export = False
     can_view_details = True
 
-    class Metadata:
-        name = "Коммиссия"
-        name_plural = "Коммиссии"
-
 
 class PendingAdmin(ModelView, model=PendingOrder):
+    name = "Заказ в работе"
+    name_plural = "Заказы в работе"
     column_list = [
         PendingOrder.id,
         PendingOrder.date,
@@ -43,17 +68,15 @@ class PendingAdmin(ModelView, model=PendingOrder):
         PendingOrder.user_uuid,
     ]
     can_create = False
-    can_edit = False
+    can_edit = True
     can_delete = True
     can_export = False
     can_view_details = True
 
-    class Metadata:
-        name = "Заказ в работе"
-        name_plural = "Заказы в работе"
-
 
 class OrdersHistoryAdmin(ModelView, model=Order):
+    name = "История заказа"
+    name_plural = "История заказов"
     column_list = [
         Order.id,
         Order.user,
@@ -68,12 +91,10 @@ class OrdersHistoryAdmin(ModelView, model=Order):
     can_export = False
     can_view_details = False
 
-    class Metadata:
-        name = "История заказа"
-        name_plural = "История заказов"
-
 
 class CurrencyAdmin(ModelView, model=Currency):
+    name = "Валюта"
+    name_plural = "Валюты"
     column_list = [
         Currency.id,
         Currency.name,
@@ -87,7 +108,3 @@ class CurrencyAdmin(ModelView, model=Currency):
     can_delete = True
     can_export = True
     can_view_details = True
-
-    class Metadata:
-        name = "Валюта"
-        name_plural = "Валюты"
