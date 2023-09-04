@@ -106,26 +106,30 @@ async def requisites(
     async_session: AsyncSession = Depends(get_async_session)
 ):
     db = Database(session=async_session)
-    order = await db.pending_order.get_by_where(
+    # order = await db.pending_order.get_by_where(
+    #     PendingOrder.id == order_id
+    # )
+    # print(type(order))
+    # pm_option = await db.payment_option.get_by_where(
+    #     PaymentOption.id == order.payment_from
+    # )
+    # print(type(pm_option))
+    # service_pm = await db.service_pm.get_by_where(
+    #     ServicePM.currency.any(pm_option.currency)
+    # )
+
+    stmt = select(
+        PendingOrder, PaymentOption
+    ).join(PendingOrder.payment_from).where(
         PendingOrder.id == order_id
     )
-    print(type(order))
-    pm_option = await db.payment_option.get_by_where(
-        PaymentOption.id == order.payment_from
-    )
-    print(type(pm_option))
-    service_pm = await db.service_pm.get_by_where(
-        ServicePM.currency.any(pm_option.currency)
-    )
+
+    order = (await db.session.execute(stmt)).scalar_one_or_none
+    print(order)
     # Из пендинга достать запись по номеру ордера
     # Обьеденить с таблицей опциями оплаты для получения валюты
     # Найти в способах оплаты сервиса поле с соответствующей валютой
     # Отправить номер карты для перевода
-    
-    
-    
-    
-    stmt = db.session.execute(select(ServicePM).join(ServicePM.currency).add_columns())
 
     response.set_cookie(key="order_id", value=order_id)
     return {

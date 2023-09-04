@@ -4,6 +4,7 @@ import sqlalchemy as sa
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from .payment_opt import PaymentOption
     from .service_pm import ServicePM
 
 
@@ -37,7 +38,14 @@ class Currency(Base):
         sa.Integer,
         default=0
     )
-    service_pm: Mapped["ServicePM"] = relationship(back_populates="currency")
+
+    payment_opt: Mapped["PaymentOption"] = relationship(
+        back_populates="currency",
+        uselist=False
+    )
+    service_pm: Mapped["ServicePM"] = relationship(
+        back_populates="currency"
+    )
 
     def __str__(self) -> str:
         return self.tikker

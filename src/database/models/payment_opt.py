@@ -1,8 +1,11 @@
 from .base import Base
 from .currency import Currency
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 import sqlalchemy as sa
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .pending_order import PendingOrder
 
 
 class PaymentOption(Base):
@@ -12,9 +15,6 @@ class PaymentOption(Base):
         sa.BigInteger,
         primary_key=True,
         autoincrement=True,
-    )
-    currency: Mapped[Currency] = mapped_column(
-        sa.ForeignKey("currency.tikker")
     )
     amount: Mapped[float] = mapped_column(
         sa.Float,
@@ -39,4 +39,29 @@ class PaymentOption(Base):
         sa.Text,
         default=None,
         nullable=True,
+    )
+
+    currency_id: Mapped[Currency] = mapped_column(
+        sa.ForeignKey("currency.id")
+    )
+    pay_from_id: Mapped["PendingOrder"] = mapped_column(
+        sa.ForeignKey("pending_order.id"),
+        nullable=True
+    )
+    pay_to_id: Mapped["PendingOrder"] = mapped_column(
+        sa.ForeignKey("pending_order.id"),
+        nullable=True
+    )
+
+    currency: Mapped["Currency"] = relationship(
+        back_populates="payment_opt",
+        uselist=False
+    )
+    pay_to: Mapped["PendingOrder"] = relationship(
+        back_populates="payment_to",
+        uselist=False
+    )
+    pay_from: Mapped["PendingOrder"] = relationship(
+        back_populates="payment_from",
+        uselist=False
     )

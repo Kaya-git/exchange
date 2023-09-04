@@ -1,6 +1,6 @@
 from .base import Base
 import sqlalchemy as sa
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 import datetime
 from .order_status import PendingStatus
 from .payment_opt import PaymentOption
@@ -18,12 +18,6 @@ class PendingOrder(Base):
         sa.String,
         nullable=False,
     )
-    payment_from: Mapped[PaymentOption] = mapped_column(
-        sa.ForeignKey("payment_option.id")
-    )
-    payment_to: Mapped[PaymentOption] = mapped_column(
-        sa.ForeignKey("payment_option.id")
-    )
     date: Mapped[datetime.datetime] = mapped_column(
         sa.DateTime,
         nullable=False,
@@ -36,4 +30,13 @@ class PendingOrder(Base):
     user_uuid: Mapped[str] = mapped_column(
         sa.String,
         nullable=True,
+    )
+
+    payment_from: Mapped[PaymentOption] = relationship(
+        back_populates="pay_from",
+        uselist=False
+    )
+    payment_to: Mapped[PaymentOption] = relationship(
+        back_populates="pay_to",
+        uselist=False
     )
