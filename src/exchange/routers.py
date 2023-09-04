@@ -3,13 +3,16 @@ from fastapi.responses import RedirectResponse
 from .sevices import services
 from database.models.router_enum import Tikker
 from database.db import Database, get_async_session
+from binance_parser import find_price
 from database.models import (
     Currency, Review,
     PendingOrder, PendingStatus,
     ServicePM, Status,
+    PaymentOption,
 )
 import time
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, join
 
 
 currency_router = APIRouter(
@@ -28,8 +31,8 @@ exhange_router = APIRouter(
 
 # -----------------------------------------------------------------------------
 @exhange_router.get("/confirm")
-async def confirm_cc(cookies_id: str | None = Cookie(default=None)):
-    does_exist = await services.redis_values.redis_conn.exists(cookies_id)
+async def confirm_cc(user_id: str | None = Cookie(default=None)):
+    does_exist = await services.redis_values.redis_conn.exists(user_id)
     # Проверяем есть ли ключи в реддисе
     if does_exist != 1:
         # Меняем статус ордера на время вышло
@@ -44,7 +47,7 @@ async def confirm_cc(cookies_id: str | None = Cookie(default=None)):
         send_curr,
         send_value,
         email
-    ) = await services.redis_values.redis_conn.lrange(cookies_id, 0, -1)
+    ) = await services.redis_values.redis_conn.lrange(user_id, 0, -1)
 
     wallet_num = str(wallet_num, 'UTF-8')
     cc_holder = str(cc_holder, 'UTF-8')
@@ -54,7 +57,7 @@ async def confirm_cc(cookies_id: str | None = Cookie(default=None)):
     send_curr = str(send_curr, 'UTF-8')
     send_value = float(send_value)
     email = str(email, 'UTF-8')
-    bart_for_one = (send_curr * 1) / get_curr
+    bart_for_one = (send_value * 1) / get_value
 
     # f"Направление обмена: {send_curr}/{get_curr}\n"
     # f"Обмен по курсу: {bart_for_one}
@@ -82,15 +85,18 @@ async def conformation_await(
     async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
     db = Database(session=async_session)
+    print(f"{user_id}: {type(user_id)}")
     while True:
-        await time.sleep(30)
         order = await db.pending_order.get_by_where(
             PendingOrder.user_uuid == user_id
         )
         if order.status == PendingStatus.Approved:
-            return RedirectResponse(f"/exchange/order/{order.id}")
+            return "Approved"
+            # return RedirectResponse(f"/exchange/order/{order.id}")
         if order.status == PendingStatus.Canceled:
-            return RedirectResponse("/cancel")
+            # return RedirectResponse("/cancel")
+            return "Order Canceled"
+        time.sleep(30)
 
 
 @exhange_router.get("/order/{order_id}")
@@ -103,9 +109,23 @@ async def requisites(
     order = await db.pending_order.get_by_where(
         PendingOrder.id == order_id
     )
-    service_pm = await db.payment_option.get_by_where(
-        ServicePM.currency == order.payment_from.currency
+    print(type(order))
+    pm_option = await db.payment_option.get_by_where(
+        PaymentOption.id == order.payment_from
     )
+    print(type(pm_option))
+    service_pm = await db.service_pm.get_by_where(
+        ServicePM.currency.any(pm_option.currency)
+    )
+    # Из пендинга достать запись по номеру ордера
+    # Обьеденить с таблицей опциями оплаты для получения валюты
+    # Найти в способах оплаты сервиса поле с соответствующей валютой
+    # Отправить номер карты для перевода
+    
+    
+    
+    
+    stmt = db.session.execute(select(ServicePM).join(ServicePM.currency).add_columns())
 
     response.set_cookie(key="order_id", value=order_id)
     return {
@@ -174,8 +194,8 @@ async def reserve(
 @menu_router.get("/tarifs")
 async def tarifs():
     return {
-        "btc": BTC_RUB_PRICE,
-        "ltc": LTC_RUB_PRICE,
+        "btc": f"{find_price('BTCRUB')}",
+        "ltc": f"{find_price('LTCRUB')}",
     }
 
 
@@ -215,9 +235,9 @@ async def give_get_tikker(
         give_min = give.min
         give_max = give.max
         if get_tikker == "LTC":
-            rate = LTC_RUB_PRICE
+            rate = find_price('LTCRUB')
         if get_tikker == "BTC":
-            rate = BTC_RUB_PRICE
+            rate = find_price('BTCRUB')
     except KeyError:
         return ("Ошибка в обменном роутере")
     finally:

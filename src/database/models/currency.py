@@ -1,6 +1,10 @@
 from .base import Base
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 import sqlalchemy as sa
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .service_pm import ServicePM
 
 
 class Currency(Base):
@@ -33,3 +37,7 @@ class Currency(Base):
         sa.Integer,
         default=0
     )
+    service_pm: Mapped["ServicePM"] = relationship(back_populates="currency")
+
+    def __str__(self) -> str:
+        return self.tikker

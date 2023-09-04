@@ -1,5 +1,9 @@
 from sqladmin import ModelView
-from database.models import User, Commissions, PendingOrder, Order, Currency
+from database.models import (
+    User, Commissions,
+    PendingOrder, Order,
+    Currency, ServicePM
+)
 from sqladmin.authentication import AuthenticationBackend
 from fastapi import Request
 from fastapi.responses import RedirectResponse
@@ -34,6 +38,10 @@ class UserAdmin(ModelView, model=User):
     name_plural = "Пользователи"
     column_list = [
         User.id, User.user_name,
+    ]
+    column_searchable_list = [
+        User.id,
+        User.user_name,
     ]
     can_create = True
     can_delete = True
@@ -102,6 +110,22 @@ class CurrencyAdmin(ModelView, model=Currency):
         Currency.max,
         Currency.min,
         Currency.reserve
+    ]
+    can_create = True
+    can_edit = True
+    can_delete = True
+    can_export = True
+    can_view_details = True
+
+
+class ServicePMAdmin(ModelView, model=ServicePM):
+    name = "Сервисный способ оплаты"
+    name_plural = "Сервисные способы оплаты"
+    column_list = [
+        ServicePM.id,
+        ServicePM.currency,
+        ServicePM.cc_num_x_wallet,
+        ServicePM.cc_holder,
     ]
     can_create = True
     can_edit = True

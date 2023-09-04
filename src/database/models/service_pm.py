@@ -1,6 +1,6 @@
 from .base import Base
 from .currency import Currency
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 import sqlalchemy as sa
 
 
@@ -12,9 +12,12 @@ class ServicePM(Base):
         primary_key=True,
         autoincrement=True,
     )
-
-    currency: Mapped[Currency] = mapped_column(
-        sa.ForeignKey("currency.tikker")
+    currency_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("currency.id")
+    )
+    currency: Mapped[Currency] = relationship(
+        back_populates="service_pm",
+        uselist=True,
     )
 
     cc_num_x_wallet: Mapped[str] = mapped_column(
