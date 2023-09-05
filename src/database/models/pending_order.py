@@ -2,8 +2,12 @@ from .base import Base
 import sqlalchemy as sa
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 import datetime
-from .order_status import PendingStatus
-from .payment_opt import PaymentOption
+from .order_status import Status
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .payment_opt import PaymentOption
+    from .currency import Currency
 
 
 class PendingOrder(Base):
@@ -18,25 +22,45 @@ class PendingOrder(Base):
         sa.String,
         nullable=False,
     )
+    give_amount: Mapped[float] = mapped_column(
+        sa.Float,
+        nullable=False,
+    )
+    get_amount: Mapped[float] = mapped_column(
+        sa.Float,
+        nullable=False,
+    )
     date: Mapped[datetime.datetime] = mapped_column(
         sa.DateTime,
         nullable=False,
         default=datetime.datetime.utcnow(),
     )
-    status: Mapped[PendingStatus] = mapped_column(
-        sa.Enum(PendingStatus),
-        default=PendingStatus.InProcess,
+    status: Mapped[Status] = mapped_column(
+        sa.Enum(Status),
+        default=Status.InProcess,
     )
     user_uuid: Mapped[str] = mapped_column(
         sa.String,
         nullable=True,
     )
 
-    payment_from: Mapped[PaymentOption] = relationship(
-        back_populates="pay_from",
-        uselist=False
+    give_currency_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("currency.id"),
+        nullable=True
     )
-    payment_to: Mapped[PaymentOption] = relationship(
-        back_populates="pay_to",
-        uselist=False
+    get_currency_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("currency.id"),
+    )
+
+    give_currency: Mapped["Currency"] = relationship(
+        "Currency",
+        foreign_keys="[PendingOrder.give_currency_id]",
+    )
+    get_currency: Mapped["Currency"] = relationship(
+        "Currency",
+        foreign_keys="[PendingOrder.get_currency_id]",
+    )
+    payment_options: Mapped[list["PaymentOption"]] = relationship(
+        back_populates="pending_order",
+        uselist=False,
     )

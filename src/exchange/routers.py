@@ -105,10 +105,15 @@ async def requisites(
     response: Response,
     async_session: AsyncSession = Depends(get_async_session)
 ):
-    db = Database(session=async_session)
+    # db = Database(session=async_session)
     # order = await db.pending_order.get_by_where(
     #     PendingOrder.id == order_id
     # )
+    
+    # service_pm = await db.payment_option.get_by_where(
+    #     PaymentOption.id == order.pay_from_id
+    # )
+    
     # print(type(order))
     # pm_option = await db.payment_option.get_by_where(
     #     PaymentOption.id == order.payment_from
@@ -118,25 +123,21 @@ async def requisites(
     #     ServicePM.currency.any(pm_option.currency)
     # )
 
-    stmt = select(
-        PendingOrder, PaymentOption
-    ).join(PendingOrder.payment_from).where(
-        PendingOrder.id == order_id
-    )
 
-    order = (await db.session.execute(stmt)).scalar_one_or_none
-    print(order)
+
+    # order = (await db.session.execute(stmt)).scalar_one_or_none
+    # print(order)
     # Из пендинга достать запись по номеру ордера
     # Обьеденить с таблицей опциями оплаты для получения валюты
     # Найти в способах оплаты сервиса поле с соответствующей валютой
     # Отправить номер карты для перевода
-
-    response.set_cookie(key="order_id", value=order_id)
-    return {
-        "oder_id": order_id,
-        "service_pm": service_pm.cc_num_x_wallet,
-        "cc_holder": service_pm.cc_holder
-    }
+    return "ok"
+    # response.set_cookie(key="order_id", value=order_id)
+    # return {
+    #     "oder_id": order_id,
+    #     "service_pm": service_pm.cc_num_x_wallet,
+    #     "cc_holder": service_pm.cc_holder
+    # }
 
 
 @exhange_router.get("/payed")

@@ -1,6 +1,6 @@
 """ PendingOrder repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
-from ..models import PendingOrder, PaymentOption
+from ..models import PendingOrder, PaymentOption, Currency
 from .abstract import Repository
 
 
@@ -19,17 +19,23 @@ class PendingOrderRepo(Repository[PendingOrder]):
     async def new(
         self,
         email: str,
-        payment_from: PaymentOption,
-        payment_to: PaymentOption,
+        give_amount: float,
+        give_currency_id: Currency,
+        get_amount: float,
+        get_currency_id: Currency,
+        payment_options: list[PaymentOption],
         user_uuid: str = None
     ) -> None:
 
         new_pending_order = await self.session.merge(
             PendingOrder(
                 email=email,
-                payment_from=payment_from,
-                payment_to=payment_to,
-                user_uuid=user_uuid,
+                give_amount=give_amount,
+                give_currency_id=give_currency_id,
+                get_amount=get_amount,
+                get_currency_id=get_currency_id,
+                payment_options=payment_options,
+                user_uuid=user_uuid
             )
         )
         return new_pending_order

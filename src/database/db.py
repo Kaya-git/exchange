@@ -8,7 +8,7 @@ from database.repositories import (
     UserRepo, OrderRepo,
     CurrencyRepo, PaymentOptionRepo,
     CommissionsRepo, PendingOrderRepo,
-    ReviewRepo, ServicePMRepo,
+    ReviewRepo,
 )
 from database.models import Base
 
@@ -62,8 +62,7 @@ class Database:
     """ Pending order option repository """
 
     review: ReviewRepo
-
-    service_pm: ServicePMRepo
+    """ Reviews repository """
 
     session: AsyncSession
 
@@ -77,7 +76,6 @@ class Database:
         commissions: CommissionsRepo = None,
         pending_order: PendingOrderRepo = None,
         review: ReviewRepo = None,
-        service_pm: ServicePMRepo = None,
     ) -> None:
 
         self.session = session
@@ -94,8 +92,5 @@ class Database:
             session=session
         )
         self.review = review or ReviewRepo(
-            session=session
-        )
-        self.service_pm = service_pm or ServicePMRepo(
             session=session
         )

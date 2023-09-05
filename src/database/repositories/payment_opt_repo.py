@@ -1,8 +1,11 @@
 """ Payment Option repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
-from ..models import Currency, PaymentOption
+from ..models import (
+    Currency, PaymentOption,
+    PaymentPointer, PaymentBelonging,
+    PendingOrder
+)
 from .abstract import Repository
-from typing import Optional
 
 
 class PaymentOptionRepo(Repository[PaymentOption]):
@@ -19,22 +22,24 @@ class PaymentOptionRepo(Repository[PaymentOption]):
 
     async def new(
         self,
-        currency: Currency,
-        amount: float,
         cc_num_x_wallet: str,
-        cc_holder: str = None,
-        image_name: str = None,
-        user_id: Optional[str] = None,
+        cc_holder: str,
+        image_name: str,
+        payment_point: PaymentPointer,
+        clien_service_belonging: PaymentBelonging,
+        currency_id: Currency,
+        pending_order_id: PendingOrder = None,
     ) -> None:
 
         new_payment_opt = await self.session.merge(
             PaymentOption(
-                currency=currency,
-                amount=amount,
                 cc_num_x_wallet=cc_num_x_wallet,
                 cc_holder=cc_holder,
                 image_name=image_name,
-                user_id=user_id
+                payment_point=payment_point,
+                clien_service_belonging=clien_service_belonging,
+                currency_id=currency_id,
+                pending_order_id=pending_order_id,
             )
         )
         return new_payment_opt

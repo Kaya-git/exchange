@@ -1,11 +1,22 @@
 from .base import Base
-from .currency import Currency
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import sqlalchemy as sa
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
+import enum
 
 if TYPE_CHECKING:
     from .pending_order import PendingOrder
+    from .currency import Currency
+
+
+class PaymentBelonging(enum.StrEnum):
+    Client = "client"
+    Service = "service"
+
+
+class PaymentPointer(enum.StrEnum):
+    From = "from"
+    To = "to"
 
 
 class PaymentOption(Base):
@@ -15,10 +26,6 @@ class PaymentOption(Base):
         sa.BigInteger,
         primary_key=True,
         autoincrement=True,
-    )
-    amount: Mapped[float] = mapped_column(
-        sa.Float,
-        nullable=False,
     )
     cc_num_x_wallet: Mapped[str] = mapped_column(
         sa.Text,
@@ -35,33 +42,27 @@ class PaymentOption(Base):
         default=None,
         nullable=True
     )
-    user_id: Mapped[Optional[str]] = mapped_column(
-        sa.Text,
-        default=None,
+    payment_point: Mapped[PaymentPointer] = mapped_column(
+        sa.Enum(PaymentPointer),
+    )
+    clien_service_belonging: Mapped[PaymentBelonging] = mapped_column(
+        sa.Enum(PaymentBelonging),
+    )
+
+    currency_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("currency.id"),
+        nullable=True,
+    )
+    pending_order_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("pending_order.id"),
         nullable=True,
     )
 
-    currency_id: Mapped[Currency] = mapped_column(
-        sa.ForeignKey("currency.id")
-    )
-    pay_from_id: Mapped["PendingOrder"] = mapped_column(
-        sa.ForeignKey("pending_order.id"),
-        nullable=True
-    )
-    pay_to_id: Mapped["PendingOrder"] = mapped_column(
-        sa.ForeignKey("pending_order.id"),
-        nullable=True
-    )
-
     currency: Mapped["Currency"] = relationship(
-        back_populates="payment_opt",
-        uselist=False
+        back_populates="payment_option",
+        uselist=True,
     )
-    pay_to: Mapped["PendingOrder"] = relationship(
-        back_populates="payment_to",
-        uselist=False
-    )
-    pay_from: Mapped["PendingOrder"] = relationship(
-        back_populates="payment_from",
-        uselist=False
+    pending_order: Mapped["PendingOrder"] = relationship(
+        back_populates="payment_options",
+        uselist=True,
     )

@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .payment_opt import PaymentOption
-    from .service_pm import ServicePM
 
 
 class Currency(Base):
@@ -32,19 +31,16 @@ class Currency(Base):
     )
     min: Mapped[int] = mapped_column(
         sa.Integer,
-        default=0
+        default=0,
     )
     max: Mapped[int] = mapped_column(
         sa.Integer,
-        default=0
+        default=0,
     )
 
-    payment_opt: Mapped["PaymentOption"] = relationship(
+    payment_option: Mapped[list["PaymentOption"]] = relationship(
         back_populates="currency",
-        uselist=False
-    )
-    service_pm: Mapped["ServicePM"] = relationship(
-        back_populates="currency"
+        uselist=False,
     )
 
     def __str__(self) -> str:

@@ -2,7 +2,7 @@ from sqladmin import ModelView
 from database.models import (
     User, Commissions,
     PendingOrder, Order,
-    Currency, ServicePM
+    Currency, PaymentOption,
 )
 from sqladmin.authentication import AuthenticationBackend
 from fastapi import Request
@@ -68,10 +68,12 @@ class PendingAdmin(ModelView, model=PendingOrder):
     name_plural = "Заказы в работе"
     column_list = [
         PendingOrder.id,
-        PendingOrder.date,
         PendingOrder.email,
-        PendingOrder.payment_from,
-        PendingOrder.payment_to,
+        PendingOrder.give_amount,
+        PendingOrder.give_currency_id,
+        PendingOrder.get_amount,
+        PendingOrder.get_currency_id,
+        PendingOrder.date,
         PendingOrder.status,
         PendingOrder.user_uuid,
     ]
@@ -118,14 +120,17 @@ class CurrencyAdmin(ModelView, model=Currency):
     can_view_details = True
 
 
-class ServicePMAdmin(ModelView, model=ServicePM):
-    name = "Сервисный способ оплаты"
-    name_plural = "Сервисные способы оплаты"
+class PaymentOptionAdmin(ModelView, model=PaymentOption):
+    name = "Расчетный способ"
+    name_plural = "Способы оплаты"
     column_list = [
-        ServicePM.id,
-        ServicePM.currency,
-        ServicePM.cc_num_x_wallet,
-        ServicePM.cc_holder,
+        PaymentOption.cc_num_x_wallet,
+        PaymentOption.cc_holder,
+        PaymentOption.image_name,
+        PaymentOption.payment_point,
+        PaymentOption.clien_service_belonging,
+        PaymentOption.currency_id,
+        PaymentOption.pending_order_id,
     ]
     can_create = True
     can_edit = True
