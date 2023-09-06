@@ -13,7 +13,6 @@ class Currency(Base):
     id: Mapped[int] = mapped_column(
         sa.BigInteger,
         primary_key=True,
-        autoincrement=True,
     )
     name: Mapped[str] = mapped_column(
         sa.Text,

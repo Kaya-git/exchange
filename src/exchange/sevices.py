@@ -29,25 +29,25 @@ class RedisValues:
     async def set_order_info(
         self,
         user_id: str,
-        email: str,
-        send_value: float,
-        send_curr: str,
-        get_value: float,
-        get_curr: str,
-        cc_num: int,
-        cc_holder: str,
-        wallet_num: str
+        client_email: str,
+        client_send_value: float,
+        send_tikker_id: int,
+        client_get_value: float,
+        get_tikker_id: str,
+        client_cc_num: int,
+        client_cc_holder_name: str,
+        client_crypto_wallet: str
     ):
         await self.redis_conn.lpush(
             f"{user_id}",
-            f"{email}",
-            f"{send_value}",
-            f"{send_curr}",
-            f"{get_value}",
-            f"{get_curr}",
-            f"{cc_num}",
-            f"{cc_holder}",
-            f"{wallet_num}"
+            f"{client_email}",
+            f"{client_send_value}",
+            f"{send_tikker_id}",
+            f"{client_get_value}",
+            f"{get_tikker_id}",
+            f"{client_cc_num}",
+            f"{client_cc_holder_name}",
+            f"{client_crypto_wallet}"
         )
         await self.redis_conn.expire(name=f'{user_id}', time=900)
         self.redis_conn.close

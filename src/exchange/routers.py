@@ -30,7 +30,11 @@ exhange_router = APIRouter(
 
 # -----------------------------------------------------------------------------
 @exhange_router.get("/confirm")
-async def confirm_cc(user_id: str | None = Cookie(default=None)):
+async def confirm_order(
+    user_id: str | None = Cookie(default=None),
+    session: AsyncSession = Depends(get_async_session)
+):
+    db = Database(session=session)
     does_exist = await services.redis_values.redis_conn.exists(user_id)
     # Проверяем есть ли ключи в реддисе
     if does_exist != 1:
@@ -40,9 +44,9 @@ async def confirm_cc(user_id: str | None = Cookie(default=None)):
         client_crypto_wallet,
         client_cc_holder_name,
         client_cc_num,
-        get_tikker,
+        get_tikker_id,
         client_get_value,
-        send_tikker,
+        send_tikker_id,
         client_send_value,
         client_email
     ) = await services.redis_values.redis_conn.lrange(user_id, 0, -1)
@@ -50,28 +54,24 @@ async def confirm_cc(user_id: str | None = Cookie(default=None)):
     client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
     client_cc_holder_name = str(client_cc_holder_name, 'UTF-8')
     client_cc_num = str(client_cc_num, 'UTF-8')
-    get_tikker = str(get_tikker, 'UTF-8')
+    get_tikker_id = int(get_tikker_id, 'UTF-8')
     client_get_value = float(client_get_value)
-    send_tikker = str(send_tikker, 'UTF-8')
+    send_tikker_id = int(send_tikker_id, 'UTF-8')
     client_send_value = float(client_send_value)
     client_email = str(client_email, 'UTF-8')
     bart_for_one = (client_send_value) / client_get_value
 
-    # f"Направление обмена: {send_curr}/{get_curr}\n"
-    # f"Обмен по курсу: {bart_for_one}
-    # f"Отправляете: {send_value} {send_curr}\n"
-    # f"Получаете: {get_value} {get_curr}\n"
-    # f" Номер вашей карты: {cc_num}\n"
-    # f" Ваш кошелек: {wallet_num}"
+    get_tikker_name = db.currency.get(get_tikker_id)
+    send_tikker_name = db.currency.get(send_tikker_id)
 
     return {
         "client_crypto_wallet": client_crypto_wallet,
         "bart_for_one": bart_for_one,
         "client_cc_holder_name": client_cc_holder_name,
         "client_cc_num": client_cc_num,
-        "get_tikker": get_tikker,
+        "get_tikker_name": get_tikker_name,
         "client_get_value": client_get_value,
-        "send_tikker": send_tikker,
+        "send_tikker_name": send_tikker_name,
         "client_send_value": client_send_value,
         "client_email": client_email
     }
