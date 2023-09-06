@@ -39,19 +39,17 @@ async def order_crypto_fiat(
         10: "RUB",
         11: "USD"
     }
+
     if client_send_currency_id in crypto_id_tikker:
         send_tikker = crypto_id_tikker[f"{client_send_currency_id}"]
         get_tikker = fiat_id_tikker[f"{client_get_currency_id}"]
-
-        parser_tikker = crypto_id_tikker[send_tikker]+fiat_id_tikker[get_tikker]
+        parser_tikker = f"{send_tikker}{get_tikker}"
 
     if client_send_currency_id in fiat_id_tikker:
         send_tikker = fiat_id_tikker[client_send_currency_id]
         get_tikker = crypto_id_tikker[client_get_currency_id]
-        print(send_tikker)
-        print(get_tikker)
         parser_tikker = f"{get_tikker}{send_tikker}"
-        print(parser_tikker)
+
     else:
         raise ValueError("Айди тикера вне словаря")
     # -----

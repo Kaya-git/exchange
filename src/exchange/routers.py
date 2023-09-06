@@ -34,29 +34,28 @@ async def confirm_cc(user_id: str | None = Cookie(default=None)):
     does_exist = await services.redis_values.redis_conn.exists(user_id)
     # Проверяем есть ли ключи в реддисе
     if does_exist != 1:
-        # Меняем статус ордера на время вышло
         return "Время вышло"
 
     (
-        wallet_num,
-        cc_holder,
-        cc_num,
-        get_curr,
-        get_value,
-        send_curr,
-        send_value,
-        email
+        client_crypto_wallet,
+        client_cc_holder_name,
+        client_cc_num,
+        get_tikker,
+        client_get_value,
+        send_tikker,
+        client_send_value,
+        client_email
     ) = await services.redis_values.redis_conn.lrange(user_id, 0, -1)
 
-    wallet_num = str(wallet_num, 'UTF-8')
-    cc_holder = str(cc_holder, 'UTF-8')
-    cc_num = str(cc_num, 'UTF-8')
-    get_curr = str(get_curr, 'UTF-8')
-    get_value = float(get_value)
-    send_curr = str(send_curr, 'UTF-8')
-    send_value = float(send_value)
-    email = str(email, 'UTF-8')
-    bart_for_one = (send_value * 1) / get_value
+    client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
+    client_cc_holder_name = str(client_cc_holder_name, 'UTF-8')
+    client_cc_num = str(client_cc_num, 'UTF-8')
+    get_tikker = str(get_tikker, 'UTF-8')
+    client_get_value = float(client_get_value)
+    send_tikker = str(send_tikker, 'UTF-8')
+    client_send_value = float(client_send_value)
+    client_email = str(client_email, 'UTF-8')
+    bart_for_one = (client_send_value) / client_get_value
 
     # f"Направление обмена: {send_curr}/{get_curr}\n"
     # f"Обмен по курсу: {bart_for_one}
@@ -66,15 +65,15 @@ async def confirm_cc(user_id: str | None = Cookie(default=None)):
     # f" Ваш кошелек: {wallet_num}"
 
     return {
-        "wallet_num": wallet_num,
+        "client_crypto_wallet": client_crypto_wallet,
         "bart_for_one": bart_for_one,
-        "cc_holder": cc_holder,
-        "cc_num": cc_num,
-        "get_curr": get_curr,
-        "get_value": get_value,
-        "send_curr": send_curr,
-        "send_value": send_value,
-        "email": email
+        "client_cc_holder_name": client_cc_holder_name,
+        "client_cc_num": client_cc_num,
+        "get_tikker": get_tikker,
+        "client_get_value": client_get_value,
+        "send_tikker": send_tikker,
+        "client_send_value": client_send_value,
+        "client_email": client_email
     }
 
 
