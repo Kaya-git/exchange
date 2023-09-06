@@ -54,24 +54,28 @@ async def confirm_order(
     client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
     client_cc_holder_name = str(client_cc_holder_name, 'UTF-8')
     client_cc_num = str(client_cc_num, 'UTF-8')
-    get_tikker_id = int(get_tikker_id, 'UTF-8')
+    get_tikker_id = int(get_tikker_id)
     client_get_value = float(client_get_value)
-    send_tikker_id = int(send_tikker_id, 'UTF-8')
+    send_tikker_id = int(send_tikker_id)
     client_send_value = float(client_send_value)
     client_email = str(client_email, 'UTF-8')
     bart_for_one = (client_send_value) / client_get_value
 
-    get_tikker_name = db.currency.get(get_tikker_id)
-    send_tikker_name = db.currency.get(send_tikker_id)
+    get_tikker_name = await db.currency.get_by_where(
+        Currency.tikker_id == get_tikker_id
+    )
+    send_tikker_name = await db.currency.get_by_where(
+        Currency.tikker_id == send_tikker_id
+    )
 
     return {
         "client_crypto_wallet": client_crypto_wallet,
         "bart_for_one": bart_for_one,
         "client_cc_holder_name": client_cc_holder_name,
         "client_cc_num": client_cc_num,
-        "get_tikker_name": get_tikker_name,
+        "get_tikker_name": get_tikker_name.name,
         "client_get_value": client_get_value,
-        "send_tikker_name": send_tikker_name,
+        "send_tikker_name": send_tikker_name.name,
         "client_send_value": client_send_value,
         "client_email": client_email
     }
@@ -83,15 +87,14 @@ async def conformation_await(
     async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
     db = Database(session=async_session)
-    print(f"{user_id}: {type(user_id)}")
     while True:
         order = await db.pending_order.get_by_where(
             PendingOrder.user_uuid == user_id
         )
-        if order.status == PendingStatus.Approved:
+        if order.status == Status.Approved:
             return "Approved"
             # return RedirectResponse(f"/exchange/order/{order.id}")
-        if order.status == PendingStatus.Canceled:
+        if order.status == Status.Canceled:
             # return RedirectResponse("/cancel")
             return "Order Canceled"
         time.sleep(30)

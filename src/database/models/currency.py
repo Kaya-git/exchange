@@ -13,9 +13,15 @@ class Currency(Base):
     id: Mapped[int] = mapped_column(
         sa.BigInteger,
         primary_key=True,
+        autoincrement=True
     )
     name: Mapped[str] = mapped_column(
         sa.Text,
+        nullable=False,
+        unique=True,
+    )
+    tikker_id: Mapped[int] = mapped_column(
+        sa.Integer,
         nullable=False,
         unique=True,
     )

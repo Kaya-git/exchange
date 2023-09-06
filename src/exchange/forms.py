@@ -9,7 +9,7 @@ from database.db import Database, get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from binance_parser import find_price
 from .curency_dicts import CRYPTO_ID_TIKKERS, FIAT_ID_TIKKERS
-from database.models import PaymentPointer, PaymentBelonging
+from database.models import PaymentPointer, PaymentBelonging, Currency
 
 
 forms_router = APIRouter(
@@ -140,21 +140,28 @@ async def confirm_cc(
     client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
     client_cc_holder_name = str(client_cc_holder_name, 'UTF-8')
     client_cc_num = str(client_cc_num, 'UTF-8')
-    get_tikker_id = int(get_tikker_id, 'UTF-8')
+    get_tikker_id = int(get_tikker_id)
     client_get_value = float(client_get_value)
-    send_tikker_id = int(send_tikker_id, 'UTF-8')
+    send_tikker_id = int(send_tikker_id)
     client_send_value = float(client_send_value)
     client_email = str(client_email, 'UTF-8')
 
     db = Database(session=session)
 
+    get_tikker = await db.currency.get_by_where(
+        Currency.tikker_id == get_tikker_id
+    )
+    send_tikker = await db.currency.get_by_where(
+        Currency.tikker_id == send_tikker_id
+    )
     new_order = await db.pending_order.new(
         email=client_email,
         give_amount=client_send_value,
         get_amount=client_get_value,
         user_uuid=user_id,
-        give_currency_id=send_tikker_id,
-        get_currency_id=get_tikker_id,
+        give_currency_id=send_tikker.id,
+        get_currency_id=get_tikker.id,
+        payment_options=None
     )
 
     db.session.add(new_order)
@@ -166,7 +173,7 @@ async def confirm_cc(
             image_name=new_file_name,
             payment_point=PaymentPointer.From,
             clien_service_belonging=PaymentBelonging.Client,
-            currency_id=send_tikker_id,
+            currency_id=send_tikker.id,
             pending_order_id=new_order.id,
         )
         payment_to = await db.payment_option.new(
@@ -174,7 +181,7 @@ async def confirm_cc(
             image_name=new_file_name,
             payment_point=PaymentPointer.To,
             clien_service_belonging=PaymentBelonging.Client,
-            currency_id=get_tikker_id,
+            currency_id=get_tikker.id,
             pending_order_id=new_order.id,
         )
         db.session.add_all([payment_from, payment_to])
@@ -189,7 +196,7 @@ async def confirm_cc(
             image_name=new_file_name,
             payment_point=PaymentPointer.From,
             clien_service_belonging=PaymentBelonging.Client,
-            currency_id=send_tikker_id,
+            currency_id=get_tikker.id,
             pending_order_id=new_order.id,
         )
         payment_from = await db.payment_option.new(
@@ -197,7 +204,7 @@ async def confirm_cc(
             image_name=new_file_name,
             payment_point=PaymentPointer.To,
             clien_service_belonging=PaymentBelonging.Client,
-            currency_id=get_tikker_id,
+            currency_id=send_tikker.id,
             pending_order_id=new_order.id,
         )
         db.session.add_all([payment_from, payment_to])

@@ -3,7 +3,6 @@ from .models import (
     UserAdmin,
     CommissionsAdmin,
     PendingAdmin,
-    OrdersHistoryAdmin,
     CurrencyAdmin,
     PaymentOptionAdmin
 )
@@ -11,7 +10,6 @@ from .models import (
 
 __all__ = [
     "UserAdmin", "CommissionsAdmin",
-    "PendingAdmin", "OrdersHistoryAdmin",
-    "CurrencyAdmin", "AdminAuth",
-    "PaymentOptionAdmin",
+    "PendingAdmin", "CurrencyAdmin",
+    "AdminAuth", "PaymentOptionAdmin",
 ]

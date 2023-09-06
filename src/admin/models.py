@@ -42,6 +42,7 @@ class UserAdmin(ModelView, model=User):
     column_searchable_list = [
         User.id,
         User.user_name,
+        User.role,
     ]
     can_create = True
     can_delete = True
@@ -84,22 +85,22 @@ class PendingAdmin(ModelView, model=PendingOrder):
     can_view_details = True
 
 
-class OrdersHistoryAdmin(ModelView, model=Order):
-    name = "История заказа"
-    name_plural = "История заказов"
-    column_list = [
-        Order.id,
-        Order.user,
-        Order.date,
-        Order.status,
-        Order.payment_from,
-        Order.payment_to,
-    ]
-    can_create = False
-    can_edit = False
-    can_delete = False
-    can_export = False
-    can_view_details = False
+# class OrdersHistoryAdmin(ModelView, model=Order):
+#     name = "История заказа"
+#     name_plural = "История заказов"
+#     column_list = [
+#         Order.id,
+#         Order.user,
+#         Order.date,
+#         Order.status,
+#         Order.payment_from,
+#         Order.payment_to,
+#     ]
+#     can_create = False
+#     can_edit = False
+#     can_delete = False
+#     can_export = False
+#     can_view_details = False
 
 
 class CurrencyAdmin(ModelView, model=Currency):
@@ -108,6 +109,7 @@ class CurrencyAdmin(ModelView, model=Currency):
     column_list = [
         Currency.id,
         Currency.name,
+        Currency.tikker_id,
         Currency.tikker,
         Currency.max,
         Currency.min,

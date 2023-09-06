@@ -7,7 +7,6 @@ from database.db import engine
 from admin import (UserAdmin,
                    PendingAdmin,
                    CommissionsAdmin,
-                   OrdersHistoryAdmin,
                    CurrencyAdmin, AdminAuth,
                    PaymentOptionAdmin,
                    )
@@ -39,7 +38,6 @@ admin = Admin(
 admin.add_view(UserAdmin)
 admin.add_view(PendingAdmin)
 admin.add_view(CommissionsAdmin)
-admin.add_view(OrdersHistoryAdmin)
 admin.add_view(CurrencyAdmin)
 admin.add_view(PaymentOptionAdmin)
 

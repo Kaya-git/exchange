@@ -17,8 +17,8 @@ class CurrencyRepo(Repository[Currency]):
 
     async def new(
         self,
-        id: int,
         name: str,
+        tikker_id: int,
         tikker: str,
         reserve: float = 0,
         min: int = 0,
@@ -28,8 +28,8 @@ class CurrencyRepo(Repository[Currency]):
 
         new_currency = await self.session.merge(
             Currency(
-                id=id,
                 name=name,
+                tikker_id=tikker_id,
                 tikker=tikker,
                 reserve=reserve,
                 min=min,

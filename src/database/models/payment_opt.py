@@ -56,6 +56,7 @@ class PaymentOption(Base):
     pending_order_id: Mapped[int] = mapped_column(
         sa.ForeignKey("pending_order.id"),
         nullable=True,
+        default=None,
     )
 
     currency: Mapped["Currency"] = relationship(

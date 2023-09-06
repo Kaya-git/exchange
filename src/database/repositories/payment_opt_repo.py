@@ -23,12 +23,12 @@ class PaymentOptionRepo(Repository[PaymentOption]):
     async def new(
         self,
         cc_num_x_wallet: str,
-        cc_holder: str,
         image_name: str,
         payment_point: PaymentPointer,
         clien_service_belonging: PaymentBelonging,
         currency_id: Currency,
-        pending_order_id: PendingOrder = None,
+        cc_holder: str = None,
+        pending_order_id:  PendingOrder = None,
     ) -> None:
 
         new_payment_opt = await self.session.merge(
