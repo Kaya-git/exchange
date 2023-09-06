@@ -5,7 +5,7 @@ from .models import (
     PendingAdmin,
     OrdersHistoryAdmin,
     CurrencyAdmin,
-    ServicePMAdmin,
+    PaymentOptionAdmin
 )
 
 
@@ -13,5 +13,5 @@ __all__ = [
     "UserAdmin", "CommissionsAdmin",
     "PendingAdmin", "OrdersHistoryAdmin",
     "CurrencyAdmin", "AdminAuth",
-    "ServicePMAdmin",
+    "PaymentOptionAdmin",
 ]

@@ -28,7 +28,7 @@ class RedisValues:
 
     async def set_order_info(
         self,
-        cookies_id: str,
+        user_id: str,
         email: str,
         send_value: float,
         send_curr: str,
@@ -39,7 +39,7 @@ class RedisValues:
         wallet_num: str
     ):
         await self.redis_conn.lpush(
-            f"{cookies_id}",
+            f"{user_id}",
             f"{email}",
             f"{send_value}",
             f"{send_curr}",
@@ -49,7 +49,7 @@ class RedisValues:
             f"{cc_holder}",
             f"{wallet_num}"
         )
-        await self.redis_conn.expire(name=f'{cookies_id}', time=900)
+        await self.redis_conn.expire(name=f'{user_id}', time=900)
         self.redis_conn.close
 
 

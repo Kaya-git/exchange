@@ -9,7 +9,7 @@ from admin import (UserAdmin,
                    CommissionsAdmin,
                    OrdersHistoryAdmin,
                    CurrencyAdmin, AdminAuth,
-                   ServicePMAdmin,
+                   PaymentOptionAdmin,
                    )
 from fastapi_users import FastAPIUsers
 from auth.auth import auth_backend
@@ -41,7 +41,7 @@ admin.add_view(PendingAdmin)
 admin.add_view(CommissionsAdmin)
 admin.add_view(OrdersHistoryAdmin)
 admin.add_view(CurrencyAdmin)
-admin.add_view(ServicePMAdmin)
+admin.add_view(PaymentOptionAdmin)
 
 
 @app.get("/")

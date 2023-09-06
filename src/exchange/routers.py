@@ -6,8 +6,7 @@ from database.db import Database, get_async_session
 from binance_parser import find_price
 from database.models import (
     Currency, Review,
-    PendingOrder, PendingStatus,
-    ServicePM, Status,
+    PendingOrder, Status,
     PaymentOption,
 )
 import time
