@@ -7,11 +7,13 @@ from binance_parser import find_price
 from database.models import (
     Currency, Review,
     PendingOrder, Status,
-    PaymentOption,
+    PaymentBelonging, PaymentOption
 )
 import time
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, join
+import asyncio
+from sqlalchemy import select
+from pprint import pprint
 
 
 currency_router = APIRouter(
@@ -73,9 +75,9 @@ async def confirm_order(
         "bart_for_one": bart_for_one,
         "client_cc_holder_name": client_cc_holder_name,
         "client_cc_num": client_cc_num,
-        "get_tikker_name": get_tikker_name.name,
+        "client_get_tikker_name": get_tikker_name.name,
         "client_get_value": client_get_value,
-        "send_tikker_name": send_tikker_name.name,
+        "client_send_tikker_name": send_tikker_name.name,
         "client_send_value": client_send_value,
         "client_email": client_email
     }
@@ -87,72 +89,57 @@ async def conformation_await(
     async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
     db = Database(session=async_session)
-    while True:
-        order = await db.pending_order.get_by_where(
-            PendingOrder.user_uuid == user_id
-        )
-        if order.status == Status.Approved:
-            return "Approved"
-            # return RedirectResponse(f"/exchange/order/{order.id}")
-        if order.status == Status.Canceled:
-            # return RedirectResponse("/cancel")
-            return "Order Canceled"
-        time.sleep(30)
+    paralel_waiting = asyncio.create_task(
+        services.db_paralell.db_pooling(db, user_id)
+    )
+    await paralel_waiting
 
 
 @exhange_router.get("/order/{order_id}")
 async def requisites(
-    order_id: int,
-    response: Response,
-    async_session: AsyncSession = Depends(get_async_session)
+    async_session: AsyncSession = Depends(get_async_session),
+    user_id: str | None = Cookie(default=None),
 ):
-    # db = Database(session=async_session)
-    # order = await db.pending_order.get_by_where(
-    #     PendingOrder.id == order_id
-    # )
-    
-    # service_pm = await db.payment_option.get_by_where(
-    #     PaymentOption.id == order.pay_from_id
-    # )
-    
-    # print(type(order))
-    # pm_option = await db.payment_option.get_by_where(
-    #     PaymentOption.id == order.payment_from
-    # )
-    # print(type(pm_option))
-    # service_pm = await db.service_pm.get_by_where(
-    #     ServicePM.currency.any(pm_option.currency)
-    # )
-
-
-
-    # order = (await db.session.execute(stmt)).scalar_one_or_none
-    # print(order)
-    # Из пендинга достать запись по номеру ордера
-    # Обьеденить с таблицей опциями оплаты для получения валюты
-    # Найти в способах оплаты сервиса поле с соответствующей валютой
-    # Отправить номер карты для перевода
-    return "ok"
-    # response.set_cookie(key="order_id", value=order_id)
-    # return {
-    #     "oder_id": order_id,
-    #     "service_pm": service_pm.cc_num_x_wallet,
-    #     "cc_holder": service_pm.cc_holder
-    # }
+    client_give_currency_id = await services.redis_values.redis_conn.get(
+        user_id
+    )
+    pprint(client_give_currency_id)
+    client_give_currency_id = int(client_give_currency_id)
+    db = Database(session=async_session)
+    statement = select(
+        PaymentOption
+    ).where(
+        PaymentOption.currency_id == client_give_currency_id
+    ).where(
+        PaymentOption.clien_service_belonging == PaymentBelonging.Service
+    ).join(PaymentOption.currency)
+    service_payment_option = await db.session.execute(statement=statement)
+    service_payment_option = service_payment_option.scalar_one_or_none()
+    return {
+        "requisites_num": service_payment_option.cc_num_x_wallet,
+        "holder": service_payment_option.cc_holder
+    }
 
 
 @exhange_router.get("/payed")
 async def payed_button(
     order_id: str | None = Cookie(default=None),
-    async_session: AsyncSession = Depends(get_async_session)
+    async_session: AsyncSession = Depends(get_async_session),
+    user_id: str | None = Cookie(default=None),
 ):
     db = Database(session=async_session)
+    does_exist = await services.redis_values.redis_conn.exists(user_id)
+    if not does_exist:
+        db.pending_order.delete(PendingOrder.user_uuid == user_id)
+        return "Время вышло, по новой"
+    
+    
     while True:
         await time.sleep(30)
         pending_order = await db.pending_order.get_by_where(
             PendingOrder.id == order_id
         )
-        if pending_order.status == PendingStatus.Completed:
+        if pending_order.status == Status.Completed:
             completed_order = db.order.new(
                 user=pending_order.user_uuid,
                 payment_from=pending_order.payment_from,
@@ -164,7 +151,7 @@ async def payed_button(
             db.pending_order.delete(PendingOrder.id == order_id)
             db.session.commit()
             return f"Заявка {order_id} обработана"
-        if pending_order.status == PendingStatus.Canceled:
+        if pending_order.status == Status.Canceled:
             completed_order = db.order.new(
                 user=pending_order.user_uuid,
                 payment_from=pending_order.payment_from,

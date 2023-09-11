@@ -1,5 +1,8 @@
 import redis.asyncio as redis
 from config import conf
+from database.db import Database
+from database.models import PendingOrder, Status
+import asyncio
 
 
 # Класс для пересчета операций с учетом маржи и комиссий
@@ -52,9 +55,47 @@ class RedisValues:
         await self.redis_conn.expire(name=f'{user_id}', time=900)
         self.redis_conn.close
 
+    async def change_keys(self,
+                          user_id,
+                          give_currency,
+                          ):
+        await self.redis_conn.delete(user_id)
+        await self.redis_conn.set(
+            user_id,
+            give_currency,
+            )
+        await self.redis_conn.expire(name=f'{user_id}', time=1200)
+        self.redis_conn.close
+
+
+class DB():
+    async def db_pooling(self, db: Database, user_id: str):
+        while True:
+            order = None
+            try:
+                order = await db.pending_order.get_by_where(
+                    PendingOrder.user_uuid == user_id
+                )
+            except ValueError("No such order"):
+                return "Sosi Jopu"
+            if order.status == Status.Approved:
+                print(order.give_currency_id)
+                await services.redis_values.change_keys(
+                    user_id=user_id,
+                    give_currency=order.give_currency_id
+                )
+                print()
+                return "Approved"
+                # return RedirectResponse(f"/exchange/order/{order.id}")
+            if order.status == Status.Canceled:
+                # return RedirectResponse("/cancel")
+                return "Order Canceled"
+            await asyncio.sleep(30)
+
 
 class Services:
     redis_values = RedisValues()
+    db_paralell = DB()
 
 
 services = Services()

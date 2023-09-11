@@ -4,7 +4,7 @@ from .order import Order
 from .payment_opt import (
     PaymentOption,
     PaymentBelonging,
-    PaymentPointer
+    PaymentPointer,
 )
 from .user import User, Role
 from .order_status import Status
