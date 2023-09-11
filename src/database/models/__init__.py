@@ -1,6 +1,6 @@
 from .base import Base
 from .currency import Currency
-from .order import Order
+from .order import CompletedOrder
 from .payment_opt import (
     PaymentOption,
     PaymentBelonging,
@@ -16,7 +16,7 @@ from .reviews import Review, Mark
 __all__ = [
     "Base",
     "Currency",
-    "Order",
+    "CompletedOrder",
     "PaymentOption",
     "User",
     "Status",

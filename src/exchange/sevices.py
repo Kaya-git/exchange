@@ -3,6 +3,7 @@ from config import conf
 from database.db import Database
 from database.models import PendingOrder, Status
 import asyncio
+# from fastapi.responses import RedirectResponse
 
 
 # Класс для пересчета операций с учетом маржи и комиссий
@@ -58,18 +59,20 @@ class RedisValues:
     async def change_keys(self,
                           user_id,
                           give_currency,
+                          order_id,
                           ):
         await self.redis_conn.delete(user_id)
-        await self.redis_conn.set(
+        await self.redis_conn.lpush(
             user_id,
             give_currency,
+            order_id,
             )
         await self.redis_conn.expire(name=f'{user_id}', time=1200)
         self.redis_conn.close
 
 
 class DB():
-    async def db_pooling(self, db: Database, user_id: str):
+    async def conformation_await(self, db: Database, user_id: str):
         while True:
             order = None
             try:
@@ -90,6 +93,47 @@ class DB():
             if order.status == Status.Canceled:
                 # return RedirectResponse("/cancel")
                 return "Order Canceled"
+            await asyncio.sleep(30)
+
+    async def payed_button_db(self, db: Database, user_id: str, order_id: int):
+        while True:
+            pending_order = None
+            pending_order = await db.pending_order.get_by_where(
+                PendingOrder.id == order_id
+            )
+            if pending_order.status is Status.Completed:
+                completed_order = await db.order.new(
+                    email=pending_order.email,
+                    give_amount=pending_order.give_amount,
+                    give_currency_id=pending_order.give_currency_id,
+                    get_amount=pending_order.get_amount,
+                    get_currency_id=pending_order.get_currency_id,
+                    payment_options=pending_order.payment_options,
+                    user_uuid=pending_order.user_uuid,
+                    user_id=user_id
+                )
+                db.session.add(completed_order)
+                await db.session.commit()
+                await db.pending_order.delete(PendingOrder.id == order_id)
+                return "Заказ выполнен"
+                # return RedirectResponse(f"exchange/succes/{order_id}")
+            if pending_order.status is Status.Canceled:
+                completed_order = await db.order.new(
+                    email=pending_order.email,
+                    give_amount=pending_order.give_amount,
+                    give_currency_id=pending_order.give_currency_id,
+                    get_amount=pending_order.get_amount,
+                    get_currency_id=pending_order.get_currency_id,
+                    payment_options=pending_order.payment_options,
+                    status=Status.Canceled,
+                    user_uuid=pending_order.user_uuid,
+                    user_id=user_id
+                )
+                db.session.add(completed_order)
+                await db.session.commit()
+                await db.pending_order.delete(PendingOrder.id == order_id)
+                return "Оплата не проведена"
+                # return RedirectResponse(f"exchange/declined/{order_id}")
             await asyncio.sleep(30)
 
 

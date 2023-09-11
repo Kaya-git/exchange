@@ -1,4 +1,7 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, APIRouter, Depends
+from .database.db import Database, get_async_session
+from .database.models import CompletedOrder
+from sqlalchemy.ext.asyncio import AsyncSession
 # from fastapi.responses import RedirectResponse
 from config import conf
 from exchange import forms_router, exhange_router
@@ -22,6 +25,8 @@ fastapi_users = FastAPIUsers[User, int](
     get_user_manager,
     [auth_backend],
 )
+current_active_user = fastapi_users.current_user(active=True)
+
 app = FastAPI(
     title="Exchange"
 )
@@ -42,12 +47,45 @@ admin.add_view(CurrencyAdmin)
 admin.add_view(PaymentOptionAdmin)
 
 
+personal_account = APIRouter(
+    prefix="/account",
+    tags=["роутер личного кабинета"]
+)
+
+
 @app.get("/")
 async def root(response: Response):
     cookies_id = uuid.uuid4()
     response.set_cookie(key="user_id", value=cookies_id)
     return cookies_id
     # return RedirectResponse("/SBERRUB/LTC")
+
+
+@personal_account.get("/orders")
+async def order_list(
+    async_session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_active_user)
+):
+    db = Database(session=async_session)
+    try:
+        completed_orders = await db.order.get_many(
+            CompletedOrder.user_id == user.id
+        )
+        stmt = {}
+        for order in completed_orders:
+            id = order.id
+            swap = (
+                f"отдал: {order.give_amount}{order.give_currency}\n"
+                )
+            (
+                f"получил: {order.get_amount}{order.get_currency}"
+                )
+            status = order.status
+            stmt[id] = f"{swap}, {status}"
+        return stmt
+    except KeyError("Ключ не найден"):
+        return (" Нет совершенных сделок")
+
 
 app.include_router(forms_router)
 app.include_router(exhange_router)

@@ -1,15 +1,13 @@
-from fastapi import APIRouter, Cookie, Response, Depends
+from fastapi import APIRouter, Cookie, Depends
 from fastapi.responses import RedirectResponse
 from .sevices import services
-from database.models.router_enum import Tikker
 from database.db import Database, get_async_session
 from binance_parser import find_price
 from database.models import (
     Currency, Review,
-    PendingOrder, Status,
-    PaymentBelonging, PaymentOption
+    PendingOrder, PaymentBelonging,
+    PaymentOption,
 )
-import time
 from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
 from sqlalchemy import select
@@ -89,8 +87,14 @@ async def conformation_await(
     async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
     db = Database(session=async_session)
+    order = await db.pending_order.get_by_where(
+        PendingOrder.user_uuid == user_id
+    )
+    order_id = order.id
     paralel_waiting = asyncio.create_task(
-        services.db_paralell.db_pooling(db, user_id)
+        services.db_paralell.conformation_await(
+            db, user_id, order_id
+        )
     )
     await paralel_waiting
 
@@ -100,8 +104,10 @@ async def requisites(
     async_session: AsyncSession = Depends(get_async_session),
     user_id: str | None = Cookie(default=None),
 ):
-    client_give_currency_id = await services.redis_values.redis_conn.get(
-        user_id
+    client_give_currency_id = await services.redis_values.redis_conn.lrange(
+        user_id,
+        1,
+        -1,
     )
     pprint(client_give_currency_id)
     client_give_currency_id = int(client_give_currency_id)
@@ -123,45 +129,24 @@ async def requisites(
 
 @exhange_router.get("/payed")
 async def payed_button(
-    order_id: str | None = Cookie(default=None),
     async_session: AsyncSession = Depends(get_async_session),
     user_id: str | None = Cookie(default=None),
 ):
     db = Database(session=async_session)
     does_exist = await services.redis_values.redis_conn.exists(user_id)
+
     if not does_exist:
         db.pending_order.delete(PendingOrder.user_uuid == user_id)
         return "Время вышло, по новой"
-    
-    
-    while True:
-        await time.sleep(30)
-        pending_order = await db.pending_order.get_by_where(
-            PendingOrder.id == order_id
-        )
-        if pending_order.status == Status.Completed:
-            completed_order = db.order.new(
-                user=pending_order.user_uuid,
-                payment_from=pending_order.payment_from,
-                payment_to=pending_order.payment_to,
-                date=pending_order.date,
-                status=Status.Completed
-                )
-            db.session.add(completed_order)
-            db.pending_order.delete(PendingOrder.id == order_id)
-            db.session.commit()
-            return f"Заявка {order_id} обработана"
-        if pending_order.status == Status.Canceled:
-            completed_order = db.order.new(
-                user=pending_order.user_uuid,
-                payment_from=pending_order.payment_from,
-                payment_to=pending_order.payment_to,
-                date=pending_order.date,
-                status=Status.Canceled
-                )
-            db.session.add(completed_order)
-            db.pending_order.delete(PendingOrder.id == order_id)
-            db.session.commit()
+    order_id = services.redis_values.redis_conn.lrange(
+        user_id,
+        0,
+        1
+    )
+    resp = services.db_paralell.payed_button_db(
+        db=db, user_id=user_id, order_id=order_id
+    )
+    return resp
 
 
 # -----------------------------------------------------------------------------
@@ -212,32 +197,3 @@ async def reviews_all(
 @menu_router.get("/contacts")
 async def contacts():
     ...
-
-
-@currency_router.get("/{give_tikker}/{get_tikker}")
-async def give_get_tikker(
-    give_tikker: Tikker,
-    get_tikker: Tikker,
-    async_session: AsyncSession = Depends(get_async_session)
-):
-    db = Database(session=async_session)
-    try:
-        give = await db.currency.get_by_where(
-            whereclause=(Currency.tikker == give_tikker)
-        )
-        give_min = give.min
-        give_max = give.max
-        if get_tikker == "LTC":
-            rate = find_price('LTCRUB')
-        if get_tikker == "BTC":
-            rate = find_price('BTCRUB')
-    except KeyError:
-        return ("Ошибка в обменном роутере")
-    finally:
-        return {
-            "rate": rate,
-            "give_tikker": give_tikker,
-            "get_tikker": get_tikker,
-            "give_min": give_min,
-            "give_max": give_max
-        }
