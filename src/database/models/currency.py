@@ -1,7 +1,7 @@
 from .base import Base
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 import sqlalchemy as sa
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from .payment_opt import PaymentOption
@@ -43,10 +43,7 @@ class Currency(Base):
         default=0,
     )
 
-    payment_option: Mapped[list["PaymentOption"]] = relationship(
-        back_populates="currency",
-        uselist=False,
-    )
+    # payment_options: Mapped[List["PaymentOption"]] = relationship()
 
     def __str__(self) -> str:
         return self.tikker

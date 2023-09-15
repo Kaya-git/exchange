@@ -16,7 +16,6 @@ from .reviews import Review, Mark
 __all__ = [
     "Base",
     "Currency",
-    "CompletedOrder",
     "PaymentOption",
     "User",
     "Status",
@@ -27,4 +26,5 @@ __all__ = [
     "Mark",
     "PaymentBelonging",
     "PaymentPointer",
+    "CompletedOrder",
 ]

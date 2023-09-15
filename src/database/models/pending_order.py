@@ -3,7 +3,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 import datetime
 from .order_status import Status
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from .payment_opt import PaymentOption
@@ -60,7 +60,5 @@ class PendingOrder(Base):
         "Currency",
         foreign_keys="[PendingOrder.get_currency_id]",
     )
-    payment_options: Mapped[list["PaymentOption"]] = relationship(
-        back_populates="pending_order",
-        uselist=False,
+    payment_options: Mapped[List["PaymentOption"]] = relationship(
     )

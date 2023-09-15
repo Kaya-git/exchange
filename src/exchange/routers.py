@@ -86,17 +86,24 @@ async def conformation_await(
     user_id: str | None = Cookie(default=None),
     async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
+
     db = Database(session=async_session)
-    order = await db.pending_order.get_by_where(
-        PendingOrder.user_uuid == user_id
-    )
-    order_id = order.id
-    paralel_waiting = asyncio.create_task(
-        services.db_paralell.conformation_await(
-            db, user_id, order_id
+    try:
+        order = await db.pending_order.get_by_where(
+            PendingOrder.user_uuid == user_id
         )
-    )
-    await paralel_waiting
+    except KeyError:
+        return ("user id doesnt exist")
+    try:
+        order_id = order.id
+        paralel_waiting = asyncio.create_task(
+            services.db_paralell.conformation_await(
+                db, user_id, order_id
+            )
+        )
+        await paralel_waiting
+    except KeyError:
+        return "Error in paralell async"
 
 
 @exhange_router.get("/order/{order_id}")

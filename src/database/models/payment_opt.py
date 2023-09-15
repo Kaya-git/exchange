@@ -6,8 +6,6 @@ import enum
 
 if TYPE_CHECKING:
     from .pending_order import PendingOrder
-    from .currency import Currency
-    from .order import CompletedOrder
 
 
 class PaymentBelonging(enum.StrEnum):
@@ -65,15 +63,7 @@ class PaymentOption(Base):
         default=None,
     )
 
-    currency: Mapped["Currency"] = relationship(
-        back_populates="payment_option",
-        uselist=True,
-    )
     pending_order: Mapped["PendingOrder"] = relationship(
-        back_populates="payment_options",
-        uselist=True,
-    )
-    completed_order: Mapped["CompletedOrder"] = relationship(
         back_populates="payment_options",
         uselist=True,
     )

@@ -3,12 +3,11 @@ import sqlalchemy as sa
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 import datetime
 from .order_status import Status
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from .payment_opt import PaymentOption
     from .currency import Currency
-    from .user import User
 
 
 class CompletedOrder(Base):
@@ -56,11 +55,6 @@ class CompletedOrder(Base):
         sa.ForeignKey("currency.id"),
     )
 
-    user = Mapped["User"] = relationship(
-        "User",
-        foreign_keys="[CompletedOrder.user_id]",
-        uselist=True,
-    )
     give_currency: Mapped["Currency"] = relationship(
         "Currency",
         foreign_keys="[CompletedOrder.give_currency_id]",
@@ -69,7 +63,5 @@ class CompletedOrder(Base):
         "Currency",
         foreign_keys="[CompletedOrder.get_currency_id]",
     )
-    payment_options: Mapped[list["PaymentOption"]] = relationship(
-        back_populates="pending_order",
-        uselist=False,
+    payment_options: Mapped[List["PaymentOption"]] = relationship(
     )

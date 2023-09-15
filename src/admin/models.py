@@ -1,8 +1,8 @@
 from sqladmin import ModelView
 from database.models import (
     User, Commissions,
-    PendingOrder, Order,
-    Currency, PaymentOption,
+    PendingOrder, Currency,
+    PaymentOption, CompletedOrder,
 )
 from sqladmin.authentication import AuthenticationBackend
 from fastapi import Request
@@ -78,6 +78,7 @@ class PendingAdmin(ModelView, model=PendingOrder):
         PendingOrder.status,
         PendingOrder.user_uuid,
     ]
+
     can_create = False
     can_edit = True
     can_delete = True
@@ -85,22 +86,28 @@ class PendingAdmin(ModelView, model=PendingOrder):
     can_view_details = True
 
 
-# class OrdersHistoryAdmin(ModelView, model=Order):
-#     name = "История заказа"
-#     name_plural = "История заказов"
-#     column_list = [
-#         Order.id,
-#         Order.user,
-#         Order.date,
-#         Order.status,
-#         Order.payment_from,
-#         Order.payment_to,
-#     ]
-#     can_create = False
-#     can_edit = False
-#     can_delete = False
-#     can_export = False
-#     can_view_details = False
+class OrdersHistoryAdmin(ModelView, model=CompletedOrder):
+    name = "История заказа"
+    name_plural = "История заказов"
+    column_list = [
+        CompletedOrder.id,
+        CompletedOrder.user_id,
+        CompletedOrder.date,
+        CompletedOrder.status,
+        CompletedOrder.give_amount,
+        CompletedOrder.give_currency,
+        CompletedOrder.get_amount,
+        CompletedOrder.get_currency,
+        CompletedOrder.payment_options,
+    ]
+    column_searchable_list = [
+        CompletedOrder.user_id,
+    ]
+    can_create = False
+    can_edit = False
+    can_delete = False
+    can_export = False
+    can_view_details = False
 
 
 class CurrencyAdmin(ModelView, model=Currency):

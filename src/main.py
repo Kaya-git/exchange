@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Response, APIRouter, Depends
-from .database.db import Database, get_async_session
-from .database.models import CompletedOrder
+from database.db import Database, get_async_session
+from database.models import CompletedOrder
 from sqlalchemy.ext.asyncio import AsyncSession
 # from fastapi.responses import RedirectResponse
 from config import conf
@@ -11,7 +11,7 @@ from admin import (UserAdmin,
                    PendingAdmin,
                    CommissionsAdmin,
                    CurrencyAdmin, AdminAuth,
-                   PaymentOptionAdmin,
+                   PaymentOptionAdmin, OrdersHistoryAdmin
                    )
 from fastapi_users import FastAPIUsers
 from auth.auth import auth_backend
@@ -45,6 +45,7 @@ admin.add_view(PendingAdmin)
 admin.add_view(CommissionsAdmin)
 admin.add_view(CurrencyAdmin)
 admin.add_view(PaymentOptionAdmin)
+admin.add_view(OrdersHistoryAdmin)
 
 
 personal_account = APIRouter(

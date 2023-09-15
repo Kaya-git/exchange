@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .order import CompletedOrder
 
+
 class Role(enum.StrEnum):
     User = "user"
     Moderator = "moderator"
@@ -58,12 +59,12 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         default=datetime.utcnow,
         nullable=False
     )
-    role: Mapped[Role] = mapped_column(
+    role: Mapped["Role"] = mapped_column(
         sa.Enum(Role),
         default=Role.User,
     )
 
     orders: Mapped[list["CompletedOrder"]] = relationship(
-        back_populates="completed_order",
-        uselist=False
+        # back_populates="completed_order",
+        # uselist=False
     )
