@@ -43,7 +43,9 @@ class Currency(Base):
         default=0,
     )
 
-    # payment_options: Mapped[List["PaymentOption"]] = relationship()
+    payment_options: Mapped[List["PaymentOption"]] = relationship(
+        back_populates="currency"
+    )
 
     def __str__(self) -> str:
         return self.tikker

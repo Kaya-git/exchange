@@ -112,8 +112,9 @@ async def requisites(
     pprint(f"{client_give_currency_id}:{type(client_give_currency_id)}")
     client_give_currency_id = int(*client_give_currency_id)
     pprint(f"{client_give_currency_id}:{type(client_give_currency_id)}")
+
     db = Database(session=async_session)
-    
+
     statement = select(
         PaymentOption
     ).where(
@@ -124,6 +125,9 @@ async def requisites(
 
     service_payment_option = await db.session.execute(statement=statement)
     service_payment_option = service_payment_option.scalar_one_or_none()
+
+    pprint(service_payment_option)
+
     try:
         return {
             "requisites_num": service_payment_option.cc_num_x_wallet,
