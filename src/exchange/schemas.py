@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from database.models import (
     User, PaymentOption,
     Status, Currency,
-    PendingStatus, Mark,
+    Mark,
 )
 import datetime
 
@@ -90,7 +90,7 @@ class PendingOrderBase(BaseModel):
     payment_from: PaymentOption.id
     payment_to: PaymentOption.id
     date: datetime.datetime
-    status: PendingStatus
+    status: Status
     user_uuid: str
 
 

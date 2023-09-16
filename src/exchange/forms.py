@@ -154,63 +154,63 @@ async def confirm_cc(
     send_tikker = await db.currency.get_by_where(
         Currency.tikker_id == send_tikker_id
     )
-    new_order = await db.pending_order.new(
-        email=client_email,
-        give_amount=client_send_value,
-        get_amount=client_get_value,
-        user_uuid=user_id,
-        give_currency_id=send_tikker.id,
-        get_currency_id=get_tikker.id,
-        payment_options=None
-    )
 
-    db.session.add(new_order)
+    try:
+        if send_tikker_id not in CRYPTO_ID_TIKKERS:
+            payment_from = await db.payment_option.new(
+                cc_num_x_wallet=client_cc_num,
+                cc_holder=client_cc_holder_name,
+                image_name=new_file_name,
+                payment_point=PaymentPointer.From,
+                clien_service_belonging=PaymentBelonging.Client,
+                currency_id=send_tikker.id,
+            )
+            payment_to = await db.payment_option.new(
+                cc_num_x_wallet=client_crypto_wallet,
+                image_name=new_file_name,
+                payment_point=PaymentPointer.To,
+                clien_service_belonging=PaymentBelonging.Client,
+                currency_id=get_tikker.id,
+            )
 
-    if send_tikker_id not in CRYPTO_ID_TIKKERS:
-        payment_from = await db.payment_option.new(
-            cc_num_x_wallet=client_cc_num,
-            cc_holder=client_cc_holder_name,
-            image_name=new_file_name,
-            payment_point=PaymentPointer.From,
-            clien_service_belonging=PaymentBelonging.Client,
-            currency_id=send_tikker.id,
-            pending_order_id=new_order.id,
-        )
-        payment_to = await db.payment_option.new(
-            cc_num_x_wallet=client_crypto_wallet,
-            image_name=new_file_name,
-            payment_point=PaymentPointer.To,
-            clien_service_belonging=PaymentBelonging.Client,
-            currency_id=get_tikker.id,
-            pending_order_id=new_order.id,
-        )
+        if send_tikker_id in CRYPTO_ID_TIKKERS:
+            payment_to = await db.payment_option.new(
+                cc_num_x_wallet=client_cc_num,
+                cc_holder=client_cc_holder_name,
+                image_name=new_file_name,
+                payment_point=PaymentPointer.From,
+                clien_service_belonging=PaymentBelonging.Client,
+                currency_id=get_tikker.id,
+            )
+            payment_from = await db.payment_option.new(
+                cc_num_x_wallet=client_crypto_wallet,
+                image_name=new_file_name,
+                payment_point=PaymentPointer.To,
+                clien_service_belonging=PaymentBelonging.Client,
+                currency_id=send_tikker.id,
+            )
+
+    except KeyError("Ошибка ввода данных в способах оплаты"):
+        return "Ошибка ввода данных в способах оплаты"
+
+    finally:
         db.session.add_all([payment_from, payment_to])
+
+    try:
+        new_order = await db.pending_order.new(
+            email=client_email,
+            give_amount=client_send_value,
+            get_amount=client_get_value,
+            user_uuid=user_id,
+            give_currency_id=send_tikker.id,
+            get_currency_id=get_tikker.id,
+            payment_options=[payment_from, payment_to]
+        )
+    except KeyError("Ошибка ввода данных в создании нового ордера"):
+        return "Ошибка ввода данных в создании нового ордера"
+    finally:
+        db.session.add(new_order)
         await db.session.commit()
         print(" Payments added")
         return "Pending order created"
-
-    if send_tikker_id in CRYPTO_ID_TIKKERS:
-        payment_to = await db.payment_option.new(
-            cc_num_x_wallet=client_cc_num,
-            cc_holder=client_cc_holder_name,
-            image_name=new_file_name,
-            payment_point=PaymentPointer.From,
-            clien_service_belonging=PaymentBelonging.Client,
-            currency_id=get_tikker.id,
-            pending_order_id=new_order.id,
-        )
-        payment_from = await db.payment_option.new(
-            cc_num_x_wallet=client_crypto_wallet,
-            image_name=new_file_name,
-            payment_point=PaymentPointer.To,
-            clien_service_belonging=PaymentBelonging.Client,
-            currency_id=send_tikker.id,
-            pending_order_id=new_order.id,
-        )
-        db.session.add_all([payment_from, payment_to])
-        await db.session.commit()
-        print(" Payments added")
-        return "Pending order created"
-    else:
-        raise ValueError("send_tikker_id not in any currency dict")
-#     # return RedirectResponse("/exchange/await")
+        # return RedirectResponse("/exchange/await")

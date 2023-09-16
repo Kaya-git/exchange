@@ -2,6 +2,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..models import PendingOrder, PaymentOption, Currency
 from .abstract import Repository
+from typing import List, Optional
 
 
 class PendingOrderRepo(Repository[PendingOrder]):
@@ -23,7 +24,7 @@ class PendingOrderRepo(Repository[PendingOrder]):
         give_currency_id: Currency,
         get_amount: float,
         get_currency_id: Currency,
-        payment_options: list[PaymentOption],
+        payment_options: Optional[List[PaymentOption]] = [],
         user_uuid: str = None
     ) -> None:
 

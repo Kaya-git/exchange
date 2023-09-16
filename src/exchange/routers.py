@@ -89,16 +89,9 @@ async def conformation_await(
 
     db = Database(session=async_session)
     try:
-        order = await db.pending_order.get_by_where(
-            PendingOrder.user_uuid == user_id
-        )
-    except KeyError:
-        return ("user id doesnt exist")
-    try:
-        order_id = order.id
         paralel_waiting = asyncio.create_task(
             services.db_paralell.conformation_await(
-                db, user_id, order_id
+                db, user_id
             )
         )
         await paralel_waiting
@@ -116,22 +109,28 @@ async def requisites(
         1,
         -1,
     )
-    pprint(client_give_currency_id)
-    client_give_currency_id = int(client_give_currency_id)
+    pprint(f"{client_give_currency_id}:{type(client_give_currency_id)}")
+    client_give_currency_id = int(*client_give_currency_id)
+    pprint(f"{client_give_currency_id}:{type(client_give_currency_id)}")
     db = Database(session=async_session)
+    
     statement = select(
         PaymentOption
     ).where(
         PaymentOption.currency_id == client_give_currency_id
     ).where(
         PaymentOption.clien_service_belonging == PaymentBelonging.Service
-    ).join(PaymentOption.currency)
+    )
+
     service_payment_option = await db.session.execute(statement=statement)
     service_payment_option = service_payment_option.scalar_one_or_none()
-    return {
-        "requisites_num": service_payment_option.cc_num_x_wallet,
-        "holder": service_payment_option.cc_holder
-    }
+    try:
+        return {
+            "requisites_num": service_payment_option.cc_num_x_wallet,
+            "holder": service_payment_option.cc_holder
+        }
+    except AttributeError:
+        return "Ключ не найден, нужен новый ордер"
 
 
 @exhange_router.get("/payed")

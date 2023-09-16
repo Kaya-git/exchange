@@ -72,8 +72,12 @@ class RedisValues:
 
 
 class DB():
+
+    def __init__(self, iterations):
+        self.iterations = iterations
+
     async def conformation_await(self, db: Database, user_id: str):
-        while True:
+        while self.iterations != 0:
             order = None
             try:
                 order = await db.pending_order.get_by_where(
@@ -85,7 +89,8 @@ class DB():
                 print(order.give_currency_id)
                 await services.redis_values.change_keys(
                     user_id=user_id,
-                    give_currency=order.give_currency_id
+                    give_currency=order.give_currency_id,
+                    order_id=order.id
                 )
                 print()
                 return "Approved"
@@ -96,7 +101,7 @@ class DB():
             await asyncio.sleep(30)
 
     async def payed_button_db(self, db: Database, user_id: str, order_id: int):
-        while True:
+        while self.iterations != 0:
             pending_order = None
             pending_order = await db.pending_order.get_by_where(
                 PendingOrder.id == order_id
@@ -139,7 +144,7 @@ class DB():
 
 class Services:
     redis_values = RedisValues()
-    db_paralell = DB()
+    db_paralell = DB(iterations=10)
 
 
 services = Services()
