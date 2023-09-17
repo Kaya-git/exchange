@@ -103,11 +103,11 @@ class OrdersHistoryAdmin(ModelView, model=CompletedOrder):
     column_searchable_list = [
         CompletedOrder.user_id,
     ]
-    can_create = False
-    can_edit = False
-    can_delete = False
+    can_create = True
+    can_edit = True
+    can_delete = True
     can_export = False
-    can_view_details = False
+    can_view_details = True
 
 
 class CurrencyAdmin(ModelView, model=Currency):

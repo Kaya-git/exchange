@@ -67,7 +67,10 @@ class RedisValues:
             give_currency,
             order_id,
             )
-        await self.redis_conn.expire(name=f'{user_id}', time=1200)
+        # await self.redis_conn.expire(
+        #     name=f'{user_id}',
+        #     time=1200
+        # )
         self.redis_conn.close
 
 
@@ -83,7 +86,7 @@ class DB():
                 order = await db.pending_order.get_by_where(
                     PendingOrder.user_uuid == user_id
                 )
-            except ValueError("No such order"):
+            except ValueError:
                 return "Sosi Jopu"
             if order.status == Status.Approved:
                 print(order.give_currency_id)
@@ -106,6 +109,7 @@ class DB():
             pending_order = await db.pending_order.get_by_where(
                 PendingOrder.id == order_id
             )
+            print(f"pending_order: {pending_order.id},")
             if pending_order.status is Status.Completed:
                 completed_order = await db.order.new(
                     email=pending_order.email,
@@ -113,13 +117,15 @@ class DB():
                     give_currency_id=pending_order.give_currency_id,
                     get_amount=pending_order.get_amount,
                     get_currency_id=pending_order.get_currency_id,
-                    payment_options=pending_order.payment_options,
-                    user_uuid=pending_order.user_uuid,
-                    user_id=user_id
+                    status=pending_order.status,
+                    # payment_options=pending_order.payment_options,
+                    user_uuid=user_id,
+                    # user_id=user_id
                 )
                 db.session.add(completed_order)
+                print(f"completed_order_id: {completed_order.id}")
                 await db.session.commit()
-                await db.pending_order.delete(PendingOrder.id == order_id)
+                # await db.pending_order.delete(PendingOrder.id == order_id)
                 return "Заказ выполнен"
                 # return RedirectResponse(f"exchange/succes/{order_id}")
             if pending_order.status is Status.Canceled:
@@ -129,10 +135,10 @@ class DB():
                     give_currency_id=pending_order.give_currency_id,
                     get_amount=pending_order.get_amount,
                     get_currency_id=pending_order.get_currency_id,
-                    payment_options=pending_order.payment_options,
+                    # payment_options=pending_order.payment_options,
                     status=Status.Canceled,
-                    user_uuid=pending_order.user_uuid,
-                    user_id=user_id
+                    user_uuid=user_id,
+                    # user_id=user_id
                 )
                 db.session.add(completed_order)
                 await db.session.commit()

@@ -23,7 +23,7 @@ class OrderRepo(Repository[CompletedOrder]):
         give_currency_id: Currency,
         get_amount: float,
         get_currency_id: Currency,
-        payment_options: list[PaymentOption],
+        payment_options: list[PaymentOption] = [],
         status: Status = Status.InProcess,
         user_uuid: str = None,
         user_id: int = None,

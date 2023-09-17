@@ -146,16 +146,24 @@ async def payed_button(
     does_exist = await services.redis_values.redis_conn.exists(user_id)
 
     if not does_exist:
-        db.pending_order.delete(PendingOrder.user_uuid == user_id)
+        await db.pending_order.delete(PendingOrder.user_uuid == user_id)
         return "Время вышло, по новой"
-    order_id = services.redis_values.redis_conn.lrange(
+    order_id = await services.redis_values.redis_conn.lindex(
         user_id,
-        0,
-        1
+        0
     )
-    resp = services.db_paralell.payed_button_db(
-        db=db, user_id=user_id, order_id=order_id
+    order_id = int(order_id)
+
+    # try:
+    resp = asyncio.create_task(
+        await services.db_paralell.payed_button_db(
+            db=db,
+            user_id=user_id,
+            order_id=order_id
+        )
     )
+    # except Exception:
+    #     return "Ошибка"
     return resp
 
 
