@@ -1,6 +1,6 @@
 from fastapi_users import schemas
 from typing import Optional
-from database.models import Role
+# from database.models import Role
 
 
 class UserRead(schemas.BaseUser[int]):
@@ -10,19 +10,18 @@ class UserRead(schemas.BaseUser[int]):
     is_active: bool = True
     is_superuser: bool = False
     is_verified: bool = False
-    registered_on: int
-    role: Role
+
+    class Config:
+        orm_mode = True
 
 
 class UserCreate(schemas.BaseUserCreate):
-    user_name: int
+    user_name: str
     email: str
     password: str
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
     is_verified: Optional[bool] = False
-    registered_on: int
-    role: Role
 
 
 class UserUpdate(schemas.BaseUserUpdate):

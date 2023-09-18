@@ -68,3 +68,5 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         # back_populates="completed_order",
         # uselist=False
     )
+
+    # оборот продаж и оборот покупок в рублях

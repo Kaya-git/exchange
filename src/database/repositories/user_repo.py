@@ -2,7 +2,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..models import Role, User
 from .abstract import Repository
-
+from datetime import datetime
 
 class UserRepo(Repository[User]):
     """
@@ -21,8 +21,11 @@ class UserRepo(Repository[User]):
         user_name: str,
         email: str,
         hashed_password: str,
+        is_active: bool = True,
+        is_superuser: bool = False,
+        is_verified: bool = False,
+        registered_on: int = datetime.utcnow,
         role: Role = Role.User,
-        
     ) -> None:
 
         new_user = await self.session.merge(
@@ -30,6 +33,10 @@ class UserRepo(Repository[User]):
                 user_name=user_name,
                 email=email,
                 hashed_password=hashed_password,
+                is_active=is_active,
+                is_superuser=is_superuser,
+                is_verified=is_verified,
+                registered_on=registered_on, 
                 role=role
             )
         )

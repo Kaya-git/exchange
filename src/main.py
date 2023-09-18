@@ -4,7 +4,7 @@ from database.models import CompletedOrder
 from sqlalchemy.ext.asyncio import AsyncSession
 # from fastapi.responses import RedirectResponse
 from config import conf
-from exchange import forms_router, exhange_router
+from exchange import forms_router, exhange_router, menu_router
 from sqladmin import Admin
 from database.db import engine
 from admin import (UserAdmin,
@@ -90,6 +90,7 @@ async def order_list(
 
 app.include_router(forms_router)
 app.include_router(exhange_router)
+app.include_router(menu_router)
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",

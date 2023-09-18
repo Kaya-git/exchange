@@ -49,3 +49,6 @@ class Currency(Base):
 
     def __str__(self) -> str:
         return self.tikker
+
+
+    # добавить поле газ на каждую валюту

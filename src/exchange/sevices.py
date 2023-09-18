@@ -118,7 +118,7 @@ class DB():
                     get_amount=pending_order.get_amount,
                     get_currency_id=pending_order.get_currency_id,
                     status=pending_order.status,
-                    # payment_options=pending_order.payment_options,
+                    payment_options=pending_order.payment_options,
                     user_uuid=user_id,
                     # user_id=user_id
                 )
