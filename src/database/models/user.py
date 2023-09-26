@@ -63,10 +63,16 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         sa.Enum(Role),
         default=Role.User,
     )
+    # sell_volume: Mapped[float] = mapped_column(
+    #     sa.Float,
+    #     nullable=True,
+    # )
+    # buy_volume: Mapped[float] = mapped_column(
+    #     sa.Float,
+    #     nullable=True,
+    # )
 
     orders: Mapped[list["CompletedOrder"]] = relationship(
         # back_populates="completed_order",
         # uselist=False
     )
-
-    # оборот продаж и оборот покупок в рублях
