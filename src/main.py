@@ -18,6 +18,8 @@ from auth.auth import auth_backend
 from auth.schemas import UserRead, UserCreate
 from auth.manager import get_user_manager
 from database.models import User
+from binance_parser import find_price
+import operator
 import uuid
 
 
@@ -55,11 +57,69 @@ personal_account = APIRouter(
 
 
 @app.get("/")
-async def root(response: Response):
+async def root(
+    response: Response,
+    async_session: AsyncSession = Depends(get_async_session),
+        ):
+
+    """Устанавливаем печеньки на пользователя"""
     cookies_id = uuid.uuid4()
     response.set_cookie(key="user_id", value=cookies_id)
-    return cookies_id
-    # return RedirectResponse("/SBERRUB/LTC")
+
+    """Отдаем из бд банковские данные валют 'название, иконку, подсчитанный курс' """
+    db = Database(session=async_session)
+    try:
+        currency_list = await db.currency.get_all()
+    except KeyError("Списка нет"):
+        return "Не приходит список валют из бд"
+    fiat_list = []
+    crypto_list = []
+    try:
+        for currency in currency_list:
+            if currency['tikker_id'] < 50:
+                name = currency['name']
+                tikker = currency['tikker']
+                icon = currency['icon']
+                rate_rub = find_price(f'{tikker}RUB')
+                rate_usd = find_price(f'{tikker}usd')
+                reserve = currency['reserve']
+                min_value = currency['min']
+                max_value = currency['max']
+                crypto_dict = {
+                    f"{name}": [
+                        tikker,
+                        icon,
+                        rate_rub,
+                        rate_usd,
+                        max_value,
+                        min_value,
+                        reserve
+                    ]
+                }
+                crypto_list.append(crypto_dict)
+
+            if currency['tikker_id'] <= 50:
+                name = currency['name']
+                tikker = currency['tikker']
+                icon = currency['icon']
+                reserve = currency['reserve']
+                min_value = currency['min']
+                max_value = currency['max']
+                fiat_dict = {
+                    f"{name}": [
+                        tikker,
+                        icon,
+                        reserve,
+                        min_value,
+                        max_value
+                    ]
+                }
+                fiat_list.append(fiat_dict)
+
+        banking_info = operator.add(crypto_list, fiat_list)
+    except KeyError("Ошибка в создании банковского списка"):
+        return "Ошибка в создании банковского списка"
+    return banking_info
 
 
 @personal_account.get("/orders")

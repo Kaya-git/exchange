@@ -20,6 +20,11 @@ class Currency(Base):
         nullable=False,
         unique=True,
     )
+    icon_name: Mapped[str] = mapped_column(
+        sa.Text,
+        default=None,
+        nullable=True
+    )
     tikker_id: Mapped[int] = mapped_column(
         sa.Integer,
         nullable=False,
