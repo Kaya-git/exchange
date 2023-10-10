@@ -1,0 +1,44 @@
+"""  Currency repository file """
+from sqlalchemy.ext.asyncio import AsyncSession
+import sqlalchemy as sa
+from ..models import Currency
+from .abstract import Repository
+
+
+class CurrencyRepo(Repository[Currency]):
+    """
+    Currency repository for CRUD and other SQL queries
+    """
+
+    def __init__(self, session: AsyncSession):
+        """
+        Initialize PaymentOption repository as for all PaymentOptions
+        or only for one
+        """
+        super().__init__(type_model=Currency, session=session)
+
+    async def new(
+        self,
+        tikker: str,
+        name: str,
+        max: sa.Numeric,
+        min: sa.Numeric,
+        icon: str,
+        gas: sa.Numeric = 130,
+        service_margin: sa.Numeric = 7,
+        reserve: sa.Numeric = 0,
+    ) -> None:
+
+        new_currency = await self.session.merge(
+            Currency(
+                tikker=tikker,
+                name=name,
+                max=max,
+                min=min,
+                icon=icon,
+                gas=gas,
+                service_margin=service_margin,
+                reserve=reserve,
+            )
+        )
+        return new_currency
