@@ -17,6 +17,7 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
  - Создать .env и записать в него следующие значения:
+ ```
 #Datababse
 DB_USER=postgres
 DB_HOST=localhost
