@@ -132,13 +132,13 @@ async def requisites(
 
     pprint(service_payment_option)
 
-    try:
-        return {
+    # try:
+    return {
             "requisites_num": service_payment_option.number,
             "holder": service_payment_option.holder
         }
-    except KeyError("Ключ не найден, нужен новый ордер"):
-        return "Ключ не найден, нужен новый ордер"
+    # except KeyError("Ключ не найден, нужен новый ордер"):
+    #     return "Ключ не найден, нужен новый ордер"
 
 
 @exhange_router.get("/payed")

@@ -130,7 +130,7 @@ class ServicePaymentOptionAdmin(ModelView, model=ServicePaymentOption):
     column_list = [
         ServicePaymentOption.id,
         ServicePaymentOption.banking_type,
-        ServicePaymentOption.currency_tikker,
+        ServicePaymentOption.currency_id,
         ServicePaymentOption.number,
         ServicePaymentOption.holder,
     ]

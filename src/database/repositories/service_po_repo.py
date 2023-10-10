@@ -25,7 +25,7 @@ class ServicePaymentOptionRepo(Repository[ServicePaymentOption]):
     async def new(
         self,
         banking_type: BankingType,
-        currency_tikker: Currency,
+        currency_id: Currency,
         number: str,
         holder: str,
     ) -> None:
@@ -33,7 +33,7 @@ class ServicePaymentOptionRepo(Repository[ServicePaymentOption]):
         new_service_po = await self.session.merge(
             ServicePaymentOption(
                 banking_type=banking_type,
-                currency_tikker=currency_tikker,
+                currency_id=currency_id,
                 number=number,
                 holder=holder,
             )

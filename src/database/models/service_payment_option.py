@@ -15,8 +15,8 @@ class ServicePaymentOption(Base):
     banking_type: Mapped[BankingType] = mapped_column(
         sa.Enum(BankingType)
     )
-    currency_tikker: Mapped[str] = mapped_column(
-        sa.ForeignKey("currency.tikker")
+    currency_id: Mapped[str] = mapped_column(
+        sa.ForeignKey("currency.id")
     )
     number: Mapped[str] = mapped_column(
         sa.Text,
