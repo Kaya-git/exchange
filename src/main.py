@@ -19,7 +19,6 @@ from auth.schemas import UserRead, UserCreate
 from auth.manager import get_user_manager
 from database.models import User, Order
 from binance_parser import find_price
-import operator
 import uuid
 
 
@@ -121,7 +120,7 @@ async def root(
     # except KeyError("Ошибка в создании банковского списка"):
     #     return "Ошибка в создании банковского списка"
     # return banking_info
-    # return cookies_uuid
+    return cookies_uuid
 
 
 @personal_account.get("/orders")
