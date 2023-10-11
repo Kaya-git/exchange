@@ -1,7 +1,11 @@
 from .base import Base
 from .banking_type import BankingType
 import sqlalchemy as sa
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .currency import Currency
+    from .user import User
 
 
 class PaymentOption(Base):
@@ -15,8 +19,8 @@ class PaymentOption(Base):
     banking_type: Mapped[BankingType] = mapped_column(
         sa.Enum(BankingType)
     )
-    currency_tikker: Mapped[str] = mapped_column(
-        sa.ForeignKey("currency.tikker")
+    currency_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("currency.id")
     )
     number: Mapped[str] = mapped_column(
         sa.Text,
@@ -36,6 +40,17 @@ class PaymentOption(Base):
         unique=True,
         nullable=True,
     )
-    user_email: Mapped[str] = mapped_column(
-        sa.ForeignKey("user.email")
+
+    user_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("user.id")
+    )
+    currency_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("currency.id")
+    )
+
+    currency: Mapped["Currency"] = relationship(
+        back_populates="payment_options"
+    )
+    user: Mapped["User"] = relationship(
+        back_populates="payment_options"
     )

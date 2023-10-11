@@ -18,11 +18,10 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     id: Mapped[int] = mapped_column(
         sa.BigInteger,
         primary_key=True,
-        autoincrement=True
+        autoincrement=True,
     )
     email: Mapped[str] = mapped_column(
         sa.String(length=320),
-        primary_key=True,
         unique=True,
         index=True,
         nullable=False,
@@ -69,6 +68,16 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         default=Role.User
     )
 
-    reviews: Mapped[List["Review"]] = relationship()
-    payment_options: Mapped[List["PaymentOption"]] = relationship()
-    orders: Mapped[List["Order"]] = relationship()
+    payment_options: Mapped[List["PaymentOption"]] = relationship(
+        back_populates="user"
+    )
+    reviews: Mapped[List["Review"]] = relationship(
+        back_populates="user"
+    )
+    # orders: Mapped[List["Order"]] = relationship(back_populates="user")
+
+    def __str__(self) -> str:
+        return f"{self.email}"
+
+    def __repr__(self) -> str:
+        return f"{self.email}"

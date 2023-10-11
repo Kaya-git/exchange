@@ -2,7 +2,11 @@ from .base import Base
 from .status import Status
 import sqlalchemy as sa
 from datetime import datetime
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .user import User
+    from .service_payment_option import ServicePaymentOption
 
 
 class Order(Base):
@@ -46,6 +50,7 @@ class Order(Base):
     status: Mapped["Status"] = mapped_column(
         sa.Enum(Status)
     )
+
     service_sell_po_id: Mapped[int] = mapped_column(
         sa.ForeignKey("service_payment_option.id"),
         nullable=True
@@ -53,4 +58,20 @@ class Order(Base):
     service_buy_po_id: Mapped[int] = mapped_column(
         sa.ForeignKey("service_payment_option.id"),
         nullable=True
+    )
+    user_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("user.id")
+    )
+
+    user: Mapped["User"] = relationship(
+        "User",
+        foreign_keys="[Order.user_id]"
+    )
+    service_sell_po: Mapped["ServicePaymentOption"] = relationship(
+        "ServicePaymentOption",
+        foreign_keys="[Order.service_sell_po_id]"
+    )
+    service_buy_po: Mapped["ServicePaymentOption"] = relationship(
+        "ServicePaymentOption",
+        foreign_keys="[Order.service_buy_po_id]"
     )

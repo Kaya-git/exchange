@@ -2,8 +2,10 @@ from .base import Base
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .crypto_type import CryptoType
-from typing import List
-from .service_payment_option import ServicePaymentOption
+from typing import List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from .service_payment_option import ServicePaymentOption
+    from .payment_option import PaymentOption
 
 
 class Currency(Base):
@@ -55,8 +57,13 @@ class Currency(Base):
         nullable=True
     )
 
-    service_payment_option: Mapped[
+    service_payment_options: Mapped[
         List["ServicePaymentOption"]
+    ] = relationship(
+        back_populates="currency"
+    )
+    payment_options: Mapped[
+        List["PaymentOption"]
     ] = relationship(
         back_populates="currency"
     )

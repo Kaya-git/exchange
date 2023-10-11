@@ -2,7 +2,10 @@ from .base import Base
 from .mark import Mark
 import sqlalchemy as sa
 from datetime import datetime
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .user import User
 
 
 class Review(Base):
@@ -12,9 +15,6 @@ class Review(Base):
         sa.BigInteger,
         primary_key=True,
         autoincrement=True,
-    )
-    user_email: Mapped[str] = mapped_column(
-        sa.ForeignKey("user.email")
     )
     text: Mapped[str] = mapped_column(
         sa.Text,
@@ -27,4 +27,12 @@ class Review(Base):
     )
     rating: Mapped[Mark] = mapped_column(
         sa.Enum(Mark)
+    )
+
+    user_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("user.id")
+    )
+
+    user: Mapped["User"] = relationship(
+        back_populates="reviews"
     )

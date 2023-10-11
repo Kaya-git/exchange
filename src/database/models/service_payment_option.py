@@ -34,11 +34,11 @@ class ServicePaymentOption(Base):
     )
 
     currency: Mapped["Currency"] = relationship(
-        back_populates="service_payment_option"
+        back_populates="service_payment_options"
     )
 
     def __repr__(self) -> str:
-        return f"{self.__class__} : {self.id}"
+        return f"{self.currency_id}"
 
     def __str__(self) -> str:
-        return f"{self.__class__} : {self.id}"
+        return f"{self.currency_id}"

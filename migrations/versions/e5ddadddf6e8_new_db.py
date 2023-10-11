@@ -1,8 +1,8 @@
 """new db
 
-Revision ID: e35819a564ee
+Revision ID: e5ddadddf6e8
 Revises: 
-Create Date: 2023-10-11 12:57:51.266474
+Create Date: 2023-10-11 16:16:26.772912
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'e35819a564ee'
+revision: str = 'e5ddadddf6e8'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -47,20 +47,18 @@ def upgrade() -> None:
     sa.Column('registered_on', sa.TIMESTAMP(), nullable=False),
     sa.Column('buy_volume', sa.Numeric(), nullable=True),
     sa.Column('role', sa.Enum('User', 'Moderator', 'Admin', name='role'), nullable=False),
-    sa.PrimaryKeyConstraint('id', 'email')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     op.create_table('payment_option',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
     sa.Column('banking_type', sa.Enum('CryptoWallet', 'BankingCard', 'Ewallet', name='bankingtype'), nullable=False),
-    sa.Column('currency_tikker', sa.Text(), nullable=False),
+    sa.Column('currency_id', sa.BigInteger(), nullable=False),
     sa.Column('number', sa.Text(), nullable=False),
     sa.Column('holder', sa.Text(), nullable=False),
     sa.Column('is_verified', sa.Boolean(), nullable=False),
     sa.Column('image', sa.Text(), nullable=True),
-    sa.Column('user_email', sa.String(length=320), nullable=False),
-    sa.ForeignKeyConstraint(['currency_tikker'], ['currency.tikker'], ),
-    sa.ForeignKeyConstraint(['user_email'], ['user.email'], ),
+    sa.ForeignKeyConstraint(['currency_id'], ['currency.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('image'),
     sa.UniqueConstraint('number')
@@ -71,15 +69,17 @@ def upgrade() -> None:
     sa.Column('text', sa.Text(), nullable=False),
     sa.Column('data', sa.TIMESTAMP(), nullable=False),
     sa.Column('rating', sa.Enum('one_star', 'two_stars', 'three_stars', 'four_stars', 'five_stars', name='mark'), nullable=False),
+    sa.Column('user_id', sa.BigInteger(), nullable=False),
     sa.ForeignKeyConstraint(['user_email'], ['user.email'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('service_payment_option',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
     sa.Column('banking_type', sa.Enum('CryptoWallet', 'BankingCard', 'Ewallet', name='bankingtype'), nullable=False),
-    sa.Column('currency_id', sa.BigInteger(), nullable=False),
     sa.Column('number', sa.Text(), nullable=False),
     sa.Column('holder', sa.Text(), nullable=False),
+    sa.Column('currency_id', sa.BigInteger(), nullable=False),
     sa.ForeignKeyConstraint(['currency_id'], ['currency.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('number')

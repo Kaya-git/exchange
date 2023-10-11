@@ -77,7 +77,7 @@ class OrderAdmin(ModelView, model=Order):
         Order.service_buy_po_id,
     ]
 
-    can_create = False
+    can_create = True
     can_edit = True
     can_delete = True
     can_export = False
@@ -97,8 +97,12 @@ class CurrencyAdmin(ModelView, model=Currency):
         Currency.min,
         Currency.icon,
     ]
-    form_excluded_columns = [Currency.service_payment_option]
-    column_details_exclude_list = [Currency.service_payment_option]
+    form_excluded_columns = [
+        Currency.service_payment_options, Currency.payment_options
+    ]
+    column_details_exclude_list = [
+        Currency.service_payment_options, Currency.payment_options
+    ]
     can_create = True
     can_edit = True
     can_delete = True
@@ -112,12 +116,12 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
     column_list = [
         PaymentOption.id,
         PaymentOption.banking_type,
-        PaymentOption.currency_tikker,
+        PaymentOption.currency_id,
         PaymentOption.number,
         PaymentOption.holder,
         PaymentOption.is_verified,
         PaymentOption.image,
-        PaymentOption.user_email,
+        # PaymentOption.user_id,
     ]
     can_create = True
     can_edit = True
@@ -147,7 +151,7 @@ class ReviewAdmin(ModelView, model=Review):
     name_plural = "Отзывы"
     column_list = [
         Review.id,
-        Review.user_email,
+        Review.user_id,
         Review.text,
         Review.data,
         Review.rating
