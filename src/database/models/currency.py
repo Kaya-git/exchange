@@ -1,7 +1,9 @@
 from .base import Base
 import sqlalchemy as sa
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .crypto_type import CryptoType
+from typing import List
+from .service_payment_option import ServicePaymentOption
 
 
 class Currency(Base):
@@ -52,3 +54,15 @@ class Currency(Base):
         default=None,
         nullable=True
     )
+
+    service_payment_option: Mapped[
+        List["ServicePaymentOption"]
+    ] = relationship(
+        back_populates="currency"
+    )
+
+    def __repr__(self) -> str:
+        return f"{self.tikker}"
+
+    def __str__(self) -> str:
+        return f"{self.tikker}"

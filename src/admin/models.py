@@ -97,6 +97,8 @@ class CurrencyAdmin(ModelView, model=Currency):
         Currency.min,
         Currency.icon,
     ]
+    form_excluded_columns = [Currency.service_payment_option]
+    column_details_exclude_list = [Currency.service_payment_option]
     can_create = True
     can_edit = True
     can_delete = True
@@ -128,9 +130,8 @@ class ServicePaymentOptionAdmin(ModelView, model=ServicePaymentOption):
     name = "Сервисный расчетный способ"
     name_plural = "Сервисный способы оплаты"
     column_list = [
-        ServicePaymentOption.id,
+        ServicePaymentOption.currency,
         ServicePaymentOption.banking_type,
-        ServicePaymentOption.currency_id,
         ServicePaymentOption.number,
         ServicePaymentOption.holder,
     ]

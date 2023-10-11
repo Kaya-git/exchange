@@ -1,7 +1,11 @@
 from .base import Base
 from .banking_type import BankingType
 import sqlalchemy as sa
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .currency import Currency
 
 
 class ServicePaymentOption(Base):
@@ -15,9 +19,6 @@ class ServicePaymentOption(Base):
     banking_type: Mapped[BankingType] = mapped_column(
         sa.Enum(BankingType)
     )
-    currency_id: Mapped[str] = mapped_column(
-        sa.ForeignKey("currency.id")
-    )
     number: Mapped[str] = mapped_column(
         sa.Text,
         nullable=False,
@@ -27,3 +28,17 @@ class ServicePaymentOption(Base):
         sa.Text,
         nullable=False
     )
+
+    currency_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("currency.id")
+    )
+
+    currency: Mapped["Currency"] = relationship(
+        back_populates="service_payment_option"
+    )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__} : {self.id}"
+
+    def __str__(self) -> str:
+        return f"{self.__class__} : {self.id}"

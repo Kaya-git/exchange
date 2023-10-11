@@ -1,9 +1,8 @@
 """new db
 
-
-Revision ID: 1d1481d6e797
+Revision ID: e35819a564ee
 Revises: 
-Create Date: 2023-10-09 15:27:32.969814
+Create Date: 2023-10-11 12:57:51.266474
 
 """
 from typing import Sequence, Union
@@ -13,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '1d1481d6e797'
+revision: str = 'e35819a564ee'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -58,7 +57,7 @@ def upgrade() -> None:
     sa.Column('number', sa.Text(), nullable=False),
     sa.Column('holder', sa.Text(), nullable=False),
     sa.Column('is_verified', sa.Boolean(), nullable=False),
-    sa.Column('image', sa.Text(), nullable=False),
+    sa.Column('image', sa.Text(), nullable=True),
     sa.Column('user_email', sa.String(length=320), nullable=False),
     sa.ForeignKeyConstraint(['currency_tikker'], ['currency.tikker'], ),
     sa.ForeignKeyConstraint(['user_email'], ['user.email'], ),
@@ -78,10 +77,10 @@ def upgrade() -> None:
     op.create_table('service_payment_option',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
     sa.Column('banking_type', sa.Enum('CryptoWallet', 'BankingCard', 'Ewallet', name='bankingtype'), nullable=False),
-    sa.Column('currency_tikker', sa.Text(), nullable=False),
+    sa.Column('currency_id', sa.BigInteger(), nullable=False),
     sa.Column('number', sa.Text(), nullable=False),
     sa.Column('holder', sa.Text(), nullable=False),
-    sa.ForeignKeyConstraint(['currency_tikker'], ['currency.tikker'], ),
+    sa.ForeignKeyConstraint(['currency_id'], ['currency.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('number')
     )
@@ -97,8 +96,8 @@ def upgrade() -> None:
     sa.Column('sell_payment_option', sa.BigInteger(), nullable=False),
     sa.Column('date', sa.TIMESTAMP(), nullable=False),
     sa.Column('status', sa.Enum('Pending', 'Timeout', 'Canceled', 'Inprocces', 'Approved', 'Completed', name='status'), nullable=False),
-    sa.Column('service_sell_po_id', sa.BigInteger(), nullable=False),
-    sa.Column('service_buy_po_id', sa.BigInteger(), nullable=False),
+    sa.Column('service_sell_po_id', sa.BigInteger(), nullable=True),
+    sa.Column('service_buy_po_id', sa.BigInteger(), nullable=True),
     sa.ForeignKeyConstraint(['buy_currency_tikker'], ['currency.tikker'], ),
     sa.ForeignKeyConstraint(['buy_payment_option'], ['payment_option.id'], ),
     sa.ForeignKeyConstraint(['sell_currency_tikker'], ['currency.tikker'], ),

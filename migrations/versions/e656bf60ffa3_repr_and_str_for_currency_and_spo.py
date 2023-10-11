@@ -1,8 +1,8 @@
-"""new
+"""repr and str for currency and spo
 
-Revision ID: a2ce26db91d7
-Revises: 272bb25771ac
-Create Date: 2023-10-10 20:54:53.935330
+Revision ID: e656bf60ffa3
+Revises: 7ac8998379f8
+Create Date: 2023-10-11 13:36:26.412371
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'a2ce26db91d7'
-down_revision: Union[str, None] = '272bb25771ac'
+revision: str = 'e656bf60ffa3'
+down_revision: Union[str, None] = '7ac8998379f8'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
