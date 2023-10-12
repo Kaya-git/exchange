@@ -116,7 +116,9 @@ async def requisites(
 ):
     db = Database(session=async_session)
 
-    """ Достаем из редиса тикер заказа"""
+    """
+    Достаем из редиса тикер заказа
+    """
     order_id = (
         await services.redis_values.redis_conn.lrange(
             user_uuid,
@@ -130,15 +132,17 @@ async def requisites(
         f"{order_id}:{type(order_id)}"
     )
 
-    """ Находим в таблице ServicePaymentOption способ оплаты
-    с тикером подходящим для продажи клиента"""
+    """
+    Находим в таблице ServicePaymentOption способ оплаты
+    с тикером подходящим для продажи клиента
+    """
     statement = (
         select(
             ServicePaymentOption
             ).join(
-            Currency, ServicePaymentOption.currency_tikker == Currency.tikker
+            Currency, ServicePaymentOption.currency_id == Currency.id
             ).join(
-                Order, Currency.tikker == Order.sell_currency_tikker
+                Order, Currency.id == Order.sell_currency_id
             ).where(
                 Order.id == order_id
                 )
@@ -181,16 +185,13 @@ async def payed_button(
         await db.session.execute(statement)
         return "Время вышло, по новой"
 
-    try:
-        resp = asyncio.create_task(
-            await services.db_paralell.payed_button_db(
-                db=db,
-                user_uuid=user_uuid,
-                order_id=order_id
-            )
+    resp = asyncio.create_task(
+        await services.db_paralell.payed_button_db(
+            db=db,
+            user_uuid=user_uuid,
+            order_id=order_id
         )
-    except Exception:
-        return "Ошибка"
+    )
     return resp
 
 

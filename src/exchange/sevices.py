@@ -141,8 +141,10 @@ class DB():
         # return RedirectResponse("/cancel")
 
     async def payed_button_db(
-        self, db: Database,
-        user_uuid: str, order_id: int
+        self,
+        db: Database,
+        user_uuid: str,
+        order_id: int
     ):
         while self.iterations != 0:
             order = None
