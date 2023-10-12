@@ -9,7 +9,7 @@ from database.db import Database, get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from binance_parser import find_price
 from .curency_dicts import CRYPTO_ID_TIKKERS, FIAT_ID_TIKKERS
-from database.models import Currency, BankingType, Status, PaymentOption
+from database.models import Currency, BankingType, Status, PaymentOption, CryptoType
 from decimal import Decimal
 
 
@@ -23,9 +23,9 @@ forms_router = APIRouter(
 @forms_router.post("/exchange_form")
 async def order_crypto_fiat(
     client_sell_value: Decimal = Form(default=0),
-    client_sell_currency_tikker: str = Form(),
+    client_sell_tikker_id: int = Form(),
     client_buy_value: Decimal = Form(default=0),
-    client_buy_currency_tikker: str = Form(),
+    client_buy_tikker_id: int = Form(),
     client_email: str = Form(),
     client_crypto_wallet: str = Form(),
     client_credit_card_number: str = Form(),
@@ -33,37 +33,63 @@ async def order_crypto_fiat(
     user_uuid: str | None = Cookie(default=None),
     session: AsyncSession = Depends(get_async_session),
 ):
-    try:
-
-        if client_sell_currency_tikker in CRYPTO_ID_TIKKERS:
-            parser_tikker = (
-                f"{client_sell_currency_tikker}{client_buy_currency_tikker}"
-            )
-        if client_sell_currency_tikker in FIAT_ID_TIKKERS:
-            parser_tikker = (
-                f"{client_buy_currency_tikker}{client_sell_currency_tikker}"
-            )
-
-    except KeyError("Тикера нет в словаре"):
-        return ("Тикера нет в словаре")
-
-    # -----
-
     db = Database(session=session)
 
-    commissions = await db.currency.get_by_where(
-        Currency.tikker == client_buy_currency_tikker
+    client_sell_currency = await db.currency.get_by_where(
+        Currency.tikker_id == client_sell_tikker_id
+    )
+    client_buy_currency = await db.currency.get_by_where(
+        Currency.tikker_id == client_buy_tikker_id
     )
 
+    """
+    Разделяем пришедший тикер по '_'.
+    Пример client_sell_currency_tikker и client_buy_currency_tikker:
+        'RUB_SBER',
+        'LTC_CRYPTO'
+    """
+    sell_currency_tuple = client_sell_currency.tikker.split("_")
+    buy_currency_tuple = client_buy_currency.tikker.split("_")
+
+    client_sell_currency_tikker = sell_currency_tuple[0]
+    client_buy_currency_tikker = buy_currency_tuple[0]
+    client_sell_currency_po = sell_currency_tuple[1]
+    client_buy_currency_po = buy_currency_tuple[1]
+
+    """
+    Создаем строку для парсера равную условию: (Крипта)(Фиат)
+    """
+    if client_sell_currency.type != "Crypto":
+        parser_tikker = (
+            f"{client_buy_currency_tikker}{client_sell_currency_tikker}"
+        )
+    else:
+        parser_tikker = (
+            f"{client_sell_currency_tikker}{client_buy_currency_tikker}"
+        )
+
+    # -----
+    """
+    Забираем строку для определения коммиссии
+    """
+    margin = client_buy_currency.service_margin
+    gas = client_buy_currency.gas
+    """
+    Просчитываем стоимость валюты с учетом коммисий и стоимости за перевод
+    """
     coin_price = await find_price(parser_tikker)
 
+    """
+    Определяем какую строчку в форме заполнил пользователь и
+    просчитываем стоимость
+    """
     if client_sell_value != 0:
         try:
             client_buy_value = await Count.count_get_value(
                 send_value=client_sell_value,
                 coin_price=coin_price,
-                margin=commissions.service_margin,
-                gas=commissions.gas,
+                margin=margin,
+                gas=gas,
             )
         except KeyError("Ошибка в Client buy Value"):
             return ("Ошибка в Client buy Value")
@@ -73,26 +99,28 @@ async def order_crypto_fiat(
             client_sell_value = await Count.count_send_value(
                 get_value=client_buy_value,
                 coin_price=coin_price,
-                margin=commissions.service_margin,
-                gas=commissions.gas,
+                margin=margin,
+                gas=gas,
             )
         except KeyError("Ошибка в Client buy Value"):
             return ("Ошибка в Client buy Value")
 
-    try:
-        await services.redis_values.set_order_info(
+    """
+    Сохраняем переменные в редис под ключем = uuid пользователя
+    """
+    await services.redis_values.set_order_info(
             user_uuid=user_uuid,
             client_email=client_email,
             client_sell_value=client_sell_value,
-            client_sell_currency_tikker=client_sell_currency_tikker,
+            client_sell_tikker_id=client_sell_tikker_id,
             client_buy_value=client_buy_value,
-            client_buy_currency_tikker=client_buy_currency_tikker,
+            client_buy_tikker_id=client_buy_tikker_id,
             client_credit_card_number=client_credit_card_number,
             client_cc_holder=client_cc_holder,
             client_crypto_wallet=client_crypto_wallet,
-        )
-    except KeyError("Ошибка в Редис"):
-        return ("Ошибка в Редис")
+            client_sell_currency_po=client_sell_currency_po,
+            client_buy_currency_po=client_buy_currency_po
+    )
     return "Redis - OK"
     # return RedirectResponse("/confirm")
 
@@ -134,35 +162,45 @@ async def confirm_cc(
 
     """ Достаем из редиса список с данными ордера."""
     (
+        client_buy_currency_po,
+        client_sell_currency_po,
         client_crypto_wallet,
         client_cc_holder,
         client_credit_card_number,
-        client_buy_currency_tikker,
+        client_buy_tikker_id,
         client_buy_value,
-        client_sell_currency_tikker,
+        client_sell_tikker_id,
         client_sell_value,
         client_email
     ) = await services.redis_values.redis_conn.lrange(user_uuid, 0, -1)
 
-    client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
-    client_cc_holder = str(client_cc_holder, 'UTF-8')
-    client_credit_card_number = str(client_credit_card_number, 'UTF-8')
-    client_buy_currency_tikker = str(client_buy_currency_tikker, 'UTF-8')
-    client_buy_value = str(client_buy_value, 'UTF-8')
-    client_sell_currency_tikker = str(client_sell_currency_tikker, 'UTF-8')
-    client_sell_value = str(client_sell_value, 'UTF-8')
-    client_email = str(client_email, 'UTF-8')
-    client_buy_value = Decimal(client_buy_value)
+    client_sell_currency_po = str(client_sell_currency_po, 'UTF-8')
+    client_sell_tikker_id = str(client_sell_tikker_id, 'UTF-8')
     client_sell_value = Decimal(client_sell_value)
+    client_credit_card_number = str(client_credit_card_number, 'UTF-8')
+    client_cc_holder = str(client_cc_holder, 'UTF-8')
+
+    client_buy_currency_po = str(client_buy_currency_po, 'UTF-8')
+    client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
+    client_buy_tikker_id = str(client_buy_tikker_id, 'UTF-8')
+    client_buy_value = Decimal(client_buy_value)
+
+    client_email = str(client_email, 'UTF-8')
 
     db = Database(session=session)
 
+    client_sell_currency = await db.currency.get_by_where(
+        Currency.tikker_id == client_sell_tikker_id
+    )
+    client_buy_currency = await db.currency.get_by_where(
+        Currency.tikker_id == client_buy_tikker_id
+    )
     """ Записываем расчетный способ в таблицу PaymentOption """
-    if client_sell_currency_tikker in FIAT_ID_TIKKERS:
+    if client_sell_currency.type == CryptoType.Fiat:
 
         client_sell_payment_option = await db.payment_option.new(
-            banking_type=BankingType.BankingCard,
-            currency_tikker=client_sell_currency_tikker,
+            banking_type=client_sell_currency_po,
+            currency_id=client_sell_currency.id,
             number=client_credit_card_number,
             holder=client_cc_holder,
             image=new_file_name,
@@ -170,8 +208,8 @@ async def confirm_cc(
         )
 
         client_buy_payment_option = await db.payment_option.new(
-            banking_type=BankingType.CryptoWallet,
-            currency_tikker=client_buy_currency_tikker,
+            banking_type=client_buy_currency_po,
+            currency_tikker=client_buy_currency.id,
             number=client_crypto_wallet,
             holder=client_email,
             user_email=client_email,
@@ -188,18 +226,18 @@ async def confirm_cc(
             PaymentOption.number == client_crypto_wallet
         )
 
-    if client_sell_currency_tikker in CRYPTO_ID_TIKKERS:
+    if client_sell_currency.type == CryptoType.Crypto:
 
         client_sell_payment_option = await db.payment_option.new(
-            banking_type=BankingType.CryptoWallet,
-            currency_tikker=client_buy_currency_tikker,
+            banking_type=client_buy_currency_po,
+            currency_id=client_sell_currency.id,
             number=client_crypto_wallet,
             holder=client_email,
             user_email=client_email,
         )
         client_buy_payment_option = await db.payment_option.new(
-            banking_type=BankingType.BankingCard,
-            currency_tikker=client_sell_currency_tikker,
+            banking_type=client_sell_currency_po,
+            currency_id=client_buy_currency.id,
             number=client_credit_card_number,
             holder=client_cc_holder,
             image=new_file_name,
@@ -222,10 +260,10 @@ async def confirm_cc(
         user_email=client_email,
         user_cookie=user_uuid,
         user_buy_sum=client_buy_value,
-        buy_currency_tikker=client_buy_currency_tikker,
+        buy_currency_id=client_buy_currency.id,
         buy_payment_option=client_buy_payment_option.id,
         user_sell_sum=client_sell_value,
-        sell_currency_tikker=client_sell_currency_tikker,
+        sell_currency_id=client_sell_currency.id,
         sell_payment_option=client_sell_payment_option.id,
         status=Status.Pending,
     )

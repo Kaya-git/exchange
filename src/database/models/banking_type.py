@@ -2,6 +2,11 @@ import enum
 
 
 class BankingType(enum.StrEnum):
-    CryptoWallet = "crypto_wallet"
-    BankingCard = "banking_card"
-    Ewallet = "ewallet"
+    SBER = "SBER"
+    CRYPTO = "CRYPTO"
+    QIWIRUR = "QIWIRUR"
+    QIWIUSD = "QIWIUSD"
+    YAMONEY = "YAMONEY"
+    PAYRUR = "PAYRUR"
+    PAYUSD = "PAYUSD"
+    PAYEUR = "PAYEUR"

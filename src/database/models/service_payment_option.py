@@ -38,7 +38,7 @@ class ServicePaymentOption(Base):
     )
 
     def __repr__(self) -> str:
-        return f"{self.currency_id}"
+        return f"{self.banking_type}"
 
     def __str__(self) -> str:
-        return f"{self.currency_id}"
+        return f"{self.banking_type}"

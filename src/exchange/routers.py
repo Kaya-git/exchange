@@ -42,36 +42,44 @@ async def confirm_order(
         return "Время вышло"
 
     (
+        client_buy_currency_po,
+        client_sell_currency_po,
         client_crypto_wallet,
         client_cc_holder,
         client_credit_card_number,
-        client_buy_currency_tikker,
+        client_buy_tikker_id,
         client_buy_value,
-        client_sell_currency_tikker,
+        client_sell_tikker_id,
         client_sell_value,
         client_email
     ) = await services.redis_values.redis_conn.lrange(user_uuid, 0, -1)
 
     """ Декодируем из бит в пайтоновские значения """
-    client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
-    client_cc_holder = str(client_cc_holder, 'UTF-8')
-    client_credit_card_number = str(client_credit_card_number, 'UTF-8')
-    client_buy_currency_tikker = str(client_buy_currency_tikker, 'UTF-8')
-    client_buy_value = str(client_buy_value, 'UTF-8')
-    client_sell_currency_tikker = str(client_sell_currency_tikker, 'UTF-8')
+    client_sell_currency_po = str(client_sell_currency_po, 'UTF-8')
+    client_sell_tikker_id = str(client_sell_tikker_id, 'UTF-8')
     client_sell_value = str(client_sell_value, 'UTF-8')
-    client_email = str(client_email, 'UTF-8')
-    client_buy_value = Decimal(client_buy_value)
-    client_sell_value = Decimal(client_sell_value)
+    client_credit_card_number = str(client_credit_card_number, 'UTF-8')
+    client_cc_holder = str(client_cc_holder, 'UTF-8')
 
+    client_buy_currency_po = str(client_buy_currency_po, 'UTF-8')
+    client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
+    client_buy_tikker_id = str(client_buy_tikker_id, 'UTF-8')
+    client_buy_value = str(client_buy_value, 'UTF-8')
+
+    client_email = str(client_email, 'UTF-8')
+
+    client_sell_value = Decimal(client_sell_value)
+    client_buy_value = Decimal(client_buy_value)
     return {
+        "client_sell_currency_po": client_sell_currency_po,
+        "client_sell_tikker_id": client_sell_tikker_id,
+        "client_sell_value": client_sell_value,
+        "client_credit_card_number": client_credit_card_number,
+        "client_cc_holder": client_cc_holder,
+        "client_buy_currency_po": client_buy_currency_po,
         "client_crypto_wallet": client_crypto_wallet,
-        "client_cc_holder_name": client_cc_holder,
-        "client_cc_num": client_credit_card_number,
-        "client_get_tikker_name": client_buy_currency_tikker,
-        "client_get_value": client_buy_value,
-        "client_send_tikker_name": client_sell_currency_tikker,
-        "client_send_value": client_sell_value,
+        "client_buy_tikker_id": client_buy_tikker_id,
+        "client_buy_value": client_buy_value,
         "client_email": client_email
     }
 

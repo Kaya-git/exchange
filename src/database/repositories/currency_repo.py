@@ -5,6 +5,7 @@ from ..models import Currency, ServicePaymentOption
 from .abstract import Repository
 from typing import List
 
+
 class CurrencyRepo(Repository[Currency]):
     """
     Currency repository for CRUD and other SQL queries
@@ -19,6 +20,7 @@ class CurrencyRepo(Repository[Currency]):
 
     async def new(
         self,
+        tikker_id: int,
         tikker: str,
         name: str,
         max: sa.Numeric,
@@ -32,6 +34,7 @@ class CurrencyRepo(Repository[Currency]):
 
         new_currency = await self.session.merge(
             Currency(
+                tikker_id=tikker_id,
                 tikker=tikker,
                 name=name,
                 max=max,

@@ -54,3 +54,9 @@ class PaymentOption(Base):
     user: Mapped["User"] = relationship(
         back_populates="payment_options"
     )
+
+    def __str__(self) -> str:
+        return f"{self.banking_type}"
+
+    def __repr__(self) -> str:
+        return f"{self.banking_type}"

@@ -36,23 +36,27 @@ class RedisValues:
         user_uuid: str,
         client_email: str,
         client_sell_value: float,
-        client_sell_currency_tikker: str,
+        client_sell_tikker_id: int,
         client_buy_value: float,
-        client_buy_currency_tikker: str,
+        client_buy_tikker_id: int,
         client_credit_card_number: int,
         client_cc_holder: str,
-        client_crypto_wallet: str
+        client_crypto_wallet: str,
+        client_sell_currency_po: str,
+        client_buy_currency_po: str
     ):
         await self.redis_conn.lpush(
             f"{user_uuid}",
             f"{client_email}",
             f"{client_sell_value}",
-            f"{client_sell_currency_tikker}",
+            f"{client_sell_tikker_id}",
             f"{client_buy_value}",
-            f"{client_buy_currency_tikker}",
+            f"{client_buy_tikker_id}",
             f"{client_credit_card_number}",
             f"{client_cc_holder}",
-            f"{client_crypto_wallet}"
+            f"{client_crypto_wallet}",
+            f"{client_sell_currency_po}",
+            f"{client_buy_currency_po}"
         )
         # await self.redis_conn.expire(name=f'{user_uuid}', time=900)
         self.redis_conn.close

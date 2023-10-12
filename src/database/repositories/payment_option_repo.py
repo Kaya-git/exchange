@@ -24,7 +24,7 @@ class PaymentOptionRepo(Repository[PaymentOption]):
         self,
         user_email: User,
         banking_type: BankingType,
-        currency_tikker: Currency,
+        currency_id: Currency,
         number: str,
         holder: str,
         is_verified: bool = False,
@@ -34,7 +34,7 @@ class PaymentOptionRepo(Repository[PaymentOption]):
         new_payement_option = await self.session.merge(
             PaymentOption(
                 banking_type=banking_type,
-                currency_tikker=currency_tikker,
+                currency_id=currency_id,
                 number=number,
                 holder=holder,
                 is_verified=is_verified,

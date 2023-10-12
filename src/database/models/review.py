@@ -36,3 +36,9 @@ class Review(Base):
     user: Mapped["User"] = relationship(
         back_populates="reviews"
     )
+
+    def __str__(self) -> str:
+        return f"{self.rating}"
+
+    def __repr__(self) -> str:
+        return f"{self.rating}"

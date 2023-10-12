@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .user import User
     from .service_payment_option import ServicePaymentOption
+    from .currency import Currency
 
 
 class Order(Base):
@@ -27,17 +28,11 @@ class Order(Base):
     user_buy_sum: Mapped[sa.Numeric] = mapped_column(
         sa.Numeric,
     )
-    buy_currency_tikker: Mapped[str] = mapped_column(
-        sa.ForeignKey("currency.tikker")
-    )
     buy_payment_option: Mapped[int] = mapped_column(
         sa.ForeignKey("payment_option.id")
     )
     user_sell_sum: Mapped[sa.Numeric] = mapped_column(
         sa.Numeric,
-    )
-    sell_currency_tikker: Mapped[str] = mapped_column(
-        sa.ForeignKey("currency.tikker")
     )
     sell_payment_option: Mapped[int] = mapped_column(
         sa.ForeignKey("payment_option.id")
@@ -62,6 +57,12 @@ class Order(Base):
     user_id: Mapped[int] = mapped_column(
         sa.ForeignKey("user.id")
     )
+    sell_currency_id: Mapped[str] = mapped_column(
+        sa.ForeignKey("currency.id")
+    )
+    buy_currency_id: Mapped[str] = mapped_column(
+        sa.ForeignKey("currency.id")
+    )
 
     user: Mapped["User"] = relationship(
         "User",
@@ -75,3 +76,17 @@ class Order(Base):
         "ServicePaymentOption",
         foreign_keys="[Order.service_buy_po_id]"
     )
+    sell_currency: Mapped["Currency"] = relationship(
+        "Currency",
+        foreign_keys="[Order.sell_currency_id]"
+    )
+    buy_currency: Mapped["Currency"] = relationship(
+        "Currency",
+        foreign_keys="[Order.buy_currency_id]"
+    )
+
+    def __str__(self) -> str:
+        return f"{self.id}"
+
+    def __repr__(self) -> str:
+        return f"{self.id}"
