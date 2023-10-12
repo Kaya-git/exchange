@@ -8,8 +8,9 @@ from config import conf
 from database.db import Database, get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from binance_parser import find_price
-from .curency_dicts import CRYPTO_ID_TIKKERS, FIAT_ID_TIKKERS
-from database.models import Currency, BankingType, Status, PaymentOption, CryptoType
+from database.models import (
+    Currency, Status, CryptoType, User
+)
 from decimal import Decimal
 
 
@@ -133,6 +134,8 @@ async def confirm_cc(
     session: AsyncSession = Depends(get_async_session)
 ):
 
+    db = Database(session=session)
+
     """Проверяем есть ли ключи в реддисе"""
     does_exist = await services.redis_values.redis_conn.exists(user_uuid)
     if does_exist != 1:
@@ -174,20 +177,22 @@ async def confirm_cc(
         client_email
     ) = await services.redis_values.redis_conn.lrange(user_uuid, 0, -1)
 
+    """ Декодируем из бит в пайтоновские значения """
     client_sell_currency_po = str(client_sell_currency_po, 'UTF-8')
-    client_sell_tikker_id = str(client_sell_tikker_id, 'UTF-8')
-    client_sell_value = Decimal(client_sell_value)
+    client_sell_tikker_id = int(client_sell_tikker_id)
+    client_sell_value = str(client_sell_value, 'UTF-8')
     client_credit_card_number = str(client_credit_card_number, 'UTF-8')
     client_cc_holder = str(client_cc_holder, 'UTF-8')
 
     client_buy_currency_po = str(client_buy_currency_po, 'UTF-8')
     client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
-    client_buy_tikker_id = str(client_buy_tikker_id, 'UTF-8')
-    client_buy_value = Decimal(client_buy_value)
+    client_buy_tikker_id = int(client_buy_tikker_id)
+    client_buy_value = str(client_buy_value, 'UTF-8')
 
     client_email = str(client_email, 'UTF-8')
 
-    db = Database(session=session)
+    client_sell_value = Decimal(client_sell_value)
+    client_buy_value = Decimal(client_buy_value)
 
     client_sell_currency = await db.currency.get_by_where(
         Currency.tikker_id == client_sell_tikker_id
@@ -195,7 +200,29 @@ async def confirm_cc(
     client_buy_currency = await db.currency.get_by_where(
         Currency.tikker_id == client_buy_tikker_id
     )
-    """ Записываем расчетный способ в таблицу PaymentOption """
+
+    """
+    Проверяем существует ли ползователь с данным мылом,
+    если нет создаем нового пользователя по email ордера с пустым паролем и
+    возвращаем его из бд
+    """
+
+    user = await db.user.get_by_where(
+        User.email == client_email
+    )
+    if user is None:
+        new_user = await db.user.new(
+            email=client_email,
+        )
+        db.session.add(new_user)
+        await db.session.commit()
+        user = await db.user.get_by_where(
+            User.email == client_email
+        )
+
+    """
+    Записываем расчетный способ в таблицу PaymentOption
+    """
     if client_sell_currency.type == CryptoType.Fiat:
 
         client_sell_payment_option = await db.payment_option.new(
@@ -204,27 +231,21 @@ async def confirm_cc(
             number=client_credit_card_number,
             holder=client_cc_holder,
             image=new_file_name,
-            user_email=client_email,
+            user_id=user.id,
         )
 
         client_buy_payment_option = await db.payment_option.new(
             banking_type=client_buy_currency_po,
-            currency_tikker=client_buy_currency.id,
+            currency_id=client_buy_currency.id,
             number=client_crypto_wallet,
             holder=client_email,
-            user_email=client_email,
+            user_id=user.id,
         )
 
         db.session.add_all(
             [client_sell_payment_option, client_buy_payment_option]
         )
-        await db.session.commit()
-        client_sell_payment_option = await db.payment_option.get_by_where(
-            PaymentOption.number == client_credit_card_number
-        )
-        client_buy_payment_option = await db.payment_option.get_by_where(
-            PaymentOption.number == client_crypto_wallet
-        )
+        await db.session.flush()
 
     if client_sell_currency.type == CryptoType.Crypto:
 
@@ -233,7 +254,7 @@ async def confirm_cc(
             currency_id=client_sell_currency.id,
             number=client_crypto_wallet,
             holder=client_email,
-            user_email=client_email,
+            user_id=user.id,
         )
         client_buy_payment_option = await db.payment_option.new(
             banking_type=client_sell_currency_po,
@@ -241,33 +262,40 @@ async def confirm_cc(
             number=client_credit_card_number,
             holder=client_cc_holder,
             image=new_file_name,
-            user_email=client_email,
+            user_id=user.id,
         )
 
         db.session.add_all(
             [client_sell_payment_option, client_buy_payment_option]
         )
-        await db.session.commit()
-        client_sell_payment_option = await db.payment_option.get_by_where(
-            PaymentOption.number == client_crypto_wallet
-        )
-        client_buy_payment_option = await db.payment_option.get_by_where(
-            PaymentOption.number == client_credit_card_number
-        )
+        await db.session.flush()
 
     """ Записываем новый ордер на обмен в базу данных """
     new_order = await db.order.new(
+        user_id=user.id,
         user_email=client_email,
         user_cookie=user_uuid,
         user_buy_sum=client_buy_value,
         buy_currency_id=client_buy_currency.id,
-        buy_payment_option=client_buy_payment_option.id,
+        buy_payment_option_id=client_buy_payment_option.id,
         user_sell_sum=client_sell_value,
         sell_currency_id=client_sell_currency.id,
-        sell_payment_option=client_sell_payment_option.id,
+        sell_payment_option_id=client_sell_payment_option.id,
         status=Status.Pending,
     )
+
     db.session.add(new_order)
+    await db.session.flush()
+
+    """
+    Заменить список с информацией в редисе на айди ордера
+    """
+    await services.redis_values.change_keys(
+                    user_uuid=user_uuid,
+                    order_id=new_order.id
+                )
+
     await db.session.commit()
+
     return "Pending order created"
 #         # return RedirectResponse("/exchange/await")

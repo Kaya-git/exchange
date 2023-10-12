@@ -64,19 +64,27 @@ class OrderAdmin(ModelView, model=Order):
     name_plural = "Заказы"
     column_list = [
         Order.id,
-        Order.user_email,
+        Order.user,
         Order.user_buy_sum,
-        Order.buy_currency_id,
+        Order.buy_currency,
         Order.buy_payment_option,
         Order.user_sell_sum,
-        Order.sell_currency_id,
+        Order.sell_currency,
         Order.sell_payment_option,
         Order.date,
         Order.status,
-        Order.service_sell_po_id,
-        Order.service_buy_po_id,
     ]
 
+    column_details_exclude_list = [
+        Order.user_cookie,
+        Order.user_id,
+        Order.service_sell_po_id,
+        Order.service_buy_po_id,
+        Order.sell_currency_id,
+        Order.buy_currency_id,
+        Order.sell_payment_option_id,
+        Order.buy_payment_option_id,
+    ]
     can_create = True
     can_edit = True
     can_delete = True

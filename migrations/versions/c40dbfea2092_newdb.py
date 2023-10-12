@@ -1,8 +1,8 @@
-"""туц_ви
+"""newdb
 
-Revision ID: 6a6d600cb755
+Revision ID: c40dbfea2092
 Revises: 
-Create Date: 2023-10-12 11:47:09.605192
+Create Date: 2023-10-12 14:14:45.758056
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '6a6d600cb755'
+revision: str = 'c40dbfea2092'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -91,20 +91,20 @@ def upgrade() -> None:
     sa.Column('user_email', sa.String(length=320), nullable=False),
     sa.Column('user_cookie', sa.Text(), nullable=False),
     sa.Column('user_buy_sum', sa.Numeric(), nullable=False),
-    sa.Column('buy_payment_option', sa.BigInteger(), nullable=False),
     sa.Column('user_sell_sum', sa.Numeric(), nullable=False),
-    sa.Column('sell_payment_option', sa.BigInteger(), nullable=False),
     sa.Column('date', sa.TIMESTAMP(), nullable=False),
     sa.Column('status', sa.Enum('Pending', 'Timeout', 'Canceled', 'Inprocces', 'Approved', 'Completed', name='status'), nullable=False),
+    sa.Column('sell_payment_option_id', sa.BigInteger(), nullable=False),
+    sa.Column('buy_payment_option_id', sa.BigInteger(), nullable=False),
     sa.Column('service_sell_po_id', sa.BigInteger(), nullable=True),
     sa.Column('service_buy_po_id', sa.BigInteger(), nullable=True),
     sa.Column('user_id', sa.BigInteger(), nullable=False),
     sa.Column('sell_currency_id', sa.BigInteger(), nullable=False),
     sa.Column('buy_currency_id', sa.BigInteger(), nullable=False),
     sa.ForeignKeyConstraint(['buy_currency_id'], ['currency.id'], ),
-    sa.ForeignKeyConstraint(['buy_payment_option'], ['payment_option.id'], ),
+    sa.ForeignKeyConstraint(['buy_payment_option_id'], ['payment_option.id'], ),
     sa.ForeignKeyConstraint(['sell_currency_id'], ['currency.id'], ),
-    sa.ForeignKeyConstraint(['sell_payment_option'], ['payment_option.id'], ),
+    sa.ForeignKeyConstraint(['sell_payment_option_id'], ['payment_option.id'], ),
     sa.ForeignKeyConstraint(['service_buy_po_id'], ['service_payment_option.id'], ),
     sa.ForeignKeyConstraint(['service_sell_po_id'], ['service_payment_option.id'], ),
     sa.ForeignKeyConstraint(['user_email'], ['user.email'], ),

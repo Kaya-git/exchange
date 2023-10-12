@@ -23,13 +23,15 @@ class UserRepo(Repository[User]):
     async def new(
         self,
         email: str,
-        first_name: str,
-        second_name: str,
+        hashed_password: str = None,
+        first_name: str = None,
+        second_name: str = None,
     ) -> None:
 
         new_user = await self.session.merge(
             User(
                 email=email,
+                hashed_password=hashed_password,
                 first_name=first_name,
                 second_name=second_name,
             )

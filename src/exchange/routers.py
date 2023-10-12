@@ -36,7 +36,9 @@ async def confirm_order(
 ):
     # db = Database(session=session)
 
-    """ Проверяем есть ли ключи в реддисе и забираем значения """
+    """
+    Проверяем есть ли ключи в реддисе и забираем значения
+    """
     does_exist = await services.redis_values.redis_conn.exists(user_uuid)
     if does_exist != 1:
         return "Время вышло"
@@ -54,7 +56,9 @@ async def confirm_order(
         client_email
     ) = await services.redis_values.redis_conn.lrange(user_uuid, 0, -1)
 
-    """ Декодируем из бит в пайтоновские значения """
+    """
+    Декодируем из бит в пайтоновские значения
+    """
     client_sell_currency_po = str(client_sell_currency_po, 'UTF-8')
     client_sell_tikker_id = str(client_sell_tikker_id, 'UTF-8')
     client_sell_value = str(client_sell_value, 'UTF-8')
@@ -70,6 +74,10 @@ async def confirm_order(
 
     client_sell_value = Decimal(client_sell_value)
     client_buy_value = Decimal(client_buy_value)
+
+    """
+    Возвращаем значения для подтверждения
+    """
     return {
         "client_sell_currency_po": client_sell_currency_po,
         "client_sell_tikker_id": client_sell_tikker_id,
@@ -98,6 +106,7 @@ async def conformation_await(
         )
     )
     await paralel_waiting
+    return "Approved"
 
 
 @exhange_router.get("/order/{order_id}")
@@ -122,7 +131,7 @@ async def requisites(
     )
 
     """ Находим в таблице ServicePaymentOption способ оплаты
-    с тикером подходящим для продажу клиент"""
+    с тикером подходящим для продажи клиента"""
     statement = (
         select(
             ServicePaymentOption

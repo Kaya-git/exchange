@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from .user import User
     from .service_payment_option import ServicePaymentOption
     from .currency import Currency
+    from .payment_option import PaymentOption
 
 
 class Order(Base):
@@ -28,14 +29,9 @@ class Order(Base):
     user_buy_sum: Mapped[sa.Numeric] = mapped_column(
         sa.Numeric,
     )
-    buy_payment_option: Mapped[int] = mapped_column(
-        sa.ForeignKey("payment_option.id")
-    )
+
     user_sell_sum: Mapped[sa.Numeric] = mapped_column(
         sa.Numeric,
-    )
-    sell_payment_option: Mapped[int] = mapped_column(
-        sa.ForeignKey("payment_option.id")
     )
     date: Mapped[int] = mapped_column(
         sa.TIMESTAMP,
@@ -46,6 +42,12 @@ class Order(Base):
         sa.Enum(Status)
     )
 
+    sell_payment_option_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("payment_option.id")
+    )
+    buy_payment_option_id: Mapped[int] = mapped_column(
+        sa.ForeignKey("payment_option.id")
+    )
     service_sell_po_id: Mapped[int] = mapped_column(
         sa.ForeignKey("service_payment_option.id"),
         nullable=True
@@ -64,6 +66,14 @@ class Order(Base):
         sa.ForeignKey("currency.id")
     )
 
+    sell_payment_option: Mapped["PaymentOption"] = relationship(
+        "PaymentOption",
+        foreign_keys="[Order.sell_payment_option_id]"
+    )
+    buy_payment_option: Mapped["PaymentOption"] = relationship(
+        "PaymentOption",
+        foreign_keys="[Order.buy_payment_option_id]"
+    )
     user: Mapped["User"] = relationship(
         "User",
         foreign_keys="[Order.user_id]"

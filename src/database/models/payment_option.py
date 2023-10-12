@@ -19,9 +19,6 @@ class PaymentOption(Base):
     banking_type: Mapped[BankingType] = mapped_column(
         sa.Enum(BankingType)
     )
-    currency_id: Mapped[int] = mapped_column(
-        sa.ForeignKey("currency.id")
-    )
     number: Mapped[str] = mapped_column(
         sa.Text,
         nullable=False,

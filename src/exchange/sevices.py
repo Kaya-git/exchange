@@ -1,8 +1,9 @@
 import redis.asyncio as redis
 from config import conf
 from database.db import Database
-from database.models import Order, Status
+from database.models import Order, Status, PaymentOption, BankingType
 import asyncio
+from sqlalchemy import select
 # from fastapi.responses import RedirectResponse
 
 
@@ -83,26 +84,61 @@ class DB():
         self.iterations = iterations
 
     async def conformation_await(self, db: Database, user_uuid: str):
+        """
+        Забираем из редиса айди заказа
+        """
+        order_id = (
+            await services.redis_values.redis_conn.lrange(
+                user_uuid,
+                0,
+                -1,
+            )
+        )
+        order_id = int(*order_id)
+        """
+        Делаем цикл с определенным количеством итераций для пулинга  ордера из базы данных
+        """
         while self.iterations != 0:
             order = None
-            try:
-                order = await db.order.get_by_where(
-                    Order.user_cookie == user_uuid
-                )
-            except KeyError("Ошибка в conform_await"):
-                return ("Ошибка в conform_await")
-            if order.status == Status.Approved:
-                print(order.sell_currency_tikker)
-                await services.redis_values.change_keys(
-                    user_uuid=user_uuid,
-                    order_id=order.id
-                )
-                return "Approved"
-                # return RedirectResponse(f"/exchange/order/{order.id}")
-            if order.status == Status.Canceled:
-                # return RedirectResponse("/cancel")
-                return "Order Canceled"
+            user_buy_po = None
+            user_sell_po = None
+
+            """
+            Находим в бд заджойненый кортеж ордера со cпособами оплаты
+            """
+            order = await db.order.get(ident=order_id)
+
+            statement = select(
+                PaymentOption
+                ).join(
+                    Order, PaymentOption.id == Order.buy_payment_option_id
+                    ).where(
+                        Order.id == order_id
+                    )
+            user_buy_po = await db.session.execute(statement=statement)
+            user_buy_po = user_buy_po.scalar_one_or_none()
+
+            if user_buy_po.banking_type != BankingType.CRYPTO:
+                if user_buy_po.is_verified is True and order.status == Status.Approved:
+                    return "Approved"
+                    # return RedirectResponse(f"/exchange/order/{order.id}")
+
+            if user_buy_po.banking_type == BankingType.CRYPTO:
+                statement = select(
+                    PaymentOption
+                ).join(
+                    Order, PaymentOption.id == Order.sell_payment_option_id
+                    ).where(
+                        Order.id == order_id
+                    )
+                user_sell_po = await db.session.execute(statement=statement)
+                user_sell_po = user_sell_po.scalar_one_or_none()
+                if user_sell_po.is_verified is True and order.status == Status.Approved:
+                    return "Approved"
+                    # return RedirectResponse(f"/exchange/order/{order.id}")
             await asyncio.sleep(30)
+        return "Declined"
+        # return RedirectResponse("/cancel")
 
     async def payed_button_db(
         self, db: Database,
