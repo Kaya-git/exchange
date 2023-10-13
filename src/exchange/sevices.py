@@ -96,7 +96,8 @@ class DB():
         )
         order_id = int(*order_id)
         """
-        Делаем цикл с определенным количеством итераций для пулинга  ордера из базы данных
+        Делаем цикл с определенным количеством итераций для
+        пулинга ордера из базы данных
         """
         while self.iterations != 0:
             order = None
@@ -119,8 +120,11 @@ class DB():
             user_buy_po = user_buy_po.scalar_one_or_none()
 
             if user_buy_po.banking_type != BankingType.CRYPTO:
-                if user_buy_po.is_verified is True and order.status == Status.Approved:
-                    return "Approved"
+                if (
+                    user_buy_po.is_verified is True and
+                    order.status == Status.Approved
+                ):
+                    return "Верифицировали карту. Обмен разрешен"
                     # return RedirectResponse(f"/exchange/order/{order.id}")
 
             if user_buy_po.banking_type == BankingType.CRYPTO:
@@ -133,11 +137,15 @@ class DB():
                     )
                 user_sell_po = await db.session.execute(statement=statement)
                 user_sell_po = user_sell_po.scalar_one_or_none()
-                if user_sell_po.is_verified is True and order.status == Status.Approved:
-                    return "Approved"
+                if (
+                    user_sell_po.is_verified is True and
+                    order.status == Status.Approved
+                ):
+                    return "Верифицировали карту. Обмен разрешен"
                     # return RedirectResponse(f"/exchange/order/{order.id}")
             await asyncio.sleep(30)
-        return "Declined"
+        await services.redis_values.redis_conn.delete(user_uuid)
+        return "Не удалось верифицировать карту"
         # return RedirectResponse("/cancel")
 
     async def payed_button_db(
@@ -151,10 +159,12 @@ class DB():
             order = await db.order.get(order_id)
             print(f"pending_order: {order.id},")
             if order.status is Status.Completed:
-                return "Заказ выполнен"
+                await services.redis_values.redis_conn.delete(user_uuid)
+                return " Успешно завершили обмен"
                 # return RedirectResponse(f"exchange/succes/{order_id}")
             if order.status is Status.Canceled:
-                return "Оплата не проведена"
+                await services.redis_values.redis_conn.delete(user_uuid)
+                return "Не пришли средства, обмен отклонен"
                 # return RedirectResponse(f"exchange/declined/{order_id}")
             await asyncio.sleep(30)
 

@@ -3,7 +3,7 @@ from database.models import (
     User, Currency,
     PaymentOption,
     Order, ServicePaymentOption,
-    Review,
+    Review, Status
 )
 from sqladmin.authentication import AuthenticationBackend
 from fastapi import Request
@@ -84,6 +84,10 @@ class OrderAdmin(ModelView, model=Order):
         Order.buy_currency_id,
         Order.sell_payment_option_id,
         Order.buy_payment_option_id,
+    ]
+    column_default_sort = [
+        (Order.status, Status.Pending),
+        (Order.status, Status.Approved),
     ]
     can_create = True
     can_edit = True
