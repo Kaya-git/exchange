@@ -1,18 +1,20 @@
-"""newdb
+"""new db
 
-Revision ID: c40dbfea2092
+Revision ID: e0832ad39ae7
 Revises: 
-Create Date: 2023-10-12 14:14:45.758056
+Create Date: 2023-10-15 17:02:36.988034
 
 """
 from typing import Sequence, Union
 
+from src.config import conf
 from alembic import op
+from fastapi_storages.integrations.sqlalchemy import ImageType
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'c40dbfea2092'
+revision: str = 'e0832ad39ae7'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,7 +33,7 @@ def upgrade() -> None:
     sa.Column('reserve', sa.Numeric(), nullable=False),
     sa.Column('max', sa.Numeric(), nullable=False),
     sa.Column('min', sa.Numeric(), nullable=False),
-    sa.Column('icon', sa.Text(), nullable=True),
+    sa.Column('icon', ImageType(storage=conf.image_admin_storage), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name'),
     sa.UniqueConstraint('tikker'),
@@ -55,12 +57,12 @@ def upgrade() -> None:
     op.create_table('payment_option',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
     sa.Column('banking_type', sa.Enum('SBER', 'CRYPTO', 'QIWIRUR', 'QIWIUSD', 'YAMONEY', 'PAYRUR', 'PAYUSD', 'PAYEUR', name='bankingtype'), nullable=False),
-    sa.Column('currency_id', sa.BigInteger(), nullable=False),
     sa.Column('number', sa.Text(), nullable=False),
     sa.Column('holder', sa.Text(), nullable=False),
     sa.Column('is_verified', sa.Boolean(), nullable=False),
     sa.Column('image', sa.Text(), nullable=True),
     sa.Column('user_id', sa.BigInteger(), nullable=False),
+    sa.Column('currency_id', sa.BigInteger(), nullable=False),
     sa.ForeignKeyConstraint(['currency_id'], ['currency.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id'),

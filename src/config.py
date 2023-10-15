@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from dataclasses import dataclass
 from sqlalchemy.engine import URL
 import yadisk_async
-
+from fastapi_storages import FileSystemStorage
 load_dotenv()
 
 
@@ -74,6 +74,7 @@ class Configuration:
     admin_auth = os.environ.get("ADMIN_AUTH")
     debug = bool(os.environ.get("DEBUG"))
     logging_level = int(os.environ.get("LOGGING_LEVEL"))
+    image_admin_storage = FileSystemStorage(path='src\static\currency_icons')
 
     image_storage = ImageStorageConfiguration()
     parser = ParserConfiguration()

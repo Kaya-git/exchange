@@ -2,6 +2,8 @@ from .base import Base
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .crypto_type import CryptoType
+from config import conf
+from fastapi_storages.integrations.sqlalchemy import ImageType
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from .service_payment_option import ServicePaymentOption
@@ -56,7 +58,7 @@ class Currency(Base):
         default=0,
     )
     icon: Mapped[str] = mapped_column(
-        sa.Text,
+        ImageType(storage=conf.image_admin_storage),
         default=None,
         nullable=True
     )
