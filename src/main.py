@@ -59,67 +59,11 @@ personal_account = APIRouter(
 async def root(
     response: Response,
     async_session: AsyncSession = Depends(get_async_session),
-        ):
+):
 
     """Устанавливаем печеньки на пользователя"""
     cookies_uuid = uuid.uuid4()
     response.set_cookie(key="user_uuid", value=cookies_uuid)
-
-    # """Отдаем из бд банковские данные валют
-    # 'название, иконку, подсчитанный курс' """
-    # db = Database(session=async_session)
-    # try:
-    #     currency_list = await db.currency.get_all()
-    # except KeyError("Списка нет"):
-    #     return "Не приходит список валют из бд"
-    # fiat_list = []
-    # crypto_list = []
-    # try:
-    #     for currency in currency_list:
-    #         if currency['tikker_id'] < 50:
-    #             name = currency['name']
-    #             tikker = currency['tikker']
-    #             icon = currency['icon']
-    #             rate_rub = find_price(f'{tikker}RUB')
-    #             rate_usd = find_price(f'{tikker}usd')
-    #             reserve = currency['reserve']
-    #             min_value = currency['min']
-    #             max_value = currency['max']
-    #             crypto_dict = {
-    #                 f"{name}": [
-    #                     tikker,
-    #                     icon,
-    #                     rate_rub,
-    #                     rate_usd,
-    #                     max_value,
-    #                     min_value,
-    #                     reserve
-    #                 ]
-    #             }
-    #             crypto_list.append(crypto_dict)
-
-    #         if currency['tikker_id'] <= 50:
-    #             name = currency['name']
-    #             tikker = currency['tikker']
-    #             icon = currency['icon']
-    #             reserve = currency['reserve']
-    #             min_value = currency['min']
-    #             max_value = currency['max']
-    #             fiat_dict = {
-    #                 f"{name}": [
-    #                     tikker,
-    #                     icon,
-    #                     reserve,
-    #                     min_value,
-    #                     max_value
-    #                 ]
-    #             }
-    #             fiat_list.append(fiat_dict)
-
-    #     banking_info = operator.add(crypto_list, fiat_list)
-    # except KeyError("Ошибка в создании банковского списка"):
-    #     return "Ошибка в создании банковского списка"
-    # return banking_info
     return cookies_uuid
 
 
@@ -133,18 +77,7 @@ async def order_list(
         completed_orders = await db.order.get_many(
             Order.user_email == user.email
         )
-        stmt = {}
-        for order in completed_orders:
-            id = order.id
-            swap = (
-                f"отдал: {order.user_sell_sum}{order.sell_currency_tikker}\n"
-                )
-            (
-                f"получил: {order.user_buy_sum}{order.buy_currency_tikker}"
-                )
-            status = order.status
-            stmt[id] = f"{swap}, {status}"
-        return stmt
+        return completed_orders
     except KeyError("Ключ не найден"):
         return (" Нет совершенных сделок")
 

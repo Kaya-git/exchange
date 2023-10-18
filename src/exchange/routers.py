@@ -347,9 +347,13 @@ async def payed_button(
 # # --------------------------------------------------------------------------
 
 
-@menu_router.get("/siterules")
-async def siterules():
-    ...
+@menu_router.get("/currency/info")
+async def currency_info(
+    async_session: AsyncSession = Depends(get_async_session)
+):
+    db = Database(async_session)
+    currency_list = await db.currency.get_all()
+    return currency_list
 
 
 @menu_router.get("/reserve")
@@ -366,10 +370,7 @@ async def reserve(
 
 @menu_router.get("/tarifs")
 async def tarifs():
-    return {
-        "btc": f"{find_price('BTCRUB')}",
-        "ltc": f"{find_price('LTCRUB')}",
-    }
+    ...
 
 
 @menu_router.get("/faq")
