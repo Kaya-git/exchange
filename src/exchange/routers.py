@@ -2,7 +2,7 @@ from fastapi import APIRouter, Cookie, Depends
 from fastapi.responses import RedirectResponse
 from .sevices import services
 from database.db import Database, get_async_session
-from binance_parser import find_price
+from bparser.parser import find_price
 from database.models import (
     Currency, Review,
     ServicePaymentOption,

@@ -18,7 +18,6 @@ from auth.auth import auth_backend
 from auth.schemas import UserRead, UserCreate
 from auth.manager import get_user_manager
 from database.models import User, Order
-from binance_parser import find_price
 import uuid
 
 
@@ -112,7 +111,7 @@ app.include_router(
 )
 
 
-if __name__ == "__main__":
-    import uvicorn
+# if __name__ == "__main__":
+#     import uvicorn
 
-    uvicorn.run("main:app", log_level=conf.logging_level, reload=True)
+#     uvicorn.run("main:app", log_level=conf.logging_level, reload=True)
