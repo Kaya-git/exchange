@@ -2,7 +2,7 @@ from .base import Base
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .crypto_type import CryptoType
-from src.config import conf
+from config import conf
 from fastapi_storages.integrations.sqlalchemy import ImageType
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
