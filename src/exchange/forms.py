@@ -36,6 +36,19 @@ async def order_crypto_fiat(
 ):
     db = Database(session=session)
 
+    """
+    Проверяем пришли данные или нет
+    """
+    if (
+        not client_sell_tikker_id or
+        not client_buy_tikker_id or
+        not client_email or
+        not client_crypto_wallet or
+        not client_credit_card_number or
+        not client_cc_holder
+    ):
+        return KeyError
+
     client_sell_currency = await db.currency.get_by_where(
         Currency.tikker_id == client_sell_tikker_id
     )

@@ -1,20 +1,19 @@
 """new db
 
-Revision ID: e0832ad39ae7
+Revision ID: 1b3783b47a25
 Revises: 
-Create Date: 2023-10-15 17:02:36.988034
+Create Date: 2023-10-19 10:33:17.142125
 
 """
 from typing import Sequence, Union
-
+from fastapi_storages.integrations.sqlalchemy import ImageType
 from src.config import conf
 from alembic import op
-from fastapi_storages.integrations.sqlalchemy import ImageType
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'e0832ad39ae7'
+revision: str = '1b3783b47a25'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
