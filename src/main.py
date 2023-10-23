@@ -16,16 +16,12 @@ from admin import (
 from fastapi_users import FastAPIUsers
 from auth.auth import auth_backend
 from auth.schemas import UserRead, UserCreate
-from auth.manager import get_user_manager
-from database.models import User, Order
+from auth.manager import fastapi_users
+from users import User
+from orders.routers import orders_router
 import uuid
 
 
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
-current_active_user = fastapi_users.current_user(active=True)
 
 app = FastAPI(
     title="Exchange"
@@ -40,18 +36,13 @@ admin = Admin(
     authentication_backend=authentication_backend
 )
 
+
 admin.add_view(UserAdmin)
 admin.add_view(ServicePaymentOptionAdmin)
 admin.add_view(ReviewAdmin)
 admin.add_view(CurrencyAdmin)
 admin.add_view(PaymentOptionAdmin)
 admin.add_view(OrderAdmin)
-
-
-personal_account = APIRouter(
-    prefix="/account",
-    tags=["роутер личного кабинета"]
-)
 
 
 @app.get("/")
@@ -66,21 +57,7 @@ async def root(
     return cookies_uuid
 
 
-@personal_account.get("/orders")
-async def order_list(
-    async_session: AsyncSession = Depends(get_async_session),
-    user: User = Depends(current_active_user)
-):
-    db = Database(session=async_session)
-    try:
-        completed_orders = await db.order.get_many(
-            Order.user_email == user.email
-        )
-        return completed_orders
-    except KeyError("Ключ не найден"):
-        return (" Нет совершенных сделок")
-
-
+app.include_router(orders_router)
 app.include_router(forms_router)
 app.include_router(exhange_router)
 app.include_router(menu_router)
@@ -111,7 +88,7 @@ app.include_router(
 )
 
 
-# if __name__ == "__main__":
-#     import uvicorn
+if __name__ == "__main__":
+    import uvicorn
 
-#     uvicorn.run("main:app", log_level=conf.logging_level, reload=True)
+    uvicorn.run("main:app", log_level=conf.logging_level, reload=True)

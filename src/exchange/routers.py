@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Cookie, Depends
 from fastapi.responses import RedirectResponse
-from .sevices import services
+from sevices import services
 from database.db import Database, get_async_session
-from bparser.parser import find_price
-from database.models import (
-    Currency, Review,
-    ServicePaymentOption,
-    Order, Status,
-    User, PaymentOption,
-    CryptoType
-)
+from binance_parser import find_price
+from currencies import Currency
+from reviews import Review
+from service_payment_options import ServicePaymentOption
+from orders import Order
+from enums import Status, CryptoType
+from users import User
+from payment_options import PaymentOption
 from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
 from sqlalchemy import select, update

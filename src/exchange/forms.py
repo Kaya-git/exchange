@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Form, UploadFile, Cookie, Depends
 # from fastapi.responses import RedirectResponse
 import os
-from .sevices import Count
-from .sevices import services
+from sevices import Count
+from sevices import services
 import secrets
 from config import conf
 from database.db import Database, get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
-from bparser.parser import find_price
-from database.models import (
-    Currency, Status, CryptoType, User
-)
+from binance_parser import find_price
+from currencies import Currency
+from enums import Status,  CryptoType
+from users import User
 from decimal import Decimal
 
 
