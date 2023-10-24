@@ -1,7 +1,7 @@
 """  Currency repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
 import sqlalchemy as sa
-from currencies import Currency
+from currencies.models import Currency
 from service_payment_options import ServicePaymentOption
 from database.abstract_repo import Repository
 from typing import List

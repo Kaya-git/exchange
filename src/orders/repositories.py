@@ -1,12 +1,12 @@
 """  Order repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
 import sqlalchemy as sa
-from orders import Order
-from currencies import Currency
-from payment_options import PaymentOption
+from orders.models import Order
+from currencies.models import Currency
+from payment_options.models import PaymentOption
 from enums import Status
-from users import User
-from service_payment_options import ServicePaymentOption
+from users.models import User
+from service_payment_options.models import ServicePaymentOption
 from database.abstract_repo import Repository
 
 

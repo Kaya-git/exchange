@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from users import User
+    from users.models import User
 
 
 class Review(Base):

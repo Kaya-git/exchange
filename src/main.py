@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Response, APIRouter, Depends
-from database.db import Database, get_async_session
+from fastapi import FastAPI, Response, Depends
+from database.db import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 # from fastapi.responses import RedirectResponse
 from config import conf
@@ -13,14 +13,12 @@ from admin import (
     PaymentOptionAdmin, ReviewAdmin,
     OrderAdmin,
 )
-from fastapi_users import FastAPIUsers
 from auth.auth import auth_backend
-from auth.schemas import UserRead, UserCreate
-from auth.manager import fastapi_users
-from users import User
+from auth.shemas import UserRead, UserCreate
+from auth.routers import fastapi_users
+from currencies.routers import currency_router
 from orders.routers import orders_router
 import uuid
-
 
 
 app = FastAPI(
@@ -57,17 +55,13 @@ async def root(
     return cookies_uuid
 
 
+app.include_router(currency_router)
 app.include_router(orders_router)
 app.include_router(forms_router)
 app.include_router(exhange_router)
 app.include_router(menu_router)
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/jwt",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend, requires_verification=True),
     prefix="/auth/jwt",
     tags=["auth"],
 )
@@ -86,7 +80,6 @@ app.include_router(
     prefix="/auth",
     tags=["auth"],
 )
-
 
 if __name__ == "__main__":
     import uvicorn

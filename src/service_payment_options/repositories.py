@@ -1,7 +1,7 @@
 """  ServicePaymentOption repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
-from service_payment_options import ServicePaymentOption
-from currencies import Currency
+from service_payment_options.models import ServicePaymentOption
+from currencies.models import Currency
 from enums import BankingType
 from database.abstract_repo import Repository
 

@@ -8,9 +8,9 @@ from config import conf
 from database.db import Database, get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from binance_parser import find_price
-from currencies import Currency
+from currencies.models import Currency
 from enums import Status,  CryptoType
-from users import User
+from users.models import User
 from decimal import Decimal
 
 

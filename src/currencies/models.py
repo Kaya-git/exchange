@@ -1,3 +1,4 @@
+
 from database.base_model import Base
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship

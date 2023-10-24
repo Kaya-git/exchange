@@ -4,11 +4,11 @@
 from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from config import conf
-from users import UserRepo
-from orders import OrderRepo
-from currencies import CurrencyRepo
-from reviews import ReviewRepo
-from payment_options import PaymentOptionRepo
+from users.repositories import UserRepo
+from orders.repositories import OrderRepo
+from currencies.repositories import CurrencyRepo
+from reviews.repositories import ReviewRepo
+from payment_options.repositories import PaymentOptionRepo
 from service_payment_options import ServicePaymentOptionRepo
 from .base_model import Base
 

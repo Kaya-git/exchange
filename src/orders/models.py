@@ -5,9 +5,9 @@ from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from users import User
+    from users.models import User
     from service_payment_options import ServicePaymentOption
-    from currencies import Currency
+    from currencies.models import Currency
     from payment_options import PaymentOption
 
 

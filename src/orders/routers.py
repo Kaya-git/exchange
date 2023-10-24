@@ -1,13 +1,11 @@
-from auth.manager import current_active_user
+from auth.routers import current_active_verified_user 
 from fastapi import FastAPI, Depends, APIRouter
 from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.db import get_async_session, Database
 from orders import Order
 if TYPE_CHECKING:
-    from users import User
-
-
+    from users.models import User
 
 
 orders_router = APIRouter(
@@ -18,7 +16,7 @@ orders_router = APIRouter(
 @orders_router.get("/current_user/order_list")
 async def order_list(
     async_session: AsyncSession = Depends(get_async_session),
-    user: "User" = Depends(current_active_user)
+    user: "User" = Depends(current_active_verified_user)
 ):
     db = Database(session=async_session)
     try:

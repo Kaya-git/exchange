@@ -4,8 +4,8 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from currencies import Currency
-    from users import User
+    from currencies.models import Currency
+    from users.models import User
 
 
 class PaymentOption(Base):

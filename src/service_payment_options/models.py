@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from currencies import Currency
+    from currencies.models import Currency
 
 
 class ServicePaymentOption(Base):

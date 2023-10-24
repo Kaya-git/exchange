@@ -1,8 +1,8 @@
 """  Review repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
 from enums import Mark
-from users import User
-from reviews import Review
+from users.models import User
+from reviews.models import Review
 from database.abstract_repo import Repository
 
 

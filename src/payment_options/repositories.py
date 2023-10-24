@@ -1,9 +1,9 @@
 """  PaymentOption repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
 from enums import BankingType
-from currencies import Currency
-from payment_options import PaymentOption
-from users import User
+from currencies.models import Currency
+from payment_options.models import PaymentOption
+from users.models import User
 from database.abstract_repo import Repository
 
 
