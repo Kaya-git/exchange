@@ -10,12 +10,38 @@ from sqladmin.authentication import AuthenticationBackend
 from fastapi import Request
 from fastapi.responses import RedirectResponse
 from typing import Optional
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from database.db import get_async_session
+# from sqlalchemy import select
+
+
 
 
 class AdminAuth(AuthenticationBackend):
+
+    # session: AsyncSession
+
+    # def __init__(
+    #         self,
+    #         session: AsyncSession,
+    #         user_table: User
+    # ) -> None:
+    #     self.session = session
+    #     self.user_table = user_table
+
     async def login(self, request: Request) -> bool:
         form = await request.form()
         username, password = form["username"], form["password"]
+        
+        # statement = select(
+        #     self.user_table
+        # ).where(
+        #     self.user_table.email == username
+        # )
+        # result = await self.session.execute(statement)
+        # user = result.unique().scalar_one_or_none()
+
 
         # Validate username/password credentials
         # And update session
@@ -177,3 +203,7 @@ class ReviewAdmin(ModelView, model=Review):
     can_delete = True
     can_export = True
     can_view_details = True
+
+
+async def get_admin_db(session: AsyncSession = Depends(get_async_session)):
+    yield AdminAuth(session)

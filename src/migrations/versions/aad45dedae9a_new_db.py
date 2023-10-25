@@ -1,19 +1,20 @@
-"""new db
+"""new_db
 
-Revision ID: 1b3783b47a25
+Revision ID: aad45dedae9a
 Revises: 
-Create Date: 2023-10-19 10:33:17.142125
+Create Date: 2023-10-25 15:25:16.132427
 
 """
 from typing import Sequence, Union
-from fastapi_storages.integrations.sqlalchemy import ImageType
-from src.config import conf
+
 from alembic import op
+from fastapi_storages.integrations.sqlalchemy import ImageType
+from config import conf
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '1b3783b47a25'
+revision: str = 'aad45dedae9a'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,7 +33,7 @@ def upgrade() -> None:
     sa.Column('reserve', sa.Numeric(), nullable=False),
     sa.Column('max', sa.Numeric(), nullable=False),
     sa.Column('min', sa.Numeric(), nullable=False),
-    sa.Column('icon', ImageType(storage=conf.image_admin_storage), nullable=True),
+    sa.Column('icon', ImageType(conf.image_admin_storage), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name'),
     sa.UniqueConstraint('tikker'),
