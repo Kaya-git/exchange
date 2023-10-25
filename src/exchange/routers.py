@@ -1,24 +1,20 @@
 from fastapi import APIRouter, Cookie, Depends
 from fastapi.responses import RedirectResponse
-from .sevices import services
+from sevices import services
 from database.db import Database, get_async_session
 from binance_parser import find_price
-from database.models import (
-    Currency, Review,
-    ServicePaymentOption,
-    Order, Status,
-    User, PaymentOption,
-    CryptoType
-)
+from currencies.models import Currency
+from reviews import Review
+from service_payment_options import ServicePaymentOption
+from orders import Order
+from enums import Status, CryptoType
+from users.models import User
+from payment_options import PaymentOption
 from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
 from sqlalchemy import select, update
 from pprint import pprint
 from decimal import Decimal
-
-currency_router = APIRouter(
-    tags=["валютный роутер"]
-)
 
 menu_router = APIRouter(
     tags=["роутер кнопок меню"]
@@ -302,13 +298,12 @@ async def requisites(
 
     pprint(service_payment_option)
 
-    # try:
+
     return {
             "requisites_num": service_payment_option.number,
             "holder": service_payment_option.holder
         }
-    # except KeyError("Ключ не найден, нужен новый ордер"):
-    #     return "Ключ не найден, нужен новый ордер"
+    
 
 
 @exhange_router.get("/payed")

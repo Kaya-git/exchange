@@ -1,10 +1,11 @@
 from sqladmin import ModelView
-from database.models import (
-    User, Currency,
-    PaymentOption,
-    Order, ServicePaymentOption,
-    Review, Status
-)
+from users.models import User
+from currencies.models import Currency
+from payment_options import PaymentOption
+from orders import Order
+from service_payment_options import ServicePaymentOption
+from reviews import Review
+from enums import Status
 from sqladmin.authentication import AuthenticationBackend
 from fastapi import Request
 from fastapi.responses import RedirectResponse
@@ -12,11 +13,14 @@ from typing import Optional
 
 
 class AdminAuth(AuthenticationBackend):
-    async def login(
-        self,
-        request: Request,
-    ) -> bool:
+    async def login(self, request: Request) -> bool:
+        form = await request.form()
+        username, password = form["username"], form["password"]
+
+        # Validate username/password credentials
+        # And update session
         request.session.update({"token": "..."})
+
         return True
 
     async def logout(self, request: Request) -> bool:

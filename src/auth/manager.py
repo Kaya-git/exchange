@@ -5,8 +5,8 @@ from fastapi_users import (
     BaseUserManager, IntegerIDMixin,
     models, schemas, exceptions
 )
-from .database import get_user_db
-from database.models.user import User
+from .db import get_user_db
+from users.models import User
 from config import conf
 
 

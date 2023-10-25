@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Response, APIRouter, Depends
-from database.db import Database, get_async_session
+from fastapi import FastAPI, Response, Depends
+from database.db import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 # from fastapi.responses import RedirectResponse
 from config import conf
@@ -13,20 +13,13 @@ from admin import (
     PaymentOptionAdmin, ReviewAdmin,
     OrderAdmin,
 )
-from fastapi_users import FastAPIUsers
 from auth.auth import auth_backend
-from auth.schemas import UserRead, UserCreate
-from auth.manager import get_user_manager
-from database.models import User, Order
-from binance_parser import find_price
+from auth.shemas import UserRead, UserCreate
+from auth.routers import fastapi_users
+from currencies.routers import currency_router
+from orders.routers import orders_router
 import uuid
 
-
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
-current_active_user = fastapi_users.current_user(active=True)
 
 app = FastAPI(
     title="Exchange"
@@ -41,18 +34,13 @@ admin = Admin(
     authentication_backend=authentication_backend
 )
 
+
 admin.add_view(UserAdmin)
 admin.add_view(ServicePaymentOptionAdmin)
 admin.add_view(ReviewAdmin)
 admin.add_view(CurrencyAdmin)
 admin.add_view(PaymentOptionAdmin)
 admin.add_view(OrderAdmin)
-
-
-personal_account = APIRouter(
-    prefix="/account",
-    tags=["роутер личного кабинета"]
-)
 
 
 @app.get("/")
@@ -67,31 +55,13 @@ async def root(
     return cookies_uuid
 
 
-@personal_account.get("/orders")
-async def order_list(
-    async_session: AsyncSession = Depends(get_async_session),
-    user: User = Depends(current_active_user)
-):
-    db = Database(session=async_session)
-    try:
-        completed_orders = await db.order.get_many(
-            Order.user_email == user.email
-        )
-        return completed_orders
-    except KeyError("Ключ не найден"):
-        return (" Нет совершенных сделок")
-
-
+app.include_router(currency_router)
+app.include_router(orders_router)
 app.include_router(forms_router)
 app.include_router(exhange_router)
 app.include_router(menu_router)
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/jwt",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend, requires_verification=True),
     prefix="/auth/jwt",
     tags=["auth"],
 )
@@ -110,7 +80,6 @@ app.include_router(
     prefix="/auth",
     tags=["auth"],
 )
-
 
 if __name__ == "__main__":
     import uvicorn

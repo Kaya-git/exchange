@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Form, UploadFile, Cookie, Depends
 # from fastapi.responses import RedirectResponse
 import os
-from .sevices import Count
-from .sevices import services
+from sevices import Count
+from sevices import services
 import secrets
 from config import conf
 from database.db import Database, get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from binance_parser import find_price
-from database.models import (
-    Currency, Status, CryptoType, User
-)
+from currencies.models import Currency
+from enums import Status,  CryptoType
+from users.models import User
 from decimal import Decimal
 
 
@@ -63,7 +63,10 @@ async def order_crypto_fiat(
         'LTC_CRYPTO'
     """
     sell_currency_tuple = client_sell_currency.tikker.split("_")
+    print(sell_currency_tuple)
+    
     buy_currency_tuple = client_buy_currency.tikker.split("_")
+    print(buy_currency_tuple)
 
     client_sell_currency_tikker = sell_currency_tuple[0]
     client_buy_currency_tikker = buy_currency_tuple[0]
