@@ -80,8 +80,3 @@ app.include_router(
     prefix="/auth",
     tags=["auth"],
 )
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("main:app", log_level=conf.logging_level, reload=True)
