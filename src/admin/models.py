@@ -13,55 +13,6 @@ from typing import Optional
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.db import get_async_session
-# from sqlalchemy import select
-
-
-
-
-class AdminAuth(AuthenticationBackend):
-
-    # session: AsyncSession
-
-    # def __init__(
-    #         self,
-    #         session: AsyncSession,
-    #         user_table: User
-    # ) -> None:
-    #     self.session = session
-    #     self.user_table = user_table
-
-    async def login(self, request: Request) -> bool:
-        form = await request.form()
-        username, password = form["username"], form["password"]
-        
-        # statement = select(
-        #     self.user_table
-        # ).where(
-        #     self.user_table.email == username
-        # )
-        # result = await self.session.execute(statement)
-        # user = result.unique().scalar_one_or_none()
-
-
-        # Validate username/password credentials
-        # And update session
-        request.session.update({"token": "..."})
-
-        return True
-
-    async def logout(self, request: Request) -> bool:
-        request.session.clear()
-        return True
-
-    async def authenticate(
-        self,
-        request: Request
-    ) -> Optional[RedirectResponse]:
-        if "token" not in request.session:
-            return RedirectResponse(
-                request.url_for("admin:login"),
-                status_code=302
-                )
 
 
 class UserAdmin(ModelView, model=User):

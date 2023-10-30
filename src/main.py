@@ -9,7 +9,7 @@ from database.db import engine
 from admin import (
     UserAdmin,
     ServicePaymentOptionAdmin,
-    CurrencyAdmin, AdminAuth,
+    CurrencyAdmin,
     PaymentOptionAdmin, ReviewAdmin,
     OrderAdmin,
 )
@@ -24,14 +24,10 @@ import uuid
 app = FastAPI(
     title="Exchange"
 )
-authentication_backend = AdminAuth(
-    secret_key=conf.admin_auth
-)
 
 admin = Admin(
     app=app,
     engine=engine,
-    authentication_backend=authentication_backend
 )
 
 
