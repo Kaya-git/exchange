@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
   db:
-    image: postgres:15
+    image: postgres:16.0-alpine3.18
     container_name: db_app
     command: -p 5432
     expose:
@@ -22,8 +22,9 @@ services:
       context: .
     env_file:
       - .env
-    container_name: fastapi_app
-    # command: ["/exchange/docker/app.sh"]
+    container_name: exchange_app
+    command: bash -c "cd docker/ && bash app.sh"
+    # command: ["/exchange_app/docker/app.sh"]
     ports:
       - 9999:8000
     depends_on:
