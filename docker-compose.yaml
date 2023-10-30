@@ -8,7 +8,7 @@ services:
     expose:
       - 5432
     env_file:
-      - .env
+      - .env-non-dev
 
   redis:
     image: redis:7
@@ -24,7 +24,6 @@ services:
       - .env
     container_name: exchange_app
     command: bash -c "cd docker/ && bash app.sh"
-    # command: ["/exchange_app/docker/app.sh"]
     ports:
       - 9999:8000
     depends_on:

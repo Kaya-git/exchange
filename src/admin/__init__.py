@@ -1,5 +1,4 @@
 from .models import (
-    AdminAuth,
     UserAdmin,
     ReviewAdmin,
     CurrencyAdmin,
@@ -10,7 +9,6 @@ from .models import (
 
 
 __all__ = [
-    "AdminAuth",
     "UserAdmin",
     "ReviewAdmin",
     "CurrencyAdmin",
