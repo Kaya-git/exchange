@@ -1,20 +1,20 @@
 """new_db
 
-Revision ID: aad45dedae9a
+Revision ID: cb7c85f47a94
 Revises: 
-Create Date: 2023-10-25 15:25:16.132427
+Create Date: 2023-10-30 10:23:35.944067
 
 """
 from typing import Sequence, Union
 
 from alembic import op
+import sqlalchemy as sa
 from fastapi_storages.integrations.sqlalchemy import ImageType
 from config import conf
-import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'aad45dedae9a'
+revision: str = 'cb7c85f47a94'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd src
+cd ..
 
 alembic upgrade head
 
