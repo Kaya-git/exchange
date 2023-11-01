@@ -1,7 +1,9 @@
 """  User repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from .models import User
 from database.abstract_repo import Repository
+from database.engines import async_session_maker
 
 
 class UserRepo(Repository[User]):
@@ -35,3 +37,21 @@ class UserRepo(Repository[User]):
             )
         )
         return new_user
+
+    async def find_by_email(
+            self,
+            email
+    ):
+        async with async_session_maker() as session:
+            statement = select(User).where(User.email==email)
+            result = await session.execute(statement)
+            return result.scalar_one_or_none()
+
+    async def get_curr_user(
+            self,
+            ident: int
+    ):
+        async with async_session_maker() as session:
+            statement = select(User).where(User.id==ident)
+            result = await session.execute(statement)
+            return result.scalar_one_or_none()

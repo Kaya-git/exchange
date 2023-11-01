@@ -296,9 +296,6 @@ async def requisites(
     service_payment_option = await db.session.execute(statement=statement)
     service_payment_option = service_payment_option.scalar_one_or_none()
 
-    pprint(service_payment_option)
-
-
     return {
             "requisites_num": service_payment_option.number,
             "holder": service_payment_option.holder
