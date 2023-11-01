@@ -154,7 +154,3 @@ class ReviewAdmin(ModelView, model=Review):
     can_delete = True
     can_export = True
     can_view_details = True
-
-
-async def get_admin_db(session: AsyncSession = Depends(get_async_session)):
-    yield AdminAuth(session)

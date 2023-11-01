@@ -64,6 +64,7 @@ class ImageStorageConfiguration:
 class Auth:
     "JWT secret"
     jwt_token = os.environ.get("SECRET_JWT")
+    algorithm = os.environ.get("ALGORITHM")
     user_menager = os.environ.get("SECRET_USER_MENAGER")
 
 

@@ -17,6 +17,7 @@ from auth.auth import auth_backend
 from auth.shemas import UserRead, UserCreate
 from auth.routers import fastapi_users
 from currencies.routers import currency_router
+from admin.auth_back import authentication_backend
 from orders.routers import orders_router
 import uuid
 
@@ -28,6 +29,7 @@ app = FastAPI(
 admin = Admin(
     app=app,
     engine=engine,
+    authentication_backend=authentication_backend
 )
 
 

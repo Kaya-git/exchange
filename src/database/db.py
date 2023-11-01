@@ -65,7 +65,7 @@ class Database:
 
     def __init__(
         self,
-        session: AsyncSession,
+        session: AsyncSession = None,
         user: UserRepo = None,
         order: OrderRepo = None,
         currency: CurrencyRepo = None,
