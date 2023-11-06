@@ -14,5 +14,5 @@ class PaymentOptionBase(BaseModel):
 class PaymentOptionCreate(PaymentOptionBase):
     ...
 
-class PaymentOption(PaymentOptionBase):
+class PaymentOptionRead(PaymentOptionBase):
     id: int

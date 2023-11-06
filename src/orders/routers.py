@@ -1,5 +1,5 @@
 from auth.routers import current_active_verified_user 
-from fastapi import FastAPI, Depends, APIRouter
+from fastapi import Depends, APIRouter
 from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.db import get_async_session, Database
@@ -9,11 +9,11 @@ if TYPE_CHECKING:
 
 
 orders_router = APIRouter(
-    prefix="/account",
-    tags=["роутер личного кабинета"]
+    prefix="/orders",
+    tags=["роутер списка заказов для верифицированного пользователя"]
 )
 
-@orders_router.get("/current_user/order_list")
+@orders_router.get("/")
 async def order_list(
     async_session: AsyncSession = Depends(get_async_session),
     user: "User" = Depends(current_active_verified_user)

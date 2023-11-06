@@ -10,8 +10,11 @@ from admin import (
     UserAdmin,
     ServicePaymentOptionAdmin,
     CurrencyAdmin,
-    PaymentOptionAdmin, ReviewAdmin,
+    PaymentOptionAdmin,
+    ReviewAdmin,
     OrderAdmin,
+    ContactAdmin,
+    FAQAdmin
 )
 from auth.auth import auth_backend
 from auth.shemas import UserRead, UserCreate
@@ -19,6 +22,8 @@ from auth.routers import fastapi_users
 from currencies.routers import currency_router
 from admin.auth_back import authentication_backend
 from orders.routers import orders_router
+from contacts.routers import contact_router
+from faq.routers import faq_router
 import uuid
 
 
@@ -39,6 +44,8 @@ admin.add_view(ReviewAdmin)
 admin.add_view(CurrencyAdmin)
 admin.add_view(PaymentOptionAdmin)
 admin.add_view(OrderAdmin)
+admin.add_view(ContactAdmin)
+admin.add_view(FAQAdmin)
 
 
 @app.get("/")
@@ -52,7 +59,8 @@ async def root(
     response.set_cookie(key="user_uuid", value=cookies_uuid)
     return cookies_uuid
 
-
+app.include_router(contact_router)
+app.include_router(faq_router)
 app.include_router(currency_router)
 app.include_router(orders_router)
 app.include_router(forms_router)

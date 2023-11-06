@@ -2,7 +2,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from .models import FAQ
 from database.abstract_repo import Repository
-from typing import List
 
 
 class FAQRepo(Repository[FAQ]):
@@ -19,14 +18,14 @@ class FAQRepo(Repository[FAQ]):
 
     async def new(
         self,
-        question: str | List[str],
-        answer: str | List[str]
+        question: str,
+        answer: str
     ) -> None:
 
-        new_question_answer = await self.session.merge(
+        new_faq = await self.session.merge(
             FAQ(
                 question=question,
                 answer=answer
             )
         )
-        return new_question_answer
+        return new_faq

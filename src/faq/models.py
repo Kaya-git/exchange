@@ -4,14 +4,13 @@ import sqlalchemy as sa
 
 
 class FAQ(Base):
-    __tablename__ = "questions_answers"
+    __tablename__ = "faq"
 
     id: Mapped[int] = mapped_column(
         sa.BigInteger,
         primary_key=True,
         autoincrement=True,
     )
-
     question: Mapped[str] = mapped_column(
         sa.Text,
         nullable=False,

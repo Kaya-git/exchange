@@ -5,14 +5,9 @@ from payment_options import PaymentOption
 from orders import Order
 from service_payment_options import ServicePaymentOption
 from reviews import Review
+from contacts.models import Contact
+from faq.models import FAQ
 from enums import Status
-from sqladmin.authentication import AuthenticationBackend
-from fastapi import Request
-from fastapi.responses import RedirectResponse
-from typing import Optional
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from database.db import get_async_session
 
 
 class UserAdmin(ModelView, model=User):
@@ -152,5 +147,37 @@ class ReviewAdmin(ModelView, model=Review):
     can_create = False
     can_edit = True
     can_delete = True
+    can_export = True
+    can_view_details = True
+
+class ContactAdmin(ModelView, model=Contact):
+    name = "Контакт для связи"
+    name_plural = "Контакты для связи"
+    column_list = [
+        Contact.name,
+        Contact.link
+    ]
+    column_searchable_list = [
+        Contact.name
+    ]
+    can_create = True
+    can_delete = True
+    can_edit = True
+    can_export = True
+    can_view_details = True
+
+class FAQAdmin(ModelView, model=FAQ):
+    name = "FAQ"
+    name_plural = "FAQ"
+    column_list = [
+        FAQ.question,
+        FAQ.answer,
+    ]
+    column_searchable_list = [
+        FAQ.question,
+    ]
+    can_create = True
+    can_delete = True
+    can_edit = True
     can_export = True
     can_view_details = True
