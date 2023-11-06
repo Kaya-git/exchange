@@ -1,9 +1,9 @@
 import redis.asyncio as redis
 from config import conf
 from database.db import Database
-from orders import Order
+from orders.models import Order
 from enums import Status, BankingType
-from payment_options import PaymentOption
+from payment_options.models import PaymentOption
 import asyncio
 from sqlalchemy import select
 # from fastapi.responses import RedirectResponse

@@ -9,7 +9,7 @@ from orders.repositories import OrderRepo
 from currencies.repositories import CurrencyRepo
 from reviews.repositories import ReviewRepo
 from payment_options.repositories import PaymentOptionRepo
-from service_payment_options import ServicePaymentOptionRepo
+from service_payment_options.repositories import ServicePaymentOptionRepo
 from faq.repositories import FAQRepo
 from contacts.repositories import ContactRepo
 from .base_model import Base

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from enum import Enum
+from enums import CryptoType
 from datetime import datetime
 from decimal import Decimal
 
@@ -7,7 +7,7 @@ from decimal import Decimal
 class CurrencyBase(BaseModel):
     tikker_id: int
     tikker: str
-    type: Enum
+    type: CryptoType
     name: str
     gas: Decimal
     service_margin: Decimal
@@ -21,7 +21,7 @@ class CurrencyCreate(CurrencyBase):
     ...
 
 
-class Currency(CurrencyBase):
+class CurrencyRead(CurrencyBase):
     id: int
 
     class Config:

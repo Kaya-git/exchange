@@ -9,7 +9,7 @@ from typing import List
 
 faq_router = APIRouter(
     prefix="/faq",
-    tags=["Роутер вопрос-ответ"]
+    tags=["Роутер FAQ"]
 )
 
 @faq_router.get("/")

@@ -9,12 +9,12 @@ if TYPE_CHECKING:
     from users.models import User
 
 
-payment_options = APIRouter(
-    prefix="/my_po",
-    tags=["роутер личного кабинета"]
+payment_options_router = APIRouter(
+    prefix="/my_pos",
+    tags=["Верифицированые опции оплаты пользователя"]
 )
 
-@payment_options.get("/")
+@payment_options_router.get("/list")
 async def po_list(
     async_session: AsyncSession = Depends(get_async_session),
     user: "User" = Depends(current_active_verified_user)
@@ -25,8 +25,8 @@ async def po_list(
     )
     return my_po
 
-@payment_options.get("/{po_id}")
-async def po_list(
+@payment_options_router.get("/{po_id}")
+async def po_id(
     po_id: Annotated[int, Path(title="The ID of the item to get")],
     async_session: AsyncSession = Depends(get_async_session),
     user: "User" = Depends(current_active_verified_user),
