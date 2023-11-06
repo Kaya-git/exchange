@@ -2,7 +2,8 @@ from database.base_model import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import sqlalchemy as sa
 
-class QuestionAnswers(Base):
+
+class FAQ(Base):
     __tablename__ = "questions_answers"
 
     id: Mapped[int] = mapped_column(
