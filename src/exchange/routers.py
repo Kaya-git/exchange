@@ -74,7 +74,6 @@ async def order_crypto_fiat(
         client_sell_tikker_id,
         client_buy_tikker_id
     )
-    print(parser_link_voc)
     # Просчитываем стоимость валюты с учетом коммисий и стоимости за перевод
     coin_price = await find_price(parser_link_voc["parser_tikker"])
 
@@ -517,7 +516,7 @@ async def requisites(
     
 
 
-@exhange_router.get("/payed")
+@exhange_router.get("/payed",)
 async def payed_button(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Cookie(default=None),

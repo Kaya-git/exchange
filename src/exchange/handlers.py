@@ -65,6 +65,8 @@ async def create_tikker_for_binance(
 
     return {
             "parser_tikker": parser_tikker,
+            "client_sell_currency": client_sell_currency,
+            "client_buy_currency": client_buy_currency,
             "client_sell_currency_po": client_sell_currency_po,
             "client_buy_currency_po": client_buy_currency_po,
             "margin": margin,

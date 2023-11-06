@@ -9,7 +9,7 @@ class ContactCreate(ContactBase):
     ...
 
 
-class Contact(ContactBase):
+class ContactRead(ContactBase):
     id: int
 
     class Config:
