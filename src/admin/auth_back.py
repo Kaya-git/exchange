@@ -1,13 +1,7 @@
-from sqladmin import Admin
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from fastapi import Depends
-from database.db import get_async_session
-from sqlalchemy.ext.asyncio import AsyncSession
-from auth.manager import get_user_manager
 from .handlers import authenticate_admin, create_access_token
-from database.db import Database
 from users.dependecies import get_current_user
 from enums import Role
 
