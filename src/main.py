@@ -21,6 +21,7 @@ from auth.shemas import UserRead, UserCreate
 from auth.routers import fastapi_users
 from currencies.routers import currency_router
 from admin.auth_back import authentication_backend
+from reviews.routers import reviews_router
 from orders.routers import orders_router
 from contacts.routers import contact_router
 from faq.routers import faq_router
@@ -64,6 +65,7 @@ app.include_router(faq_router)
 app.include_router(currency_router)
 app.include_router(orders_router)
 app.include_router(exhange_router)
+app.include_router(reviews_router)
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",

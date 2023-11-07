@@ -11,7 +11,7 @@ contact_router = APIRouter(
     tags=["Роутер контактов"]
 )
 
-@contact_router.get("/", response_model=List[ContactRead])
+@contact_router.get("/list", response_model=List[ContactRead])
 async def contact_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):

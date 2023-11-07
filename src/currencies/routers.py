@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Path
 from database.db import Database, get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, List
-from .schemas import CurrencyRead
+from .schemas import CurrencyRead, CurrencyTariffsRead
 from binance_parser import find_price
 from enums import CryptoType
 
@@ -31,7 +31,7 @@ async def currency_id(
     currency = await db.currency.get(ident=id)
     return currency
 
-@currency_router.get("/tariffs")
+@currency_router.get("/tariffs", response_model=CurrencyTariffsRead)
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)
 ):
@@ -47,6 +47,7 @@ async def tariffs(
             parsing_tikker = f"{solo_tikker}RUB"
 
             coin_price = await find_price(parsing_tikker)
+            show_currency["id"] = currency.id
             show_currency["name"] = currency.name
             show_currency["tikker"] = solo_tikker
             show_currency["icon"] = currency.icon

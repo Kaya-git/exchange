@@ -8,7 +8,7 @@ class FAQBase(BaseModel):
 class FAQCreate(FAQBase):
     ...
 
-class FAQ(FAQBase):
+class FAQRead(FAQBase):
     id: int
 
     class Config:

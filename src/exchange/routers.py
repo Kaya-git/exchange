@@ -23,7 +23,8 @@ from .handlers import (
     create_tikker_for_binance,
     check_if_values_empty,
     ya_save_passport_photo,
-    redis_discard
+    redis_discard,
+    add_or_get_po
 )
 
 exhange_router = APIRouter(
@@ -117,127 +118,6 @@ async def order_crypto_fiat(
     )
     return "Redis - OK"
     # return RedirectResponse("/confirm")
-
-
-# Отправляем фото паспорта на верификацию админу
-@exhange_router.post("/cc_conformation_form")
-async def confirm_cc(
-    cc_image: UploadFile,
-    user_uuid: str | None = Cookie(default=None),
-    session: AsyncSession = Depends(get_async_session)
-):
-
-    db = Database(session=session)
-
-    """Проверяем есть ли ключи в реддисе"""
-    does_exist = await services.redis_values.redis_conn.exists(user_uuid)
-    if does_exist != 1:
-        return "Время вышло"
-
-    new_file_name = await ya_save_passport_photo(cc_image)
-
-    redis_voc = await redis_discard(user_uuid)
-
-    client_sell_currency = await db.currency.get_by_where(
-        Currency.tikker_id == redis_voc["client_sell_tikker_id"]
-    )
-    client_buy_currency = await db.currency.get_by_where(
-        Currency.tikker_id == redis_voc["client_buy_tikker_id"]
-    )
-
-    # Проверяем существует ли пользователь с данным мылом,
-    # если нет создаем нового пользователя по email ордера с пустым паролем и
-    # возвращаем его из бд
-    user = await db.user.get_by_where(
-        User.email == redis_voc["client_email"]
-    )
-    if user is None:
-        new_user = await db.user.new(
-            email=redis_voc["client_email"],
-        )
-        db.session.add(new_user)
-        await db.session.commit()
-        user = await db.user.get_by_where(
-            User.email == redis_voc["client_email"]
-        )
-
-
-    # Записываем расчетный способ в таблицу PaymentOption
-    if client_sell_currency.type == CryptoType.Fiat:
-
-        client_sell_payment_option = await db.payment_option.new(
-            banking_type=redis_voc["client_sell_currency_po"],
-            currency_id=client_sell_currency.id,
-            number=redis_voc["client_credit_card_number"],
-            holder=redis_voc["client_cc_holder"],
-            image=new_file_name,
-            user_id=user.id,
-        )
-
-        client_buy_payment_option = await db.payment_option.new(
-            banking_type=redis_voc["client_buy_currency_po"],
-            currency_id=client_buy_currency.id,
-            number=redis_voc["client_crypto_wallet"],
-            holder=redis_voc["client_email"],
-            user_id=user.id,
-        )
-
-        db.session.add_all(
-            [client_sell_payment_option, client_buy_payment_option]
-        )
-        await db.session.flush()
-
-    if client_sell_currency.type == CryptoType.Crypto:
-
-        client_sell_payment_option = await db.payment_option.new(
-            banking_type=redis_voc["client_buy_currency_po"],
-            currency_id=client_sell_currency.id,
-            number=redis_voc["client_crypto_wallet"],
-            holder=redis_voc["client_email"],
-            user_id=user.id,
-        )
-        client_buy_payment_option = await db.payment_option.new(
-            banking_type=redis_voc["client_sell_currency_po"],
-            currency_id=client_buy_currency.id,
-            number=redis_voc["client_credit_card_number"],
-            holder=redis_voc["client_cc_holder"],
-            image=new_file_name,
-            user_id=user.id,
-        )
-
-        db.session.add_all(
-            [client_sell_payment_option, client_buy_payment_option]
-        )
-        await db.session.flush()
-
-    # Записываем новый ордер на обмен в базу данных
-    new_order = await db.order.new(
-        user_id=user.id,
-        user_email=redis_voc["client_email"],
-        user_cookie=user_uuid,
-        user_buy_sum=redis_voc["client_buy_value"],
-        buy_currency_id=client_buy_currency.id,
-        buy_payment_option_id=client_buy_payment_option.id,
-        user_sell_sum=redis_voc["client_sell_value"],
-        sell_currency_id=client_sell_currency.id,
-        sell_payment_option_id=client_sell_payment_option.id,
-        status=Status.Pending,
-    )
-
-    db.session.add(new_order)
-    await db.session.flush()
-
-
-    # Заменить список с информацией в редисе на айди ордера
-    await services.redis_values.change_keys(
-                    user_uuid=user_uuid,
-                    order_id=new_order.id
-                )
-
-    await db.session.commit()
-
-    return "Pending order created"
-#         # return RedirectResponse("/exchange/await")
 
 
 @exhange_router.get("/confirm")
@@ -433,9 +313,8 @@ async def confirm_order(
                     "криптовалютный кошель только зарегестрирован,"
                     "Создан новый ордер."
                 )
-    """
-    Возвращаем значения для подтверждения
-    """
+
+    # Возвращаем значения для подтверждения
     return {
         "client_sell_currency_po": client_sell_currency_po,
         "client_sell_tikker_id": client_sell_tikker_id,
@@ -450,6 +329,76 @@ async def confirm_order(
     }
 
 
+# Отправляем фото паспорта на верификацию админу
+@exhange_router.post("/cc_conformation_form")
+async def confirm_cc(
+    cc_image: UploadFile,
+    user_uuid: str | None = Cookie(default=None),
+    session: AsyncSession = Depends(get_async_session)
+):
+
+    db = Database(session=session)
+
+    """Проверяем есть ли ключи в реддисе"""
+    does_exist = await services.redis_values.redis_conn.exists(user_uuid)
+    if does_exist != 1:
+        return "Время вышло"
+
+    new_file_name = await ya_save_passport_photo(cc_image)
+
+    redis_voc = await redis_discard(user_uuid, db)
+
+    # Проверяем существует ли пользователь с данным мылом,
+    # если нет создаем нового пользователя по email ордера с пустым паролем и
+    # возвращаем его из бд
+    user = await db.user.get_by_where(
+        User.email == redis_voc["client_email"]
+    )
+    if user is None:
+        new_user = await db.user.new(
+            email=redis_voc["client_email"],
+        )
+        db.session.add(new_user)
+        await db.session.commit()
+        user = await db.user.get_by_where(
+            User.email == redis_voc["client_email"]
+        )
+
+    p_o_dict = await add_or_get_po(
+        db, redis_voc,
+        user, new_file_name
+    )
+
+    # Записываем новый ордер на обмен в базу данных
+
+    new_order = await db.order.new(
+        user_id=user.id,
+        user_email=redis_voc["client_email"],
+        user_cookie=user_uuid,
+        user_buy_sum=redis_voc["client_buy_value"],
+        buy_currency_id=redis_voc["client_buy_currency"].id,
+        buy_payment_option_id=p_o_dict["client_buy_payment_option"].id,
+        user_sell_sum=redis_voc["client_sell_value"],
+        sell_currency_id=redis_voc["client_sell_currency"].id,
+        sell_payment_option_id=p_o_dict["client_sell_payment_option"].id,
+        status=Status.Pending,
+    )
+
+    db.session.add(new_order)
+    await db.session.flush()
+
+    # Заменить список с информацией в редисе на айди ордера
+    await services.redis_values.change_keys(
+                    user_uuid=user_uuid,
+                    order_id=new_order.id
+                )
+
+    await db.session.commit()
+
+    return "Pending order created"
+    # return RedirectResponse("/exchange/await")
+
+
 @exhange_router.get("/await")
 async def conformation_await(
     user_uuid: str | None = Cookie(default=None),
@@ -457,6 +406,7 @@ async def conformation_await(
 ) -> RedirectResponse:
 
     db = Database(session=async_session)
+    # Запускаем паралельно таск на пул из бд на подтверждение смены статуса ордера и верификации статуса пользователя
     paralel_waiting = asyncio.create_task(
         services.db_paralell.conformation_await(
             db,
@@ -467,16 +417,14 @@ async def conformation_await(
     return answer
 
 
-@exhange_router.get("/order/{order_id}")
+@exhange_router.get("/order")
 async def requisites(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Cookie(default=None),
 ):
     db = Database(session=async_session)
 
-    """
-    Достаем из редиса тикер заказа
-    """
+    # Достаем из редиса тикер заказа
     order_id = (
         await services.redis_values.redis_conn.lrange(
             user_uuid,
@@ -486,14 +434,8 @@ async def requisites(
     )
     order_id = int(*order_id)
 
-    pprint(
-        f"{order_id}:{type(order_id)}"
-    )
-
-    """
-    Находим в таблице ServicePaymentOption способ оплаты
-    с тикером подходящим для продажи клиента
-    """
+    # Находим в таблице ServicePaymentOption способ оплаты
+    # с тикером подходящим для продажи клиента
     statement = (
         select(
             ServicePaymentOption
@@ -513,7 +455,6 @@ async def requisites(
             "requisites_num": service_payment_option.number,
             "holder": service_payment_option.holder
         }
-    
 
 
 @exhange_router.get("/payed",)
@@ -522,8 +463,9 @@ async def payed_button(
     user_uuid: str | None = Cookie(default=None),
 ):
     db = Database(session=async_session)
-    """ Проверяем редис на наличие ключей,
-    если исчезли, то ставим статус ордера на просрок"""
+
+    # Проверяем редис на наличие ключей,
+    # если исчезли, то ставим статус ордера на просрок
     does_exist = await services.redis_values.redis_conn.exists(user_uuid)
     order_id = await services.redis_values.redis_conn.lindex(
         user_uuid,

@@ -14,11 +14,11 @@ orders_router = APIRouter(
     tags=["Роутер списка заказов для верифицированного пользователя"]
 )
 
-@orders_router.get("/list")
+@orders_router.get("/list", response_model=List[OrderRead])
 async def order_list(
     async_session: AsyncSession = Depends(get_async_session),
     user: "User" = Depends(current_active_verified_user)
-) -> List[OrderRead]:
+):
     db = Database(session=async_session)
     completed_orders = await db.order.get_many(
         Order.user_email == user.email

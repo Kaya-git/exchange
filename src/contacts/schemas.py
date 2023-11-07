@@ -8,7 +8,6 @@ class ContactBase(BaseModel):
 class ContactCreate(ContactBase):
     ...
 
-
 class ContactRead(ContactBase):
     id: int
 

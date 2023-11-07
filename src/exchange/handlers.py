@@ -2,11 +2,13 @@ from typing import Optional
 from database.db import Database
 from currencies.models import Currency
 from enums import CryptoType
+from payment_options.models import PaymentOption
 import secrets
 import os
 from config import conf
 from sevices import services
 from decimal import Decimal
+from users.models import User
 
 
 # Проверяем пришли ли все данные из формы
@@ -105,7 +107,8 @@ async def ya_save_passport_photo(
 
 # Достаем данные из редиса и декодируем их
 async def redis_discard(
-        user_uuid: str | None
+        user_uuid: str | None,
+        db: Database
 ):
     # Достаем из редиса список с данными ордера.
     (
@@ -138,6 +141,14 @@ async def redis_discard(
     client_sell_value = Decimal(client_sell_value)
     client_buy_value = Decimal(client_buy_value)
 
+    client_sell_currency = await db.currency.get_by_where(
+        Currency.tikker_id == client_sell_tikker_id
+    )
+    client_buy_currency = await db.currency.get_by_where(
+        Currency.tikker_id == client_buy_tikker_id
+    )
+
+
     return {
         "client_sell_currency_po": client_sell_currency_po,
         "client_sell_tikker_id": client_sell_tikker_id,
@@ -148,5 +159,153 @@ async def redis_discard(
         "client_crypto_wallet": client_crypto_wallet,
         "client_buy_tikker_id": client_buy_tikker_id,
         "client_buy_value": client_buy_value,
-        "client_email": client_email
+        "client_email": client_email,
+        "client_sell_currency": client_sell_currency,
+        "client_buy_currency": client_buy_currency
     }
+
+async def add_or_get_po(
+        db: Database,
+        redis_voc: dict,
+        user: User,
+        new_file_name: str
+):
+    crypto_po = await db.payment_option.get_by_where(
+        PaymentOption.number == redis_voc["client_crypto_wallet"]
+    )
+    fiat_po = await db.payment_option.get_by_where(
+        PaymentOption.number == redis_voc["client_credit_card_number"]
+    )
+    # client_sell_currency = redis_voc["client_sell_currency"]
+    # client_buy_currency = redis_voc["client_buy_currency"]
+    print(crypto_po.id)
+    print(fiat_po.id)
+    if crypto_po is None and fiat_po is None:
+
+        if redis_voc["client_sell_currency"].type == CryptoType.Fiat:
+
+            client_sell_payment_option = await db.payment_option.new(
+                banking_type=redis_voc["client_sell_currency_po"],
+                currency_id=redis_voc["client_sell_currency"].id,
+                number=redis_voc["client_credit_card_number"],
+                holder=redis_voc["client_cc_holder"],
+                image=new_file_name,
+                user_id=user.id,
+            )
+
+            client_buy_payment_option = await db.payment_option.new(
+                banking_type=redis_voc["client_buy_currency_po"],
+                currency_id=redis_voc["client_buy_currency"].id,
+                number=redis_voc["client_crypto_wallet"],
+                holder=redis_voc["client_email"],
+                user_id=user.id,
+            )
+
+        if redis_voc["client_sell_currency"].type == CryptoType.Crypto:
+
+            client_sell_payment_option = await db.payment_option.new(
+                banking_type=redis_voc["client_buy_currency_po"],
+                currency_id=redis_voc["client_sell_currency"].id,
+                number=redis_voc["client_crypto_wallet"],
+                holder=redis_voc["client_email"],
+                user_id=user.id,
+            )
+            client_buy_payment_option = await db.payment_option.new(
+                banking_type=redis_voc["client_sell_currency_po"],
+                currency_id=redis_voc["client_buy_currency"].id,
+                number=redis_voc["client_credit_card_number"],
+                holder=redis_voc["client_cc_holder"],
+                image=new_file_name,
+                user_id=user.id,
+            )
+
+        db.session.add_all(
+            [client_sell_payment_option, client_buy_payment_option]
+        )
+
+    if (
+        crypto_po is not None and
+        # crypto_po.user_id == user.email and
+        fiat_po is None
+    ):
+        print("yes1")
+        if redis_voc["client_sell_currency"].type == CryptoType.Fiat:
+
+            client_sell_payment_option = await db.payment_option.new(
+                banking_type=redis_voc["client_sell_currency_po"],
+                currency_id=redis_voc["client_sell_currency"].id,
+                number=redis_voc["client_credit_card_number"],
+                holder=redis_voc["client_cc_holder"],
+                image=new_file_name,
+                user_id=user.id,
+            )
+
+            client_buy_payment_option = crypto_po
+
+            db.session.add(client_sell_payment_option)
+
+        if redis_voc["client_sell_currency"].type == CryptoType.Crypto:
+
+            client_sell_payment_option = crypto_po
+
+            client_buy_payment_option = await db.payment_option.new(
+                banking_type=redis_voc["client_sell_currency_po"],
+                currency_id=redis_voc["client_buy_currency"].id,
+                number=redis_voc["client_credit_card_number"],
+                holder=redis_voc["client_cc_holder"],
+                image=new_file_name,
+                user_id=user.id,
+            )
+
+            db.session.add(client_buy_payment_option)
+
+    if (
+        fiat_po is not None and
+        str(fiat_po.user_id) == user.email and
+        crypto_po is None
+    ):
+        print("yes2")
+        if redis_voc["client_sell_currency"].type == CryptoType.Fiat:
+
+            client_sell_payment_option = fiat_po
+
+            client_buy_payment_option = await db.payment_option.new(
+                banking_type=redis_voc["client_buy_currency_po"],
+                currency_id=redis_voc["client_buy_currency"].id,
+                number=redis_voc["client_crypto_wallet"],
+                holder=redis_voc["client_email"],
+                user_id=user.id,
+            )
+            db.session.add(client_buy_payment_option)
+
+        if redis_voc["client_sell_currency"].type == CryptoType.Crypto:
+
+            client_sell_payment_option = await db.payment_option.new(
+                banking_type=redis_voc["client_buy_currency_po"],
+                currency_id=redis_voc["client_sell_currency"].id,
+                number=redis_voc["client_crypto_wallet"],
+                holder=redis_voc["client_email"],
+                user_id=user.id,
+            )
+            client_buy_payment_option = fiat_po
+            db.session.add(client_sell_payment_option)
+
+    if (
+        fiat_po is not None and 
+        crypto_po is not None
+    ):
+        print("yes3")
+        if str(fiat_po.user) != user.email:
+            
+            print(f"{fiat_po.user}{type(fiat_po.user)}")
+            print(f"{user.email}{type(user.email)}")
+            return {"Номер карты зарегестрирован под другим имейлом"}
+        if str(crypto_po.user) != user.email:
+            return {"Крипто Кошель зарегестрирован под другим имейлом"}
+        client_sell_payment_option = fiat_po
+        client_buy_payment_option = fiat_po
+    await db.session.flush()
+    return {
+            "client_sell_payment_option": client_sell_payment_option,
+            "client_buy_payment_option": client_buy_payment_option
+        }
