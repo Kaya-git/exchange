@@ -436,20 +436,21 @@ async def requisites(
 
     # Находим в таблице ServicePaymentOption способ оплаты
     # с тикером подходящим для продажи клиента
-    statement = (
-        select(
-            ServicePaymentOption
-            ).join(
-            Currency, ServicePaymentOption.currency_id == Currency.id
-            ).join(
-                Order, Currency.id == Order.sell_currency_id
-            ).where(
-                Order.id == order_id
-                )
-    )
+    # statement = (
+    #     select(
+    #         ServicePaymentOption
+    #         ).join(
+    #         Currency, ServicePaymentOption.currency_id == Currency.id
+    #         ).join(
+    #             Order, Currency.id == Order.sell_currency_id
+    #         ).where(
+    #             Order.id == order_id
+    #             )
+    # )
 
-    service_payment_option = await db.session.execute(statement=statement)
-    service_payment_option = service_payment_option.scalar_one_or_none()
+    # service_payment_option = await db.session.execute(statement=statement)
+    # service_payment_option = service_payment_option.scalar_one_or_none()
+    service_payment_option = await db.service_payment_option.spo_equal_sp(order_id)
 
     return {
             "requisites_num": service_payment_option.number,

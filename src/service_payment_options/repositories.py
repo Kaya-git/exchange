@@ -4,6 +4,11 @@ from service_payment_options.models import ServicePaymentOption
 from currencies.models import Currency
 from enums import BankingType
 from database.abstract_repo import Repository
+from sqlalchemy import select
+from typing import TYPE_CHECKING
+from currencies.models import Currency
+from orders.models import Order
+
 
 
 class ServicePaymentOptionRepo(Repository[ServicePaymentOption]):
@@ -37,3 +42,21 @@ class ServicePaymentOptionRepo(Repository[ServicePaymentOption]):
             )
         )
         return new_service_po
+
+    async def spo_equal_sp(
+            self,
+            order_id
+    ) -> ServicePaymentOption:
+        statement = (
+            select(
+                    ServicePaymentOption
+                ).join(
+                    Currency, ServicePaymentOption.currency_id == Currency.id
+                ).join(
+                    Order, Currency.id == Order.sell_currency_id
+                ).where(
+                    Order.id == order_id
+                )
+        )
+        
+        return (await self.session.execute(statement)).scalar_one_or_none()
