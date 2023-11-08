@@ -9,6 +9,7 @@ services:
       - 5432
     env_file:
       - .env-non-dev
+      # - .env
 
   redis:
     image: redis:7
@@ -16,12 +17,14 @@ services:
     command: --port 5370
     expose:
       - 5370
+      # - 6379
 
   app:
     build: 
       context: .
     env_file:
-      - .env
+      - .env-non-dev
+      # - .env
     container_name: exchange_app
     command: bash -c "cd docker/ && bash app.sh"
     ports:
