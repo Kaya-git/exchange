@@ -1,0 +1,29 @@
+//screen
+$minWidth: 320px; // минимальная ширина видимой области
+$maxWidtn: 1200px; // максимальная ширина видимой области
+
+//fonts
+$fontFamily: "Exo 2", sans-serif;
+$baseFontSize: 14px;
+
+//colors
+$mainColor: #1D114F;
+$secondColor: #FFFFFF;
+$thirdColor: #000000;
+$fourthColor: #5568D4;
+$fifthColor: #FFCD50;
+
+//position
+$base: 0;
+$above: 1;
+$below: -1;
+$zLayoutNavigation: $above + $base;
+
+//media
+$md1: 320;
+$md2: 600;
+$md3: 960;
+$md4: 1280;
+$md5: 1920;
+
+//margin

@@ -1,0 +1,36 @@
+.reviews {
+    padding: 20px 10px;
+    &__sheet {
+        padding: 10px;
+        background-color: $fourthColor !important;
+    }
+
+    &__title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    &__row {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.reviews-list {
+    &__item {
+        margin-bottom: 10px;
+    }
+}
+
+@media (min-width:$md2+px){
+    .reviews {
+        padding-top: 40px;
+    }
+}
+
+@media (min-width:$md4+px){
+    .reviews {
+        &__title {
+            margin-bottom: 40px;
+        }
+    }
+}

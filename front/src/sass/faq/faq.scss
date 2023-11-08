@@ -1,0 +1,31 @@
+.faq {
+    padding: 20px;
+    &__sheet {
+        background-color: $fourthColor !important;
+        padding: 20px;
+        max-width: 100%;
+    }
+    &__title {
+        text-align: center; 
+        margin-bottom: 20px;
+    }
+}
+
+.faq-panels {
+    &__panel {
+        margin-bottom: 15px;
+    }
+    &__title {
+        font-size: rem(18px) !important;
+    }
+    &__text {
+        font-size: rem(16px) !important;
+        line-height: 1.1;
+    }
+}
+
+@media (min-width:$md2+px){
+    .faq {
+        padding-top: 40px;
+    }
+}

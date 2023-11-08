@@ -1,0 +1,59 @@
+.reserves {
+    &__title {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    &__cards {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    &__card {
+        margin-bottom: 20px;
+    }
+}
+.reserve-card {
+    padding: 20px 50px 30px 50px !important;
+    width: 280px;
+    &__img {
+        margin: 0 auto;
+        width: 100px;
+        height: 100px;
+    }
+    &__title {
+        text-align: center;
+    }
+    &__subtitle {
+        text-transform: uppercase;
+        text-align: center;
+    }
+    &:active {
+        background-color: #f6f6f6;
+    }
+}
+
+@media (min-width:$md2+px){
+    .reserves {
+        &__cards {
+            margin: 0 -20px;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    }
+
+    .reserve-card {
+        margin: 0 10px 20px 10px;
+    }
+}
+
+@media (min-width:$md4+px){
+    .reserve-card {
+        width: 150px;
+        padding: 20px 10px !important;
+        &__img {
+            width: 60px;
+            height: 60px;
+        }
+    }
+}

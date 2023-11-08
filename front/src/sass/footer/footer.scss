@@ -1,0 +1,11 @@
+.footer {
+    width: 100%;
+    min-height: 100px;
+    background-color: transparent !important;
+    justify-content: center;
+    text-align: center;
+    &__rights {
+        color: $secondColor;
+        line-height: 20px;
+    }
+}

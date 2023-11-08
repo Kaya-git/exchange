@@ -1,0 +1,35 @@
+.privacy {
+    padding: 30px;
+    &__content {
+        padding: 20px !important;
+    }
+
+    &__container {
+        
+    }
+
+    &__row {
+        margin-bottom: 20px;
+    }
+    &__title {
+        color: $thirdColor;
+        font-weight: 500;
+        &.title_h3 {
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+    }
+
+    &__main-list-item {
+        font-size: rem(16px);
+        font-weight: 700;
+        min-height: auto;
+        line-height: 1.5;
+    }
+
+    &__sub-list-item {
+        font-size: rem(14px);
+        font-weight: 400;
+        min-height: auto;
+    }
+}

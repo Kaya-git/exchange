@@ -1,0 +1,81 @@
+@import 'fonts.scss';
+@import 'variables.scss';
+@import 'funcs.scss';
+@import 'null.scss';
+@import 'ui.scss';
+
+body {
+    font-size: 14px;
+	background-color: $mainColor !important;
+    &._lock {
+		overflow: hidden;
+	}
+}
+
+.app {
+	height: 100%;
+}
+.wrapper {
+	overflow: hidden;
+    min-height: 100%;
+}
+
+.app-wrapper {
+	background: $mainColor !important;
+}
+
+.page {
+	flex: 1 1 auto;
+	width: 100%;
+	height: 100%;
+    &__wrapper {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: 100%;
+	}
+	&__content {
+		padding-top: 100px;
+	}
+}
+
+.app-container {
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+//<HEADER>====================================================================================================
+@import 'header/header.scss';
+//</HEADER>====================================================================================================
+
+//<MAIN>====================================================================================================
+@import 'exchange/exchange.scss';
+@import 'user/auth.scss';
+@import 'user/register.scss';
+@import 'privacy/privacy.scss';
+@import 'reserves/reserves.scss';
+@import 'faq/faq.scss';
+@import 'tariffs/tariffs.scss';
+@import 'reviews/reviews.scss';
+//</MAIN>====================================================================================================
+
+//<FOOTER>====================================================================================================
+@import 'footer/footer.scss';
+//</FOOTER>====================================================================================================
+
+@media (min-width:$md3+px){
+	.v-container {
+		max-width: 100%;
+	}
+}
+@media (min-width:$md4+px){
+	.v-row {
+		margin: 0;
+	}
+	.v-container {
+		max-width: 1200px;
+	}
+}

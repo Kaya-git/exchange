@@ -1,0 +1,222 @@
+.header {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: $zLayoutNavigation;
+    &__container {
+        height: 90px;
+    }
+    .header-mobile {
+        margin-top: -12px;
+    }
+}
+.header-mobile {
+    &__logo {
+        span {
+            top: 10px;
+        }
+    }
+}
+
+.header-main {
+    height: 100%;
+    &__nav {
+        padding-top: 5px;
+        height: 100%;
+    }
+    &__nav-list {
+        height: 100%;
+    }
+    &__col {
+        min-height: 72px;
+    }
+}
+
+.nav-list {
+    display: flex;
+    align-items: center;
+    margin: 0 -15px;
+    &__item {
+        padding: 0 15px;
+        a {
+            color: $secondColor;
+            font-size: 20px;
+        }
+    }
+}
+
+.header-logo {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    a {
+        position: absolute;
+        display: block;
+        top: 10px;
+        left: 0;
+        color: $secondColor;
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: 5.25px;
+    }
+}
+
+.mobile-menu {
+    position: absolute;
+    width: 200px;
+    background-color: #fff;
+    height: 200px;
+    right: -100px;
+    top: -100px;
+    border-radius: 50%;
+    -webkit-transition: .5s ease-in-out;
+    transition: .5s ease-in-out;
+    box-shadow: 0 0 0 0 #FFF, 0 0 0 0 #FFF;
+    z-index: $zLayoutNavigation + $above;
+    &.active {
+        box-shadow: 0 0 0 100vw #FFF, 0 0 0 100vh #FFF;
+        border-radius: 0;
+    }
+    &__ham {
+        position: absolute;
+        top: 100px;
+        left: 30px;
+        z-index: 100;
+    }
+
+    &__wrapper {
+        padding: 20px;
+    }
+}
+
+.mobile-nav {
+    overflow: hidden;
+    height: 100vh;
+    width: 80vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    z-index: $zLayoutNavigation + $above;
+    -webkit-transition: .25s 0s ease-in-out;
+    transition: .25s ease-in-out .15s;
+    &.active {
+        overflow-y: scroll;
+        opacity: 1;
+        visibility: visible;
+    }
+    &__list {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        height: auto;
+        transform: translate(0, -50%);
+    }
+    &__item {
+        position: relative;
+        &::before {
+            content: '#';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: -30px;
+            font-size: 36px;
+            color: $fourthColor;
+        }
+        &.hide {
+            display: none;
+        }
+        a {
+            display: block;
+            padding:20px;
+            span {
+                font-size: rem(30px);
+                font-weight: 400;
+                color: $thirdColor;
+                text-decoration: none;
+                background-image: linear-gradient($fourthColor, $fourthColor);
+                background-position: 0% 100%;
+                background-repeat: no-repeat;
+                background-size: 0% 2px;
+                transition: background-size .3s;
+            }
+            &:hover {
+                span {
+                    background-size: 100% 2px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: $md2+px){
+    .header {
+        &__container {
+            max-width: 750px;
+            padding-top: 30px;
+            padding-left: 30px;
+        }
+    }
+    .mobile-menu {
+        width: 220px;
+        height: 220px;
+        &__ham {
+            top: 110px;
+            left: 35px;
+        }
+    }
+    .mobile-nav {
+        &__list {
+            right: auto;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        &__item {
+            a {
+                padding: 30px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width:$md3+px){
+    .header {
+        &__container.v-container {
+            max-width: 900px;
+        }
+    }
+}
+
+@media screen and (min-width:$md4+px){
+    .header {
+        &__container.v-container {
+            max-width: 1200px;
+            padding-top: 16px;
+        }
+    }
+    .header-logo {
+        font-size: 55px;
+    }
+    .mobile-menu {
+        display: none !important;
+    }
+}
+
+@media (min-width:$md1+px){
+    .header-main {
+        display: none;
+    }
+}
+
+@media (min-width:$md4+px){
+    .header-main {
+        display: flex;
+    }
+    .header-mobile {
+        display: none;
+    }
+}

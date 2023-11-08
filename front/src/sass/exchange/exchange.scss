@@ -1,0 +1,150 @@
+.exchange {
+    &__tab-head {
+        background-color: $fourthColor;
+        z-index: $above;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 84px;
+    }
+    &__tab-head-row {
+        width: 100%;
+    }
+    &__tab-btn {
+        box-shadow: none;
+        z-index: $base;
+    }
+    &__tab {
+    }
+}
+
+.exchange-tab {
+    &__search {
+        width: 100%;
+    }
+    &__content {
+        max-width: 750px;
+    }
+    &__content-row {
+        justify-content: center;
+    }
+}
+
+.currency-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    &__item {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    &__btn {
+        width: 100%;
+    }
+}
+
+.exchange-data {
+    width: 100%;
+    background-color: $secondColor;
+    border-radius: 5px;
+    &__wrapper {
+        padding: 24px;
+    }
+    &__title {
+        color: $thirdColor;
+        margin-bottom: 15px;
+    }
+    &__text-field {
+        margin-bottom: 10px;
+    }
+    &__checkbox {
+        label {
+            font-size: 12px !important;
+        }
+    }
+    &__submit {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        button {
+            background-color: $fourthColor;
+            color: $secondColor;
+        }
+    }
+}
+
+.exchange-desktop {
+    &__title {
+        margin-bottom: 30px;
+    }
+
+    &__trade {
+
+    }
+}
+
+@media screen and (min-width: $md2+px){
+    .exchange {
+        &__tabs {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+        &__tab-head-row {
+            max-width: 750px;
+            padding: 0 20px;
+        }
+        &__tab-btn {
+            width: 120px;
+        }
+    }
+    .exchange-tab {
+        &__search {
+            padding: 20px;
+        }
+    }
+    .currency-list {
+        &__item {
+            button {
+                padding-left: 50px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width:$md3+px){
+    .exchange {
+        &__tab-head-row {
+            
+        }
+    }
+    .exchange-tab {
+        &__content.v-container {
+            max-width: 900px;
+        }
+    }
+}
+
+@media screen and (min-width:$md4+px){
+    .currency-list {
+        &__item {
+            button {
+                padding-left: 20px;
+            }
+        }
+    }
+}
+
+@media (min-width:$md1+px){
+    .exchange-desktop {
+        display: none;
+    }
+}
+
+@media (min-width:$md4+px){
+    .exchange-desktop {
+        display: block;
+    }
+    .exchange-mobile {
+        display: none;
+    }
+}
