@@ -20,6 +20,14 @@ from .handlers import (
     redis_discard,
     add_or_get_po
 )
+# from .schemas import (
+#     FillOrederForm,
+#     ConfirmOrder,
+#     ConfermCC,
+#     AwaitConformation,
+#     Requisites,
+#     PayedButton
+# )
 from typing import Annotated
 
 

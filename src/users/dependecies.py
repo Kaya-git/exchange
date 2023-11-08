@@ -24,6 +24,9 @@ def get_token(request: Request):
 async def get_current_user(token: str = Depends(get_token)):
     db = Database()
     try:
+        print(token)
+        print(conf.auth.jwt_token)
+        print(conf.auth.algorithm)
         payload = jwt.decode(token, conf.auth.jwt_token, conf.auth.algorithm)
     except JWTError:
         raise IncorrectTokenException

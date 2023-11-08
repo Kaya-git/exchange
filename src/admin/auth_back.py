@@ -34,7 +34,7 @@ class AdminAuth(AuthenticationBackend):
 
         user = await get_current_user(token)
         print(user)
-        if not user or user.role != Role.Admin:
+        if not user:
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
         return True
 
