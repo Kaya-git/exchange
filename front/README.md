@@ -1,22 +1,17 @@
+## Для запуска проекта нужен nodejs версии минимум 18.18.2
+
 ## Project setup
+## При первом запуске
 ```
+cd front
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
 ### Compiles and minifies for production
+### Создание для продакшн (из папки front)
 ```
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+#### После создания продакш версии появится папка dist
+#### в ней находится весь нужный фронт для отображения на проде
