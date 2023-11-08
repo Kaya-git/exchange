@@ -1,23 +1,17 @@
-from fastapi import APIRouter, Cookie, Depends, Form, UploadFile
+from fastapi import APIRouter, Cookie, Depends, Form, UploadFile, Path
 from fastapi.responses import RedirectResponse
 from sevices import services
 from database.db import Database, get_async_session
 from binance_parser import find_price
 from currencies.models import Currency
-from service_payment_options.models import ServicePaymentOption
 from orders.models import Order
 from enums import Status, CryptoType
 from users.models import User
 from payment_options.models import PaymentOption
 from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
-from sqlalchemy import select, update
-from pprint import pprint
 from decimal import Decimal
 from sevices import Count
-import secrets
-from config import conf
-import os
 from .handlers import (
     check_form_fillment,
     create_tikker_for_binance,
@@ -26,16 +20,71 @@ from .handlers import (
     redis_discard,
     add_or_get_po
 )
+from typing import Annotated
 
-exhange_router = APIRouter(
+
+exchange_router = APIRouter(
     prefix="/exchange",
     tags=["Роутер обмена"]
 )
 
+@exchange_router.get("/{client_sell_tikker_id}/{client_buy_tikker_id}")
+async def get_exchange_rates(
+    client_sell_tikker_id: Annotated[int, Path(title="The ID of the coin client sell")],
+    client_buy_tikker_id: Annotated[int, Path(title="The ID of the coin client buy")],
+    session: AsyncSession = Depends(get_async_session)
+):
+    """ Отдает словарь со стоимостью запрашиваемой пары, тикерами, иконками, максимальными и минимальными значениями """
+    db = Database(session=session)
+
+    client_sell_coin = await db.currency.get_by_where(
+        Currency.tikker_id == client_sell_tikker_id
+    )
+    client_buy_coin = await db.currency.get_by_where(
+        Currency.tikker_id == client_buy_tikker_id
+    )
+    if client_sell_coin is None or client_buy_coin is None:
+        return ("Не найдена валюта для обмена")
+
+    parsing_sell_coin_tikker = client_sell_coin.tikker.split('_')[0]
+    parsing_buy_coin_tikker = client_buy_coin.tikker.split('_')[0]
+
+    if parsing_sell_coin_tikker == "RUB":
+        print("RUB")
+        parsing_tikker = parsing_buy_coin_tikker + parsing_sell_coin_tikker
+        print(parsing_tikker)
+        coin_price = await find_price(parsing_tikker)
+        exchange_rate = await Count.count_send_value(
+            get_value=1,
+            coin_price=coin_price,
+            margin=client_buy_coin.service_margin,
+            gas=client_buy_coin.gas
+        )
+    if parsing_buy_coin_tikker == "RUB":
+        print("CRYPTO")
+        parsing_tikker = parsing_sell_coin_tikker + parsing_buy_coin_tikker
+        print(parsing_tikker)
+        coin_price = await find_price(parsing_tikker)
+        exchange_rate = await Count.count_send_value(
+            get_value=1,
+            coin_price=coin_price,
+            margin=0,
+            gas=0
+        )
+    
+    return {
+        "exchange_rate": exchange_rate,
+        "client_buy_tikker": parsing_buy_coin_tikker,
+        "client_buy_icon": client_buy_coin.icon,
+        "client_buy_max": client_buy_coin.max,
+        "client_buy_min": client_buy_coin.min,
+        "client_sell_tikker": parsing_sell_coin_tikker,
+        "client_sell_icon": client_sell_coin.icon
+    }
 
 # Заполняем форму для обмена и передаем ее в редис
-@exhange_router.post("/exchange_form")
-async def order_crypto_fiat(
+@exchange_router.post("/exchange_form")
+async def fill_order_form(
     client_sell_value: Decimal = Form(default=0),
     client_sell_tikker_id: int = Form(),
     client_buy_value: Decimal = Form(default=0),
@@ -47,6 +96,7 @@ async def order_crypto_fiat(
     user_uuid: str | None = Cookie(default=None),
     session: AsyncSession = Depends(get_async_session),
 ):
+    """ Форма для заполнения заказа на обмен """
     db = Database(session=session)
 
     form_voc = {
@@ -120,15 +170,15 @@ async def order_crypto_fiat(
     # return RedirectResponse("/confirm")
 
 
-@exhange_router.get("/confirm")
+@exchange_router.post("/confirm")
 async def confirm_order(
     user_uuid: str | None = Cookie(default=None),
     async_session: AsyncSession = Depends(get_async_session)
 ):
+    """ Отправляет ползователю заполненые данные для подтверждения заказа """
     db = Database(session=async_session)
-    """
-    Проверяем есть ли ключи в реддисе и забираем значения
-    """
+
+    # Проверяем есть ли ключи в реддисе и забираем значения
     does_exist = await services.redis_values.redis_conn.exists(user_uuid)
     if does_exist != 1:
         return "Время вышло"
@@ -146,9 +196,8 @@ async def confirm_order(
         client_email
     ) = await services.redis_values.redis_conn.lrange(user_uuid, 0, -1)
 
-    """
-    Декодируем из бит в пайтоновские значения
-    """
+
+    # Декодируем из бит в пайтоновские значения
     client_sell_currency_po = str(client_sell_currency_po, 'UTF-8')
     client_sell_tikker_id = int(client_sell_tikker_id)
     client_sell_value = str(client_sell_value, 'UTF-8')
@@ -165,11 +214,9 @@ async def confirm_order(
     client_sell_value = Decimal(client_sell_value)
     client_buy_value = Decimal(client_buy_value)
 
-    """
-    Проверяем зарегестрировани ли пользователь и
-    верифицирована ли его банковская карта и
 
-    """
+    # Проверяем зарегестрировани ли пользователь и
+    # верифицирована ли его банковская карта и
     user = await db.user.get_by_where(
         User.email == client_email
     )
@@ -330,16 +377,16 @@ async def confirm_order(
 
 
 # Отправляем фото паспорта на верификацию админу
-@exhange_router.post("/cc_conformation_form")
+@exchange_router.post("/cc_conformation_form")
 async def confirm_cc(
     cc_image: UploadFile,
     user_uuid: str | None = Cookie(default=None),
     session: AsyncSession = Depends(get_async_session)
 ):
-
+    """ Форма для отправки фотографии подтверждения """
     db = Database(session=session)
 
-    """Проверяем есть ли ключи в реддисе"""
+    # Проверяем есть ли ключи в реддисе
     does_exist = await services.redis_values.redis_conn.exists(user_uuid)
     if does_exist != 1:
         return "Время вышло"
@@ -399,12 +446,12 @@ async def confirm_cc(
     # return RedirectResponse("/exchange/await")
 
 
-@exhange_router.get("/await")
+@exchange_router.post("/await")
 async def conformation_await(
     user_uuid: str | None = Cookie(default=None),
     async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
-
+    """ Запускает паралельно задачу на отслеживание смены статуса верификации пользователя """
     db = Database(session=async_session)
     # Запускаем паралельно таск на пул из бд на подтверждение смены статуса ордера и верификации статуса пользователя
     paralel_waiting = asyncio.create_task(
@@ -417,11 +464,12 @@ async def conformation_await(
     return answer
 
 
-@exhange_router.get("/order")
+@exchange_router.post("/order")
 async def requisites(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Cookie(default=None),
 ):
+    """ Отдает данные для перевода средств """
     db = Database(session=async_session)
 
     # Достаем из редиса тикер заказа
@@ -434,22 +482,6 @@ async def requisites(
     )
     order_id = int(*order_id)
 
-    # Находим в таблице ServicePaymentOption способ оплаты
-    # с тикером подходящим для продажи клиента
-    # statement = (
-    #     select(
-    #         ServicePaymentOption
-    #         ).join(
-    #         Currency, ServicePaymentOption.currency_id == Currency.id
-    #         ).join(
-    #             Order, Currency.id == Order.sell_currency_id
-    #         ).where(
-    #             Order.id == order_id
-    #             )
-    # )
-
-    # service_payment_option = await db.session.execute(statement=statement)
-    # service_payment_option = service_payment_option.scalar_one_or_none()
     service_payment_option = await db.service_payment_option.spo_equal_sp(order_id)
 
     return {
@@ -458,11 +490,12 @@ async def requisites(
         }
 
 
-@exhange_router.get("/payed",)
+@exchange_router.post("/payed",)
 async def payed_button(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Cookie(default=None),
 ):
+    """ Кнопка подтверждения оплаты пользователя 'запускает паралельно задачу на отслеживание изменения стасу ордера' """
     db = Database(session=async_session)
 
     # Проверяем редис на наличие ключей,
@@ -474,13 +507,12 @@ async def payed_button(
     )
     order_id = int(order_id)
     if not does_exist:
-        statement = (
-            update(Order).
-            where(Order.id == order_id).
-            values(status=Status.Timeout)
-        )
-        await db.session.execute(statement)
-        return "Время вышло, по новой"
+
+        timeout = await db.order.order_status_timout(order_id)
+
+        if timeout:
+
+            return "Время вышло, необходим новый ордер"
 
     task = asyncio.create_task(services.db_paralell.payed_button_db(
             db=db,

@@ -3,7 +3,7 @@ from database.db import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 # from fastapi.responses import RedirectResponse
 from config import conf
-from exchange.routers import exhange_router
+from exchange.routers import exchange_router
 from sqladmin import Admin
 from database.db import engine
 from admin import (
@@ -64,7 +64,7 @@ app.include_router(contact_router)
 app.include_router(faq_router)
 app.include_router(currency_router)
 app.include_router(orders_router)
-app.include_router(exhange_router)
+app.include_router(exchange_router)
 app.include_router(reviews_router)
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),

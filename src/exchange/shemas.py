@@ -1,0 +1,23 @@
+from pydantic import BaseModel
+
+
+class ExchangeRates(BaseModel):
+    ...
+
+class FillOrederForm(BaseModel):
+    ...
+
+class ConfirmOrder(BaseModel):
+    ...
+
+class ConfermCC(BaseModel):
+    ...
+
+class AwaitConformation(BaseModel):
+    ...
+
+class Requisites(BaseModel):
+    ...
+
+class PayedButton(BaseModel):
+    ...

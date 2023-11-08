@@ -178,8 +178,8 @@ async def add_or_get_po(
     )
     # client_sell_currency = redis_voc["client_sell_currency"]
     # client_buy_currency = redis_voc["client_buy_currency"]
-    print(crypto_po.id)
-    print(fiat_po.id)
+    # print(crypto_po.id)
+    # print(fiat_po.id)
     if crypto_po is None and fiat_po is None:
 
         if redis_voc["client_sell_currency"].type == CryptoType.Fiat:
