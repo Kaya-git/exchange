@@ -9,7 +9,9 @@ from orders.repositories import OrderRepo
 from currencies.repositories import CurrencyRepo
 from reviews.repositories import ReviewRepo
 from payment_options.repositories import PaymentOptionRepo
-from service_payment_options import ServicePaymentOptionRepo
+from service_payment_options.repositories import ServicePaymentOptionRepo
+from faq.repositories import FAQRepo
+from contacts.repositories import ContactRepo
 from .base_model import Base
 
 
@@ -61,6 +63,12 @@ class Database:
     review: ReviewRepo
     """ Reviews repository """
 
+    faq: FAQRepo
+    """ FAQ repository """
+
+    contact: ContactRepo
+    """ Contact repository """
+
     session: AsyncSession
 
     def __init__(
@@ -72,6 +80,8 @@ class Database:
         payment_option: PaymentOptionRepo = None,
         service_payment_option: ServicePaymentOptionRepo = None,
         review: ReviewRepo = None,
+        faq: FAQRepo = None,
+        contact: ContactRepo = None,
     ) -> None:
 
         self.session = session
@@ -87,5 +97,11 @@ class Database:
             )
         )
         self.review = review or ReviewRepo(
+            session=session
+        )
+        self.faq = faq or FAQRepo(
+            session=session
+        )
+        self.contact = contact or ContactRepo(
             session=session
         )

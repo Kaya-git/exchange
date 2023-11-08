@@ -1,15 +1,15 @@
 from pydantic import BaseModel
-from enum import Enum
+from enums import Status
 from datetime import datetime
 from decimal import Decimal
 
 
 class OrderBase(BaseModel):
-    user_email: int
+    user_email: str
     user_cookie: str
     user_buy_sum: Decimal
     user_sell_sum: Decimal
-    status: Enum
+    status: Status
     sell_payment_option_id: int
     buy_payment_option_id: int
     service_sell_po_id: int
@@ -21,7 +21,7 @@ class OrderBase(BaseModel):
 class OrderCreate(OrderBase):
     ...
 
-class Order(OrderBase):
+class OrderRead(OrderBase):
     id: int
     date: datetime
 

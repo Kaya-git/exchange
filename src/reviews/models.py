@@ -28,6 +28,10 @@ class Review(Base):
     rating: Mapped[Mark] = mapped_column(
         sa.Enum(Mark)
     )
+    moderated: Mapped[bool] = mapped_column(
+        sa.Boolean,
+        default=False
+    )
 
     user_id: Mapped[int] = mapped_column(
         sa.ForeignKey("user.id")

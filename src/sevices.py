@@ -1,11 +1,12 @@
 import redis.asyncio as redis
 from config import conf
 from database.db import Database
-from orders import Order
+from orders.models import Order
 from enums import Status, BankingType
-from payment_options import PaymentOption
+from payment_options.models import PaymentOption
 import asyncio
 from sqlalchemy import select
+from decimal import Decimal
 # from fastapi.responses import RedirectResponse
 
 
@@ -18,13 +19,13 @@ class Count:
         gas
     ):
         get_value = (
-            (send_value - ((send_value * margin) / 100) - gas) / coin_price
+            (send_value - Decimal((send_value * margin) / 100) - gas) / coin_price
         )
         return get_value
 
     async def count_send_value(get_value, coin_price, margin, gas):
         send_value = (
-            (coin_price + ((get_value * margin) / 100) * get_value) + gas
+            (coin_price + Decimal((get_value * margin) / 100) * get_value) + gas
         )
         return send_value
 

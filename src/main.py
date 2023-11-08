@@ -3,22 +3,28 @@ from database.db import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 # from fastapi.responses import RedirectResponse
 from config import conf
-from exchange import forms_router, exhange_router, menu_router
+from exchange.routers import exchange_router
 from sqladmin import Admin
 from database.db import engine
 from admin import (
     UserAdmin,
     ServicePaymentOptionAdmin,
     CurrencyAdmin,
-    PaymentOptionAdmin, ReviewAdmin,
+    PaymentOptionAdmin,
+    ReviewAdmin,
     OrderAdmin,
+    ContactAdmin,
+    FAQAdmin
 )
 from auth.auth import auth_backend
 from auth.shemas import UserRead, UserCreate
 from auth.routers import fastapi_users
 from currencies.routers import currency_router
 from admin.auth_back import authentication_backend
+from reviews.routers import reviews_router
 from orders.routers import orders_router
+from contacts.routers import contact_router
+from faq.routers import faq_router
 import uuid
 
 
@@ -29,7 +35,7 @@ app = FastAPI(
 admin = Admin(
     app=app,
     engine=engine,
-    authentication_backend=authentication_backend
+    # authentication_backend=authentication_backend
 )
 
 
@@ -39,6 +45,8 @@ admin.add_view(ReviewAdmin)
 admin.add_view(CurrencyAdmin)
 admin.add_view(PaymentOptionAdmin)
 admin.add_view(OrderAdmin)
+admin.add_view(ContactAdmin)
+admin.add_view(FAQAdmin)
 
 
 @app.get("/")
@@ -52,12 +60,12 @@ async def root(
     response.set_cookie(key="user_uuid", value=cookies_uuid)
     return cookies_uuid
 
-
+app.include_router(contact_router)
+app.include_router(faq_router)
 app.include_router(currency_router)
 app.include_router(orders_router)
-app.include_router(forms_router)
-app.include_router(exhange_router)
-app.include_router(menu_router)
+app.include_router(exchange_router)
+app.include_router(reviews_router)
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",

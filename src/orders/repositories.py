@@ -8,6 +8,7 @@ from enums import Status
 from users.models import User
 from service_payment_options.models import ServicePaymentOption
 from database.abstract_repo import Repository
+from sqlalchemy import update
 
 
 class OrderRepo(Repository[Order]):
@@ -55,3 +56,15 @@ class OrderRepo(Repository[Order]):
             )
         )
         return new_order
+
+    async def order_status_timout(
+            self,
+            order_id: int
+    ) -> None:
+        statement = (
+            update(Order).
+            where(Order.id == order_id).
+            values(status=Status.Timeout)
+        )
+        return (await self.session.execute(statement)).scalar_one_or_none()
+    
