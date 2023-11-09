@@ -31,7 +31,7 @@ async def currency_id(
     currency = await db.currency.get(ident=id)
     return currency
 
-@currency_router.get("/tariffs", response_model=CurrencyTariffsRead)
+@currency_router.get("/tariffs", response_model=List[CurrencyTariffsRead])
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)
 ):
