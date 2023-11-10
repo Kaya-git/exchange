@@ -1,19 +1,19 @@
-"""newdb
+"""new_db
 
-Revision ID: b2d345e31f05
+Revision ID: 34589d1946d9
 Revises: 
-Create Date: 2023-11-10 14:05:06.273634
+Create Date: 2023-11-10 17:26:47.531118
 
 """
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-from config import conf
 from fastapi_storages.integrations.sqlalchemy import ImageType
+from config import conf
 
 # revision identifiers, used by Alembic.
-revision: str = 'b2d345e31f05'
+revision: str = '34589d1946d9'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -131,7 +131,7 @@ def upgrade() -> None:
     )
     op.create_table('pending_admin',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
-    sa.Column('req_act', sa.Enum('NewOrder', 'VerifPo', 'ClientPayed', 'NewReview', name='reqaction'), nullable=True),
+    sa.Column('req_act', sa.Enum('verify_new_order', 'verify_transaction', 'verify_review', name='reqaction'), nullable=True),
     sa.Column('order_id', sa.BigInteger(), nullable=True),
     sa.Column('review_id', sa.BigInteger(), nullable=True),
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
