@@ -89,5 +89,5 @@ docker-compose up -d --build
 - Pydantic: 2.1
 - Alembic: 1.11
 ### Автор проекта:
-- За Бэкенд Евгений Бузуев . С моими другими работами вы можете ознакомится по ссылке: https://github.com/SurfimChilim
+- За backend Евгений Бузуев https://github.com/Kaya-git, за frontend Иван Лазарев https://github.com/LIS-webDev. С моими другими работами вы можете ознакомится по ссылке: https://github.com/Kaya-git
 
