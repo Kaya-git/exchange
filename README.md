@@ -1,67 +1,93 @@
-# exchange
-crypto_exchange
+# Криптовалютный обменник 
+
+## Описание:
+
+«VVS-Coin»
+Сервис для обмена криптовалютных активов на фиатные деньги и обратно. Пользователь может осуществовлять обмен без регистрации,
+но необходимо будет приложить фото подтверждение владения кредитной карты с которой будет происходить обмен.
+При регистрации, пользователь сможет увидеть историю своих завершенных обменов и участвовать в реферальной программе.
+
+## Пользовательские роли
+| Функционал                                                                                                                | Неавторизованные пользователи |  Авторизованные пользователи | Администратор |
+|:--------------------------------------------------------------------------------------------------------------------------|:---------:|:---------:|:---------:|
+| Доступна главная страница.                                                                                                | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна и работает форма авторизации                                                                                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна и работает форма обмена                                                                                          | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна и работает форма регистрации.                                                                                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна страница faq                                                                                                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна страница соглашения                                                                                              | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна страница резервов                                                                                                | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна страница тарифов                                                                                                 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна страница отзывов                                                                                                 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна и работает форма отзыва                                                                                          | :x: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна страница контактов                                                                                               | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна страница «История моих ордеров»                                                                                  | :x: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна и работает форма изменения пароля                                                                                | :x: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна возможность выйти из системы (разлогиниться)                                                                     | :x: | :heavy_check_mark: | :heavy_check_mark: |
+| Доступна и работает система восстановления пароля.                                                                        | :x: | :heavy_check_mark: | :heavy_check_mark: |
+| Изменять пароль любого пользователя.                                                                                      | :x: | :x: | :heavy_check_mark: |
+| Блокировать/удалять аккаунты  и платежные средства пользователей.                                                         | :x: | :x: | :heavy_check_mark: |
+| Верифицировать аккаунты и платежные средства пользователей.                                                               | :x: | :x: | :heavy_check_mark: |
+
+## Администратор и админ-зона
+:one: Все модели выведены в админ-зону с возможностью редактирования и удаление записей.  
+:two: Для модели пользователей включена фильтрация списка по имени и email.  
+:three: Для модели заказов включена фильтрация по айди и почте.  
+:four: На моделе пользователя можно посмотреть общую сумму обмена.
 
 ## Запуск проекта
 
-- Клонировать репозиторий https://github.com/Kaya94/exchange
+- Клонировать репозиторий GitHub (не забываем создать виртуальное окружение и установить зависимости):
+[https://github.com/Kaya94/exchange](https://github.com/Kaya-git/exchange)
 
-- Установить и активировать виртуальное окружение    
+- Создать файл .env в папке проекта:
 ```
-Для пользователей Windows:
-python -m venv venv
-source venv/Scripts/activate
-python -m pip install --upgrade pip
-```
-- Установить зависимости из файла requirements.txt
-```
-pip install -r requirements.txt
-```
- - Создать .env и записать в него следующие значения:
- ```
 # Datababse
-DB_USER=postgres
-DB_HOST=localhost
-DB_PASS=WW9JUQhP
-DB_NAME=new_exchange
-DB_PORT=5432
+DB_USER=ЮЗЕР_БД
+DB_HOST=ХОСТ_БД
+DB_PASS=ПАРОЛЬ_БД
+DB_NAME=ИМЯ_БД
+DB_PORT=ПОРТ_БД
 
 # Redis
-REDIS_DATABASE=1
 REDIS_HOST=localhost
 REDIS_PORT=6379
-REDIS_PASSWORD=WW9JUQhP
-REDIS_USERNAME=kaya
 
 # Debug and logging
-LOGGING_LEVEL=1
+LOGGING_LEVEL=УРОВЕНЬ_ЛОГИРОВАНИЯ
 
 # Admin secret_key
-SECRET_KEY=Ezjell
-
-# Binance API
-BINANCE_API_KEY=PWQDSzJhG5jsBMSpdZr9GHPOi92yJUVIYrVenOxd8O4iK0WlO94pvOAoDOoQauRl
-SECRET_KEY_BINANCE=s9X6SeUSXwBH7ZyVxYNTVkCwPxOlpqACqM3gw1uDlKdmTksg6zRoJIPgU7uuXCLn
+SECRET_KEY=СЕКРЕТКА
 
 # Yadisk token
-YADISKTOKEN=y0_AgAAAABOb2CTAApu8AAAAADrtyYe9s_WCX40S7CE91tdAnRnrGvMXG8
+YADISKTOKEN=ТОКЕН_ЯНДЕКС_ДИСКА
 
 #AdminAuth
-ADMIN_AUTH=WW9JUQhP
+ADMIN_AUTH=ПАРОЛЬ_АДМИНА
 
 # JWT
 # A constant secret which is used to encode the token.
-SECRET_JWT=SECRET
+SECRET_JWT=СЕКРЕТКА_JWT
 
 #User Menager secret
-SECRET_USER_MENAGER=WW9JUQhP
+SECRET_USER_MENAGER=ВАША_СЕКРЕТКА
 ```
-- Заресторить дамп бд через pgadmin
-- Установить и запустить редис на ubuntu
+- Собираем контейнеры:
 ```
-redis-server --daemonize yes
+docker-compose up -d --build
 ```
-- переходим в src и запускаем main.py
-```
-py main.py
-```
-И полюбому что то пойдет не так
+## Использованные технологии:
+- Python 3.11
+- FAST API: 0.101
+- Redis: 5.0
+- SQLAlchemy: 2.0
+- Yanex Disk: 1.4
+- SQLAdmin: 0.15
+- Docker: 6.1
+- FastApi Users: 12.1
+- FastApi Storages: 0.2
+- Pydantic: 2.1
+- Alembic: 1.11
+### Автор проекта:
+- За Бэкенд Евгений Бузуев . С моими другими работами вы можете ознакомится по ссылке: https://github.com/SurfimChilim
+
