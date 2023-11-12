@@ -88,6 +88,11 @@ docker-compose up -d --build
 - FastApi Storages: 0.2
 - Pydantic: 2.1
 - Alembic: 1.11
+- Vue v3
+- Vuetify
+- Vue router
+- SCSS
+- HTML
 ### Автор проекта:
 - За backend Евгений Бузуев https://github.com/Kaya-git, за frontend Иван Лазарев https://github.com/LIS-webDev. С моими другими работами вы можете ознакомится по ссылке: https://github.com/Kaya-git
 
