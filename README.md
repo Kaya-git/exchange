@@ -38,7 +38,7 @@
 ## Запуск проекта
 
 - Клонировать репозиторий GitHub (не забываем создать виртуальное окружение и установить зависимости):
-[https://github.com/Kaya94/exchange](https://github.com/Kaya-git/exchange)
+[https://github.com/Kaya-git/exchange](https://github.com/Kaya-git/exchange)
 
 - Создать файл .env в папке проекта:
 ```
