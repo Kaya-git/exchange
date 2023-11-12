@@ -9,21 +9,57 @@ from config import conf
 from sevices import services
 from decimal import Decimal
 from users.models import User
+from fastapi import status, HTTPException
 
 
-# Проверяем пришли ли все данные из формы
-async def check_form_fillment(form_voc: dict) -> str | bool:
-    for key in form_voc:
-        if form_voc[key] is None:
-            return key
-    return True
-
-async def check_if_values_empty(
-        client_sell_value,
-        client_buy_value
-) -> bool:
-    if client_buy_value and client_sell_value == 0:
-        return False
+async def check_form_fillment(
+        form_voc
+) -> None:
+    if not form_voc["client_sell_value"] and not form_voc["client_buy_value"]:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Клиент не указал ни одну сумму для обмена"
+        )
+    if form_voc["client_sell_value"] == 0 or form_voc["client_buy_value"] == 0:
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Клиент указал нули на суммах для перевода"
+        )
+    if not form_voc["client_sell_tikker_id"]:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Клиент не указал айди тиккера продажи"
+        )
+    if not form_voc["client_buy_tikker_id"]:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Клиент не указал айди тиккера покупки"
+        )
+    if not form_voc["client_email"]:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Клиент не указал почту"
+        )
+    if not form_voc["client_crypto_wallet"]:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Клиент не указал крипто кошелек"
+        )
+    if not form_voc["client_credit_card_number"]:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Клиент не указал номер карты"
+        )
+    if not form_voc["client_cc_holder"]:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Клиент не указал владельца кредитной карты"
+        )
+    if not form_voc["user_uuid"]:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="У клиента нет куки с айди"
+        )
 
 # Разделяем пришедший тикер по '_'.
 # Пример client_sell_currency_tikker и client_buy_currency_tikker:
@@ -41,6 +77,16 @@ async def create_tikker_for_binance(
     client_buy_currency = await db.currency.get_by_where(
         Currency.tikker_id == client_buy_tikker_id
     )
+    if not client_sell_currency:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="В базе данных нет такого номера тикера на продажи"
+        )
+    if not client_buy_tikker_id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="В базе данных нет такого номера тикера на покупку"
+        )
 
     sell_currency_tuple = client_sell_currency.tikker.split("_")
     buy_currency_tuple = client_buy_currency.tikker.split("_")

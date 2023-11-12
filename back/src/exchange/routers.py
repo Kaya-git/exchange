@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Cookie, Depends, Form, UploadFile, Path
+from fastapi import APIRouter, Cookie, Depends, Form, UploadFile, Path, HTTPException, status
 from fastapi.responses import RedirectResponse
 from sevices import services
 from database.db import Database, get_async_session
@@ -15,7 +15,6 @@ from sevices import Count
 from .handlers import (
     check_form_fillment,
     create_tikker_for_binance,
-    check_if_values_empty,
     ya_save_passport_photo,
     redis_discard,
     add_or_get_po
@@ -29,7 +28,7 @@ from .handlers import (
 #     PayedButton
 # )
 from typing import Annotated
-
+import logging
 
 exchange_router = APIRouter(
     prefix="/exchange",
@@ -44,16 +43,19 @@ async def get_exchange_rates(
 ):
     """ Отдает словарь со стоимостью запрашиваемой пары, тикерами, иконками, максимальными и минимальными значениями """
     db = Database(session=session)
-
+    
     client_sell_coin = await db.currency.get_by_where(
         Currency.tikker_id == client_sell_tikker_id
     )
     client_buy_coin = await db.currency.get_by_where(
         Currency.tikker_id == client_buy_tikker_id
     )
-    if client_sell_coin is None or client_buy_coin is None:
-        return ("Не найдена валюта для обмена")
-
+    if not client_sell_coin or not client_buy_coin:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail= f"Нет соответствующих валют в бд"
+        )
+    
     parsing_sell_coin_tikker = client_sell_coin.tikker.split('_')[0]
     parsing_buy_coin_tikker = client_buy_coin.tikker.split('_')[0]
 
@@ -118,14 +120,8 @@ async def fill_order_form(
         "client_cc_holder": client_cc_holder,
         "user_uuid": user_uuid 
     }
-    # Проверяем если все суммы равны нулю
-    check = await check_if_values_empty(
-        client_sell_value, client_buy_value
-    )
-    # Проверяем пришли данные или нет
-    check = await check_form_fillment(form_voc)
-    if check is not True:
-        return check
+    # Проверяем наполненость формы
+    await check_form_fillment(form_voc)
 
     # Получем словарь с ссылкой для парсинга, типами оплаты и коммисиями
     parser_link_voc = await create_tikker_for_binance(
@@ -138,27 +134,31 @@ async def fill_order_form(
 
     # Определяем какую строчку в форме заполнил пользователь и
     # просчитываем стоимость
-    if client_sell_value != 0:
-        try:
-            client_buy_value = await Count.count_get_value(
-                send_value=client_sell_value,
-                coin_price=coin_price,
-                margin=parser_link_voc["margin"],
-                gas=parser_link_voc["gas"],
-            )
-        except KeyError("Ошибка в Client buy Value"):
-            return ("Ошибка в Client buy Value")
+    if client_sell_value is not None:
+        client_buy_value = await Count.count_get_value(
+            send_value=client_sell_value,
+            coin_price=coin_price,
+            margin=parser_link_voc["margin"],
+            gas=parser_link_voc["gas"],
+        )
+        if client_buy_value is None:
+            raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail= f"Клиент указал ноль на покупке"
+        )
 
-    if client_sell_value == 0:
-        try:
-            client_sell_value = await Count.count_send_value(
-                get_value=client_buy_value,
-                coin_price=coin_price,
-                margin=parser_link_voc["margin"],
-                gas=parser_link_voc["gas"],
-            )
-        except KeyError("Ошибка в Client buy Value"):
-            return ("Ошибка в Client buy Value")
+    if client_sell_value is None:
+        client_sell_value = await Count.count_send_value(
+            get_value=client_buy_value,
+            coin_price=coin_price,
+            margin=parser_link_voc["margin"],
+            gas=parser_link_voc["gas"],
+        )
+        if client_sell_value is None:
+            raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail= f"Клиент указал ноль на продаже"
+        )
 
     # Сохраняем переменные в редис под ключем = uuid пользователя
     await services.redis_values.set_order_info(
@@ -183,63 +183,47 @@ async def confirm_order(
     user_uuid: str | None = Cookie(default=None),
     async_session: AsyncSession = Depends(get_async_session)
 ):
-    """ Отправляет ползователю заполненые данные для подтверждения заказа """
+    """ Отправляет пользователю заполненые данные для подтверждения заказа """
     db = Database(session=async_session)
 
     # Проверяем есть ли ключи в реддисе и забираем значения
     does_exist = await services.redis_values.redis_conn.exists(user_uuid)
     if does_exist != 1:
-        return "Время вышло"
-
-    (
-        client_buy_currency_po,
-        client_sell_currency_po,
-        client_crypto_wallet,
-        client_cc_holder,
-        client_credit_card_number,
-        client_buy_tikker_id,
-        client_buy_value,
-        client_sell_tikker_id,
-        client_sell_value,
-        client_email
-    ) = await services.redis_values.redis_conn.lrange(user_uuid, 0, -1)
-
-
-    # Декодируем из бит в пайтоновские значения
-    client_sell_currency_po = str(client_sell_currency_po, 'UTF-8')
-    client_sell_tikker_id = int(client_sell_tikker_id)
-    client_sell_value = str(client_sell_value, 'UTF-8')
-    client_credit_card_number = str(client_credit_card_number, 'UTF-8')
-    client_cc_holder = str(client_cc_holder, 'UTF-8')
-
-    client_buy_currency_po = str(client_buy_currency_po, 'UTF-8')
-    client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
-    client_buy_tikker_id = int(client_buy_tikker_id)
-    client_buy_value = str(client_buy_value, 'UTF-8')
-
-    client_email = str(client_email, 'UTF-8')
-
-    client_sell_value = Decimal(client_sell_value)
-    client_buy_value = Decimal(client_buy_value)
-
+        raise HTTPException(
+            status_code=status.HTTP_408_REQUEST_TIMEOUT,
+            detail="Время вышло. Необходимо создать новый обмен"
+        )
+    redis_dict = redis_discard(
+        user_uuid=user_uuid,
+        db=db
+        )
 
     # Проверяем зарегестрировани ли пользователь и
     # верифицирована ли его банковская карта и
     user = await db.user.get_by_where(
-        User.email == client_email
+        User.email == redis_dict["client_email"]
     )
+    if user is None:
+        credit_card = await db.payment_option.get_by_where(
+            PaymentOption.number == redis_dict["client_credit_card_number"]
+        )
+        if credit_card.user is not None:
+            raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail="Кредитная карта зарегестрированна под другим имеилом"
+            )
     if user is not None:
         credit_card = await db.payment_option.get_by_where(
-            PaymentOption.number == client_credit_card_number
+            PaymentOption.number == redis_dict["client_credit_card_number"]
         )
         crypto_wallet = await db.payment_option.get_by_where(
-            PaymentOption.number == client_crypto_wallet
+            PaymentOption.number == redis_dict["client_crypto_wallet"]
         )
         client_sell_currency = await db.currency.get_by_where(
-                Currency.tikker_id == client_sell_tikker_id
+                Currency.tikker_id == redis_dict["client_sell_tikker_id"]
         )
         client_buy_currency = await db.currency.get_by_where(
-                Currency.tikker_id == client_buy_tikker_id
+                Currency.tikker_id == redis_dict["client_buy_tikker_id"]
         )
         if (
             crypto_wallet is not None and
@@ -249,12 +233,12 @@ async def confirm_order(
             if client_sell_currency.type == CryptoType.Fiat:
                 new_order = await db.order.new(
                     user_id=user.id,
-                    user_email=client_email,
+                    user_email=redis_dict["client_email"],
                     user_cookie=user_uuid,
-                    user_buy_sum=client_buy_value,
+                    user_buy_sum=redis_dict["client_buy_value"],
                     buy_currency_id=client_buy_currency.id,
                     buy_payment_option_id=crypto_wallet.id,
-                    user_sell_sum=client_sell_value,
+                    user_sell_sum=redis_dict["client_sell_value"],
                     sell_currency_id=client_sell_currency.id,
                     sell_payment_option_id=credit_card.id,
                     status=Status.Approved,
@@ -269,12 +253,12 @@ async def confirm_order(
             if client_sell_currency.type == CryptoType.Crypto:
                 new_order = await db.order.new(
                     user_id=user.id,
-                    user_email=client_email,
+                    user_email=redis_dict["client_email"],
                     user_cookie=user_uuid,
-                    user_buy_sum=client_buy_value,
+                    user_buy_sum=redis_dict["client_buy_value"],
                     buy_currency_id=client_buy_currency.id,
                     buy_payment_option_id=credit_card.id,
-                    user_sell_sum=client_sell_value,
+                    user_sell_sum=redis_dict["client_sell_value"],
                     sell_currency_id=client_sell_currency.id,
                     sell_payment_option_id=crypto_wallet.id,
                     status=Status.Approved,
@@ -286,7 +270,11 @@ async def confirm_order(
                     user_uuid=user_uuid,
                     order_id=new_order.id
                 )
-                return "Такой пользователь существует. Создан новый ордер"
+                return (
+                    "Такой пользователь существует."
+                    "Платежные данные верифицирована."
+                    "Создан ордер"
+                )
         if (
             crypto_wallet is None and
             credit_card is not None and
@@ -294,10 +282,10 @@ async def confirm_order(
         ):
             if client_sell_currency.type == CryptoType.Fiat:
                 crypto_wallet = await db.payment_option.new(
-                    banking_type=client_buy_currency_po,
+                    banking_type=redis_dict["client_buy_currency_po"],
                     currency_id=client_buy_currency.id,
-                    number=client_crypto_wallet,
-                    holder=client_email,
+                    number=redis_dict["client_crypto_wallet"],
+                    holder=redis_dict["client_email"],
                     user_id=user.id,
                 )
 
@@ -306,12 +294,12 @@ async def confirm_order(
 
                 new_order = await db.order.new(
                     user_id=user.id,
-                    user_email=client_email,
+                    user_email=redis_dict["client_email"],
                     user_cookie=user_uuid,
-                    user_buy_sum=client_buy_value,
+                    user_buy_sum=redis_dict["client_buy_value"],
                     buy_currency_id=client_buy_currency.id,
                     buy_payment_option_id=crypto_wallet.id,
-                    user_sell_sum=client_sell_value,
+                    user_sell_sum=redis_dict["client_sell_value"],
                     sell_currency_id=client_sell_currency.id,
                     sell_payment_option_id=credit_card.id,
                     status=Status.Pending,
@@ -325,18 +313,18 @@ async def confirm_order(
                     order_id=new_order.id
                 )
                 return (
-                    "Пользователь существует, банковская карта подтверждена,"
-                    "криптовалютный кошель только зарегестрирован,"
+                    "Пользователь существует, банковская карта верифицированна,"
+                    "Зарегестрирован новый криптовалюный кошелек,"
                     "Создан новый ордер."
                 )
 
             if client_sell_currency.type == CryptoType.Crypto:
 
                 crypto_wallet = await db.payment_option.new(
-                    banking_type=client_buy_currency_po,
+                    banking_type=redis_dict["client_buy_currency_po"],
                     currency_id=client_sell_currency.id,
-                    number=client_crypto_wallet,
-                    holder=client_email,
+                    number=redis_dict["client_crypto_wallet"],
+                    holder=redis_dict["client_email"],
                     user_id=user.id,
                 )
 
@@ -345,12 +333,12 @@ async def confirm_order(
 
                 new_order = await db.order.new(
                     user_id=user.id,
-                    user_email=client_email,
+                    user_email=redis_dict["client_email"],
                     user_cookie=user_uuid,
-                    user_buy_sum=client_buy_value,
+                    user_buy_sum=redis_dict["client_buy_value"],
                     buy_currency_id=client_buy_currency.id,
                     buy_payment_option_id=credit_card.id,
-                    user_sell_sum=client_sell_value,
+                    user_sell_sum=redis_dict["client_sell_value"],
                     sell_currency_id=client_sell_currency.id,
                     sell_payment_option_id=crypto_wallet.id,
                     status=Status.Approved,
@@ -365,23 +353,12 @@ async def confirm_order(
                 )
                 return (
                     "Пользователь существует, банковская карта подтверждена,"
-                    "криптовалютный кошель только зарегестрирован,"
-                    "Создан новый ордер."
+                    "Зарегестрирован новый криптовалютный кошелек,"
+                    "Создан новый ордер на обмен."
                 )
 
     # Возвращаем значения для подтверждения
-    return {
-        "client_sell_currency_po": client_sell_currency_po,
-        "client_sell_tikker_id": client_sell_tikker_id,
-        "client_sell_value": client_sell_value,
-        "client_credit_card_number": client_credit_card_number,
-        "client_cc_holder": client_cc_holder,
-        "client_buy_currency_po": client_buy_currency_po,
-        "client_crypto_wallet": client_crypto_wallet,
-        "client_buy_tikker_id": client_buy_tikker_id,
-        "client_buy_value": client_buy_value,
-        "client_email": client_email
-    }
+    return redis_dict
 
 
 # Отправляем фото паспорта на верификацию админу
