@@ -1,0 +1,40 @@
+.tariff {
+    padding-top: 40px;
+    &__sheet {
+        background-color: $fourthColor !important;
+    }
+    &__container {
+        background-color: $secondColor;
+        border-radius: 4px;
+    }
+    &__title {
+        text-align: center;
+    }
+    &__table {
+        overflow-x: auto;
+        table {
+            padding-bottom: 10px;
+        }
+    }
+
+    &__table-head-row {
+        th {
+            min-width: 250px;
+        }
+    }
+
+    &__table-cell {
+        display: flex;
+        align-items: center;
+        img {
+            display: block;
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            margin-right: 5px;
+        }
+        span {
+            display: block;
+        }
+    }
+}

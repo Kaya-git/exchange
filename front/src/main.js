@@ -53,6 +53,11 @@ const Router = createRouter({
         path: '/reserves/',
         component: () => import("./components/Pages/ReservesView")
       },
+      {
+        name: 'AccountView',
+        path: '/user/',
+        component: () => import("./components/User/AccountView")
+      },
   ]
 });
 

@@ -15,9 +15,11 @@
             type="password"
             required
           ></v-text-field>
-          <v-btn class="auth__btn" type="submit" size="large" color="primary">
-            Войти
-          </v-btn>
+          <RouterLink to="/user/" style="display: block;margin: 0 auto;">
+            <v-btn class="auth__btn" type="submit" size="large" color="primary">
+              Войти
+            </v-btn>
+        </RouterLink>
         </v-form>
       </div>
     </div>

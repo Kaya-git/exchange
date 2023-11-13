@@ -1,0 +1,17 @@
+.review-modal {
+    &__sheet {
+        max-width: 800px;
+    }
+    &__submit {
+        min-width: 50% !important;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width:$md2+px){
+    .review-modal {
+        &__sheet {
+            width: calc(100vw - 100px);
+        }
+    }
+}

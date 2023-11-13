@@ -3,7 +3,7 @@
         <v-sheet rounded class="reviews__sheet">
             <v-container fluid class="reviews__content">
                 <v-row class="reviews__row">
-                    <v-col>
+                    <v-col class="reviews__col">
                         <h1 class="reviews__title title title_h1">
                             Отзывы наших клиентов
                         </h1>
@@ -81,9 +81,9 @@
                             :total-visible="2"
                         >
                         </v-pagination>
-                    </v-col>
-                    <v-col>
-                        
+                        <div class="reviews__bottom">
+                            <review-modal ></review-modal>
+                        </div>
                     </v-col>
                 </v-row>
             </v-container>
@@ -92,13 +92,17 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue';
+import {defineComponent, defineAsyncComponent} from 'vue';
 
 export default defineComponent({
 name: 'ReviewView',
-
-data: () => ({
-    
-}),
+    data: () => ({
+        
+    }),
+    components: {
+        ReviewModal: defineAsyncComponent({
+            loader: () => import("../Modal/ReviewModal"),
+        }),
+    },
 });
 </script>
