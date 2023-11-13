@@ -20,7 +20,7 @@ async def check_form_fillment(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Клиент не указал ни одну сумму для обмена"
         )
-    if form_voc["client_sell_value"] == 0 or form_voc["client_buy_value"] == 0:
+    if form_voc["client_sell_value"] == 0 and form_voc["client_buy_value"] == 0:
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Клиент указал нули на суммах для перевода"
