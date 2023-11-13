@@ -1,0 +1,20 @@
+.account {
+    padding-top: 20px;
+    &__tabs {
+        overflow-x: auto;
+        background-color: $fourthColor !important;
+    }
+
+    &__tab {
+        color: $secondColor !important;
+    }
+}
+
+@media (min-width:$md2+px){
+    .account {
+        padding-top: 40px;
+        &__tabs {
+            margin: 0 -100%;
+        }
+    }
+}

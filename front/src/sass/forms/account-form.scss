@@ -1,0 +1,22 @@
+.account-form {
+    &__title {
+        text-align: center;
+    }
+    &__submit {
+        display: block !important;
+        margin: 20px auto 0 auto;
+    }
+}
+
+@media (min-width:$md4+px){
+    .account-form {
+        &__cols {
+            margin: 0 -20px;
+            display: flex;
+        }
+        &__col {
+            padding: 0 20px;
+            flex: 1 1 50%;
+        }
+    }
+}

@@ -1,0 +1,53 @@
+<template>
+    <div class="account">
+        <v-tabs v-model="tab" class="account__tabs" align-tabs="center">
+            <v-tab class="account__tab" :value="1">Мои заявки</v-tab>
+            <v-tab class="account__tab" :value="2">Ваши карты/счета</v-tab>
+            <v-tab class="account__tab" :value="3">Настройки</v-tab>
+        </v-tabs>
+        <v-window class="account__window" v-model="tab">
+            <v-window-item class="account__window-item" :value="3">
+                <v-container class="account__window-container" fluid>
+                    <v-sheet class="account__window-sheet pa-4 pa-md-6" rounded>
+                        <account-form></account-form>
+                    </v-sheet>
+                </v-container>
+            </v-window-item>
+            <v-window-item class="account__window-item" :value="2">
+                <v-container class="account__window-container" fluid>
+                    <v-sheet class="account__window-sheet pa-4 pa-md-6" rounded>
+                        <h2 class="account__window-title title title_h2 title_black">
+                            Карты/счета
+                        </h2>
+                    </v-sheet>
+                </v-container>
+            </v-window-item>
+            <v-window-item class="account__window-item" :value="1">
+                <v-container class="account__window-container" fluid>
+                    <v-sheet class="account__window-sheet pa-4 pa-md-6" rounded>
+                        <h2 class="account__window-title title title_h2 title_black">
+                            Заявки
+                        </h2>
+                    </v-sheet>
+                </v-container>
+            </v-window-item>
+        </v-window>
+    </div>
+</template>
+
+<script>
+import {defineComponent, defineAsyncComponent} from 'vue';
+
+export default defineComponent({
+    name: 'AccountView',
+
+    data: () => ({
+        tab: 3,
+    }),
+    components: {
+        AccountForm: defineAsyncComponent({
+            loader: () => import("../Forms/AccountForm"),
+        }),
+    }
+});
+</script>

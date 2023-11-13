@@ -55,12 +55,19 @@ body {
 @import 'exchange/exchange.scss';
 @import 'user/auth.scss';
 @import 'user/register.scss';
+@import 'user/account.scss';
 @import 'privacy/privacy.scss';
 @import 'reserves/reserves.scss';
 @import 'faq/faq.scss';
 @import 'tariffs/tariffs.scss';
 @import 'reviews/reviews.scss';
+@import 'contacts/contacts.scss';
+@import 'modals/review-modal.scss';
 //</MAIN>====================================================================================================
+
+//<FORMS>====================================================================================================
+@import 'forms/account-form.scss';
+//</FORMS>====================================================================================================
 
 //<FOOTER>====================================================================================================
 @import 'footer/footer.scss';

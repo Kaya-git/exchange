@@ -13,6 +13,17 @@
         flex-direction: column;
         align-items: center;
     }
+
+    &__col {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    &__bottom {
+        margin: 20px auto 0 auto;
+    }
+
 }
 
 .reviews-list {

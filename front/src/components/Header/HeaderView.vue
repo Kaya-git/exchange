@@ -62,9 +62,8 @@ export default defineComponent({
           return this.$route.path;
       },
       isExcludeRoute() {
-        const excluded = ['/auth/', '/register/'];
+        const excluded = ['/auth/', '/register/', '/user/'];
         if (excluded.includes(this.curRoute)) {
-          console.log(this.curRoute);
           return true;
         }
         return false;
