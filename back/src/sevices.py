@@ -148,6 +148,7 @@ class DB():
                     order.status == Status.Approved
                 ):
                     await db.pending_admin.delete(PendingAdmin.order_id==order_id)
+                    await db.session.commit()
                     return "Верифицировали карту. Обмен разрешен"
                     # return RedirectResponse(f"/exchange/order/{order.id}")
             await asyncio.sleep(30)

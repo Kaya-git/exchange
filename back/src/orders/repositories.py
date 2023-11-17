@@ -4,7 +4,7 @@ import sqlalchemy as sa
 from orders.models import Order
 from currencies.models import Currency
 from payment_options.models import PaymentOption
-from enums import Status
+from enums import Status, VerifDeclineReason
 from users.models import User
 from service_payment_options.models import ServicePaymentOption
 from database.abstract_repo import Repository
@@ -35,6 +35,7 @@ class OrderRepo(Repository[Order]):
         buy_currency_id: Currency,
         sell_payment_option_id: PaymentOption,
         status: Status,
+        decline_reason: VerifDeclineReason = None,
         service_sell_po_id: ServicePaymentOption = None,
         service_buy_po_id: ServicePaymentOption = None,
     ) -> None:
@@ -51,6 +52,7 @@ class OrderRepo(Repository[Order]):
                 sell_currency_id=sell_currency_id,
                 sell_payment_option_id=sell_payment_option_id,
                 status=status,
+                decline_reason=decline_reason,
                 service_sell_po_id=service_sell_po_id,
                 service_buy_po_id=service_buy_po_id,
             )

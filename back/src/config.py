@@ -76,7 +76,8 @@ class Configuration:
     debug = bool(os.environ.get("DEBUG"))
     logging_level = int(os.environ.get("LOGGING_LEVEL"))
     image_admin_storage = FileSystemStorage(path='\static\currency_icons')
-
+    yandex_email = os.environ.get("EMAIL")
+    yandex_email_pass = os.environ.get("EMAIL_PASSWORD")
     image_storage = ImageStorageConfiguration()
     parser = ParserConfiguration()
     redis = RedisConfig()

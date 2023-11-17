@@ -12,7 +12,7 @@ class BankingType(enum.StrEnum):
     PAYEUR = "PAYEUR"
 
 
-class CryptoType(enum.Enum):
+class CurrencyType(enum.Enum):
     Crypto = "crypto"
     Fiat = "fiat"
 
@@ -41,6 +41,14 @@ class Status(enum.StrEnum):
 
 
 class ReqAction(enum.StrEnum):
-    verify_new_order = "Необходимо верифицировать клиента и его платежные средства"
-    verify_transaction = "Клиент оплатил заказ. Необходимо верифицировать платеж и провести оплату"
-    verify_review = "Необходимо валидировать новый отзыв"
+    VerifyNewOrder = "Необходимо верифицировать клиента и его платежные средства"
+    VerifyTransaction = "Клиент оплатил заказ. Необходимо верифицировать платеж и провести оплату"
+    VerifyReview = "Необходимо валидировать новый отзыв"
+
+
+class VerifDeclineReason(enum.StrEnum):
+   Last4Digits = "Не видно последние 4 цифры карты"
+   WebDomen = "Не видно домен сайта"
+   NoOrder = "Не видно номер заявки"
+   Inittials = "Не видно ФИО"
+   BadQuality = "Плохое качество фотографии"

@@ -1,4 +1,3 @@
-from config import conf
 from decimal import Decimal
 import requests
 

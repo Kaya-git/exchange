@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, List
 from .schemas import CurrencyRead, CurrencyTariffsRead
 from binance_parser import find_price
-from enums import CryptoType
+from enums import CurrencyType
 
 
 currency_router = APIRouter(
@@ -13,7 +13,10 @@ currency_router = APIRouter(
 )
 
 
-@currency_router.get("/list", response_model=List[CurrencyRead])
+@currency_router.get(
+        "/list",
+        # response_model=List[CurrencyRead]
+)
 async def currency_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):
@@ -22,7 +25,10 @@ async def currency_list(
     return currency_list
 
 
-@currency_router.get("/currency/{id}", response_model=CurrencyRead)
+@currency_router.get(
+        "/currency/{id}",
+        # response_model=CurrencyRead
+)
 async def currency_id(
     id: Annotated[int, Path(title="The ID of the item to get")],
     async_session: AsyncSession = Depends(get_async_session)
@@ -31,7 +37,10 @@ async def currency_id(
     currency = await db.currency.get(ident=id)
     return currency
 
-@currency_router.get("/tariffs", response_model=List[CurrencyTariffsRead])
+@currency_router.get(
+        "/tariffs",
+        # response_model=List[CurrencyTariffsRead]
+)
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)
 ):
@@ -40,7 +49,7 @@ async def tariffs(
     all_currencies = await db.currency.get_all()
     currency_list =[]
     for currency in all_currencies:
-        if currency.type is CryptoType.Crypto:
+        if currency.type is CurrencyType.Crypto:
             show_currency = {}
 
             solo_tikker = currency.tikker.split('_')[0]

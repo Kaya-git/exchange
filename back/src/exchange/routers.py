@@ -5,7 +5,7 @@ from database.db import Database, get_async_session
 from binance_parser import find_price
 from currencies.models import Currency
 from orders.models import Order
-from enums.models import Status, CryptoType, ReqAction
+from enums.models import Status, CurrencyType, ReqAction
 from users.models import User
 from payment_options.models import PaymentOption
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,7 +17,10 @@ from .handlers import (
     create_tikker_for_binance,
     ya_save_passport_photo,
     redis_discard,
-    add_or_get_po
+    add_or_get_po,
+    send_email,
+    generate_pass,
+    get_password_hash
 )
 # from .schemas import (
 #     FillOrederForm,
@@ -175,10 +178,10 @@ async def fill_order_form(
             client_buy_currency_po=parser_link_voc["client_buy_currency_po"]
     )
     return "Redis - OK"
-    # return RedirectResponse("/confirm")
+    # return RedirectResponse("/confirm_order")
 
 
-@exchange_router.post("/confirm")
+@exchange_router.post("/confirm_order")
 async def confirm_order(
     user_uuid: str | None = Cookie(default=None),
     async_session: AsyncSession = Depends(get_async_session)
@@ -193,26 +196,63 @@ async def confirm_order(
             status_code=status.HTTP_408_REQUEST_TIMEOUT,
             detail="Время вышло. Необходимо создать новый обмен"
         )
-    redis_dict = redis_discard(
+    redis_dict = await redis_discard(
         user_uuid=user_uuid,
         db=db
         )
+    # Возвращаем значения для подтверждения
+    return redis_dict
 
+
+@exchange_router.get("/confirm_button")
+async def confirm_button(
+    user_uuid: str | None = Cookie(default=None),
+    async_session: AsyncSession = Depends(get_async_session)
+):
+    db = Database(session=async_session)
+
+    # Проверяем есть ли ключи в реддисе и забираем значения
+    does_exist = await services.redis_values.redis_conn.exists(user_uuid)
+    if does_exist != 1:
+        raise HTTPException(
+            status_code=status.HTTP_408_REQUEST_TIMEOUT,
+            detail="Время вышло. Необходимо создать новый обмен"
+        )
+    redis_dict = await redis_discard(
+        user_uuid=user_uuid,
+        db=db
+        )
     # Проверяем зарегестрировани ли пользователь и
     # верифицирована ли его банковская карта и
     user = await db.user.get_by_where(
         User.email == redis_dict["client_email"]
     )
+
+    # Пользователь отсутствует
     if user is None:
+
         credit_card = await db.payment_option.get_by_where(
             PaymentOption.number == redis_dict["client_credit_card_number"]
+        )
+        if credit_card is None:
+
+            # return RedirectResponse("/cc_conformation_form")
+            return (
+            '''
+            Пользователь не найден.
+            Карта не зарегестрирована.
+            Редирект на верификацию карты.
+            '''
         )
         if credit_card.user is not None:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
                 detail="Кредитная карта зарегестрированна под другим имеилом"
             )
+
+    # Пользователь есть в бд
     if user is not None:
+
         credit_card = await db.payment_option.get_by_where(
             PaymentOption.number == redis_dict["client_credit_card_number"]
         )
@@ -225,141 +265,161 @@ async def confirm_order(
         client_buy_currency = await db.currency.get_by_where(
                 Currency.tikker_id == redis_dict["client_buy_tikker_id"]
         )
+
         if (
-            crypto_wallet is not None and
             credit_card is not None and
             credit_card.is_verified is True
         ):
-            if client_sell_currency.type == CryptoType.Fiat:
-                new_order = await db.order.new(
-                    user_id=user.id,
-                    user_email=redis_dict["client_email"],
-                    user_cookie=user_uuid,
-                    user_buy_sum=redis_dict["client_buy_value"],
-                    buy_currency_id=client_buy_currency.id,
-                    buy_payment_option_id=crypto_wallet.id,
-                    user_sell_sum=redis_dict["client_sell_value"],
-                    sell_currency_id=client_sell_currency.id,
-                    sell_payment_option_id=credit_card.id,
-                    status=Status.Approved,
+            
+            # Проверяем если кредитная карта принадлежит пользователю
+            if credit_card.user is user:
+            # Добавляем ордер в бд
+                if client_sell_currency.type == CurrencyType.Fiat:
+                    new_order = await db.order.new(
+                        user_id=user.id,
+                        user_email=redis_dict["client_email"],
+                        user_cookie=user_uuid,
+                        user_buy_sum=redis_dict["client_buy_value"],
+                        buy_currency_id=client_buy_currency.id,
+                        buy_payment_option_id=crypto_wallet.id,
+                        user_sell_sum=redis_dict["client_sell_value"],
+                        sell_currency_id=client_sell_currency.id,
+                        sell_payment_option_id=credit_card.id,
+                        status=Status.Approved,
+                    )
+                    db.session.add(new_order)
+                    await db.session.flush()
+                    await db.session.commit()
+                    await services.redis_values.change_keys(
+                        user_uuid=user_uuid,
+                        order_id=new_order.id
                 )
-                db.session.add(new_order)
-                await db.session.flush()
-                await db.session.commit()
-                await services.redis_values.change_keys(
-                    user_uuid=user_uuid,
-                    order_id=new_order.id
-                )
-            if client_sell_currency.type == CryptoType.Crypto:
-                new_order = await db.order.new(
-                    user_id=user.id,
-                    user_email=redis_dict["client_email"],
-                    user_cookie=user_uuid,
-                    user_buy_sum=redis_dict["client_buy_value"],
-                    buy_currency_id=client_buy_currency.id,
-                    buy_payment_option_id=credit_card.id,
-                    user_sell_sum=redis_dict["client_sell_value"],
-                    sell_currency_id=client_sell_currency.id,
-                    sell_payment_option_id=crypto_wallet.id,
-                    status=Status.Approved,
-                )
-                db.session.add(new_order)
-                await db.session.flush()
-                await db.session.commit()
-                await services.redis_values.change_keys(
-                    user_uuid=user_uuid,
-                    order_id=new_order.id
-                )
+
+                if client_sell_currency.type == CurrencyType.Crypto:
+                    new_order = await db.order.new(
+                        user_id=user.id,
+                        user_email=redis_dict["client_email"],
+                        user_cookie=user_uuid,
+                        user_buy_sum=redis_dict["client_buy_value"],
+                        buy_currency_id=client_buy_currency.id,
+                        buy_payment_option_id=credit_card.id,
+                        user_sell_sum=redis_dict["client_sell_value"],
+                        sell_currency_id=client_sell_currency.id,
+                        sell_payment_option_id=crypto_wallet.id,
+                        status=Status.Approved,
+                    )
+                    db.session.add(new_order)
+                    await db.session.flush()
+                    await db.session.commit()
+                    await services.redis_values.change_keys(
+                        user_uuid=user_uuid,
+                        order_id=new_order.id
+                    )
+
+                # return RedirectResponse("/order")
                 return (
                     "Такой пользователь существует."
-                    "Платежные данные верифицирована."
-                    "Создан ордер"
+                    "Кредитная карта принадлежит пользователю."
+                    "Ордер создан"
                 )
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                    detail="Кредитная карта зарегестрированна под другим имеилом"
+                )
+
         if (
-            crypto_wallet is None and
             credit_card is not None and
-            credit_card.is_verified is True
+            credit_card.is_verified is False
         ):
-            if client_sell_currency.type == CryptoType.Fiat:
-                crypto_wallet = await db.payment_option.new(
-                    banking_type=redis_dict["client_buy_currency_po"],
-                    currency_id=client_buy_currency.id,
-                    number=redis_dict["client_crypto_wallet"],
-                    holder=redis_dict["client_email"],
-                    user_id=user.id,
-                )
-
-                db.session.add(crypto_wallet)
-                await db.session.flush()
-
-                new_order = await db.order.new(
-                    user_id=user.id,
-                    user_email=redis_dict["client_email"],
-                    user_cookie=user_uuid,
-                    user_buy_sum=redis_dict["client_buy_value"],
-                    buy_currency_id=client_buy_currency.id,
-                    buy_payment_option_id=crypto_wallet.id,
-                    user_sell_sum=redis_dict["client_sell_value"],
-                    sell_currency_id=client_sell_currency.id,
-                    sell_payment_option_id=credit_card.id,
-                    status=Status.Pending,
-                )
-
-                db.session.add(new_order)
-                await db.session.flush()
-                await db.session.commit()
-                await services.redis_values.change_keys(
-                    user_uuid=user_uuid,
-                    order_id=new_order.id
-                )
+                # return RedirectResponse("/confirm_order")
                 return (
-                    "Пользователь существует, банковская карта верифицированна,"
-                    "Зарегестрирован новый криптовалюный кошелек,"
-                    "Создан новый ордер."
+                    "Такой пользователь существует"
+                    "Кредитная карта не верифицированна"
+                    "Редирект на верификацию карты"
                 )
+        
 
-            if client_sell_currency.type == CryptoType.Crypto:
 
-                crypto_wallet = await db.payment_option.new(
-                    banking_type=redis_dict["client_buy_currency_po"],
-                    currency_id=client_sell_currency.id,
-                    number=redis_dict["client_crypto_wallet"],
-                    holder=redis_dict["client_email"],
-                    user_id=user.id,
-                )
+            # if client_sell_currency.type == CryptoType.Fiat:
+            #     crypto_wallet = await db.payment_option.new(
+            #         banking_type=redis_dict["client_buy_currency_po"],
+            #         currency_id=client_buy_currency.id,
+            #         number=redis_dict["client_crypto_wallet"],
+            #         holder=redis_dict["client_email"],
+            #         user_id=user.id,
+            #     )
 
-                db.session.add(crypto_wallet)
-                await db.session.flush()
+            #     db.session.add(crypto_wallet)
+            #     await db.session.flush()
 
-                new_order = await db.order.new(
-                    user_id=user.id,
-                    user_email=redis_dict["client_email"],
-                    user_cookie=user_uuid,
-                    user_buy_sum=redis_dict["client_buy_value"],
-                    buy_currency_id=client_buy_currency.id,
-                    buy_payment_option_id=credit_card.id,
-                    user_sell_sum=redis_dict["client_sell_value"],
-                    sell_currency_id=client_sell_currency.id,
-                    sell_payment_option_id=crypto_wallet.id,
-                    status=Status.Approved,
-                )
+            #     new_order = await db.order.new(
+            #         user_id=user.id,
+            #         user_email=redis_dict["client_email"],
+            #         user_cookie=user_uuid,
+            #         user_buy_sum=redis_dict["client_buy_value"],
+            #         buy_currency_id=client_buy_currency.id,
+            #         buy_payment_option_id=crypto_wallet.id,
+            #         user_sell_sum=redis_dict["client_sell_value"],
+            #         sell_currency_id=client_sell_currency.id,
+            #         sell_payment_option_id=credit_card.id,
+            #         status=Status.Pending,
+            #     )
 
-                db.session.add(new_order)
-                await db.session.flush()
-                await db.session.commit()
-                await services.redis_values.change_keys(
-                    user_uuid=user_uuid,
-                    order_id=new_order.id
-                )
-                return (
-                    "Пользователь существует, банковская карта подтверждена,"
-                    "Зарегестрирован новый криптовалютный кошелек,"
-                    "Создан новый ордер на обмен."
-                )
+            #     db.session.add(new_order)
+            #     await db.session.flush()
+            #     await db.session.commit()
+            #     await services.redis_values.change_keys(
+            #         user_uuid=user_uuid,
+            #         order_id=new_order.id
+            #     )
+            #     # return RedirectResponse("/confirm_order")
+            #     return (
+            #         "Пользователь существует, банковская карта верифицированна,"
+            #         "Зарегестрирован новый криптовалюный кошелек,"
+            #         "Создан новый ордер."
+            #     )
 
-    # Возвращаем значения для подтверждения
-    return redis_dict
+            # if client_sell_currency.type == CryptoType.Crypto:
 
+            #     crypto_wallet = await db.payment_option.new(
+            #         banking_type=redis_dict["client_buy_currency_po"],
+            #         currency_id=client_sell_currency.id,
+            #         number=redis_dict["client_crypto_wallet"],
+            #         holder=redis_dict["client_email"],
+            #         user_id=user.id,
+            #     )
+
+            #     db.session.add(crypto_wallet)
+            #     await db.session.flush()
+
+            #     new_order = await db.order.new(
+            #         user_id=user.id,
+            #         user_email=redis_dict["client_email"],
+            #         user_cookie=user_uuid,
+            #         user_buy_sum=redis_dict["client_buy_value"],
+            #         buy_currency_id=client_buy_currency.id,
+            #         buy_payment_option_id=credit_card.id,
+            #         user_sell_sum=redis_dict["client_sell_value"],
+            #         sell_currency_id=client_sell_currency.id,
+            #         sell_payment_option_id=crypto_wallet.id,
+            #         status=Status.Approved,
+            #     )
+
+            #     db.session.add(new_order)
+            #     await db.session.flush()
+            #     await db.session.commit()
+            #     await services.redis_values.change_keys(
+            #         user_uuid=user_uuid,
+            #         order_id=new_order.id
+            #     )
+                # return RedirectResponse("/confirm_order")
+                # return (
+                #     "Пользователь существует, банковская карта подтверждена,"
+                #     "Зарегестрирован новый криптовалютный кошелек,"
+                #     "Создан новый ордер на обмен."
+                # )
+    
 
 # Отправляем фото паспорта на верификацию админу
 @exchange_router.post("/cc_conformation_form")
@@ -387,13 +447,19 @@ async def confirm_cc(
         User.email == redis_voc["client_email"]
     )
     if user is None:
-        new_user = await db.user.new(
+
+        new_password = await generate_pass()
+        hashed_password = await get_password_hash(new_password)
+
+        user = await db.user.new(
             email=redis_voc["client_email"],
+            hashed_password=hashed_password
         )
-        db.session.add(new_user)
-        await db.session.commit()
-        user = await db.user.get_by_where(
-            User.email == redis_voc["client_email"]
+        db.session.add(user)
+        await db.session.flush()
+        await send_email(
+            recepient_email=redis_voc["client_email"],
+            generated_pass=new_password
         )
 
     p_o_dict = await add_or_get_po(
@@ -402,7 +468,6 @@ async def confirm_cc(
     )
 
     # Записываем новый ордер на обмен в базу данных
-
     new_order = await db.order.new(
         user_id=user.id,
         user_email=redis_voc["client_email"],
@@ -415,15 +480,14 @@ async def confirm_cc(
         sell_payment_option_id=p_o_dict["client_sell_payment_option"].id,
         status=Status.Pending,
     )
-
     db.session.add(new_order)
     await db.session.flush()
 
+    # Добавляем ордер в оповещение администратору
     new_pending = await db.pending_admin.new(
         order_id=new_order.id,
-        req_act=ReqAction.verify_new_order
+        req_act=ReqAction.VerifyNewOrder
     )
-
     db.session.add(new_pending)
     await db.session.flush()
 
@@ -453,8 +517,10 @@ async def conformation_await(
             user_uuid
         )
     )
+
     answer = await paralel_waiting
     return answer
+    # return RedirectResponse("/order")
 
 
 @exchange_router.post("/order")
@@ -483,7 +549,7 @@ async def requisites(
         }
 
 
-@exchange_router.post("/payed",)
+@exchange_router.post("/payed")
 async def payed_button(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Cookie(default=None),
@@ -499,6 +565,12 @@ async def payed_button(
         0
     )
     order_id = int(order_id)
+
+    payed_order = await db.pending_admin.new(
+        order_id=order_id,
+        req_act=ReqAction.VerifyTransaction
+    )
+    await db.session.commit()
     if not does_exist:
 
         timeout = await db.order.order_status_timout(order_id)

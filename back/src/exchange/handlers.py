@@ -1,7 +1,7 @@
 from typing import Optional
 from database.db import Database
 from currencies.models import Currency
-from enums import CryptoType
+from enums import CurrencyType
 from payment_options.models import PaymentOption
 import secrets
 import os
@@ -10,6 +10,43 @@ from sevices import services
 from decimal import Decimal
 from users.models import User
 from fastapi import status, HTTPException
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
+from passlib.context import CryptContext
+
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+async def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
+async def generate_pass():
+    return secrets.token_hex(10)
+
+async def send_email(
+    recepient_email,
+    generated_pass
+):
+    email = conf.yandex_email
+    password = conf.yandex_email_pass
+
+    msg = MIMEText(f"Ваш пароль от лк VVS-Coin: {generated_pass}", 'plain', 'utf-8')
+    msg['Subject'] = Header('Пароль от лк VVS-Coin', 'utf-8')
+    msg['From'] = email
+    msg['To'] = recepient_email
+
+    s = smtplib.SMTP('smtp.yandex.ru', 587, timeout=10)
+
+    try:
+        s.starttls()
+        s.login(email, password)
+        s.sendmail(msg['From'], recepient_email, msg.as_string())
+    except Exception as ex:
+        print(ex)
+    finally:
+        s.quit()
+    return generated_pass
 
 
 async def check_form_fillment(
@@ -61,6 +98,7 @@ async def check_form_fillment(
             detail="У клиента нет куки с айди"
         )
 
+
 # Разделяем пришедший тикер по '_'.
 # Пример client_sell_currency_tikker и client_buy_currency_tikker:
 #   'RUB_SBER',
@@ -97,14 +135,14 @@ async def create_tikker_for_binance(
     client_buy_currency_po = buy_currency_tuple[1]
 
     # Создаем строку для парсера равную условию: (Крипта)(Фиат) 
-    if client_sell_currency.type == CryptoType.Crypto:
+    if client_sell_currency.type == CurrencyType.Crypto:
         parser_tikker = (
             f"{client_sell_currency_tikker}{client_buy_currency_tikker}"
         )
         margin = 0
         gas = 0
 
-    if client_sell_currency.type == CryptoType.Fiat:
+    if client_sell_currency.type == CurrencyType.Fiat:
         parser_tikker = (
             f"{client_buy_currency_tikker}{client_sell_currency_tikker}"
         )
@@ -121,6 +159,7 @@ async def create_tikker_for_binance(
             "gas": gas
         }
 
+
 # Сохраняем картинку
 async def ya_save_passport_photo(
         cc_image
@@ -136,7 +175,6 @@ async def ya_save_passport_photo(
         # Создаем новое название картинки,
         # записываем в файл и отправляем на Яндекс диск
         new_file_name = f"{secrets.token_hex(10)}.{extension}"
-        print(new_file_name)
         cc_image_content = await cc_image.read()
 
         with open(new_file_name, "wb") as file:
@@ -148,8 +186,9 @@ async def ya_save_passport_photo(
         await image_storage.close()
         os.remove(f"{new_file_name}")
         return new_file_name
-    except:
-        return "Ошибка в сохранении фото"
+    except Exception as ex:
+        return ex
+
 
 # Достаем данные из редиса и декодируем их
 async def redis_discard(
@@ -194,7 +233,6 @@ async def redis_discard(
         Currency.tikker_id == client_buy_tikker_id
     )
 
-
     return {
         "client_sell_currency_po": client_sell_currency_po,
         "client_sell_tikker_id": client_sell_tikker_id,
@@ -209,6 +247,7 @@ async def redis_discard(
         "client_sell_currency": client_sell_currency,
         "client_buy_currency": client_buy_currency
     }
+
 
 async def add_or_get_po(
         db: Database,
@@ -228,7 +267,7 @@ async def add_or_get_po(
     # print(fiat_po.id)
     if crypto_po is None and fiat_po is None:
 
-        if redis_voc["client_sell_currency"].type == CryptoType.Fiat:
+        if redis_voc["client_sell_currency"].type == CurrencyType.Fiat:
 
             client_sell_payment_option = await db.payment_option.new(
                 banking_type=redis_voc["client_sell_currency_po"],
@@ -247,7 +286,7 @@ async def add_or_get_po(
                 user_id=user.id,
             )
 
-        if redis_voc["client_sell_currency"].type == CryptoType.Crypto:
+        if redis_voc["client_sell_currency"].type == CurrencyType.Crypto:
 
             client_sell_payment_option = await db.payment_option.new(
                 banking_type=redis_voc["client_buy_currency_po"],
@@ -275,7 +314,7 @@ async def add_or_get_po(
         fiat_po is None
     ):
         print("yes1")
-        if redis_voc["client_sell_currency"].type == CryptoType.Fiat:
+        if redis_voc["client_sell_currency"].type == CurrencyType.Fiat:
 
             client_sell_payment_option = await db.payment_option.new(
                 banking_type=redis_voc["client_sell_currency_po"],
@@ -290,7 +329,7 @@ async def add_or_get_po(
 
             db.session.add(client_sell_payment_option)
 
-        if redis_voc["client_sell_currency"].type == CryptoType.Crypto:
+        if redis_voc["client_sell_currency"].type == CurrencyType.Crypto:
 
             client_sell_payment_option = crypto_po
 
@@ -311,7 +350,7 @@ async def add_or_get_po(
         crypto_po is None
     ):
         print("yes2")
-        if redis_voc["client_sell_currency"].type == CryptoType.Fiat:
+        if redis_voc["client_sell_currency"].type == CurrencyType.Fiat:
 
             client_sell_payment_option = fiat_po
 
@@ -324,7 +363,7 @@ async def add_or_get_po(
             )
             db.session.add(client_buy_payment_option)
 
-        if redis_voc["client_sell_currency"].type == CryptoType.Crypto:
+        if redis_voc["client_sell_currency"].type == CurrencyType.Crypto:
 
             client_sell_payment_option = await db.payment_option.new(
                 banking_type=redis_voc["client_buy_currency_po"],

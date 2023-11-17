@@ -1,10 +1,11 @@
-from .models import CryptoType, BankingType, Mark, Role, Status
+from .models import CurrencyType, BankingType, Mark, Role, Status, VerifDeclineReason
 
 
 __all__ = [
-    'CryptoType',
+    'CurrencyType',
     'BankingType',
     'Mark',
     'Role',
     'Status',
+    'VerifDeclineReason'
 ]

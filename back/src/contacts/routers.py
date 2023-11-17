@@ -6,10 +6,7 @@ from .schemas import ContactRead
 from typing import List, Annotated
 
 
-contact_router = APIRouter(
-    prefix="/contact",
-    tags=["Роутер контактов"]
-)
+contact_router = APIRouter(prefix="/contact",tags=["Роутер контактов"])
 
 @contact_router.get("/list", response_model=List[ContactRead])
 async def contact_list(

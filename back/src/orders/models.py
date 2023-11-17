@@ -1,5 +1,5 @@
 from database.base_model import Base
-from enums import Status
+from enums import Status, VerifDeclineReason
 import sqlalchemy as sa
 from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -40,6 +40,10 @@ class Order(Base):
     )
     status: Mapped["Status"] = mapped_column(
         sa.Enum(Status)
+    )
+    decline_reason: Mapped["VerifDeclineReason"] = mapped_column(
+        sa.Enum(VerifDeclineReason),
+        nullable=True
     )
 
     sell_payment_option_id: Mapped[int] = mapped_column(

@@ -2,13 +2,15 @@
 from database.base_model import Base
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from enums import CryptoType
+from enums import CurrencyType
 from config import conf
 from fastapi_storages.integrations.sqlalchemy import ImageType
 from typing import List, TYPE_CHECKING
+
+
 if TYPE_CHECKING:
-    from service_payment_options import ServicePaymentOption
-    from payment_options import PaymentOption
+    from service_payment_options.models import ServicePaymentOption
+    from payment_options.models import PaymentOption
 
 
 class Currency(Base):
@@ -28,8 +30,8 @@ class Currency(Base):
         unique=True,
         nullable=False,
     )
-    type: Mapped[CryptoType] = mapped_column(
-        sa.Enum(CryptoType)
+    type: Mapped[CurrencyType] = mapped_column(
+        sa.Enum(CurrencyType)
     )
     name: Mapped[str] = mapped_column(
         sa.Text,

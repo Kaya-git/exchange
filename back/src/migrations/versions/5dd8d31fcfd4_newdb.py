@@ -1,8 +1,8 @@
-"""new_db
+"""newDb
 
-Revision ID: 34589d1946d9
+Revision ID: 5dd8d31fcfd4
 Revises: 
-Create Date: 2023-11-10 17:26:47.531118
+Create Date: 2023-11-17 13:59:17.495985
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,9 @@ import sqlalchemy as sa
 from fastapi_storages.integrations.sqlalchemy import ImageType
 from config import conf
 
+
 # revision identifiers, used by Alembic.
-revision: str = '34589d1946d9'
+revision: str = '5dd8d31fcfd4'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -33,7 +34,7 @@ def upgrade() -> None:
     sa.Column('id', sa.BigInteger(), nullable=False),
     sa.Column('tikker_id', sa.SmallInteger(), nullable=False),
     sa.Column('tikker', sa.Text(), nullable=False),
-    sa.Column('type', sa.Enum('Crypto', 'Fiat', name='cryptotype'), nullable=False),
+    sa.Column('type', sa.Enum('Crypto', 'Fiat', name='currencytype'), nullable=False),
     sa.Column('name', sa.Text(), nullable=False),
     sa.Column('gas', sa.Numeric(), nullable=False),
     sa.Column('service_margin', sa.Numeric(), nullable=False),
@@ -112,6 +113,7 @@ def upgrade() -> None:
     sa.Column('user_sell_sum', sa.Numeric(), nullable=False),
     sa.Column('date', sa.TIMESTAMP(), nullable=False),
     sa.Column('status', sa.Enum('Pending', 'Timeout', 'Canceled', 'Inprocces', 'Approved', 'Completed', name='status'), nullable=False),
+    sa.Column('decline_reason', sa.Enum('Last4Digits', 'WebDomen', 'NoOrder', 'Inittials', 'BadQuality', name='verifdeclinereason'), nullable=True),
     sa.Column('sell_payment_option_id', sa.BigInteger(), nullable=False),
     sa.Column('buy_payment_option_id', sa.BigInteger(), nullable=False),
     sa.Column('service_sell_po_id', sa.BigInteger(), nullable=True),
@@ -131,7 +133,7 @@ def upgrade() -> None:
     )
     op.create_table('pending_admin',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
-    sa.Column('req_act', sa.Enum('verify_new_order', 'verify_transaction', 'verify_review', name='reqaction'), nullable=True),
+    sa.Column('req_act', sa.Enum('VerifyNewOrder', 'VerifyTransaction', 'VerifyReview', name='reqaction'), nullable=True),
     sa.Column('order_id', sa.BigInteger(), nullable=True),
     sa.Column('review_id', sa.BigInteger(), nullable=True),
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
