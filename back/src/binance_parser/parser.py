@@ -8,6 +8,6 @@ async def find_price(ticker: str) -> Decimal:
     url = base + path
     param = {'symbol': f'{ticker}'}
     data = requests.get(url=url, params=param)
-    price = Decimal(data.json()["bids"][0][0])
+    price = round(Decimal(data.json()["bids"][0][0]), 4)
     print(price)
     return price

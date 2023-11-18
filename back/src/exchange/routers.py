@@ -63,10 +63,11 @@ async def get_exchange_rates(
     parsing_buy_coin_tikker = client_buy_coin.tikker.split('_')[0]
 
     if parsing_sell_coin_tikker == "RUB":
-        print("RUB")
+
         parsing_tikker = parsing_buy_coin_tikker + parsing_sell_coin_tikker
-        print(parsing_tikker)
+
         coin_price = await find_price(parsing_tikker)
+
         exchange_rate = await Count.count_send_value(
             get_value=1,
             coin_price=coin_price,
@@ -74,10 +75,11 @@ async def get_exchange_rates(
             gas=client_buy_coin.gas
         )
     if parsing_buy_coin_tikker == "RUB":
-        print("CRYPTO")
+
         parsing_tikker = parsing_sell_coin_tikker + parsing_buy_coin_tikker
-        print(parsing_tikker)
+
         coin_price = await find_price(parsing_tikker)
+
         exchange_rate = await Count.count_send_value(
             get_value=1,
             coin_price=coin_price,
@@ -86,7 +88,7 @@ async def get_exchange_rates(
         )
     
     return {
-        "exchange_rate": exchange_rate,
+        "exchange_rate": round(exchange_rate, 3),
         "client_buy_tikker": parsing_buy_coin_tikker,
         "client_buy_icon": client_buy_coin.icon,
         "client_buy_max": client_buy_coin.max,
@@ -137,39 +139,71 @@ async def fill_order_form(
 
     # Определяем какую строчку в форме заполнил пользователь и
     # просчитываем стоимость
-    if client_sell_value is not None:
-        client_buy_value = await Count.count_get_value(
-            send_value=client_sell_value,
-            coin_price=coin_price,
-            margin=parser_link_voc["margin"],
-            gas=parser_link_voc["gas"],
-        )
-        if client_buy_value is None:
-            raise HTTPException(
-            status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail= f"Клиент указал ноль на покупке"
-        )
+    if client_sell_value != 0:
 
-    if client_sell_value is None:
-        client_sell_value = await Count.count_send_value(
-            get_value=client_buy_value,
-            coin_price=coin_price,
-            margin=parser_link_voc["margin"],
-            gas=parser_link_voc["gas"],
-        )
-        if client_sell_value is None:
-            raise HTTPException(
-            status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail= f"Клиент указал ноль на продаже"
-        )
+        if parser_link_voc["client_sell_currency"].type == CurrencyType.Crypto:
+
+            client_buy_value = round(await Count.count_send_value(
+                get_value=client_sell_value,
+                coin_price=coin_price,
+                margin=parser_link_voc["margin"],
+                gas=parser_link_voc["gas"],
+            ), 2)
+            if client_buy_value is None:
+                raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail= f"Клиент указал ноль на покупке"
+            )
+        if parser_link_voc["client_sell_currency"].type == CurrencyType.Fiat:
+
+            client_buy_value = round(await Count.count_get_value(
+                send_value=client_sell_value,
+                coin_price=coin_price,
+                margin=parser_link_voc["margin"],
+                gas=parser_link_voc["gas"],
+            ), 4)
+            if client_buy_value is None:
+                raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail= f"Клиент указал ноль на покупке"
+            )
+
+    if client_sell_value == 0:
+
+        if parser_link_voc["client_buy_currency"].type == CurrencyType.Crypto:
+
+            client_sell_value = round(await Count.count_send_value(
+                get_value=client_buy_value,
+                coin_price=coin_price,
+                margin=parser_link_voc["margin"],
+                gas=parser_link_voc["gas"],
+            ), 2)
+            if client_sell_value is None:
+                raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail= f"Клиент указал ноль на продаже"
+            )
+        if parser_link_voc["client_buy_currency"].type == CurrencyType.Fiat:
+            
+            client_sell_value = round(await Count.count_get_value(
+                send_value=client_buy_value,
+                coin_price=coin_price,
+                margin=parser_link_voc["margin"],
+                gas=parser_link_voc["gas"],
+            ), 4)
+            if client_sell_value is None:
+                raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail= f"Клиент указал ноль на продаже"
+            )
 
     # Сохраняем переменные в редис под ключем = uuid пользователя
     await services.redis_values.set_order_info(
             user_uuid=user_uuid,
             client_email=client_email,
-            client_sell_value=client_sell_value,
+            client_sell_value= client_sell_value,
             client_sell_tikker_id=client_sell_tikker_id,
-            client_buy_value=client_buy_value,
+            client_buy_value= client_buy_value,
             client_buy_tikker_id=client_buy_tikker_id,
             client_credit_card_number=client_credit_card_number,
             client_cc_holder=client_cc_holder,
@@ -338,87 +372,6 @@ async def confirm_button(
                     "Кредитная карта не верифицированна"
                     "Редирект на верификацию карты"
                 )
-        
-
-
-            # if client_sell_currency.type == CryptoType.Fiat:
-            #     crypto_wallet = await db.payment_option.new(
-            #         banking_type=redis_dict["client_buy_currency_po"],
-            #         currency_id=client_buy_currency.id,
-            #         number=redis_dict["client_crypto_wallet"],
-            #         holder=redis_dict["client_email"],
-            #         user_id=user.id,
-            #     )
-
-            #     db.session.add(crypto_wallet)
-            #     await db.session.flush()
-
-            #     new_order = await db.order.new(
-            #         user_id=user.id,
-            #         user_email=redis_dict["client_email"],
-            #         user_cookie=user_uuid,
-            #         user_buy_sum=redis_dict["client_buy_value"],
-            #         buy_currency_id=client_buy_currency.id,
-            #         buy_payment_option_id=crypto_wallet.id,
-            #         user_sell_sum=redis_dict["client_sell_value"],
-            #         sell_currency_id=client_sell_currency.id,
-            #         sell_payment_option_id=credit_card.id,
-            #         status=Status.Pending,
-            #     )
-
-            #     db.session.add(new_order)
-            #     await db.session.flush()
-            #     await db.session.commit()
-            #     await services.redis_values.change_keys(
-            #         user_uuid=user_uuid,
-            #         order_id=new_order.id
-            #     )
-            #     # return RedirectResponse("/confirm_order")
-            #     return (
-            #         "Пользователь существует, банковская карта верифицированна,"
-            #         "Зарегестрирован новый криптовалюный кошелек,"
-            #         "Создан новый ордер."
-            #     )
-
-            # if client_sell_currency.type == CryptoType.Crypto:
-
-            #     crypto_wallet = await db.payment_option.new(
-            #         banking_type=redis_dict["client_buy_currency_po"],
-            #         currency_id=client_sell_currency.id,
-            #         number=redis_dict["client_crypto_wallet"],
-            #         holder=redis_dict["client_email"],
-            #         user_id=user.id,
-            #     )
-
-            #     db.session.add(crypto_wallet)
-            #     await db.session.flush()
-
-            #     new_order = await db.order.new(
-            #         user_id=user.id,
-            #         user_email=redis_dict["client_email"],
-            #         user_cookie=user_uuid,
-            #         user_buy_sum=redis_dict["client_buy_value"],
-            #         buy_currency_id=client_buy_currency.id,
-            #         buy_payment_option_id=credit_card.id,
-            #         user_sell_sum=redis_dict["client_sell_value"],
-            #         sell_currency_id=client_sell_currency.id,
-            #         sell_payment_option_id=crypto_wallet.id,
-            #         status=Status.Approved,
-            #     )
-
-            #     db.session.add(new_order)
-            #     await db.session.flush()
-            #     await db.session.commit()
-            #     await services.redis_values.change_keys(
-            #         user_uuid=user_uuid,
-            #         order_id=new_order.id
-            #     )
-                # return RedirectResponse("/confirm_order")
-                # return (
-                #     "Пользователь существует, банковская карта подтверждена,"
-                #     "Зарегестрирован новый криптовалютный кошелек,"
-                #     "Создан новый ордер на обмен."
-                # )
     
 
 # Отправляем фото паспорта на верификацию админу

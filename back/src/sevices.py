@@ -168,10 +168,13 @@ class DB():
             print(f"pending_order: {order.id},")
             if order.status is Status.Completed:
                 await db.pending_admin.delete(PendingAdmin.order_id==order_id)
+                await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 return " Успешно завершили обмен"
                 # return RedirectResponse(f"exchange/succes/{order_id}")
             if order.status is Status.Canceled:
+                await db.pending_admin.delete(PendingAdmin.order_id==order_id)
+                await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 return "Не пришли средства, обмен отклонен"
                 # return RedirectResponse(f"exchange/declined/{order_id}")
