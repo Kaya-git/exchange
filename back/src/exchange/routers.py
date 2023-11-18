@@ -45,25 +45,35 @@ async def get_exchange_rates(
     client_sell_coin = await db.currency.get_by_where(
         Currency.tikker_id == client_sell_tikker_id
     )
-    client_buy_coin = await db.currency.get_by_where(
-        Currency.tikker_id == client_buy_tikker_id
-    )
-    if not client_sell_coin or not client_buy_coin:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail= f"Нет соответствующих валют в бд"
+    exchange_dict = {}
+    get = []
+    if client_sell_coin.type == CurrencyType.Fiat:
+        client_buy_coin_list = await db.currency.get_many(
+            whereclause=(Currency.type == CurrencyType.Crypto)
         )
-    exchange_rate_dict = await find_exchange_rate(client_sell_coin, client_buy_coin)
-    
-    return {
-        "exchange_rate": exchange_rate_dict['exchange_rate'],
-        "client_buy_tikker": exchange_rate_dict['parsing_buy_coin_tikker'],
-        "client_buy_icon": client_buy_coin.icon,
-        "client_buy_max": client_buy_coin.max,
-        "client_buy_min": client_buy_coin.min,
-        "client_sell_tikker": exchange_rate_dict['parsing_sell_coin_tikker'],
-        "client_sell_icon": client_sell_coin.icon
-    }
+
+        for client_buy_coin in client_buy_coin_list:
+            client_buy_coin_dict = client_buy_coin.__dict__
+            exchange_rate = await find_exchange_rate(client_sell_coin, client_buy_coin)
+            client_buy_coin_dict["exchange_rate"] = exchange_rate
+            get.append(client_buy_coin_dict)
+
+    if client_sell_coin.type == CurrencyType.Crypto:
+        client_buy_coin_list = await db.currency.get_many(
+            whereclause=(Currency.type == CurrencyType.Crypto)
+        )
+        
+        for client_buy_coin in client_buy_coin_list:
+            client_buy_coin_dict = client_buy_coin.__dict__
+            exchange_rate = await find_exchange_rate(client_sell_coin, client_buy_coin)
+            client_buy_coin_dict["exchange_rate"] = exchange_rate
+            get.append(client_buy_coin)
+
+    exchange_dict["give"] = client_sell_coin
+    exchange_dict["get"] = get
+
+    return exchange_dict
+
 
 # Заполняем форму для обмена и передаем ее в редис
 @exchange_router.post("/exchange_form")
