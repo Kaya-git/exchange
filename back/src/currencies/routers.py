@@ -13,10 +13,7 @@ currency_router = APIRouter(
 )
 
 
-@currency_router.get(
-        "/list",
-        # response_model=List[CurrencyRead]
-)
+@currency_router.get("/list")
 async def currency_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):
@@ -25,10 +22,7 @@ async def currency_list(
     return currency_list
 
 
-@currency_router.get(
-        "/currency/{id}",
-        # response_model=CurrencyRead
-)
+@currency_router.get("/currency/{id}")
 async def currency_id(
     id: Annotated[int, Path(title="The ID of the item to get")],
     async_session: AsyncSession = Depends(get_async_session)
@@ -37,10 +31,8 @@ async def currency_id(
     currency = await db.currency.get(ident=id)
     return currency
 
-@currency_router.get(
-        "/tariffs",
-        # response_model=List[CurrencyTariffsRead]
-)
+
+@currency_router.get("/tariffs")
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)
 ):

@@ -52,7 +52,7 @@ app.add_middleware(
 admin = Admin(
     app=app,
     engine=engine,
-    # authentication_backend=authentication_backend
+    authentication_backend=authentication_backend
 )
 
 admin.add_view(PendingAdminAdmin)

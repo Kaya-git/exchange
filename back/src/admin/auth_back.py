@@ -13,10 +13,8 @@ class AdminAuth(AuthenticationBackend):
         username, password = form["username"], form["password"]
 
         user = await authenticate_admin(username, password)
-        print(user)
-        if user:
+        if user and user.role is Role.Admin:
             acces_token = create_access_token({"sub": str(user.id)})
-            print(acces_token)
             request.session.update({"token": acces_token})
             return True
         return False
@@ -28,12 +26,9 @@ class AdminAuth(AuthenticationBackend):
 
     async def authenticate(self, request: Request) -> bool:
         token = request.session.get("token")
-        print(token)
         if not token:
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
-
         user = await get_current_user(token)
-        print(user)
         if not user:
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
         return True
