@@ -32,7 +32,8 @@ from starlette.responses import FileResponse
 
 
 app = FastAPI(
-    title="Exchange"
+    title="Exchange",
+    debug=True
 )
 
 origins = [
