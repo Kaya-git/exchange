@@ -1,10 +1,10 @@
 <template>
-    <v-table class="account-table">
+    <v-table class="request-table">
         <thead>
             <tr>
-                <th>Номер заявки</th>
-                <th>Обмен</th>
-                <th>Статус заявки</th>
+                <th>Наименование</th>
+                <th>Номер счета</th>
+                <th>Действия</th>
             </tr>
         </thead>
         <tbody>
@@ -19,10 +19,10 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-    name: 'AccountTable',
+    name: 'RequestTable',
 
     data: () => ({
         
-}),
+    }),
 });
 </script>

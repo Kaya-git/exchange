@@ -19,6 +19,7 @@
                         <h2 class="account__window-title title title_h2 title_black">
                             Карты/счета
                         </h2>
+                        <account-table></account-table>
                     </v-sheet>
                 </v-container>
             </v-window-item>
@@ -28,6 +29,7 @@
                         <h2 class="account__window-title title title_h2 title_black">
                             Заявки
                         </h2>
+                        <request-table></request-table>
                     </v-sheet>
                 </v-container>
             </v-window-item>
@@ -47,6 +49,12 @@ export default defineComponent({
     components: {
         AccountForm: defineAsyncComponent({
             loader: () => import("../Forms/AccountForm"),
+        }),
+        RequestTable: defineAsyncComponent({
+            loader: () => import("../Tables/RequestTable"),
+        }),
+        AccountTable: defineAsyncComponent({
+            loader: () => import("../Tables/AccountTable"),
         }),
     }
 });
