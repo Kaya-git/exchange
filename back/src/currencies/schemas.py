@@ -22,7 +22,7 @@ class CurrencyRead(CurrencyBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class CurrencyTariffsRead(BaseModel):
     id: int
@@ -35,4 +35,4 @@ class CurrencyTariffsRead(BaseModel):
     coin_price: Decimal
 
     class Config:
-        orm_mode = True
+        from_attributes = True

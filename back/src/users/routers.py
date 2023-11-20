@@ -5,9 +5,9 @@ from fastapi import Depends
 from auth.routers import current_active_verified_user
 from typing import TYPE_CHECKING
 from payment_options.models import PaymentOption
+
 if TYPE_CHECKING:
     from users.models import User
-
 
 
 user_lk_router = APIRouter(
@@ -22,8 +22,10 @@ async def user_info(
 ):
     db = Database(session=async_session)
 
-    verified_po = db.payment_option.get_many(
+    verified_po = await db.payment_option.get_many(
         whereclause=(PaymentOption.user_id == user.id))
+    
+    email = 'ebuzuev@gmail.com'
 
     return {
         'buy_volume': user.buy_volume,

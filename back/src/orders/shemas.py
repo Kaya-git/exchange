@@ -26,4 +26,4 @@ class OrderRead(OrderBase):
     date: datetime
 
     class Config:
-        orm_mmode = True
+        from_attributes = True

@@ -16,9 +16,6 @@ class PaymentOption(Base):
         primary_key=True,
         autoincrement=True,
     )
-    banking_type: Mapped[BankingType] = mapped_column(
-        sa.Enum(BankingType)
-    )
     number: Mapped[str] = mapped_column(
         sa.Text,
         nullable=False,
@@ -53,7 +50,7 @@ class PaymentOption(Base):
     )
 
     def __str__(self) -> str:
-        return f"{self.banking_type}"
+        return f"{self.currency_id}"
 
     def __repr__(self) -> str:
-        return f"{self.banking_type}"
+        return f"{self.currency_id}"

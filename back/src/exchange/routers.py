@@ -14,7 +14,7 @@ from decimal import Decimal
 from sevices import Count
 from .handlers import (
     check_form_fillment,
-    create_tikker_for_binance,
+    # create_tikker_for_binance,
     ya_save_passport_photo,
     redis_discard,
     add_or_get_po,
@@ -33,17 +33,17 @@ exchange_router = APIRouter(
     tags=["Роутер обмена"]
 )
 
-@exchange_router.get("/{client_sell_tikker_id}/{client_buy_tikker_id}")
+@exchange_router.get("/{client_sell_tikker}/{client_buy_tikker}")
 async def get_exchange_rates(
-    client_sell_tikker_id: Annotated[int, Path(title="The ID of the coin client sell")],
-    client_buy_tikker_id: Annotated[int, Path(title="The ID of the coin client buy")],
+    client_sell_tikker: Annotated[str, Path(title="The Tikker of the coin client sell")],
+    client_buy_tikker: Annotated[str, Path(title="The Tikker of the coin client buy")],
     session: AsyncSession = Depends(get_async_session)
 ):
     """ Отдает словарь со стоимостью запрашиваемой пары, тикерами, иконками, максимальными и минимальными значениями """
     db = Database(session=session)
     
     client_sell_coin = await db.currency.get_by_where(
-        Currency.tikker_id == client_sell_tikker_id
+        Currency.tikker == client_sell_tikker
     )
     exchange_dict = {}
     get = []
@@ -51,23 +51,16 @@ async def get_exchange_rates(
         client_buy_coin_list = await db.currency.get_many(
             whereclause=(Currency.type == CurrencyType.Crypto)
         )
-
-        for client_buy_coin in client_buy_coin_list:
-            client_buy_coin_dict = client_buy_coin.__dict__
-            exchange_rate = await find_exchange_rate(client_sell_coin, client_buy_coin)
-            client_buy_coin_dict["exchange_rate"] = exchange_rate
-            get.append(client_buy_coin_dict)
-
     if client_sell_coin.type == CurrencyType.Crypto:
         client_buy_coin_list = await db.currency.get_many(
-            whereclause=(Currency.type == CurrencyType.Crypto)
+            whereclause=(Currency.type == CurrencyType.Fiat)
         )
-        
-        for client_buy_coin in client_buy_coin_list:
-            client_buy_coin_dict = client_buy_coin.__dict__
-            exchange_rate = await find_exchange_rate(client_sell_coin, client_buy_coin)
-            client_buy_coin_dict["exchange_rate"] = exchange_rate
-            get.append(client_buy_coin)
+
+    for client_buy_coin in client_buy_coin_list:
+        exchange_rate = await find_exchange_rate(client_sell_coin, client_buy_coin)
+        client_buy_coin_dict = client_buy_coin.__dict__
+        client_buy_coin_dict["exchange_rate"] = exchange_rate
+        get.append(client_buy_coin_dict)
 
     exchange_dict["give"] = client_sell_coin
     exchange_dict["get"] = get
@@ -79,9 +72,9 @@ async def get_exchange_rates(
 @exchange_router.post("/exchange_form")
 async def fill_order_form(
     client_sell_value: Decimal = Form(default=0),
-    client_sell_tikker_id: int = Form(),
+    client_sell_tikker: str = Form(),
     client_buy_value: Decimal = Form(default=0),
-    client_buy_tikker_id: int = Form(),
+    client_buy_tikker: str = Form(),
     client_email: str = Form(),
     client_crypto_wallet: str = Form(),
     client_credit_card_number: str = Form(),
@@ -94,9 +87,9 @@ async def fill_order_form(
 
     form_voc = {
        "client_sell_value": client_sell_value,
-        "client_sell_tikker_id": client_sell_tikker_id,
+        "client_sell_tikker": client_sell_tikker,
         "client_buy_value": client_buy_value,
-        "client_buy_tikker_id": client_buy_tikker_id,
+        "client_buy_tikker": client_buy_tikker,
         "client_email": client_email,
         "client_crypto_wallet": client_crypto_wallet,
         "client_credit_card_number": client_credit_card_number,
@@ -107,31 +100,39 @@ async def fill_order_form(
     await check_form_fillment(form_voc)
 
     # Получем словарь с ссылкой для парсинга, типами оплаты и коммисиями
-    parser_link_voc = await create_tikker_for_binance(
-        db,
-        client_sell_tikker_id,
-        client_buy_tikker_id
-    )
+    # parser_link_voc = await create_tikker_for_binance(
+    #     db,
+    #     client_sell_tikker,
+    #     client_buy_tikker
+    # )
     # Просчитываем стоимость валюты с учетом коммисий и стоимости за перевод
-    coin_price = await find_price(parser_link_voc["parser_tikker"])
+    client_sell_coin = await db.currency.get_by_where(Currency.tikker==client_sell_tikker)
+    client_buy_coin = await db.currency.get_by_where(Currency.tikker==client_buy_tikker)
+    coin_price = await find_exchange_rate(client_sell_coin, client_buy_coin)
 
     # Определяем какую строчку в форме заполнил пользователь и
     # просчитываем стоимость
-    totals = await calculate_totals(parser_link_voc, coin_price, client_sell_value, client_buy_value)
+    totals = await calculate_totals(
+        client_sell_coin,
+        client_buy_coin,
+        coin_price,
+        client_sell_value,
+        client_buy_value
+    )
 
     # Сохраняем переменные в редис под ключем = uuid пользователя
     await services.redis_values.set_order_info(
             user_uuid=user_uuid,
             client_email=client_email,
             client_sell_value=totals["client_sell_value"],
-            client_sell_tikker_id=client_sell_tikker_id,
+            client_sell_tikker=client_sell_tikker,
             client_buy_value=totals["client_buy_value"],
-            client_buy_tikker_id=client_buy_tikker_id,
+            client_buy_tikker=client_buy_tikker,
             client_credit_card_number=client_credit_card_number,
             client_cc_holder=client_cc_holder,
             client_crypto_wallet=client_crypto_wallet,
-            client_sell_currency_po=parser_link_voc["client_sell_currency_po"],
-            client_buy_currency_po=parser_link_voc["client_buy_currency_po"]
+            # client_sell_currency_po=parser_link_voc["client_sell_currency_po"],
+            # client_buy_currency_po=parser_link_voc["client_buy_currency_po"]
     )
     return "Redis - OK"
     # return RedirectResponse("/confirm_order")
@@ -280,15 +281,20 @@ async def conformation_await(
     """ Запускает паралельно задачу на отслеживание смены статуса верификации пользователя """
     db = Database(session=async_session)
     # Запускаем паралельно таск на пул из бд на подтверждение смены статуса ордера и верификации статуса пользователя
-    paralel_waiting = asyncio.create_task(
+    # paralel_waiting = asyncio.create_task(
+    #     services.db_paralell.conformation_await(
+    #         db,
+    #         user_uuid
+    #     )
+    # )
+
+    # answer = await paralel_waiting
+    return await asyncio.create_task(
         services.db_paralell.conformation_await(
             db,
             user_uuid
         )
     )
-
-    answer = await paralel_waiting
-    return answer
     # return RedirectResponse("/order")
 
 

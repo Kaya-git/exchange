@@ -69,7 +69,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     )
 
     payment_options: Mapped[List["PaymentOption"]] = relationship(
-        back_populates="user"
+        back_populates="user",
     )
     reviews: Mapped[List["Review"]] = relationship(
         back_populates="user"

@@ -28,8 +28,7 @@ from contacts.routers import contact_router
 from faq.routers import faq_router
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.responses import FileResponse
-
+from users.routers import user_lk_router
 
 app = FastAPI(
     title="Exchange",
@@ -53,7 +52,7 @@ app.add_middleware(
 admin = Admin(
     app=app,
     engine=engine,
-    authentication_backend=authentication_backend
+    # authentication_backend=authentication_backend
 )
 
 admin.add_view(PendingAdminAdmin)
@@ -75,8 +74,10 @@ async def root(
 
     """Устанавливаем печеньки на пользователя"""
     cookies_uuid = uuid.uuid4()
-    response.set_cookie(key="user_uuid", value=cookies_uuid)
+    response.set_cookie(key="user_uuid", value=cookies_uuid)\
 
+
+app.include_router(user_lk_router)
 app.include_router(contact_router)
 app.include_router(faq_router)
 app.include_router(currency_router)

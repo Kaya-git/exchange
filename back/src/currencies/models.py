@@ -20,9 +20,8 @@ class Currency(Base):
         sa.BigInteger,
         primary_key=True,
     )
-    tikker_id: Mapped[int] = mapped_column(
-        sa.SmallInteger,
-        unique=True,
+    coingecko_tik: Mapped[str] = mapped_column(
+        sa.Text,
         nullable=False,
     )
     tikker: Mapped[str] = mapped_column(
@@ -38,12 +37,12 @@ class Currency(Base):
         unique=True,
         nullable=False
     )
-    gas: Mapped[sa.Numeric] = mapped_column(
+    buy_gas: Mapped[sa.Numeric] = mapped_column(
         sa.Numeric,
         default=130,
         nullable=False
     )
-    service_margin: Mapped[sa.Numeric] = mapped_column(
+    buy_margin: Mapped[sa.Numeric] = mapped_column(
         sa.Numeric,
         default=7,
         nullable=False

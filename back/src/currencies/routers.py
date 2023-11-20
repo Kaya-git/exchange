@@ -17,7 +17,7 @@ currency_router = APIRouter(
 @currency_router.get("/list")
 async def currency_list(
     async_session: AsyncSession = Depends(get_async_session)
-) -> List[CurrencyRead]:
+):
     db = Database(async_session)
     currency_list = await db.currency.get_all()
     return currency_list
@@ -28,7 +28,7 @@ async def currency_list(
 async def currency_id(
     id: Annotated[int, Path(title="The ID of the item to get")],
     async_session: AsyncSession = Depends(get_async_session)
-) -> CurrencyRead:
+):
     db = Database(async_session)
     currency = await db.currency.get(ident=id)
     return currency
@@ -37,7 +37,7 @@ async def currency_id(
 @currency_router.get("/tariffs")
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)
-) -> List[CurrencyTariffsRead]:
+):
     db = Database(session=async_session)
 
     all_currencies = await db.currency.get_all()
@@ -45,14 +45,12 @@ async def tariffs(
     for currency in all_currencies:
         if currency.type is CurrencyType.Crypto:
             show_currency = {}
-
-            solo_tikker = currency.tikker.split('_')[0]
-            parsing_tikker = f"{solo_tikker}RUB"
-
-            coin_price = await find_price(parsing_tikker)
+            coin_price = await find_price(
+                ids=currency.coingecko_tik,
+                vs_currencies='rub')
             show_currency["id"] = currency.id
             show_currency["name"] = currency.name
-            show_currency["tikker"] = solo_tikker
+            show_currency["tikker"] = currency.tikker
             show_currency["icon"] = currency.icon
             show_currency["reserve"] = currency.reserve
             show_currency["max"] = currency.max

@@ -65,12 +65,12 @@ async def check_form_fillment(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Клиент указал нули на суммах для перевода"
         )
-    if not form_voc["client_sell_tikker_id"]:
+    if form_voc["client_sell_tikker"] is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Клиент не указал айди тиккера продажи"
         )
-    if not form_voc["client_buy_tikker_id"]:
+    if form_voc["client_buy_tikker"] is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Клиент не указал айди тиккера покупки"
@@ -102,65 +102,65 @@ async def check_form_fillment(
         )
 
 
-# Разделяем пришедший тикер по '_'.
-# Пример client_sell_currency_tikker и client_buy_currency_tikker:
-#   'RUB_SBER',
-#   'LTC_CRYPTO'
-async def create_tikker_for_binance(
-        db: Database,
-        client_sell_tikker_id,
-        client_buy_tikker_id
-) -> dict:
+# # Разделяем пришедший тикер по '_'.
+# # Пример client_sell_currency_tikker и client_buy_currency_tikker:
+# #   'RUB_SBER',
+# #   'LTC_CRYPTO'
+# async def create_tikker_for_binance(
+#         db: Database,
+#         client_sell_tikker_id,
+#         client_buy_tikker_id
+# ) -> dict:
 
-    client_sell_currency = await db.currency.get_by_where(
-        Currency.tikker_id == client_sell_tikker_id
-    )
-    client_buy_currency = await db.currency.get_by_where(
-        Currency.tikker_id == client_buy_tikker_id
-    )
-    if not client_sell_currency:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="В базе данных нет такого номера тикера на продажи"
-        )
-    if not client_buy_tikker_id:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="В базе данных нет такого номера тикера на покупку"
-        )
+#     client_sell_currency = await db.currency.get_by_where(
+#         Currency.tikker_id == client_sell_tikker_id
+#     )
+#     client_buy_currency = await db.currency.get_by_where(
+#         Currency.tikker_id == client_buy_tikker_id
+#     )
+#     if not client_sell_currency:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="В базе данных нет такого номера тикера на продажи"
+#         )
+#     if not client_buy_tikker_id:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="В базе данных нет такого номера тикера на покупку"
+#         )
 
-    sell_currency_tuple = client_sell_currency.tikker.split("_")
-    buy_currency_tuple = client_buy_currency.tikker.split("_")
+#     sell_currency_tuple = client_sell_currency.tikker.split("_")
+#     buy_currency_tuple = client_buy_currency.tikker.split("_")
 
-    client_sell_currency_tikker = sell_currency_tuple[0]
-    client_buy_currency_tikker = buy_currency_tuple[0]
-    client_sell_currency_po = sell_currency_tuple[1]
-    client_buy_currency_po = buy_currency_tuple[1]
+#     client_sell_currency_tikker = sell_currency_tuple[0]
+#     client_buy_currency_tikker = buy_currency_tuple[0]
+#     client_sell_currency_po = sell_currency_tuple[1]
+#     client_buy_currency_po = buy_currency_tuple[1]
 
-    # Создаем строку для парсера равную условию: (Крипта)(Фиат) 
-    if client_sell_currency.type == CurrencyType.Crypto:
-        parser_tikker = (
-            f"{client_sell_currency_tikker}{client_buy_currency_tikker}"
-        )
-        margin = 0
-        gas = 0
+#     # Создаем строку для парсера равную условию: (Крипта)(Фиат) 
+#     if client_sell_currency.type == CurrencyType.Crypto:
+#         parser_tikker = (
+#             f"{client_sell_currency_tikker}{client_buy_currency_tikker}"
+#         )
+#         margin = 0
+#         gas = 0
 
-    if client_sell_currency.type == CurrencyType.Fiat:
-        parser_tikker = (
-            f"{client_buy_currency_tikker}{client_sell_currency_tikker}"
-        )
-        margin = client_buy_currency.service_margin
-        gas = client_buy_currency.gas
+#     if client_sell_currency.type == CurrencyType.Fiat:
+#         parser_tikker = (
+#             f"{client_buy_currency_tikker}{client_sell_currency_tikker}"
+#         )
+#         margin = client_buy_currency.service_margin
+#         gas = client_buy_currency.gas
 
-    return {
-            "parser_tikker": parser_tikker,
-            "client_sell_currency": client_sell_currency,
-            "client_buy_currency": client_buy_currency,
-            "client_sell_currency_po": client_sell_currency_po,
-            "client_buy_currency_po": client_buy_currency_po,
-            "margin": margin,
-            "gas": gas
-        }
+#     return {
+#             "parser_tikker": parser_tikker,
+#             "client_sell_currency": client_sell_currency,
+#             "client_buy_currency": client_buy_currency,
+#             "client_sell_currency_po": client_sell_currency_po,
+#             "client_buy_currency_po": client_buy_currency_po,
+#             "margin": margin,
+#             "gas": gas
+#         }
 
 
 # Сохраняем картинку
@@ -200,28 +200,28 @@ async def redis_discard(
 ):
     # Достаем из редиса список с данными ордера.
     (
-        client_buy_currency_po,
-        client_sell_currency_po,
+        # client_buy_currency_po,
+        # client_sell_currency_po,
         client_crypto_wallet,
         client_cc_holder,
         client_credit_card_number,
-        client_buy_tikker_id,
+        client_buy_tikker,
         client_buy_value,
-        client_sell_tikker_id,
+        client_sell_tikker,
         client_sell_value,
         client_email
     ) = await services.redis_values.redis_conn.lrange(user_uuid, 0, -1)
 
     # Декодируем из бит в пайтоновские значения
-    client_sell_currency_po = str(client_sell_currency_po, 'UTF-8')
-    client_sell_tikker_id = int(client_sell_tikker_id)
+    # client_sell_currency_po = str(client_sell_currency_po, 'UTF-8')
+    client_sell_tikker = str(client_sell_tikker, 'UTF-8')
     client_sell_value = str(client_sell_value, 'UTF-8')
     client_credit_card_number = str(client_credit_card_number, 'UTF-8')
     client_cc_holder = str(client_cc_holder, 'UTF-8')
 
-    client_buy_currency_po = str(client_buy_currency_po, 'UTF-8')
+    # client_buy_currency_po = str(client_buy_currency_po, 'UTF-8')
     client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
-    client_buy_tikker_id = int(client_buy_tikker_id)
+    client_buy_tikker = str(client_buy_tikker, 'UTF-8')
     client_buy_value = str(client_buy_value, 'UTF-8')
 
     client_email = str(client_email, 'UTF-8')
@@ -230,25 +230,25 @@ async def redis_discard(
     client_buy_value = Decimal(client_buy_value)
 
     client_sell_currency = await db.currency.get_by_where(
-        Currency.tikker_id == client_sell_tikker_id
+        Currency.tikker == client_sell_tikker
     )
     client_buy_currency = await db.currency.get_by_where(
-        Currency.tikker_id == client_buy_tikker_id
+        Currency.tikker == client_buy_tikker
     )
 
     return {
-        "client_sell_currency_po": client_sell_currency_po,
-        "client_sell_tikker_id": client_sell_tikker_id,
-        "client_sell_value": client_sell_value,
+        # "client_sell_currency_po": client_sell_currency_po,
+        # "client_sell_tikker": client_sell_tikker,
+        "client_email": client_email,
         "client_credit_card_number": client_credit_card_number,
         "client_cc_holder": client_cc_holder,
-        "client_buy_currency_po": client_buy_currency_po,
         "client_crypto_wallet": client_crypto_wallet,
-        "client_buy_tikker_id": client_buy_tikker_id,
-        "client_buy_value": client_buy_value,
-        "client_email": client_email,
+        "client_sell_value": client_sell_value,
         "client_sell_currency": client_sell_currency,
-        "client_buy_currency": client_buy_currency
+        # "client_buy_currency_po": client_buy_currency_po,
+        # "client_buy_tikker": client_buy_tikker,
+        "client_buy_value": client_buy_value,
+        "client_buy_currency": client_buy_currency,
     }
 
 
@@ -273,7 +273,7 @@ async def add_or_get_po(
         if redis_voc["client_sell_currency"].type == CurrencyType.Fiat:
 
             client_sell_payment_option = await db.payment_option.new(
-                banking_type=redis_voc["client_sell_currency_po"],
+                # banking_type=redis_voc["client_sell_currency"]["tikker"],
                 currency_id=redis_voc["client_sell_currency"].id,
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
@@ -282,7 +282,7 @@ async def add_or_get_po(
             )
 
             client_buy_payment_option = await db.payment_option.new(
-                banking_type=redis_voc["client_buy_currency_po"],
+                # banking_type=redis_voc["client_buy_currency"]["tikker"],
                 currency_id=redis_voc["client_buy_currency"].id,
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
@@ -292,14 +292,14 @@ async def add_or_get_po(
         if redis_voc["client_sell_currency"].type == CurrencyType.Crypto:
 
             client_sell_payment_option = await db.payment_option.new(
-                banking_type=redis_voc["client_buy_currency_po"],
+                # banking_type=redis_voc["client_buy_currency_po"],
                 currency_id=redis_voc["client_sell_currency"].id,
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
                 user_id=user.id,
             )
             client_buy_payment_option = await db.payment_option.new(
-                banking_type=redis_voc["client_sell_currency_po"],
+                # banking_type=redis_voc["client_sell_currency_po"],
                 currency_id=redis_voc["client_buy_currency"].id,
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
@@ -320,7 +320,7 @@ async def add_or_get_po(
         if redis_voc["client_sell_currency"].type == CurrencyType.Fiat:
 
             client_sell_payment_option = await db.payment_option.new(
-                banking_type=redis_voc["client_sell_currency_po"],
+                # banking_type=redis_voc["client_sell_currency_po"],
                 currency_id=redis_voc["client_sell_currency"].id,
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
@@ -337,7 +337,7 @@ async def add_or_get_po(
             client_sell_payment_option = crypto_po
 
             client_buy_payment_option = await db.payment_option.new(
-                banking_type=redis_voc["client_sell_currency_po"],
+                # banking_type=redis_voc["client_sell_currency_po"],
                 currency_id=redis_voc["client_buy_currency"].id,
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
@@ -358,7 +358,7 @@ async def add_or_get_po(
             client_sell_payment_option = fiat_po
 
             client_buy_payment_option = await db.payment_option.new(
-                banking_type=redis_voc["client_buy_currency_po"],
+                # banking_type=redis_voc["client_buy_currency_po"],
                 currency_id=redis_voc["client_buy_currency"].id,
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
@@ -369,7 +369,7 @@ async def add_or_get_po(
         if redis_voc["client_sell_currency"].type == CurrencyType.Crypto:
 
             client_sell_payment_option = await db.payment_option.new(
-                banking_type=redis_voc["client_buy_currency_po"],
+                # banking_type=redis_voc["client_buy_currency_po"],
                 currency_id=redis_voc["client_sell_currency"].id,
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
@@ -382,14 +382,12 @@ async def add_or_get_po(
         fiat_po is not None and 
         crypto_po is not None
     ):
-        print("yes3")
         if str(fiat_po.user) != user.email:
-            
-            print(f"{fiat_po.user}{type(fiat_po.user)}")
-            print(f"{user.email}{type(user.email)}")
             return {"Номер карты зарегестрирован под другим имейлом"}
+
         if str(crypto_po.user) != user.email:
             return {"Крипто Кошель зарегестрирован под другим имейлом"}
+
         client_sell_payment_option = fiat_po
         client_buy_payment_option = fiat_po
     await db.session.flush()
@@ -399,33 +397,34 @@ async def add_or_get_po(
         }
 
 async def calculate_totals(
-        parser_link_voc,
+        client_sell_coin,
+        client_buy_coin,
         coin_price,
         client_sell_value,
-        client_buy_value,
+        client_buy_value
 ):
     if client_sell_value != 0:
 
-        if parser_link_voc["client_sell_currency"].type == CurrencyType.Crypto:
+        if client_sell_coin.type == CurrencyType.Crypto:
 
             client_buy_value = round(await Count.count_send_value(
                 get_value=client_sell_value,
                 coin_price=coin_price,
-                margin=parser_link_voc["margin"],
-                gas=parser_link_voc["gas"],
+                margin=client_buy_coin.buy_margin,
+                gas=client_buy_coin.buy_gas,
             ), 2)
             if client_buy_value is None:
                 raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
                 detail= f"Клиент указал ноль на покупке"
             )
-        if parser_link_voc["client_sell_currency"].type == CurrencyType.Fiat:
+        if client_sell_coin.type == CurrencyType.Fiat:
 
             client_buy_value = round(await Count.count_get_value(
                 send_value=client_sell_value,
                 coin_price=coin_price,
-                margin=parser_link_voc["margin"],
-                gas=parser_link_voc["gas"],
+                margin=client_buy_coin.buy_margin,
+                gas=client_buy_coin.buy_gas,
             ), 4)
             if client_buy_value is None:
                 raise HTTPException(
@@ -435,26 +434,26 @@ async def calculate_totals(
 
     if client_sell_value == 0:
 
-        if parser_link_voc["client_buy_currency"].type == CurrencyType.Crypto:
+        if client_buy_coin.type == CurrencyType.Crypto:
 
             client_sell_value = round(await Count.count_send_value(
                 get_value=client_buy_value,
                 coin_price=coin_price,
-                margin=parser_link_voc["margin"],
-                gas=parser_link_voc["gas"],
+                margin=client_buy_coin.buy_margin,
+                gas=client_buy_coin.buy_gas,
             ), 2)
             if client_sell_value is None:
                 raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
                 detail= f"Клиент указал ноль на продаже"
             )
-        if parser_link_voc["client_buy_currency"].type == CurrencyType.Fiat:
+        if client_buy_coin.type == CurrencyType.Fiat:
             
             client_sell_value = round(await Count.count_get_value(
                 send_value=client_buy_value,
                 coin_price=coin_price,
-                margin=parser_link_voc["margin"],
-                gas=parser_link_voc["gas"],
+                margin=client_buy_coin.buy_margin,
+                gas=client_buy_coin.buy_gas,
             ), 4)
             if client_sell_value is None:
                 raise HTTPException(
@@ -470,38 +469,28 @@ async def find_exchange_rate(
     client_sell_coin,
     client_buy_coin      
 ):
-    parsing_sell_coin_tikker = client_sell_coin.tikker.split('_')[0]
-    parsing_buy_coin_tikker = client_buy_coin.tikker.split('_')[0]
 
-    if parsing_sell_coin_tikker == "RUB":
+    if client_sell_coin.coingecko_tik == "rub":
+        ids = client_buy_coin.coingecko_tik
+        vs_currencies = client_sell_coin.coingecko_tik
 
-        parsing_tikker = parsing_buy_coin_tikker + parsing_sell_coin_tikker
+    if client_buy_coin.coingecko_tik == "rub":
+        ids = client_sell_coin.coingecko_tik
+        vs_currencies = client_buy_coin.coingecko_tik
 
-        coin_price = await find_price(parsing_tikker)
+    coin_price = await find_price(
+        ids,
+        vs_currencies
+    )
 
-        exchange_rate = await Count.count_send_value(
-            get_value=1,
-            coin_price=coin_price,
-            margin=client_buy_coin.service_margin,
-            gas=client_buy_coin.gas
-        )
-    if parsing_buy_coin_tikker == "RUB":
+    exchange_rate = await Count.count_send_value(
+        get_value=1,
+        coin_price=coin_price,
+        margin=client_buy_coin.buy_margin,
+        gas=client_buy_coin.buy_gas
+    )
+    return exchange_rate
 
-        parsing_tikker = parsing_sell_coin_tikker + parsing_buy_coin_tikker
-
-        coin_price = await find_price(parsing_tikker)
-
-        exchange_rate = await Count.count_send_value(
-            get_value=1,
-            coin_price=coin_price,
-            margin=0,
-            gas=0
-        )
-    return {
-        "exchange_rate": exchange_rate,
-        "parsing_sell_coin_tikker": parsing_sell_coin_tikker,
-        "parsing_buy_coin_tikker": parsing_buy_coin_tikker
-    }
 
 async def check_user_registration(
         redis_dict,
@@ -539,12 +528,12 @@ async def check_user_registration(
         crypto_wallet = await db.payment_option.get_by_where(
             PaymentOption.number == redis_dict["client_crypto_wallet"]
         )
-        client_sell_currency = await db.currency.get_by_where(
-                Currency.tikker_id == redis_dict["client_sell_tikker_id"]
-        )
-        client_buy_currency = await db.currency.get_by_where(
-                Currency.tikker_id == redis_dict["client_buy_tikker_id"]
-        )
+        # client_sell_currency = await db.currency.get_by_where(
+        #         Currency.tikker_id == redis_dict["client_sell_tikker"]
+        # )
+        # client_buy_currency = await db.currency.get_by_where(
+        #         Currency.tikker_id == redis_dict["client_buy_tikker_id"]
+        # )
 
         if (
             credit_card is not None and
@@ -554,16 +543,19 @@ async def check_user_registration(
             # Проверяем если кредитная карта принадлежит пользователю
             if credit_card.user is user:
             # Добавляем ордер в бд
-                if client_sell_currency.type == CurrencyType.Fiat:
+                if redis_dict["client_sell_currency"]["type"] == CurrencyType.Fiat:
+                # if client_sell_currency.type == CurrencyType.Fiat:
                     new_order = await db.order.new(
                         user_id=user.id,
                         user_email=redis_dict["client_email"],
                         user_cookie=user_uuid,
                         user_buy_sum=redis_dict["client_buy_value"],
-                        buy_currency_id=client_buy_currency.id,
+                        buy_currency_id=redis_dict["client_buy_currency"]["id"],
+                        # client_buy_currency.id,
                         buy_payment_option_id=crypto_wallet.id,
                         user_sell_sum=redis_dict["client_sell_value"],
-                        sell_currency_id=client_sell_currency.id,
+                        sell_currency_id=redis_dict["client_sell_currency"]["id"],
+                        # client_sell_currency.id,
                         sell_payment_option_id=credit_card.id,
                         status=Status.Approved,
                     )
@@ -575,16 +567,16 @@ async def check_user_registration(
                         order_id=new_order.id
                 )
 
-                if client_sell_currency.type == CurrencyType.Crypto:
+                if redis_dict["client_sell_currency"]["type"] == CurrencyType.Crypto:
                     new_order = await db.order.new(
                         user_id=user.id,
                         user_email=redis_dict["client_email"],
                         user_cookie=user_uuid,
                         user_buy_sum=redis_dict["client_buy_value"],
-                        buy_currency_id=client_buy_currency.id,
+                        buy_currency_id=redis_dict["client_buy_currency"]["id"],
                         buy_payment_option_id=credit_card.id,
                         user_sell_sum=redis_dict["client_sell_value"],
-                        sell_currency_id=client_sell_currency.id,
+                        sell_currency_id=redis_dict["client_sell_currency"]["id"],
                         sell_payment_option_id=crypto_wallet.id,
                         status=Status.Approved,
                     )

@@ -1,8 +1,8 @@
-"""newDb
+"""newdb
 
-Revision ID: 5dd8d31fcfd4
+Revision ID: b41415454b6b
 Revises: 
-Create Date: 2023-11-17 13:59:17.495985
+Create Date: 2023-11-20 18:22:13.206782
 
 """
 from typing import Sequence, Union
@@ -14,7 +14,7 @@ from config import conf
 
 
 # revision identifiers, used by Alembic.
-revision: str = '5dd8d31fcfd4'
+revision: str = 'b41415454b6b'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,20 +32,19 @@ def upgrade() -> None:
     )
     op.create_table('currency',
     sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('tikker_id', sa.SmallInteger(), nullable=False),
+    sa.Column('coingecko_tik', sa.Text(), nullable=False),
     sa.Column('tikker', sa.Text(), nullable=False),
     sa.Column('type', sa.Enum('Crypto', 'Fiat', name='currencytype'), nullable=False),
     sa.Column('name', sa.Text(), nullable=False),
-    sa.Column('gas', sa.Numeric(), nullable=False),
-    sa.Column('service_margin', sa.Numeric(), nullable=False),
+    sa.Column('buy_gas', sa.Numeric(), nullable=False),
+    sa.Column('buy_margin', sa.Numeric(), nullable=False),
     sa.Column('reserve', sa.Numeric(), nullable=False),
     sa.Column('max', sa.Numeric(), nullable=False),
     sa.Column('min', sa.Numeric(), nullable=False),
     sa.Column('icon', ImageType(conf.image_admin_storage), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name'),
-    sa.UniqueConstraint('tikker'),
-    sa.UniqueConstraint('tikker_id')
+    sa.UniqueConstraint('tikker')
     )
     op.create_table('faq',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
@@ -72,7 +71,6 @@ def upgrade() -> None:
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     op.create_table('payment_option',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
-    sa.Column('banking_type', sa.Enum('SBER', 'CRYPTO', 'QIWIRUR', 'QIWIUSD', 'YAMONEY', 'PAYRUR', 'PAYUSD', 'PAYEUR', name='bankingtype'), nullable=False),
     sa.Column('number', sa.Text(), nullable=False),
     sa.Column('holder', sa.Text(), nullable=False),
     sa.Column('is_verified', sa.Boolean(), nullable=False),
@@ -97,7 +95,6 @@ def upgrade() -> None:
     )
     op.create_table('service_payment_option',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
-    sa.Column('banking_type', sa.Enum('SBER', 'CRYPTO', 'QIWIRUR', 'QIWIUSD', 'YAMONEY', 'PAYRUR', 'PAYUSD', 'PAYEUR', name='bankingtype'), nullable=False),
     sa.Column('number', sa.Text(), nullable=False),
     sa.Column('holder', sa.Text(), nullable=False),
     sa.Column('currency_id', sa.BigInteger(), nullable=False),
@@ -112,7 +109,7 @@ def upgrade() -> None:
     sa.Column('user_buy_sum', sa.Numeric(), nullable=False),
     sa.Column('user_sell_sum', sa.Numeric(), nullable=False),
     sa.Column('date', sa.TIMESTAMP(), nullable=False),
-    sa.Column('status', sa.Enum('Pending', 'Timeout', 'Canceled', 'Inprocces', 'Approved', 'Completed', name='status'), nullable=False),
+    sa.Column('status', sa.Enum('Pending', 'Timeout', 'Canceled', 'Inprocces', 'Verified', 'NotVerified', 'Completed', name='status'), nullable=False),
     sa.Column('decline_reason', sa.Enum('Last4Digits', 'WebDomen', 'NoOrder', 'Inittials', 'BadQuality', name='verifdeclinereason'), nullable=True),
     sa.Column('sell_payment_option_id', sa.BigInteger(), nullable=False),
     sa.Column('buy_payment_option_id', sa.BigInteger(), nullable=False),

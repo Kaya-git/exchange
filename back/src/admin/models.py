@@ -80,7 +80,7 @@ class OrderAdmin(ModelView, model=Order):
     ]
     column_default_sort = [
         (Order.status, Status.Pending),
-        (Order.status, Status.Approved),
+        (Order.status, Status.Verified),
     ]
     can_create = True
     can_edit = True
@@ -93,10 +93,11 @@ class CurrencyAdmin(ModelView, model=Currency):
     name = "Валюта"
     name_plural = "Валюты"
     column_list = [
+        Currency.coingecko_tik,
         Currency.tikker,
         Currency.name,
-        Currency.gas,
-        Currency.service_margin,
+        Currency.buy_gas,
+        Currency.buy_margin,
         Currency.reserve,
         Currency.max,
         Currency.min,
@@ -120,7 +121,7 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
     name_plural = "Способы оплаты"
     column_list = [
         PaymentOption.id,
-        PaymentOption.banking_type,
+        # PaymentOption.banking_type,
         PaymentOption.currency_id,
         PaymentOption.number,
         PaymentOption.holder,
@@ -140,7 +141,7 @@ class ServicePaymentOptionAdmin(ModelView, model=ServicePaymentOption):
     name_plural = "Сервисный способы оплаты"
     column_list = [
         ServicePaymentOption.currency,
-        ServicePaymentOption.banking_type,
+        # ServicePaymentOption.banking_type,
         ServicePaymentOption.number,
         ServicePaymentOption.holder,
     ]

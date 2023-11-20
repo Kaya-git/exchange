@@ -2,14 +2,14 @@ import enum
 
 
 class BankingType(enum.StrEnum):
-    SBER = "SBER"
-    CRYPTO = "CRYPTO"
-    QIWIRUR = "QIWIRUR"
+    RUBSBER = "RUBSBER"
+    LTC = "LTC"
+    RUBQIWI = "RUBQIWI"
     QIWIUSD = "QIWIUSD"
     YAMONEY = "YAMONEY"
-    PAYRUR = "PAYRUR"
-    PAYUSD = "PAYUSD"
-    PAYEUR = "PAYEUR"
+    RUBPAY = "RUBPAY"
+    USDPAY = "USDPAY"
+    EURPAY = "EURPAY"
 
 
 class CurrencyType(enum.Enum):
@@ -36,7 +36,8 @@ class Status(enum.StrEnum):
     Timeout = "timeout"
     Canceled = "canceled"
     Inprocces = "inprocces"
-    Approved = "approved"
+    Verified = "verified"
+    NotVerified = "not verified"
     Completed = "completed"
 
 

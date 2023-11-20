@@ -22,7 +22,7 @@ class PaymentOptionRepo(Repository[PaymentOption]):
     async def new(
         self,
         user_id: User,
-        banking_type: BankingType,
+        # banking_type: BankingType,
         currency_id: Currency,
         number: str,
         holder: str,
@@ -32,7 +32,7 @@ class PaymentOptionRepo(Repository[PaymentOption]):
 
         new_payement_option = await self.session.merge(
             PaymentOption(
-                banking_type=banking_type,
+                # banking_type=banking_type,
                 currency_id=currency_id,
                 number=number,
                 holder=holder,
