@@ -6,6 +6,7 @@ from auth.routers import current_active_verified_user
 from typing import TYPE_CHECKING
 from payment_options.models import PaymentOption
 
+
 if TYPE_CHECKING:
     from users.models import User
 

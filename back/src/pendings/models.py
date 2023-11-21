@@ -36,12 +36,5 @@ class PendingAdmin(Base):
         foreign_keys="[PendingAdmin.order_id]"
     )
     review: Mapped["Review"] = relationship(
-        "Review",
-        foreign_keys="[PendingAdmin.review_id]"
+        back_populates="pending_admin"
     )
-
-    @hybrid_property
-    def request_id(self):
-        return self.review_id or self.order_id
-
-    

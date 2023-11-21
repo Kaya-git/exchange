@@ -171,7 +171,7 @@ class DB():
                     user_volume +=order.user_sell_sum
 
                 statement = update(User).where(User.id==user_id).values(buy_volume=user_volume)
-                db.session.execute(statement)
+                await db.session.execute(statement)
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 return " Успешно завершили обмен"

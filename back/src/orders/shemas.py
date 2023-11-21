@@ -1,29 +1,31 @@
-from pydantic import BaseModel
-from enums import Status
+from pydantic import BaseModel, EmailStr
+from enums import Status, VerifDeclineReason
 from datetime import datetime
 from decimal import Decimal
+from typing import Optional
 
 
 class OrderBase(BaseModel):
-    user_email: str
-    user_cookie: str
-    user_buy_sum: Decimal
-    user_sell_sum: Decimal
-    status: Status
-    sell_payment_option_id: int
     buy_payment_option_id: int
-    service_sell_po_id: int
-    service_buy_po_id: int
+    decline_reason: Optional[VerifDeclineReason]
+    service_buy_po_id: Optional[int]
+    sell_payment_option_id: int
     user_id: int
-    sell_currency_id: str
-    buy_currency_id: str
+    sell_currency_id: int
+    user_buy_sum: Decimal
+    buy_currency_id: int
+    user_sell_sum: Decimal
+    user_email: EmailStr
+    user_cookie: str
+    date: datetime
+    status: Status
+    service_sell_po_id: Optional[int]
 
 class OrderCreate(OrderBase):
     ...
 
 class OrderRead(OrderBase):
     id: int
-    date: datetime
 
     class Config:
         from_attributes = True

@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from users.models import User
-
+    from pendings.models import PendingAdmin
 
 class Review(Base):
     __tablename__ = "review"
@@ -40,7 +40,9 @@ class Review(Base):
     user: Mapped["User"] = relationship(
         back_populates="reviews"
     )
-
+    pending_admin: Mapped["PendingAdmin"] = relationship(
+        back_populates="review"
+    )
     def __str__(self) -> str:
         return f"{self.rating}"
 

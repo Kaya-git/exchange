@@ -4,12 +4,12 @@ from decimal import Decimal
 from typing import Optional
 
 class CurrencyBase(BaseModel):
-    tikker_id: int
+    coingecko_tik: str
     tikker: str
     type: CurrencyType
     name: str
-    gas: Decimal
-    service_margin: Decimal
+    buy_gas: Decimal
+    buy_margin: Decimal
     reserve: Decimal
     max: Decimal
     min: Decimal

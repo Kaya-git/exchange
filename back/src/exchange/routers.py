@@ -13,7 +13,6 @@ from decimal import Decimal
 from sevices import Count
 from .handlers import (
     check_form_fillment,
-    # create_tikker_for_binance,
     ya_save_passport_photo,
     redis_discard,
     add_or_get_po,
