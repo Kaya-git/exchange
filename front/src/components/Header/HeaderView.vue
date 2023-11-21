@@ -7,11 +7,10 @@
               <Router-link to="/">Crypto</Router-link>
             </div>
         </v-col>
-        <v-col class="v-col-1"></v-col>
-        <v-col class="header-main__col v-col-7">
+        <v-col class="header-main__col v-col-8">
           <nav-menu></nav-menu>
         </v-col>
-        <v-col v-if="!isExcludeRoute" class="header-main__col v-col-2 d-flex justify-end pt-4">
+        <v-col v-if="!isExcludeRoute" class="header-main__col v-col-2 d-flex justify-center pt-4">
           <RouterLink to="/auth/">
             <v-btn 
               class="header-main__auth outlined-btn" 

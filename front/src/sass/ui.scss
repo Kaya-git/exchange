@@ -87,6 +87,10 @@
 	display: flex !important;
 	justify-content: flex-start !important;
 	position: relative;
+	&_active {
+		background-color: $fourthColor !important;
+		color: $secondColor !important;
+	}
 	&__img {
 		width: 40px;
 		height: 40px;
@@ -98,5 +102,28 @@
 	}
 }
 
+.timer {
+	padding: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: rem(30px);
+	font-weight: 700;
+	background-color: $fifthColor;
+	border-radius: 5px;
+}
+
+.request-table {
+	overflow-x: auto;
+	tbody {
+		width: 100%;
+	}
+	td {
+		min-width: 250px;
+		&:first-child {
+			min-width: 180px;
+		}
+	}
+}
 
 //Animation

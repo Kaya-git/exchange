@@ -53,6 +53,8 @@ body {
 
 //<MAIN>====================================================================================================
 @import 'exchange/exchange.scss';
+@import 'exchange/confirm.scss';
+@import 'exchange/request.scss';
 @import 'user/auth.scss';
 @import 'user/register.scss';
 @import 'user/account.scss';
