@@ -1,20 +1,20 @@
 """newdb
 
-Revision ID: b41415454b6b
+Revision ID: 8cddd7720098
 Revises: 
-Create Date: 2023-11-20 18:22:13.206782
+Create Date: 2023-11-21 14:33:08.879598
 
 """
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-from fastapi_storages.integrations.sqlalchemy import ImageType
 from config import conf
+from fastapi_storages.integrations.sqlalchemy import ImageType
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'b41415454b6b'
+revision: str = '8cddd7720098'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -118,14 +118,14 @@ def upgrade() -> None:
     sa.Column('user_id', sa.BigInteger(), nullable=False),
     sa.Column('sell_currency_id', sa.BigInteger(), nullable=False),
     sa.Column('buy_currency_id', sa.BigInteger(), nullable=False),
-    sa.ForeignKeyConstraint(['buy_currency_id'], ['currency.id'], ),
+    sa.ForeignKeyConstraint(['buy_currency_id'], ['currency.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['buy_payment_option_id'], ['payment_option.id'], ),
-    sa.ForeignKeyConstraint(['sell_currency_id'], ['currency.id'], ),
+    sa.ForeignKeyConstraint(['sell_currency_id'], ['currency.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['sell_payment_option_id'], ['payment_option.id'], ),
     sa.ForeignKeyConstraint(['service_buy_po_id'], ['service_payment_option.id'], ),
     sa.ForeignKeyConstraint(['service_sell_po_id'], ['service_payment_option.id'], ),
     sa.ForeignKeyConstraint(['user_email'], ['user.email'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('pending_admin',

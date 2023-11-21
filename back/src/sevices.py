@@ -11,6 +11,7 @@ from pendings.models import PendingAdmin
 from enums.models import ReqAction
 from currencies.models import Currency
 from fastapi import HTTPException, status
+from users.models import User
 # from fastapi.responses import RedirectResponse
 
 
@@ -72,11 +73,13 @@ class RedisValues:
     async def change_keys(self,
                           user_uuid,
                           order_id,
+                          user_id
                           ):
         await self.redis_conn.delete(user_uuid)
         await self.redis_conn.lpush(
             user_uuid,
             order_id,
+            user_id
             )
         # await self.redis_conn.expire(
         #     name=f'{user_id}',
@@ -95,13 +98,12 @@ class DB():
         Забираем из редиса айди заказа
         """
         order_id = (
-            await services.redis_values.redis_conn.lrange(
+            await services.redis_values.redis_conn.lindex(
                 user_uuid,
-                0,
-                -1,
+                1
             )
         )
-        order_id = int(*order_id)
+        order_id = int(order_id)
         """
         Делаем цикл с определенным количеством итераций для
         пулинга ордера из базы данных
@@ -122,8 +124,8 @@ class DB():
                 whereclause=(PaymentOption.id==order.sell_payment_option_id)
             )
             if (
-                order.status is Status.Verified,
-                buy_po.is_verified is True,
+                order.status is Status.Verified and
+                buy_po.is_verified is True and
                 sell_po.is_verified is True
             ):
                     await db.pending_admin.delete(PendingAdmin.order_id==order_id)
@@ -148,13 +150,28 @@ class DB():
         self,
         db: Database,
         user_uuid: str,
-        order_id: int
+        order_id: int,
+        user_id: int
     ):
         while self.iterations != 0:
             order = None
             order = await db.order.get(order_id)
+            user = await db.user.get(user_id)
             if order.status is Status.Completed:
                 await db.pending_admin.delete(PendingAdmin.order_id==order_id)
+
+                buy_currency = await db.currency.get(order.buy_currency_id)
+                sell_currency = await db.currency.get(order.sell_currency_id)
+                if buy_currency.type is CurrencyType.Fiat:
+                   user_volume = user.buy_volume
+                   user_volume += order.user_buy_sum
+
+                if sell_currency.type is CurrencyType.Fiat:
+                    user_volume = user.buy_volume
+                    user_volume +=order.user_sell_sum
+
+                statement = update(User).where(User.id==user_id).values(buy_volume=user_volume)
+                db.session.execute(statement)
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 return " Успешно завершили обмен"

@@ -61,13 +61,13 @@ class Order(Base):
         nullable=True
     )
     user_id: Mapped[int] = mapped_column(
-        sa.ForeignKey("user.id")
+        sa.ForeignKey("user.id", ondelete="CASCADE")
     )
     sell_currency_id: Mapped[str] = mapped_column(
-        sa.ForeignKey("currency.id")
+        sa.ForeignKey("currency.id", ondelete="CASCADE")
     )
     buy_currency_id: Mapped[str] = mapped_column(
-        sa.ForeignKey("currency.id")
+        sa.ForeignKey("currency.id",ondelete="CASCADE")
     )
 
     sell_payment_option: Mapped["PaymentOption"] = relationship(

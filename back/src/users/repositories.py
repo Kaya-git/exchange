@@ -4,7 +4,7 @@ from sqlalchemy import select
 from .models import User
 from database.abstract_repo import Repository
 from database.engines import async_session_maker
-
+from decimal import Decimal
 
 class UserRepo(Repository[User]):
     """
@@ -26,6 +26,7 @@ class UserRepo(Repository[User]):
         hashed_password: str = None,
         first_name: str = None,
         second_name: str = None,
+        buy_volume: Decimal = 0
     ) -> None:
 
         new_user = await self.session.merge(
@@ -34,6 +35,7 @@ class UserRepo(Repository[User]):
                 hashed_password=hashed_password,
                 first_name=first_name,
                 second_name=second_name,
+                buy_volume=buy_volume
             )
         )
         return new_user

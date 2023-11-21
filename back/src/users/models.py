@@ -60,7 +60,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     )
     buy_volume: Mapped[sa.Numeric] = mapped_column(
         sa.Numeric,
-        default=None,
+        default=0,
         nullable=True,
     )
     role: Mapped["Role"] = mapped_column(

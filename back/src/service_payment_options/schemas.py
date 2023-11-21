@@ -17,7 +17,7 @@ class SPORead(SPOBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class SPOCreate(SPOBase):
     ...

@@ -2,7 +2,6 @@ from fastapi import APIRouter, Cookie, Depends, Form, UploadFile, Path, HTTPExce
 from fastapi.responses import RedirectResponse
 from sevices import services
 from database.db import Database, get_async_session
-from binance_parser import find_price
 from currencies.models import Currency
 from orders.models import Order
 from enums.models import Status, CurrencyType, ReqAction
@@ -264,7 +263,8 @@ async def confirm_cc(
     # Заменить список с информацией в редисе на айди ордера
     await services.redis_values.change_keys(
                     user_uuid=user_uuid,
-                    order_id=new_order.id
+                    order_id=new_order.id,
+                    user_id=user.id
                 )
 
     await db.session.commit()
@@ -280,15 +280,7 @@ async def conformation_await(
 ) -> RedirectResponse:
     """ Запускает паралельно задачу на отслеживание смены статуса верификации пользователя """
     db = Database(session=async_session)
-    # Запускаем паралельно таск на пул из бд на подтверждение смены статуса ордера и верификации статуса пользователя
-    # paralel_waiting = asyncio.create_task(
-    #     services.db_paralell.conformation_await(
-    #         db,
-    #         user_uuid
-    #     )
-    # )
-
-    # answer = await paralel_waiting
+    
     return await asyncio.create_task(
         services.db_paralell.conformation_await(
             db,
@@ -308,13 +300,12 @@ async def requisites(
 
     # Достаем из редиса тикер заказа
     order_id = (
-        await services.redis_values.redis_conn.lrange(
-            user_uuid,
-            0,
-            -1,
+            await services.redis_values.redis_conn.lindex(
+                user_uuid,
+                1
+            )
         )
-    )
-    order_id = int(*order_id)
+    order_id = int(order_id)
 
     service_payment_option = await db.service_payment_option.spo_equal_sp(order_id)
 
@@ -337,8 +328,13 @@ async def payed_button(
     does_exist = await services.redis_values.redis_conn.exists(user_uuid)
     order_id = await services.redis_values.redis_conn.lindex(
         user_uuid,
+        1
+    )
+    user_id = await services.redis_values.redis_conn.lindex(
+        user_uuid,
         0
     )
+    user_id = int(user_id)
     order_id = int(order_id)
 
     payed_order = await db.pending_admin.new(
@@ -357,7 +353,8 @@ async def payed_button(
     task = asyncio.create_task(services.db_paralell.payed_button_db(
             db=db,
             user_uuid=user_uuid,
-            order_id=order_id
+            order_id=order_id,
+            user_id=user_id
         )
     )
     answer = await task

@@ -11,7 +11,7 @@ class UserRead(schemas.BaseUser[int]):
     buy_volume: Optional[float]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserCreate(schemas.BaseUserCreate):

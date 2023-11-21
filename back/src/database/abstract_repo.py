@@ -2,7 +2,7 @@
 import abc
 from typing import Generic, List, Type, TypeVar
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import Base
@@ -79,6 +79,16 @@ class Repository(Generic[AbstractModel]):
         :return: Nothing
         """
         statement = delete(self.type_model).where(whereclause)
+        await self.session.execute(statement)
+
+    async def update(self, whereclause, values, table_name):
+        statement = update(
+            self.type_model
+            ).where(
+                whereclause
+            ).values(
+                table_name=values
+            )
         await self.session.execute(statement)
 
     @abc.abstractmethod

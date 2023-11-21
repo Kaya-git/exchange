@@ -14,3 +14,6 @@ class ReviewCreation(ReviewBase):
 
 class ReviewRead(ReviewBase):
     id: int
+
+    class Config:
+        from_attributes = True

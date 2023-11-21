@@ -121,18 +121,16 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
     name_plural = "Способы оплаты"
     column_list = [
         PaymentOption.id,
-        # PaymentOption.banking_type,
         PaymentOption.currency_id,
         PaymentOption.number,
         PaymentOption.holder,
         PaymentOption.is_verified,
         PaymentOption.image,
-        # PaymentOption.user_id,
     ]
-    can_create = True
+    can_create = False
     can_edit = True
     can_delete = True
-    can_export = True
+    can_export = False
     can_view_details = True
 
 
@@ -141,14 +139,13 @@ class ServicePaymentOptionAdmin(ModelView, model=ServicePaymentOption):
     name_plural = "Сервисный способы оплаты"
     column_list = [
         ServicePaymentOption.currency,
-        # ServicePaymentOption.banking_type,
         ServicePaymentOption.number,
         ServicePaymentOption.holder,
     ]
     can_create = True
     can_edit = True
     can_delete = True
-    can_export = True
+    can_export = False
     can_view_details = True
 
 

@@ -16,3 +16,6 @@ class PaymentOptionCreate(PaymentOptionBase):
 
 class PaymentOptionRead(PaymentOptionBase):
     id: int
+
+    class Config:
+        from_attributes = True
