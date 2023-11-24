@@ -3,20 +3,20 @@ from fastapi.responses import RedirectResponse
 from sevices import services
 from database.db import Database, get_async_session
 from currencies.models import Currency
-from orders.models import Order
+# from orders.models import Order
 from enums.models import Status, CurrencyType, ReqAction
 from users.models import User
-from payment_options.models import PaymentOption
+# from payment_options.models import PaymentOption
 from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
 from decimal import Decimal
-from sevices import Count
+# from sevices import Count
 from .handlers import (
     check_form_fillment,
     ya_save_passport_photo,
     redis_discard,
     add_or_get_po,
-    send_email,
+    # send_email,
     generate_pass,
     get_password_hash,
     calculate_totals,
@@ -97,12 +97,6 @@ async def fill_order_form(
     # Проверяем наполненость формы
     await check_form_fillment(form_voc)
 
-    # Получем словарь с ссылкой для парсинга, типами оплаты и коммисиями
-    # parser_link_voc = await create_tikker_for_binance(
-    #     db,
-    #     client_sell_tikker,
-    #     client_buy_tikker
-    # )
     # Просчитываем стоимость валюты с учетом коммисий и стоимости за перевод
     client_sell_coin = await db.currency.get_by_where(Currency.tikker==client_sell_tikker)
     client_buy_coin = await db.currency.get_by_where(Currency.tikker==client_buy_tikker)
@@ -129,8 +123,6 @@ async def fill_order_form(
             client_credit_card_number=client_credit_card_number,
             client_cc_holder=client_cc_holder,
             client_crypto_wallet=client_crypto_wallet,
-            # client_sell_currency_po=parser_link_voc["client_sell_currency_po"],
-            # client_buy_currency_po=parser_link_voc["client_buy_currency_po"]
     )
     return "Redis - OK"
     # return RedirectResponse("/confirm_order")
@@ -225,10 +217,10 @@ async def confirm_cc(
         )
         db.session.add(user)
         await db.session.flush()
-        await send_email(
-            recepient_email=redis_voc["client_email"],
-            generated_pass=new_password
-        )
+        # await send_email(
+        #     recepient_email=redis_voc["client_email"],
+        #     generated_pass=new_password
+        # )
 
     p_o_dict = await add_or_get_po(
         db, redis_voc,
