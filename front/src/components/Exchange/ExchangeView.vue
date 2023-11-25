@@ -52,12 +52,12 @@
                                     v-for="(currency, i) in currencies.give"
                                     :key="i"
                                     :value="currency"
-                                    v-slot="{selectedClass, toggle}">
+                                    v-slot="{selectedClass, select}">
                                         <v-btn 
                                         class="currency-list__btn currency-btn"
                                         :class="selectedClass"
                                         size="x-large"
-                                        @click="toggle">
+                                        @click="select">
                                             <template v-slot:prepend>
                                                 <span class="currency-btn__img">
                                                     <img :src="currency.src" :alt="currency.name">
@@ -107,15 +107,15 @@
                                 v-model="getCurrency">
                                     <v-item
                                         class="currency-list__item"
-                                        v-for="(currency, i) in currencies.give"
+                                        v-for="(currency, i) in currencies.get"
                                         :key="i"
                                         :value="currency"
-                                        v-slot="{selectedClass, toggle}">
+                                        v-slot="{selectedClass, select}">
                                         <v-btn 
                                         class="currency-list__btn currency-btn" 
                                         :class="selectedClass"
                                         size="x-large"
-                                        @click="toggle">
+                                        @click="select">
                                             <template v-slot:prepend>
                                                 <span class="currency-btn__img">
                                                     <img :src="currency.src" :alt="currency.name">
@@ -149,21 +149,26 @@
                                             <v-text-field 
                                             class="exchange-data__text-field"
                                             type="text"
-                                            name="give_currency"
                                             placeholder="1000"
-                                            :rules="[rules.required]">
+                                            v-model="formData.give"
+                                            :rules="[rules.required]"
+                                            @input="validateGiveNumberInput"
+                                            :suffix="giveCurrency.tikker">
                                             </v-text-field>
                                             <v-text-field
                                             class="exchange-data__text-field"
                                             type="text"
                                             placeholder="ФИО"
+                                            v-model="formData.name"
                                             :rules="[rules.required]">
                                             </v-text-field>
                                             <v-text-field
                                             class="exchange-data__text-field"
                                             type="text"
                                             placeholder="Номер карты"
-                                            :rules="[rules.required, rules.cardNumberRule]">
+                                            v-model="formData.cardNumber"
+                                            :rules="[rules.required, rules.cardNumberRule]"
+                                            @input="formatCardNumber">
                                             </v-text-field>
                                             <h3 class="exchange-data__title title title_h3">
                                                 На
@@ -172,27 +177,41 @@
                                             class="exchange-data__text-field"
                                             type="text"
                                             :placeholder="randomPlaceholderCrypto()"
-                                            :rules="[rules.required]">
+                                            v-model="formData.get"
+                                            :rules="[rules.required]"
+                                            @input="validateGetNumberInput"
+                                            :suffix="getCurrency.tikker">
                                             </v-text-field>
                                             <v-text-field
                                             class="exchange-data__text-field"
                                             type="text"
                                             placeholder="Крипто кошелек"
-                                            :rules="[rules.required]">
+                                            v-model="formData.cryptoNumber"
+                                            :rules="[rules.required, validateCryptoWallet]">
                                             </v-text-field>
                                             <v-text-field
                                             class="exchange-data__text-field"
                                             type="email"
                                             placeholder="E-mail"
+                                            v-model="formData.email"
                                             :rules="[rules.required]">
                                             </v-text-field>
                                             <div class="exchange-data__privacy">
-                                                <v-checkbox hide-details required class="exchange-data__checkbox">
+                                                <v-checkbox
+                                                required
+                                                v-model="formData.privacy"
+                                                :error="!formData.privacy"
+                                                :rules="[rules.required]"
+                                                class="exchange-data__checkbox">
                                                     <template v-slot:label>
                                                         <div>Даю согласие с <a href="#">условиями обмена</a>, <a href="#">соглашением</a> и <a href="#">политикой KYC/AML</a></div>
                                                     </template>
                                                 </v-checkbox>
-                                                <v-checkbox hide-details required class="exchange-data__checkbox">
+                                                <v-checkbox required 
+                                                v-model="formData.rules"
+                                                :error="!formData.rules"
+                                                :rules="[rules.required]"
+                                                class="exchange-data__checkbox">
                                                     <template v-slot:label>
                                                         <div>Согласен с тем, что сумму более ₽300'000 необходимо <a href="#">отправлять частями</a></div>
                                                     </template>
@@ -326,20 +345,20 @@
                                             </v-text-field>
                                             <div class="exchange-data__privacy">
                                                 <v-checkbox 
-                                                hide-details 
                                                 required 
                                                 v-model="formData.privacy"
                                                 :error="!formData.privacy"
-                                                class="exchange-data__checkbox">
+                                                class="exchange-data__checkbox"
+                                                :rules="[rules.required]">
                                                     <template v-slot:label>
                                                         <div>Даю согласие с <a href="#">условиями обмена</a>, <a href="#">соглашением</a> и <a href="#">политикой KYC/AML</a></div>
                                                     </template>
                                                 </v-checkbox>
                                                 <v-checkbox 
-                                                hide-details 
                                                 required 
                                                 v-model="formData.rules"
                                                 :error="!formData.rules"
+                                                :rules="[rules.required]"
                                                 class="exchange-data__checkbox">
                                                     <template v-slot:label>
                                                         <div>Согласен с тем, что сумму более ₽300'000 необходимо <a href="#">отправлять частями</a></div>
@@ -388,7 +407,7 @@ export default defineComponent({
             },
             rules: {
                 required: value => !!value || 'Обязательно для заполнения',
-                cardNumberRule: v => (v && v.length === 16) || 'Номер карты должен содержать 16 цифр',
+                cardNumberRule: v => (v && v.length === 19) || 'Номер карты должен содержать 16 цифр',
             }
         }
     },

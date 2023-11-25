@@ -42,7 +42,7 @@
                         </tbody>
                     </v-table>
                 </v-row>
-                <v-row class="confirm__row mb-4">
+                <v-row class="confirm__row mb-8 flex-column align-center">
                     <p class="confirm__text text-center mb-4">
                         Курс зафиксирован на 10 минут, до отмены подтверждения заявки:
                     </p>
