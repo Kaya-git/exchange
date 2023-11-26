@@ -46,7 +46,7 @@ export default defineComponent({
                 clearInterval(this.timer); // Остановить таймер, когда время истекло
                 
                 if (this.route) {
-                    // this.$router.push({name: 'ExchangeView'});
+                    this.$router.push({name: 'ExchangeView'});
                 }
                 }
             }, 1000);

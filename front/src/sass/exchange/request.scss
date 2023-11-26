@@ -9,4 +9,25 @@
         text-align: center;
         line-height: 1.3;
     }
+    &__table-sheet {
+        width: 100%;
+    }
+}
+
+
+@media (min-width:$md4+px){
+    .request {
+        &__text {
+            font-size: rem(16px);
+        }
+        &__table-sheet {
+            padding: rem(20px) rem(30px);
+            background-color: $fourthColor !important;
+        }
+    }
+    .request-table {
+        &__item {
+            font-size: rem(16px);
+        }
+    }
 }

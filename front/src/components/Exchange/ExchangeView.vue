@@ -382,6 +382,7 @@
 
 <script>
 import {defineComponent} from 'vue';
+import { mapMutations } from 'vuex';
 
 export default defineComponent({
     name: 'ExchangeView',
@@ -395,6 +396,7 @@ export default defineComponent({
             giveCurrency: null,
             getCurrency: null,
             formData: {
+                uuid: '',
                 name: '',
                 email: '',
                 cardNumber: '',
@@ -403,6 +405,10 @@ export default defineComponent({
                 rules: null,
                 give: null,
                 get: null,
+                giveTikker: '',
+                getTikker: '',
+                selectedGiveCurrency: '',
+                selectedGetCurrency: '',
                 rate: '',
             },
             rules: {
@@ -412,8 +418,12 @@ export default defineComponent({
         }
     },
     computed: {
+        
     },
     methods: {
+        ...mapMutations([
+            'setExchangeData',
+        ]),
         randomPlaceholderCrypto() {
             return Math.random().toFixed(8);
         },
@@ -425,7 +435,11 @@ export default defineComponent({
             this.loading = false;
 
             if (results.valid) {
-                this.$store.commit('setExchangeData', this.formData);
+                this.formData.giveTikker = this.giveCurrency.tikker;
+                this.formData.getTikker = this.getCurrency.tikker;
+                this.formData.selectedGetCurrency = this.getCurrency.name;
+                this.formData.selectedGiveCurrency = this.giveCurrency.name;
+                this.setExchangeData(this.formData);
                 this.$router.push({
                     name: 'ConfirmExchange', 
                 });
@@ -434,13 +448,13 @@ export default defineComponent({
         getCurrencies() {
             this.currencies = {
                 give: [
-                    {id: 1, name: 'Сбербанк RUB', src: 'icons/banks/sber.svg', rate: '', tikker: 'RUB'}, 
-                    {id: 2, name: 'Тинькофф RUB', src: 'icons/banks/tinkoff.svg', rate: '', tikker: 'RUB'}, 
-                    {id: 3, name: 'Альфа банк RUB', src: 'icons/banks/alfa-bank.svg', rate: '', tikker: 'RUB'}
+                    {id: 1, name: 'Сбербанк', src: 'icons/banks/sber.svg', rate: '', tikker: 'RUB'}, 
+                    {id: 2, name: 'Тинькофф', src: 'icons/banks/tinkoff.svg', rate: '', tikker: 'RUB'}, 
+                    {id: 3, name: 'Альфа банк', src: 'icons/banks/alfa-bank.svg', rate: '', tikker: 'RUB'}
                 ],
                 get: [
-                    {id: 4, name: 'Bitcoin BTC', src: 'icons/cryptos/bitcoin-btc-logo.svg', rate: '', tikker: 'BTC'},
-                    {id: 5, name: 'Ethereum ETH', src: 'icons/cryptos/ethereum-eth-logo.svg', rate: '', tikker: 'ETH'},
+                    {id: 4, name: 'Bitcoin', src: 'icons/cryptos/bitcoin-btc-logo.svg', rate: '', tikker: 'BTC'},
+                    {id: 5, name: 'Ethereum', src: 'icons/cryptos/ethereum-eth-logo.svg', rate: '', tikker: 'ETH'},
                 ],
             }
 
@@ -500,6 +514,9 @@ export default defineComponent({
             }
 
             return 'Невалидный номер кошелька';
+        },
+        getUUID() {
+            
         }
     },
     created() {
