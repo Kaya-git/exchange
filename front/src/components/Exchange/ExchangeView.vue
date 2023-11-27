@@ -49,7 +49,7 @@
                                 class="currency-list__group">
                                     <v-item 
                                     class="currency-list__item"
-                                    v-for="(currency, i) in currencies.give"
+                                    v-for="(currency, i) in currenciesApi.banks"
                                     :key="i"
                                     :value="currency"
                                     v-slot="{selectedClass, select}">
@@ -60,10 +60,10 @@
                                         @click="select">
                                             <template v-slot:prepend>
                                                 <span class="currency-btn__img">
-                                                    <img :src="currency.src" :alt="currency.name">
+                                                    <img :src="currency.icon" :alt="currency.name">
                                                 </span>
                                             </template>
-                                            {{currency.name}}
+                                            {{currency.name}} {{currency.tikker}}
                                         </v-btn>
                                     </v-item>
                                 </v-item-group>
@@ -107,7 +107,7 @@
                                 v-model="getCurrency">
                                     <v-item
                                         class="currency-list__item"
-                                        v-for="(currency, i) in currencies.get"
+                                        v-for="(currency, i) in currenciesApi.crypto"
                                         :key="i"
                                         :value="currency"
                                         v-slot="{selectedClass, select}">
@@ -118,10 +118,10 @@
                                         @click="select">
                                             <template v-slot:prepend>
                                                 <span class="currency-btn__img">
-                                                    <img :src="currency.src" :alt="currency.name">
+                                                    <img :src="currency.icon" :alt="currency.name">
                                                 </span>
                                             </template>
-                                            {{currency.name}}
+                                            {{currency.name}} {{currency.tikker}}
                                         </v-btn>
                                     </v-item>
                                 </v-item-group>
@@ -237,7 +237,7 @@
                         selected-class="bg-primary"
                         class="exchange-desktop__list currency-list">
                             <v-item
-                            v-for="(currency, i) in currencies.give"
+                            v-for="(currency, i) in currenciesApi.banks"
                             :key="i"
                             :value="currency"
                             v-slot="{selectedClass,select}">
@@ -248,10 +248,10 @@
                                 size="x-large">
                                     <template v-slot:prepend>
                                         <span class="currency-btn__img">
-                                            <img :src="currency.src" :alt="currency.name">
+                                            <img :src="currency.icon" :alt="currency.name">
                                         </span>
                                     </template>
-                                    {{currency.name}}
+                                    {{currency.name}} {{currency.tikker}}
                                 </v-btn>
                             </v-item>
                         </v-item-group>
@@ -263,7 +263,7 @@
                         class="exchange-desktop__list currency-list"
                         selected-class="bg-primary">
                             <v-item
-                                v-for="(currency, i) in currencies.get"
+                                v-for="(currency, i) in currenciesApi.crypto"
                                 :key="i"
                                 :value="currency"
                                 v-slot="{selectedClass,select}">
@@ -274,10 +274,10 @@
                                 @click="select">
                                         <template v-slot:prepend>
                                             <span class="currency-btn__img">
-                                                <img :src="currency.src" :alt="currency.name">
+                                                <img :src="currency.icon" :alt="currency.name">
                                             </span>
                                         </template>
-                                        {{currency.name}}
+                                        {{currency.name}} {{currency.tikker}}
                                     </v-btn>
                             </v-item>
                         </v-item-group>
@@ -300,7 +300,7 @@
                                             v-model="formData.give"
                                             :rules="[rules.required]"
                                             @input="validateGiveNumberInput"
-                                            :suffix="giveCurrency.tikker">
+                                            :suffix="giveCurrency ? giveCurrency.tikker : ''">
                                             </v-text-field>
                                             <v-text-field
                                             class="exchange-data__text-field"
@@ -327,7 +327,7 @@
                                             v-model="formData.get"
                                             :rules="[rules.required]"
                                             @input="validateGetNumberInput"
-                                            :suffix="getCurrency.tikker">
+                                            :suffix="getCurrency ? getCurrency.tikker : ''">
                                             </v-text-field>
                                             <v-text-field
                                             class="exchange-data__text-field"
@@ -409,7 +409,11 @@ export default defineComponent({
                 getTikker: '',
                 selectedGiveCurrency: '',
                 selectedGetCurrency: '',
-                rate: '',
+                exchangeRate: null,
+            },
+            currenciesApi: {
+              banks: [],
+              crypto: [],
             },
             rules: {
                 required: value => !!value || 'Обязательно для заполнения',
@@ -418,7 +422,14 @@ export default defineComponent({
         }
     },
     computed: {
-        
+
+    },
+    watch: {
+      getCurrency(newCur) {
+        this.getExchangeRate(this.giveCurrency.tikker, newCur.tikker).then(result => {
+          this.formData.exchangeRate = result;
+        });
+      },
     },
     methods: {
         ...mapMutations([
@@ -467,6 +478,11 @@ export default defineComponent({
             if (dotCount > 1) {
                 this.formData.give = this.formData.give.slice(0, this.formData.give.lastIndexOf('.'));
             }
+            let amount = null;
+            if (this.formData.exchangeRate && this.formData.give) {
+              amount = this.formData.give / this.formData.exchangeRate;
+            }
+            this.formData.get = amount;
         },
         validateGetNumberInput() {
             this.formData.get = this.formData.get.replace(/[^0-9.-]/g, '');
@@ -474,6 +490,11 @@ export default defineComponent({
             if (dotCount > 1) {
                 this.formData.get = this.formData.get.slice(0, this.formData.get.lastIndexOf('.'));
             }
+            let amount = null;
+            if (this.formData.exchangeRate && this.formData.get) {
+              amount = this.formData.get * this.formData.exchangeRate;
+            }
+            this.formData.give = amount;
         },
         formatCardNumber() {
             // Удаляем все нецифровые символы из введенного значения
@@ -515,15 +536,41 @@ export default defineComponent({
 
             return 'Невалидный номер кошелька';
         },
-        getUUID() {
-            
-        }
+        setUUID() {
+            fetch('http://89.105.198.9:8000/').then(response => response.json()).then(result => console.log(result));
+        },
+         async getApiCurriencies() {
+            let response = await fetch('http://89.105.198.9:8000/currency/list');
+            let data = await response.json();
+            if (!data) {
+              return false;
+            }
+            if (!Array.isArray(data)) {
+              return false;
+            }
+            data.forEach(item => {
+              if (item.type === 'fiat') {
+                this.currenciesApi.banks.push(item);
+              } else {
+                this.currenciesApi.crypto.push(item);
+              }
+            });
+            this.giveCurrency = this.currenciesApi.banks[0];
+            this.getCurrency = this.currenciesApi.crypto[0];
+            return response;
+        },
+        async getExchangeRate(giveTikker, getTikker) {
+          let response = await fetch('http://89.105.198.9:8000/exchange/' + giveTikker + '/' + getTikker);
+          let result = await response.json();
+          return result['exchange_rate'] ?? null;
+        },
     },
     created() {
-        this.getCurrencies();
+        this.getApiCurriencies();
+        this.setUUID();
     },
     mounted() {
         this.tabs = document.querySelectorAll('[data-tab-id]');
-    },
+    }
 });
 </script>
