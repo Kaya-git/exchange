@@ -45,27 +45,39 @@ async def get_exchange_rates(
     client_sell_coin = await db.currency.get_by_where(
         Currency.tikker == client_sell_tikker
     )
-    exchange_dict = {}
-    get = []
-    if client_sell_coin.type == CurrencyType.Fiat:
-        client_buy_coin_list = await db.currency.get_many(
-            whereclause=(Currency.type == CurrencyType.Crypto)
-        )
-    if client_sell_coin.type == CurrencyType.Crypto:
-        client_buy_coin_list = await db.currency.get_many(
-            whereclause=(Currency.type == CurrencyType.Fiat)
-        )
+    client_buy_coin = await db.currency.get_by_where(
+        Currency.tikker == client_buy_tikker
+    )
 
-    for client_buy_coin in client_buy_coin_list:
-        exchange_rate = await find_exchange_rate(
+    exchange_rate = await find_exchange_rate(
             client_sell_coin, client_buy_coin
         )
-        client_buy_coin_dict = client_buy_coin.__dict__
-        client_buy_coin_dict["exchange_rate"] = exchange_rate
-        get.append(client_buy_coin_dict)
+
+    exchange_dict = {}
 
     exchange_dict["give"] = client_sell_coin
-    exchange_dict["get"] = get
+    exchange_dict["get"] = client_buy_coin
+    exchange_dict["exchange_rate"] = exchange_rate
+    # get = []
+    # if client_sell_coin.type == CurrencyType.Fiat:
+    #     client_buy_coin_list = await db.currency.get_many(
+    #         whereclause=(Currency.type == CurrencyType.Crypto)
+    #     )
+    # if client_sell_coin.type == CurrencyType.Crypto:
+    #     client_buy_coin_list = await db.currency.get_many(
+    #         whereclause=(Currency.type == CurrencyType.Fiat)
+    #     )
+
+    # for client_buy_coin in client_buy_coin_list:
+    #     exchange_rate = await find_exchange_rate(
+    #         client_sell_coin, client_buy_coin
+    #     )
+    #     client_buy_coin_dict = client_buy_coin.__dict__
+    #     client_buy_coin_dict["exchange_rate"] = exchange_rate
+    #     get.append(client_buy_coin_dict)
+
+    # exchange_dict["give"] = client_sell_coin
+    # exchange_dict["get"] = get
 
     return exchange_dict
 

@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from payment_options.models import PaymentOption
     from service_payment_options.models import ServicePaymentOption
     from users.models import User
+    from pendings.models import PendingAdmin
 
 
 class Order(Base):
@@ -100,6 +101,9 @@ class Order(Base):
     buy_currency: Mapped["Currency"] = relationship(
         "Currency",
         foreign_keys="[Order.buy_currency_id]"
+    )
+    pending_admin: Mapped["PendingAdmin"] = relationship(
+        back_populates="order"
     )
 
     def __str__(self) -> str:

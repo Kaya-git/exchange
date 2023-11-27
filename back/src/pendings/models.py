@@ -38,5 +38,5 @@ class PendingAdmin(Base):
         foreign_keys="[PendingAdmin.order_id]"
     )
     review: Mapped["Review"] = relationship(
-        back_populates="pending_admin"
+        foreign_keys="[PendingAdmin.review_id]"
     )
