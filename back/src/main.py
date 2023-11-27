@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Response, Depends
-from database.db import get_async_session
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import FastAPI
+# from database.db import get_async_session
+# from sqlalchemy.ext.asyncio import AsyncSession
 # from fastapi.responses import RedirectResponse
-from config import conf
+# from config import conf
 from exchange.routers import exchange_router
 from sqladmin import Admin
 from database.db import engine
@@ -21,7 +21,7 @@ from auth.auth import auth_backend
 from auth.shemas import UserRead, UserCreate
 from auth.routers import fastapi_users
 from currencies.routers import currency_router
-from admin.auth_back import authentication_backend
+# from admin.auth_back import authentication_backend
 from reviews.routers import reviews_router
 from orders.routers import orders_router
 from contacts.routers import contact_router
