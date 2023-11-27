@@ -68,13 +68,14 @@ admin.add_view(FAQAdmin)
 
 @app.get("/")
 async def root(
-    response: Response,
-    async_session: AsyncSession = Depends(get_async_session),
+    # response: Response,
+    # async_session: AsyncSession = Depends(get_async_session),
 ):
 
     """Устанавливаем печеньки на пользователя"""
     cookies_uuid = uuid.uuid4()
-    response.set_cookie(key="user_uuid", value=cookies_uuid)\
+    # response.set_cookie(key="user_uuid", value=cookies_uuid)
+    return cookies_uuid
 
 
 app.include_router(user_lk_router)

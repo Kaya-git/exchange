@@ -1,6 +1,3 @@
-# from typing import Union
-
-# from sqlalchemy.engine import URL
 from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from config import conf
