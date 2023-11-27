@@ -9,40 +9,46 @@
                     <p class="confirm__text text-center">Внимательно проверьте правильность заполненных данных!</p>
                 </v-row>
                 <v-row class="confirm__row">
-                    <v-table class="confirm__table request-table mb-3">
-                        <tbody>
-                            <tr>
-                                <td class="request-table-item text-right">Направление обмена</td>
-                                <td class="request-table-item">Сбербанк RUB / Dogecoin DOGE</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table-item text-right">Обмен по курсу</td>
-                                <td class="request-table-item">30000 RUB = 150 DOGE</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table-item text-right">Отправляете</td>
-                                <td class="request-table-item">30000 RUB</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table-item text-right">Получаете</td>
-                                <td class="request-table-item">150 DOGE</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table-item text-right">Номер вашей карты</td>
-                                <td class="request-table-item">4556 1243 2222 0942</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table-item text-right">Ваш крипто кошелек</td>
-                                <td class="request-table-item">D95REFRGERGEFRGERGERGE</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table-item text-right">Ваш email</td>
-                                <td class="request-table-item">text@test.ru</td>
-                            </tr>
-                        </tbody>
-                    </v-table>
+                    <v-sheet class="confirm__table-sheet" rounded>
+                        <v-table class="confirm__table request-table mb-3">
+                            <tbody>
+                                <tr>
+                                    <td class="request-table__item text-right">Направление обмена</td>
+                                    <td class="request-table__item">
+                                        {{exchangeData.selectedGiveCurrency}} {{exchangeData.giveTikker}} / {{exchangeData.selectedGetCurrency}} {{exchangeData.getTikker}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="request-table__item text-right">Обмен по курсу</td>
+                                    <td class="request-table__item">
+                                        {{ exchangeData.give }} {{exchangeData.giveTikker}} = {{ exchangeData.get }} {{exchangeData.getTikker}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="request-table__item text-right">Отправляете</td>
+                                    <td class="request-table__item">{{ exchangeData.give }} {{exchangeData.giveTikker}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="request-table__item text-right">Получаете</td>
+                                    <td class="request-table__item">{{ exchangeData.get }} {{exchangeData.getTikker}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="request-table__item text-right">Номер вашей карты</td>
+                                    <td class="request-table__item">{{ exchangeData.cardNumber}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="request-table__item text-right">Ваш крипто кошелек</td>
+                                    <td class="request-table__item">{{ exchangeData.cryptoNumber }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="request-table__item text-right">Ваш email</td>
+                                    <td class="request-table__item">{{ exchangeData.email }}</td>
+                                </tr>
+                            </tbody>
+                        </v-table>
+                    </v-sheet>
                 </v-row>
-                <v-row class="confirm__row mb-4">
+                <v-row class="confirm__row mb-8 flex-column align-center">
                     <p class="confirm__text text-center mb-4">
                         Курс зафиксирован на 10 минут, до отмены подтверждения заявки:
                     </p>
@@ -60,19 +66,31 @@
 
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
+import { mapGetters } from 'vuex';
 
 export default defineComponent({
     name: 'ConfirmExchange',
 
     data: () => ({
+        exchangeData: null,
+
+
     }),
-    mounted() {
-        console.log(this.$store.getters.getExchangeData);
+    created() {
+        this.exchangeData = this.getExchangeData;
     },
     components: {
         TimerView: defineAsyncComponent({
             loader: () => import("../Utils/TimerView"),
         }),
+    },
+    methods: {
+        
+    },
+    computed: {
+        ...mapGetters([
+            'getExchangeData'
+        ]),
     }
 });
 </script>
