@@ -1,6 +1,7 @@
-from database.base_model import Base
-from sqlalchemy.orm import Mapped, mapped_column, relationship
 import sqlalchemy as sa
+from sqlalchemy.orm import Mapped, mapped_column
+
+from database.base_model import Base
 
 
 class FAQ(Base):

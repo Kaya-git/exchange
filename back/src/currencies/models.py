@@ -1,16 +1,17 @@
 
-from database.base_model import Base
-import sqlalchemy as sa
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from enums import CurrencyType
-from config import conf
-from fastapi_storages.integrations.sqlalchemy import ImageType
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
+import sqlalchemy as sa
+from fastapi_storages.integrations.sqlalchemy import FileType
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from config import conf
+from database.base_model import Base
+from enums import CurrencyType
 
 if TYPE_CHECKING:
-    from service_payment_options.models import ServicePaymentOption
     from payment_options.models import PaymentOption
+    from service_payment_options.models import ServicePaymentOption
 
 
 class Currency(Base):
@@ -60,7 +61,7 @@ class Currency(Base):
         default=0,
     )
     icon: Mapped[str] = mapped_column(
-        ImageType(storage=conf.image_admin_storage),
+        FileType(storage=conf.image_admin_storage),
         default=None,
         nullable=True
     )

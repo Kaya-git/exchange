@@ -1,12 +1,16 @@
+from datetime import datetime
+from typing import TYPE_CHECKING
+
+import sqlalchemy as sa
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from database.base_model import Base
 from enums import Mark
-import sqlalchemy as sa
-from datetime import datetime
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
-    from users.models import User
     from pendings.models import PendingAdmin
+    from users.models import User
+
 
 class Review(Base):
     __tablename__ = "review"
@@ -43,6 +47,7 @@ class Review(Base):
     pending_admin: Mapped["PendingAdmin"] = relationship(
         back_populates="review"
     )
+
     def __str__(self) -> str:
         return f"{self.rating}"
 

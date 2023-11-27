@@ -1,10 +1,14 @@
-from auth.routers import current_active_verified_user 
-from fastapi import Depends, APIRouter
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List
+
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.db import get_async_session, Database
-from .shemas import OrderRead
+
+from auth.routers import current_active_verified_user
+from database.db import Database, get_async_session
+
 from .models import Order
+from .shemas import OrderRead
+
 if TYPE_CHECKING:
     from users.models import User
 
@@ -13,6 +17,7 @@ orders_router = APIRouter(
     prefix="/orders",
     tags=["Роутер списка заказов для верифицированного пользователя"]
 )
+
 
 @orders_router.get("/list", response_model=List[OrderRead])
 async def order_list(

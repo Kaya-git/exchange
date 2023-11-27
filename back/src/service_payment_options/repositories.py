@@ -1,14 +1,12 @@
 """  ServicePaymentOption repository file """
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from service_payment_options.models import ServicePaymentOption
+
 from currencies.models import Currency
 # from enums import BankingType
 from database.abstract_repo import Repository
-from sqlalchemy import select
-from typing import TYPE_CHECKING
-from currencies.models import Currency
 from orders.models import Order
-
+from service_payment_options.models import ServicePaymentOption
 
 
 class ServicePaymentOptionRepo(Repository[ServicePaymentOption]):
@@ -59,5 +57,4 @@ class ServicePaymentOptionRepo(Repository[ServicePaymentOption]):
                 )
         )
 
-        
         return (await self.session.execute(statement)).scalar_one_or_none()

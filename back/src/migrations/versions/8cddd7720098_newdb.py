@@ -7,11 +7,11 @@ Create Date: 2023-11-21 14:33:08.879598
 """
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
-from config import conf
+from alembic import op
 from fastapi_storages.integrations.sqlalchemy import ImageType
 
+from config import conf
 
 # revision identifiers, used by Alembic.
 revision: str = '8cddd7720098'

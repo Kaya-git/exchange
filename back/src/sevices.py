@@ -1,17 +1,17 @@
+import asyncio
+from decimal import Decimal
+
 import redis.asyncio as redis
+from fastapi import HTTPException, status
+from sqlalchemy import update
+
 from config import conf
 from database.db import Database
-from orders.models import Order
-from enums import Status, BankingType, CurrencyType
+from enums import CurrencyType, Status
 from payment_options.models import PaymentOption
-import asyncio
-from sqlalchemy import select, update, delete
-from decimal import Decimal
 from pendings.models import PendingAdmin
-from enums.models import ReqAction
-from currencies.models import Currency
-from fastapi import HTTPException, status
 from users.models import User
+
 # from fastapi.responses import RedirectResponse
 
 
@@ -118,31 +118,37 @@ class DB():
             """
             order = await db.order.get(ident=order_id)
             buy_po = await db.payment_option.get_by_where(
-                whereclause=(PaymentOption.id==order.buy_payment_option_id)
+                whereclause=(PaymentOption.id == order.buy_payment_option_id)
             )
             sell_po = await db.payment_option.get_by_where(
-                whereclause=(PaymentOption.id==order.sell_payment_option_id)
+                whereclause=(PaymentOption.id == order.sell_payment_option_id)
             )
             if (
                 order.status is Status.Verified and
                 buy_po.is_verified is True and
                 sell_po.is_verified is True
             ):
-                    await db.pending_admin.delete(PendingAdmin.order_id==order_id)
-                    return "Верифицировали карту. Обмен разрешен"
-                    # return RedirectResponse(f"/exchange/order/{order.id}")
+                await db.pending_admin.delete(
+                    PendingAdmin.order_id == order_id
+                    )
+                return "Верифицировали карту. Обмен разрешен"
+                # return RedirectResponse(f"/exchange/order/{order.id}")
             if order.status is Status.NotVerified:
-                await db.pending_admin.delete(PendingAdmin.order_id==order_id)
+                await db.pending_admin.delete(
+                    PendingAdmin.order_id == order_id
+                )
                 await services.redis_values.redis_conn.delete(user_uuid)
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail=f"Не удалось верифицировать карту: {order.decline_reason}"
+                    detail=f"""Не удалось верифицировать карту:
+                    {order.decline_reason}"""
                 )
             await asyncio.sleep(30)
         await services.redis_values.redis_conn.delete(user_uuid)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail="Не удалось верифицировать карту, истекло время"
+            detail="""Не удалось верифицировать карту,
+                    истекло время"""
         )
         # return RedirectResponse("/cancel")
 
@@ -158,26 +164,32 @@ class DB():
             order = await db.order.get(order_id)
             user = await db.user.get(user_id)
             if order.status is Status.Completed:
-                await db.pending_admin.delete(PendingAdmin.order_id==order_id)
+                await db.pending_admin.delete(
+                    PendingAdmin.order_id == order_id
+                )
 
                 buy_currency = await db.currency.get(order.buy_currency_id)
                 sell_currency = await db.currency.get(order.sell_currency_id)
                 if buy_currency.type is CurrencyType.Fiat:
-                   user_volume = user.buy_volume
-                   user_volume += order.user_buy_sum
+                    user_volume = user.buy_volume
+                    user_volume += order.user_buy_sum
 
                 if sell_currency.type is CurrencyType.Fiat:
                     user_volume = user.buy_volume
-                    user_volume +=order.user_sell_sum
+                    user_volume += order.user_sell_sum
 
-                statement = update(User).where(User.id==user_id).values(buy_volume=user_volume)
+                statement = update(User).where(
+                    User.id == user_id
+                    ).values(buy_volume=user_volume)
                 await db.session.execute(statement)
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 return " Успешно завершили обмен"
                 # return RedirectResponse(f"exchange/succes/{order_id}")
             if order.status is Status.Canceled:
-                await db.pending_admin.delete(PendingAdmin.order_id==order_id)
+                await db.pending_admin.delete(
+                    PendingAdmin.order_id == order_id
+                )
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 return "Не пришли средства, обмен отклонен"

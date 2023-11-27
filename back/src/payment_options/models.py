@@ -1,8 +1,10 @@
-from database.base_model import Base
-from enums import BankingType
+from typing import TYPE_CHECKING
+
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import TYPE_CHECKING
+
+from database.base_model import Base
+
 if TYPE_CHECKING:
     from currencies.models import Currency
     from users.models import User

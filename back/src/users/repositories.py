@@ -1,10 +1,14 @@
 """  User repository file """
-from sqlalchemy.ext.asyncio import AsyncSession
+from decimal import Decimal
+
 from sqlalchemy import select
-from .models import User
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from database.abstract_repo import Repository
 from database.engines import async_session_maker
-from decimal import Decimal
+
+from .models import User
+
 
 class UserRepo(Repository[User]):
     """
@@ -45,7 +49,7 @@ class UserRepo(Repository[User]):
             email
     ):
         async with async_session_maker() as session:
-            statement = select(User).where(User.email==email)
+            statement = select(User).where(User.email == email)
             result = await session.execute(statement)
             return result.scalar_one_or_none()
 
@@ -54,6 +58,6 @@ class UserRepo(Repository[User]):
             ident: int
     ):
         async with async_session_maker() as session:
-            statement = select(User).where(User.id==ident)
+            statement = select(User).where(User.id == ident)
             result = await session.execute(statement)
             return result.scalar_one_or_none()

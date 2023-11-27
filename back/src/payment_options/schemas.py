@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from enum import Enum
+
+from pydantic import BaseModel
 
 
 class PaymentOptionBase(BaseModel):
@@ -11,8 +12,10 @@ class PaymentOptionBase(BaseModel):
     user_id: int
     currency_id: int
 
+
 class PaymentOptionCreate(PaymentOptionBase):
     ...
+
 
 class PaymentOptionRead(PaymentOptionBase):
     id: int

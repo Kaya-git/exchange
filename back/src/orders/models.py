@@ -1,14 +1,17 @@
+from datetime import datetime
+from typing import TYPE_CHECKING
+
+import sqlalchemy as sa
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from database.base_model import Base
 from enums import Status, VerifDeclineReason
-import sqlalchemy as sa
-from datetime import datetime
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
-    from users.models import User
     from currencies.models import Currency
-    from service_payment_options.models import ServicePaymentOption
     from payment_options.models import PaymentOption
+    from service_payment_options.models import ServicePaymentOption
+    from users.models import User
 
 
 class Order(Base):
@@ -67,7 +70,7 @@ class Order(Base):
         sa.ForeignKey("currency.id", ondelete="CASCADE")
     )
     buy_currency_id: Mapped[str] = mapped_column(
-        sa.ForeignKey("currency.id",ondelete="CASCADE")
+        sa.ForeignKey("currency.id", ondelete="CASCADE")
     )
 
     sell_payment_option: Mapped["PaymentOption"] = relationship(

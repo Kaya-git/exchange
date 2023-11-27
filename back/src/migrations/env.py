@@ -1,12 +1,13 @@
 import asyncio
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from database.base_model import Base
+
 from config import conf
-from alembic import context
+from database.base_model import Base
 from pendings.models import PendingAdmin
 
 # this is the Alembic Config object, which provides

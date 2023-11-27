@@ -1,31 +1,31 @@
-from typing import Optional
-from database.db import Database
-from currencies.models import Currency
-from enums import CurrencyType
-from payment_options.models import PaymentOption
-import secrets
 import os
-from config import conf
-from sevices import services
-from decimal import Decimal
-from users.models import User
-from fastapi import status, HTTPException
+import secrets
 import smtplib
-from email.mime.text import MIMEText
+from decimal import Decimal
 from email.header import Header
-from passlib.context import CryptContext
-from sevices import Count
-from binance_parser import find_price
-from enums import Status
+from email.mime.text import MIMEText
 
+from fastapi import HTTPException, status
+from passlib.context import CryptContext
+
+from binance_parser import find_price
+from config import conf
+from currencies.models import Currency
+from database.db import Database
+from enums import CurrencyType, Status
+from payment_options.models import PaymentOption
+from sevices import Count, services
+from users.models import User
 
 
 async def get_password_hash(password: str) -> str:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     return pwd_context.hash(password)
 
+
 async def generate_pass():
     return secrets.token_hex(10)
+
 
 async def send_email(
     recepient_email,
@@ -34,7 +34,10 @@ async def send_email(
     email = conf.yandex_email
     password = conf.yandex_email_pass
 
-    msg = MIMEText(f"Ваш пароль от лк VVS-Coin: {generated_pass}", 'plain', 'utf-8')
+    msg = MIMEText(
+        f"Ваш пароль от лк VVS-Coin: {generated_pass}",
+        'plain', 'utf-8'
+    )
     msg['Subject'] = Header('Пароль от лк VVS-Coin', 'utf-8')
     msg['From'] = email
     msg['To'] = recepient_email
@@ -60,7 +63,8 @@ async def check_form_fillment(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Клиент не указал ни одну сумму для обмена"
         )
-    if form_voc["client_sell_value"] == 0 and form_voc["client_buy_value"] == 0:
+    if (form_voc["client_sell_value"] == 0 and
+            form_voc["client_buy_value"] == 0):
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="Клиент указал нули на суммах для перевода"
@@ -112,7 +116,10 @@ async def ya_save_passport_photo(
         extension = cc_image_name.split(".")[1]
         print(extension)
         if extension not in ["png", "jpg", "JPG"]:
-            return {"status": "error", "detail": "File extension is not allowed"}
+            return {
+                "status": "error",
+                "detail": "File extension is not allowed"
+            }
 
         # Создаем новое название картинки,
         # записываем в файл и отправляем на Яндекс диск
@@ -196,7 +203,7 @@ async def add_or_get_po(
     fiat_po = await db.payment_option.get_by_where(
         PaymentOption.number == redis_voc["client_credit_card_number"]
     )
-    
+
     if crypto_po is None and fiat_po is None:
 
         if redis_voc["client_sell_currency"].type == CurrencyType.Fiat:
@@ -308,7 +315,7 @@ async def add_or_get_po(
             db.session.add(client_sell_payment_option)
 
     if (
-        fiat_po is not None and 
+        fiat_po is not None and
         crypto_po is not None
     ):
         if str(fiat_po.user) != user.email:
@@ -324,6 +331,7 @@ async def add_or_get_po(
             "client_sell_payment_option": client_sell_payment_option,
             "client_buy_payment_option": client_buy_payment_option
         }
+
 
 async def calculate_totals(
         client_sell_coin,
@@ -344,9 +352,9 @@ async def calculate_totals(
             ), 2)
             if client_buy_value is None:
                 raise HTTPException(
-                status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail= f"Клиент указал ноль на покупке"
-            )
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                    detail="Клиент указал ноль на покупке"
+                )
         if client_sell_coin.type == CurrencyType.Fiat:
 
             client_buy_value = round(await Count.count_get_value(
@@ -357,9 +365,9 @@ async def calculate_totals(
             ), 4)
             if client_buy_value is None:
                 raise HTTPException(
-                status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail= f"Клиент указал ноль на покупке"
-            )
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                    detail="Клиент указал ноль на покупке"
+                )
 
     if client_sell_value == 0:
 
@@ -373,11 +381,11 @@ async def calculate_totals(
             ), 2)
             if client_sell_value is None:
                 raise HTTPException(
-                status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail= f"Клиент указал ноль на продаже"
-            )
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                    detail="Клиент указал ноль на продаже"
+                )
         if client_buy_coin.type == CurrencyType.Fiat:
-            
+
             client_sell_value = round(await Count.count_get_value(
                 send_value=client_buy_value,
                 coin_price=coin_price,
@@ -386,17 +394,18 @@ async def calculate_totals(
             ), 4)
             if client_sell_value is None:
                 raise HTTPException(
-                status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                detail= f"Клиент указал ноль на продаже"
-            )
+                    status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                    detail="Клиент указал ноль на продаже"
+                )
     return {
         "client_sell_value": client_sell_value,
         "client_buy_value": client_buy_value
     }
 
+
 async def find_exchange_rate(
     client_sell_coin,
-    client_buy_coin      
+    client_buy_coin
 ):
 
     if client_sell_coin.coingecko_tik == "rub":
@@ -436,12 +445,12 @@ async def check_user_registration(
 
             # return RedirectResponse("/cc_conformation_form")
             return (
-            '''
-            Пользователь не найден.
-            Карта не зарегестрирована.
-            Редирект на верификацию карты.
-            '''
-        )
+                '''
+                Пользователь не найден.
+                Карта не зарегестрирована.
+                Редирект на верификацию карты.
+                '''
+            )
         if credit_card.user is not None:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
@@ -468,12 +477,13 @@ async def check_user_registration(
             credit_card is not None and
             credit_card.is_verified is True
         ):
-            
+
             # Проверяем если кредитная карта принадлежит пользователю
             if credit_card.user is user:
-            # Добавляем ордер в бд
-                if redis_dict["client_sell_currency"]["type"] == CurrencyType.Fiat:
-                # if client_sell_currency.type == CurrencyType.Fiat:
+                # Добавляем ордер в бд
+                if (redis_dict["client_sell_currency"]["type"] ==
+                        CurrencyType.Fiat):
+                    # if client_sell_currency.type == CurrencyType.Fiat:
                     new_order = await db.order.new(
                         user_id=user.id,
                         user_email=redis_dict["client_email"],
@@ -494,9 +504,10 @@ async def check_user_registration(
                     await services.redis_values.change_keys(
                         user_uuid=user_uuid,
                         order_id=new_order.id
-                )
+                    )
 
-                if redis_dict["client_sell_currency"]["type"] == CurrencyType.Crypto:
+                if (redis_dict["client_sell_currency"]["type"] ==
+                        CurrencyType.Crypto):
                     new_order = await db.order.new(
                         user_id=user.id,
                         user_email=redis_dict["client_email"],
@@ -526,15 +537,16 @@ async def check_user_registration(
             else:
                 raise HTTPException(
                     status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                    detail="Кредитная карта зарегестрированна под другим имеилом"
+                    detail="""Кредитная карта зарегестрированна
+                        под другим имеилом"""
                 )
 
         if (
             credit_card is not None and
             credit_card.is_verified is False
         ):
-                # return RedirectResponse("/confirm_order")
-                return (
+            # return RedirectResponse("/confirm_order")
+            return (
                     "Такой пользователь существует"
                     "Кредитная карта не верифицированна"
                     "Редирект на верификацию карты"

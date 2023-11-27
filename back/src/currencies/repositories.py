@@ -1,10 +1,12 @@
 """  Currency repository file """
-from sqlalchemy.ext.asyncio import AsyncSession
-import sqlalchemy as sa
-from currencies.models import Currency
-from service_payment_options.models import ServicePaymentOption
-from database.abstract_repo import Repository
 from typing import List
+
+import sqlalchemy as sa
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from currencies.models import Currency
+from database.abstract_repo import Repository
+from service_payment_options.models import ServicePaymentOption
 
 
 class CurrencyRepo(Repository[Currency]):

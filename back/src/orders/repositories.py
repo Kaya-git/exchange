@@ -1,14 +1,15 @@
 """  Order repository file """
-from sqlalchemy.ext.asyncio import AsyncSession
 import sqlalchemy as sa
-from orders.models import Order
-from currencies.models import Currency
-from payment_options.models import PaymentOption
-from enums import Status, VerifDeclineReason
-from users.models import User
-from service_payment_options.models import ServicePaymentOption
-from database.abstract_repo import Repository
 from sqlalchemy import update
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from currencies.models import Currency
+from database.abstract_repo import Repository
+from enums import Status, VerifDeclineReason
+from orders.models import Order
+from payment_options.models import PaymentOption
+from service_payment_options.models import ServicePaymentOption
+from users.models import User
 
 
 class OrderRepo(Repository[Order]):
@@ -69,4 +70,3 @@ class OrderRepo(Repository[Order]):
             values(status=Status.Timeout)
         )
         return (await self.session.execute(statement)).scalar_one_or_none()
-    

@@ -42,14 +42,17 @@ class Status(enum.StrEnum):
 
 
 class ReqAction(enum.StrEnum):
-    VerifyNewOrder = "Необходимо верифицировать клиента и его платежные средства"
-    VerifyTransaction = "Клиент оплатил заказ. Необходимо верифицировать платеж и провести оплату"
+    VerifyNewOrder = """Необходимо верифицировать клиента и
+                            его платежные средства"""
+    VerifyTransaction = """Клиент оплатил заказ.
+                            Необходимо верифицировать платеж и
+                            провести оплату"""
     VerifyReview = "Необходимо валидировать новый отзыв"
 
 
 class VerifDeclineReason(enum.StrEnum):
-   Last4Digits = "Не видно последние 4 цифры карты"
-   WebDomen = "Не видно домен сайта"
-   NoOrder = "Не видно номер заявки"
-   Inittials = "Не видно ФИО"
-   BadQuality = "Плохое качество фотографии"
+    Last4Digits = "Не видно последние 4 цифры карты"
+    WebDomen = "Не видно домен сайта"
+    NoOrder = "Не видно номер заявки"
+    Inittials = "Не видно ФИО"
+    BadQuality = "Плохое качество фотографии"

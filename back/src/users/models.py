@@ -1,15 +1,16 @@
+from datetime import datetime
+from typing import TYPE_CHECKING, List
+
+import sqlalchemy as sa
+from fastapi_users.db import SQLAlchemyBaseUserTable
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from database.base_model import Base
 from enums import Role
-import sqlalchemy as sa
-from datetime import datetime
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from fastapi_users.db import SQLAlchemyBaseUserTable
-from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from reviews import Review
     from payment_options import PaymentOption
-    from orders import Order
+    from reviews import Review
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):

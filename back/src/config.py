@@ -1,9 +1,11 @@
 import os
-from dotenv import load_dotenv
 from dataclasses import dataclass
-from sqlalchemy.engine import URL
+
 import yadisk_async
+from dotenv import load_dotenv
 from fastapi_storages import FileSystemStorage
+from sqlalchemy.engine import URL
+
 load_dotenv()
 
 
@@ -75,7 +77,7 @@ class Configuration:
     admin_auth = os.environ.get("ADMIN_AUTH")
     debug = bool(os.environ.get("DEBUG"))
     logging_level = int(os.environ.get("LOGGING_LEVEL"))
-    image_admin_storage = FileSystemStorage(path='\static\currency_icons')
+    image_admin_storage = FileSystemStorage(path='/static/currency_icons')
     yandex_email = os.environ.get("EMAIL")
     yandex_email_pass = os.environ.get("EMAIL_PASSWORD")
     image_storage = ImageStorageConfiguration()

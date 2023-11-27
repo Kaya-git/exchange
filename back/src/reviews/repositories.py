@@ -1,9 +1,11 @@
 """  Review repository file """
+from datetime import datetime
+
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from database.abstract_repo import Repository
 from enums import Mark
 from reviews.models import Review
-from database.abstract_repo import Repository
-from datetime import datetime
 
 
 class ReviewRepo(Repository[Review]):

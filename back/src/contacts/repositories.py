@@ -1,7 +1,9 @@
 """  Contact repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
-from .models import Contact
+
 from database.abstract_repo import Repository
+
+from .models import Contact
 
 
 class ContactRepo(Repository[Contact]):

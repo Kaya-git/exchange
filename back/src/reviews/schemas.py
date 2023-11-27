@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from enums import Mark
 from datetime import datetime
+
+from pydantic import BaseModel
+
+from enums import Mark
 
 
 class ReviewBase(BaseModel):
@@ -9,8 +11,10 @@ class ReviewBase(BaseModel):
     rating: Mark
     user_id: int
 
+
 class ReviewCreation(ReviewBase):
     ...
+
 
 class ReviewRead(ReviewBase):
     id: int

@@ -1,9 +1,11 @@
-from database.base_model import Base
+from typing import TYPE_CHECKING
+
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.ext.hybrid import hybrid_property
+
+from database.base_model import Base
 from enums.models import ReqAction
-from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from orders.models import Order
     from reviews.models import Review

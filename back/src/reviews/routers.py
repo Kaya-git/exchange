@@ -1,13 +1,14 @@
-from auth.routers import current_active_verified_user 
-from fastapi import Depends, APIRouter, Path, Form
-from typing import Annotated, List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Annotated, Optional
+
+from fastapi import APIRouter, Depends, Form, Path
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.db import get_async_session, Database
+
+from auth.routers import current_active_verified_user
+from database.db import Database, get_async_session
 from enums import Mark
-from .schemas import ReviewRead
-from .models import Review
 from enums.models import ReqAction
 
+from .models import Review
 
 if TYPE_CHECKING:
     from users.models import User
@@ -18,15 +19,17 @@ reviews_router = APIRouter(
     tags=["Роутер отзывов пользователей"]
 )
 
+
 @reviews_router.get("/list")
 async def reviews_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):
     db = Database(session=async_session)
     reviews = await db.review.get_by_where(
-        Review.moderated == True
+        Review.moderated is True
     )
     return reviews
+
 
 @reviews_router.get("/{review_id}")
 async def review_id(
@@ -36,6 +39,7 @@ async def review_id(
     db = Database(session=async_session)
     review = await db.review.get(ident=review_id)
     return review
+
 
 @reviews_router.post("/review_form")
 async def review_form(

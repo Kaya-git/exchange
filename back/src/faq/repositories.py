@@ -1,7 +1,9 @@
 """  FAQ repository file """
 from sqlalchemy.ext.asyncio import AsyncSession
-from .models import FAQ
+
 from database.abstract_repo import Repository
+
+from .models import FAQ
 
 
 class FAQRepo(Repository[FAQ]):

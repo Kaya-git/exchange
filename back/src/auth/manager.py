@@ -1,13 +1,13 @@
 from typing import Optional
 
 from fastapi import Depends, Request
-from fastapi_users import (
-    BaseUserManager, IntegerIDMixin,
-    models, schemas, exceptions
-)
-from .db import get_user_db
-from users.models import User
+from fastapi_users import (BaseUserManager, IntegerIDMixin, exceptions, models,
+                           schemas)
+
 from config import conf
+from users.models import User
+
+from .db import get_user_db
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):

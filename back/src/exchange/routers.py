@@ -1,29 +1,25 @@
-from fastapi import APIRouter, Cookie, Depends, Form, UploadFile, Path, HTTPException, status
-from fastapi.responses import RedirectResponse
-from sevices import services
-from database.db import Database, get_async_session
-from currencies.models import Currency
-# from orders.models import Order
-from enums.models import Status, CurrencyType, ReqAction
-from users.models import User
-# from payment_options.models import PaymentOption
-from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
 from decimal import Decimal
-# from sevices import Count
-from .handlers import (
-    check_form_fillment,
-    ya_save_passport_photo,
-    redis_discard,
-    add_or_get_po,
-    # send_email,
-    generate_pass,
-    get_password_hash,
-    calculate_totals,
-    find_exchange_rate,
-    check_user_registration
-)
 from typing import Annotated
+
+from fastapi import (APIRouter, Cookie, Depends, Form, HTTPException, Path,
+                     UploadFile, status)
+from fastapi.responses import RedirectResponse
+# from payment_options.models import PaymentOption
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from currencies.models import Currency
+from database.db import Database, get_async_session
+# from orders.models import Order
+from enums.models import CurrencyType, ReqAction, Status
+from sevices import services
+from users.models import User
+
+# from sevices import Count
+from .handlers import (add_or_get_po, calculate_totals,  # send_email,
+                       check_form_fillment, check_user_registration,
+                       find_exchange_rate, generate_pass, get_password_hash,
+                       redis_discard, ya_save_passport_photo)
 
 
 exchange_router = APIRouter(
@@ -31,15 +27,21 @@ exchange_router = APIRouter(
     tags=["Роутер обмена"]
 )
 
+
 @exchange_router.get("/{client_sell_tikker}/{client_buy_tikker}")
 async def get_exchange_rates(
-    client_sell_tikker: Annotated[str, Path(title="The Tikker of the coin client sell")],
-    client_buy_tikker: Annotated[str, Path(title="The Tikker of the coin client buy")],
+    client_sell_tikker: Annotated[
+        str, Path(title="The Tikker of the coin client sell")
+    ],
+    client_buy_tikker: Annotated[
+        str, Path(title="The Tikker of the coin client buy")
+    ],
     session: AsyncSession = Depends(get_async_session)
 ):
-    """ Отдает словарь со стоимостью запрашиваемой пары, тикерами, иконками, максимальными и минимальными значениями """
+    """ Отдает словарь со стоимостью запрашиваемой пары, тикерами,
+    иконками, максимальными и минимальными значениями """
     db = Database(session=session)
-    
+
     client_sell_coin = await db.currency.get_by_where(
         Currency.tikker == client_sell_tikker
     )
@@ -55,7 +57,9 @@ async def get_exchange_rates(
         )
 
     for client_buy_coin in client_buy_coin_list:
-        exchange_rate = await find_exchange_rate(client_sell_coin, client_buy_coin)
+        exchange_rate = await find_exchange_rate(
+            client_sell_coin, client_buy_coin
+        )
         client_buy_coin_dict = client_buy_coin.__dict__
         client_buy_coin_dict["exchange_rate"] = exchange_rate
         get.append(client_buy_coin_dict)
@@ -84,7 +88,7 @@ async def fill_order_form(
     db = Database(session=session)
 
     form_voc = {
-       "client_sell_value": client_sell_value,
+        "client_sell_value": client_sell_value,
         "client_sell_tikker": client_sell_tikker,
         "client_buy_value": client_buy_value,
         "client_buy_tikker": client_buy_tikker,
@@ -92,14 +96,18 @@ async def fill_order_form(
         "client_crypto_wallet": client_crypto_wallet,
         "client_credit_card_number": client_credit_card_number,
         "client_cc_holder": client_cc_holder,
-        "user_uuid": user_uuid 
+        "user_uuid": user_uuid
     }
     # Проверяем наполненость формы
     await check_form_fillment(form_voc)
 
     # Просчитываем стоимость валюты с учетом коммисий и стоимости за перевод
-    client_sell_coin = await db.currency.get_by_where(Currency.tikker==client_sell_tikker)
-    client_buy_coin = await db.currency.get_by_where(Currency.tikker==client_buy_tikker)
+    client_sell_coin = await db.currency.get_by_where(
+        Currency.tikker == client_sell_tikker
+    )
+    client_buy_coin = await db.currency.get_by_where(
+        Currency.tikker == client_buy_tikker
+    )
     coin_price = await find_exchange_rate(client_sell_coin, client_buy_coin)
 
     # Определяем какую строчку в форме заполнил пользователь и
@@ -179,7 +187,7 @@ async def confirm_button(
         redis_dict, user,
         db, user_uuid
     )
-    
+
 
 # Отправляем фото паспорта на верификацию админу
 @exchange_router.post("/cc_conformation_form")
@@ -271,7 +279,7 @@ async def conformation_await(
 ) -> RedirectResponse:
     """ Запускает паралельно задачу на отслеживание смены статуса верификации пользователя """
     db = Database(session=async_session)
-    
+
     return await asyncio.create_task(
         services.db_paralell.conformation_await(
             db,
@@ -328,7 +336,7 @@ async def payed_button(
     user_id = int(user_id)
     order_id = int(order_id)
 
-    payed_order = await db.pending_admin.new(
+    await db.pending_admin.new(
         order_id=order_id,
         req_act=ReqAction.VerifyTransaction
     )

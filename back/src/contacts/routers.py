@@ -1,12 +1,14 @@
+from typing import Annotated, List
+
 from fastapi import APIRouter, Depends, Path
-import sqlalchemy as sa
-from database.db import Database, get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from database.db import Database, get_async_session
+
 from .schemas import ContactRead
-from typing import List, Annotated
 
+contact_router = APIRouter(prefix="/contact", tags=["Роутер контактов"])
 
-contact_router = APIRouter(prefix="/contact",tags=["Роутер контактов"])
 
 @contact_router.get("/list", response_model=List[ContactRead])
 async def contact_list(
@@ -15,6 +17,7 @@ async def contact_list(
     db = Database(session=async_session)
     contact_list = await db.contact.get_all()
     return contact_list
+
 
 @contact_router.get("/{id}", response_model=ContactRead)
 async def contact(

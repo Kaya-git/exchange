@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, Path
-from database.db import Database, get_async_session
-from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, List
-from .schemas import CurrencyRead, CurrencyTariffsRead
+
+from fastapi import APIRouter, Depends, Path
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from binance_parser import find_price
+from database.db import Database, get_async_session
 from enums import CurrencyType
-from pydantic import ValidationError
-from fastapi.exceptions import ResponseValidationError
+
+from .schemas import CurrencyRead, CurrencyTariffsRead
 
 currency_router = APIRouter(
     prefix="/currency",
@@ -21,7 +22,6 @@ async def currency_list(
     db = Database(async_session)
     currency_list = await db.currency.get_all()
     return currency_list
-    
 
 
 @currency_router.get("/currency/{id}", response_model=CurrencyRead)
@@ -41,7 +41,7 @@ async def tariffs(
     db = Database(session=async_session)
 
     all_currencies = await db.currency.get_all()
-    currency_list =[]
+    currency_list = []
     for currency in all_currencies:
         if currency.type is CurrencyType.Crypto:
             show_currency = {}

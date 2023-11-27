@@ -1,14 +1,17 @@
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from .handlers import authenticate_admin, create_access_token
-from users.dependecies import get_current_user
+
 from enums import Role
+from users.dependecies import get_current_user
+
+from .handlers import authenticate_admin, create_access_token
+
 
 class AdminAuth(AuthenticationBackend):
     async def login(self,
                     request: Request,
-    ) -> bool:
+                    ) -> bool:
         form = await request.form()
         username, password = form["username"], form["password"]
 
@@ -27,10 +30,15 @@ class AdminAuth(AuthenticationBackend):
     async def authenticate(self, request: Request) -> bool:
         token = request.session.get("token")
         if not token:
-            return RedirectResponse(request.url_for("admin:login"), status_code=302)
+            return RedirectResponse(
+                request.url_for("admin:login"), status_code=302
+            )
         user = await get_current_user(token)
         if not user:
-            return RedirectResponse(request.url_for("admin:login"), status_code=302)
+            return RedirectResponse(
+                request.url_for("admin:login"), status_code=302
+            )
         return True
+
 
 authentication_backend = AdminAuth(secret_key="...")

@@ -1,8 +1,10 @@
-from pydantic import BaseModel, EmailStr
-from enums import Status, VerifDeclineReason
 from datetime import datetime
 from decimal import Decimal
 from typing import Optional
+
+from pydantic import BaseModel, EmailStr
+
+from enums import Status, VerifDeclineReason
 
 
 class OrderBase(BaseModel):
@@ -21,8 +23,10 @@ class OrderBase(BaseModel):
     status: Status
     service_sell_po_id: Optional[int]
 
+
 class OrderCreate(OrderBase):
     ...
+
 
 class OrderRead(OrderBase):
     id: int

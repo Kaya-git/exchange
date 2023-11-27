@@ -1,14 +1,15 @@
 from sqladmin import ModelView
-from users.models import User
-from currencies.models import Currency
-from payment_options.models import PaymentOption
-from orders.models import Order
-from service_payment_options.models import ServicePaymentOption
-from reviews.models import Review
+
 from contacts.models import Contact
-from faq.models import FAQ
-from pendings.models import PendingAdmin
+from currencies.models import Currency
 from enums import Status
+from faq.models import FAQ
+from orders.models import Order
+from payment_options.models import PaymentOption
+from pendings.models import PendingAdmin
+from reviews.models import Review
+from service_payment_options.models import ServicePaymentOption
+from users.models import User
 
 
 class PendingAdminAdmin(ModelView, model=PendingAdmin):
@@ -165,6 +166,7 @@ class ReviewAdmin(ModelView, model=Review):
     can_export = True
     can_view_details = True
 
+
 class ContactAdmin(ModelView, model=Contact):
     name = "Контакт для связи"
     name_plural = "Контакты для связи"
@@ -180,6 +182,7 @@ class ContactAdmin(ModelView, model=Contact):
     can_edit = True
     can_export = True
     can_view_details = True
+
 
 class FAQAdmin(ModelView, model=FAQ):
     name = "FAQ"

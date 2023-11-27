@@ -1,17 +1,18 @@
-from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
-from config import conf
-from users.repositories import UserRepo
-from orders.repositories import OrderRepo
-from currencies.repositories import CurrencyRepo
-from reviews.repositories import ReviewRepo
-from payment_options.repositories import PaymentOptionRepo
-from service_payment_options.repositories import ServicePaymentOptionRepo
-from faq.repositories import FAQRepo
-from contacts.repositories import ContactRepo
-from pendings.repositories import PendingAdminRepo
-from .base_model import Base
+from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 
+from config import conf
+from contacts.repositories import ContactRepo
+from currencies.repositories import CurrencyRepo
+from faq.repositories import FAQRepo
+from orders.repositories import OrderRepo
+from payment_options.repositories import PaymentOptionRepo
+from pendings.repositories import PendingAdminRepo
+from reviews.repositories import ReviewRepo
+from service_payment_options.repositories import ServicePaymentOptionRepo
+from users.repositories import UserRepo
+
+from .base_model import Base
 
 engine = _create_async_engine(
     url=conf.db.build_connection_str(),

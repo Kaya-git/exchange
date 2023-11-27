@@ -4,13 +4,9 @@ from fastapi import Depends, Request
 from jose import JWTError, jwt
 
 from config import conf
-from exceptions import (
-    IncorrectTokenException,
-    TokenAbsentException,
-    TokenExpiredException,
-    UserIsNotPresentException,
-)
 from database.db import Database
+from exceptions import (IncorrectTokenException, TokenAbsentException,
+                        TokenExpiredException, UserIsNotPresentException)
 from users.models import User
 
 
@@ -43,5 +39,7 @@ async def get_current_user(token: str = Depends(get_token)):
     return user
 
 
-async def get_current_admin_user(current_user: User = Depends(get_current_user)):
+async def get_current_admin_user(
+        current_user: User = Depends(get_current_user)
+):
     return current_user

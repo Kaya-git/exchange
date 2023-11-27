@@ -1,6 +1,6 @@
-from fastapi import FastAPI
-# from database.db import get_async_session
-# from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import FastAPI, Response, Depends
+from database.db import get_async_session
+from sqlalchemy.ext.asyncio import AsyncSession
 # from fastapi.responses import RedirectResponse
 # from config import conf
 from exchange.routers import exchange_router
@@ -68,13 +68,13 @@ admin.add_view(FAQAdmin)
 
 @app.get("/")
 async def root(
-    # response: Response,
-    # async_session: AsyncSession = Depends(get_async_session),
+    response: Response,
+    async_session: AsyncSession = Depends(get_async_session),
 ):
 
     """Устанавливаем печеньки на пользователя"""
     cookies_uuid = uuid.uuid4()
-    # response.set_cookie(key="user_uuid", value=cookies_uuid)
+    response.set_cookie(key="user_uuid", value=cookies_uuid)
     return cookies_uuid
 
 
