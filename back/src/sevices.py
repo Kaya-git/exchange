@@ -135,14 +135,14 @@ class DB():
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
-                db.session.commit()
+                await db.session.commit()
                 return "Верифицировали карту. Обмен разрешен"
                 # return RedirectResponse(f"/exchange/order/{order.id}")
             if order.status is Status.NotVerified:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
-                db.session.commit()
+                await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
