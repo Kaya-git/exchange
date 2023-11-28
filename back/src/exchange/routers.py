@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from currencies.models import Currency
 from database.db import Database, get_async_session
 # from orders.models import Order
-from enums.models import CurrencyType, ReqAction, Status
+from enums.models import ReqAction, Status
 from sevices import services
 from users.models import User
 
@@ -289,7 +289,8 @@ async def conformation_await(
     user_uuid: str | None = Cookie(default=None),
     async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
-    """ Запускает паралельно задачу на отслеживание смены статуса верификации пользователя """
+    """ Запускает паралельно задачу на отслеживание
+    смены статуса верификации пользователя """
     db = Database(session=async_session)
 
     return await asyncio.create_task(
@@ -318,7 +319,9 @@ async def requisites(
         )
     order_id = int(order_id)
 
-    service_payment_option = await db.service_payment_option.spo_equal_sp(order_id)
+    service_payment_option = await db.service_payment_option.spo_equal_sp(
+        order_id
+    )
 
     return {
             "requisites_num": service_payment_option.number,
@@ -331,7 +334,8 @@ async def payed_button(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Cookie(default=None),
 ):
-    """ Кнопка подтверждения оплаты пользователя 'запускает паралельно задачу на отслеживание изменения стасу ордера' """
+    """ Кнопка подтверждения оплаты пользователя
+    запускает паралельно задачу на отслеживание изменения стасу ордера' """
     db = Database(session=async_session)
 
     # Проверяем редис на наличие ключей,

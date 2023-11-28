@@ -84,7 +84,7 @@ class Order(Base):
     )
     user: Mapped["User"] = relationship(
         "User",
-        foreign_keys="[Order.user_id]"
+        foreign_keys="Order.user_id"
     )
     service_sell_po: Mapped["ServicePaymentOption"] = relationship(
         "ServicePaymentOption",

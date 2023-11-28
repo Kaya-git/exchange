@@ -42,6 +42,7 @@ class Review(Base):
     )
 
     user: Mapped["User"] = relationship(
+        "User",
         back_populates="reviews"
     )
     pending_admin: Mapped["PendingAdmin"] = relationship(

@@ -62,7 +62,6 @@ class Currency(Base):
     )
     icon: Mapped[str] = mapped_column(
         FileType(storage=conf.image_admin_storage),
-        default=None,
         nullable=True
     )
 

@@ -1,20 +1,20 @@
 """newdb
 
-Revision ID: 8cddd7720098
+Revision ID: 3d3f8095a533
 Revises: 
-Create Date: 2023-11-21 14:33:08.879598
+Create Date: 2023-11-28 10:52:50.792654
 
 """
 from typing import Sequence, Union
 
-import sqlalchemy as sa
 from alembic import op
-from fastapi_storages.integrations.sqlalchemy import ImageType
+import sqlalchemy as sa
+from fastapi_storages.integrations.sqlalchemy import FileType
+from src.config import conf
 
-from config import conf
 
 # revision identifiers, used by Alembic.
-revision: str = '8cddd7720098'
+revision: str = '3d3f8095a533'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -41,7 +41,7 @@ def upgrade() -> None:
     sa.Column('reserve', sa.Numeric(), nullable=False),
     sa.Column('max', sa.Numeric(), nullable=False),
     sa.Column('min', sa.Numeric(), nullable=False),
-    sa.Column('icon', ImageType(conf.image_admin_storage), nullable=True),
+    sa.Column('icon', FileType(conf.image_admin_storage), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name'),
     sa.UniqueConstraint('tikker')
@@ -135,7 +135,9 @@ def upgrade() -> None:
     sa.Column('review_id', sa.BigInteger(), nullable=True),
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
     sa.ForeignKeyConstraint(['review_id'], ['review.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('order_id'),
+    sa.UniqueConstraint('review_id')
     )
     # ### end Alembic commands ###
 

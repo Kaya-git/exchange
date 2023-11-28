@@ -30,6 +30,7 @@ import uuid
 from fastapi.middleware.cors import CORSMiddleware
 from users.routers import user_lk_router
 
+
 app = FastAPI(
     title="Exchange",
     debug=True

@@ -24,19 +24,18 @@ class PendingAdmin(Base):
         default=None,
         nullable=True
     )
-    order_id: Mapped[int] = mapped_column(
+    order_id: Mapped[int | None] = mapped_column(
         sa.ForeignKey("order.id"),
-        nullable=True
+        unique=True
     )
-    review_id: Mapped[int] = mapped_column(
+    review_id: Mapped[int | None] = mapped_column(
         sa.ForeignKey("review.id"),
-        nullable=True
+        unique=True
     )
 
     order: Mapped["Order"] = relationship(
-        "Order",
-        foreign_keys="[PendingAdmin.order_id]"
+        back_populates="pending_admin"
     )
     review: Mapped["Review"] = relationship(
-        foreign_keys="[PendingAdmin.review_id]"
+        back_populates="pending_admin"
     )
