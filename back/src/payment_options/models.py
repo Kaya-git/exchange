@@ -47,7 +47,6 @@ class PaymentOption(Base):
 
     currency: Mapped["Currency"] = relationship(
         back_populates="payment_options",
-        lazy="joined",
         single_parent=True
     )
     user: Mapped["User"] = relationship(

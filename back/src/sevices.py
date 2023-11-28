@@ -24,13 +24,17 @@ class Count:
         gas
     ):
         get_value = (
-            (send_value - Decimal((send_value * margin) / 100) - gas) / coin_price
+            (send_value - Decimal(
+                (send_value * margin) / 100
+            ) - gas) / coin_price
         )
         return get_value
 
     async def count_send_value(get_value, coin_price, margin, gas):
         send_value = (
-            (coin_price + Decimal((get_value * margin) / 100) * get_value) + gas
+            (coin_price + Decimal(
+                (get_value * margin) / 100
+            ) * get_value) + gas
         )
         return send_value
 
@@ -130,13 +134,15 @@ class DB():
             ):
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
-                    )
+                )
+                db.session.commit()
                 return "Верифицировали карту. Обмен разрешен"
                 # return RedirectResponse(f"/exchange/order/{order.id}")
             if order.status is Status.NotVerified:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
+                db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -145,6 +151,10 @@ class DB():
                 )
             await asyncio.sleep(30)
         await services.redis_values.redis_conn.delete(user_uuid)
+        await db.pending_admin.delete(
+                    PendingAdmin.order_id == order_id
+                )
+        await db.session.commit()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="""Не удалось верифицировать карту,

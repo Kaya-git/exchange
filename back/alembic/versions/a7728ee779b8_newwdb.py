@@ -1,8 +1,8 @@
-"""newdb
+"""newwdb
 
-Revision ID: 3d3f8095a533
+Revision ID: a7728ee779b8
 Revises: 
-Create Date: 2023-11-28 10:52:50.792654
+Create Date: 2023-11-28 13:41:01.504565
 
 """
 from typing import Sequence, Union
@@ -14,7 +14,7 @@ from src.config import conf
 
 
 # revision identifiers, used by Alembic.
-revision: str = '3d3f8095a533'
+revision: str = 'a7728ee779b8'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
