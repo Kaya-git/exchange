@@ -63,7 +63,7 @@
                                                     <img :src="currency.icon" :alt="currency.name">
                                                 </span>
                                             </template>
-                                            {{currency.name}} {{currency.tikker}}
+                                            {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
                                         </v-btn>
                                     </v-item>
                                 </v-item-group>
@@ -121,7 +121,7 @@
                                                     <img :src="currency.icon" :alt="currency.name">
                                                 </span>
                                             </template>
-                                            {{currency.name}} {{currency.tikker}}
+                                            {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
                                         </v-btn>
                                     </v-item>
                                 </v-item-group>
@@ -251,7 +251,7 @@
                                             <img :src="currency.icon" :alt="currency.name">
                                         </span>
                                     </template>
-                                    {{currency.name}} {{currency.tikker}}
+                                    {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
                                 </v-btn>
                             </v-item>
                         </v-item-group>
@@ -277,7 +277,7 @@
                                                 <img :src="currency.icon" :alt="currency.name">
                                             </span>
                                         </template>
-                                        {{currency.name}} {{currency.tikker}}
+                                        {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
                                     </v-btn>
                             </v-item>
                         </v-item-group>
@@ -549,6 +549,8 @@ export default defineComponent({
               return false;
             }
             data.forEach(item => {
+              item.icon = 'http://89.105.198.9:8000/root/exchange/src/' + item.icon;
+              console.log(item);
               if (item.type === 'fiat') {
                 this.currenciesApi.banks.push(item);
               } else {
