@@ -98,7 +98,7 @@ async def fill_order_form(
 ):
     """ Форма для заполнения заказа на обмен """
     db = Database(session=session)
-
+    print(user_uuid)
     form_voc = {
         "client_sell_value": client_sell_value,
         "client_sell_tikker": client_sell_tikker,
@@ -149,6 +149,8 @@ async def fill_order_form(
         )
         return "Redis - OK"
         # return RedirectResponse("/confirm_order")
+    else:
+        return "Ошибка"
 
 
 @exchange_router.post("/confirm_order")
