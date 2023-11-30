@@ -58,26 +58,6 @@ async def get_exchange_rates(
     exchange_dict["give"] = client_sell_coin
     exchange_dict["get"] = client_buy_coin
     exchange_dict["exchange_rate"] = exchange_rate
-    # get = []
-    # if client_sell_coin.type == CurrencyType.Fiat:
-    #     client_buy_coin_list = await db.currency.get_many(
-    #         whereclause=(Currency.type == CurrencyType.Crypto)
-    #     )
-    # if client_sell_coin.type == CurrencyType.Crypto:
-    #     client_buy_coin_list = await db.currency.get_many(
-    #         whereclause=(Currency.type == CurrencyType.Fiat)
-    #     )
-
-    # for client_buy_coin in client_buy_coin_list:
-    #     exchange_rate = await find_exchange_rate(
-    #         client_sell_coin, client_buy_coin
-    #     )
-    #     client_buy_coin_dict = client_buy_coin.__dict__
-    #     client_buy_coin_dict["exchange_rate"] = exchange_rate
-    #     get.append(client_buy_coin_dict)
-
-    # exchange_dict["give"] = client_sell_coin
-    # exchange_dict["get"] = get
 
     return exchange_dict
 
@@ -94,13 +74,10 @@ async def fill_order_form(
     client_credit_card_number: str = Form(),
     client_cc_holder: str = Form(),
     user_uuid: str | None = Form(),
-    # user_uuid: str | None = Cookie(default=None),
-    session: AsyncSession = Depends(get_async_session),
-    
+    session: AsyncSession = Depends(get_async_session)
 ):
     """ Форма для заполнения заказа на обмен """
     db = Database(session=session)
-    print(user_uuid, client_sell_value, client_sell_tikker, client_buy_value, client_buy_tikker, client_email)
     form_voc = {
         "client_sell_value": client_sell_value,
         "client_sell_tikker": client_sell_tikker,
@@ -158,7 +135,7 @@ async def fill_order_form(
 
 @exchange_router.post("/confirm_order")
 async def confirm_order(
-    user_uuid: str | None = Cookie(default=None),
+    user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ):
     """ Отправляет пользователю заполненые данные для подтверждения заказа """
@@ -181,7 +158,7 @@ async def confirm_order(
 
 @exchange_router.get("/confirm_button")
 async def confirm_button(
-    user_uuid: str | None = Cookie(default=None),
+    user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ):
     db = Database(session=async_session)
@@ -213,7 +190,7 @@ async def confirm_button(
 @exchange_router.post("/cc_conformation_form")
 async def confirm_cc(
     cc_image: UploadFile,
-    user_uuid: str | None = Cookie(default=None),
+    user_uuid: str | None = Form(),
     session: AsyncSession = Depends(get_async_session)
 ):
     """ Форма для отправки фотографии подтверждения """
@@ -294,7 +271,7 @@ async def confirm_cc(
 
 @exchange_router.post("/await")
 async def conformation_await(
-    user_uuid: str | None = Cookie(default=None),
+    user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
     """ Запускает паралельно задачу на отслеживание
@@ -313,7 +290,7 @@ async def conformation_await(
 @exchange_router.post("/order")
 async def requisites(
     async_session: AsyncSession = Depends(get_async_session),
-    user_uuid: str | None = Cookie(default=None),
+    user_uuid: str | None = Form(),
 ):
     """ Отдает данные для перевода средств """
     db = Database(session=async_session)
@@ -340,7 +317,7 @@ async def requisites(
 @exchange_router.post("/payed")
 async def payed_button(
     async_session: AsyncSession = Depends(get_async_session),
-    user_uuid: str | None = Cookie(default=None),
+    user_uuid: str | None = Form(),
 ):
     """ Кнопка подтверждения оплаты пользователя
     запускает паралельно задачу на отслеживание изменения стасу ордера' """
