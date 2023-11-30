@@ -104,6 +104,7 @@ async def check_form_fillment(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="У клиента нет куки с айди"
         )
+    return True
 
 
 # Сохраняем картинку

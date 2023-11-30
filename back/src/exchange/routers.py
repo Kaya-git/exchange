@@ -111,29 +111,32 @@ async def fill_order_form(
         "user_uuid": user_uuid
     }
     # Проверяем наполненость формы
-    await check_form_fillment(form_voc)
+    formfillment = await check_form_fillment(form_voc)
+    if formfillment is True:
+        # Просчитываем стоимость валюты с учетом коммисий и
+        # стоимости за перевод
+        client_sell_coin = await db.currency.get_by_where(
+            Currency.tikker == client_sell_tikker
+        )
+        client_buy_coin = await db.currency.get_by_where(
+            Currency.tikker == client_buy_tikker
+        )
+        coin_price = await find_exchange_rate(
+            client_sell_coin, client_buy_coin
+        )
 
-    # Просчитываем стоимость валюты с учетом коммисий и стоимости за перевод
-    client_sell_coin = await db.currency.get_by_where(
-        Currency.tikker == client_sell_tikker
-    )
-    client_buy_coin = await db.currency.get_by_where(
-        Currency.tikker == client_buy_tikker
-    )
-    coin_price = await find_exchange_rate(client_sell_coin, client_buy_coin)
+        # Определяем какую строчку в форме заполнил пользователь и
+        # просчитываем стоимость
+        totals = await calculate_totals(
+            client_sell_coin,
+            client_buy_coin,
+            coin_price,
+            client_sell_value,
+            client_buy_value
+        )
 
-    # Определяем какую строчку в форме заполнил пользователь и
-    # просчитываем стоимость
-    totals = await calculate_totals(
-        client_sell_coin,
-        client_buy_coin,
-        coin_price,
-        client_sell_value,
-        client_buy_value
-    )
-
-    # Сохраняем переменные в редис под ключем = uuid пользователя
-    await services.redis_values.set_order_info(
+        # Сохраняем переменные в редис под ключем = uuid пользователя
+        await services.redis_values.set_order_info(
             user_uuid=user_uuid,
             client_email=client_email,
             client_sell_value=totals["client_sell_value"],
@@ -143,9 +146,9 @@ async def fill_order_form(
             client_credit_card_number=client_credit_card_number,
             client_cc_holder=client_cc_holder,
             client_crypto_wallet=client_crypto_wallet,
-    )
-    return "Redis - OK"
-    # return RedirectResponse("/confirm_order")
+        )
+        return "Redis - OK"
+        # return RedirectResponse("/confirm_order")
 
 
 @exchange_router.post("/confirm_order")
