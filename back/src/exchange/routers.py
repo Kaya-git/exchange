@@ -93,8 +93,10 @@ async def fill_order_form(
     client_crypto_wallet: str = Form(),
     client_credit_card_number: str = Form(),
     client_cc_holder: str = Form(),
-    user_uuid: str | None = Cookie(default=None),
-    session: AsyncSession = Depends(get_async_session)
+    user_uuid: str | None = Form(),
+    # user_uuid: str | None = Cookie(default=None),
+    session: AsyncSession = Depends(get_async_session),
+    
 ):
     """ Форма для заполнения заказа на обмен """
     db = Database(session=session)
