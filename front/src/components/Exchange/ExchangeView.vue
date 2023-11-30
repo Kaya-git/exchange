@@ -478,7 +478,7 @@ export default defineComponent({
             'client_crypto_wallet': this.formData.cryptoNumber,
             'client_credit_card_number':this.formData.cardNumber,
             'client_cc_holder': this.formData.name,
-            // 'user_uuid': this.formData.uuid,
+            'user_uuid': this.formData.uuid,
           };
 
           let formBody = [];
@@ -583,17 +583,19 @@ export default defineComponent({
         async setUUID() {
             let response = await fetch('http://89.105.198.9:8000/', {
               method: 'GET',
-              credentials: 'include'
+              credentials: 'include',
+              headers: {
+                'accept': 'application/json',
+              }
             })
             let result = await response.json();
             if (!result) {
               return false;
             }
             this.formData.uuid = result;
-            document.cookie = 'user_uuid=' + result;
         },
        async getApiCurriencies() {
-          let response = await fetch('http://89.105.198.9/currency/list');
+          let response = await fetch('http://89.105.198.9:8000/currency/list');
           let data = await response.json();
           if (!data) {
             return false;
