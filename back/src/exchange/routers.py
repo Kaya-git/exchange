@@ -98,7 +98,7 @@ async def fill_order_form(
 ):
     """ Форма для заполнения заказа на обмен """
     db = Database(session=session)
-    print(user_uuid)
+    print(user_uuid, client_sell_value, client_sell_tikker, client_buy_value, client_buy_tikker, client_email)
     form_voc = {
         "client_sell_value": client_sell_value,
         "client_sell_tikker": client_sell_tikker,
@@ -110,7 +110,7 @@ async def fill_order_form(
         "client_cc_holder": client_cc_holder,
         "user_uuid": user_uuid
     }
-    print(*form_voc)
+
     # Проверяем наполненость формы
     formfillment = await check_form_fillment(form_voc)
     if formfillment is True:
