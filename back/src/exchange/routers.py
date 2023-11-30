@@ -94,7 +94,7 @@ async def fill_order_form(
     client_credit_card_number: str = Form(),
     client_cc_holder: str = Form(),
     user_uuid: str | None = Cookie(default=None),
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(get_async_session)
 ):
     """ Форма для заполнения заказа на обмен """
     db = Database(session=session)
@@ -110,6 +110,7 @@ async def fill_order_form(
         "client_cc_holder": client_cc_holder,
         "user_uuid": user_uuid
     }
+    print(*form_voc)
     # Проверяем наполненость формы
     formfillment = await check_form_fillment(form_voc)
     if formfillment is True:
