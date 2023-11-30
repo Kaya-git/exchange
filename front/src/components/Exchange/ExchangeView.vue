@@ -60,10 +60,10 @@
                                         @click="select">
                                             <template v-slot:prepend>
                                                 <span class="currency-btn__img">
-                                                    <img :src="currency.icon" :alt="currency.name">
+<!--                                                    <img :src="currency.icon" :alt="currency.name">-->
                                                 </span>
                                             </template>
-                                            {{currency.name}} {{currency.tikker}}
+                                            {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
                                         </v-btn>
                                     </v-item>
                                 </v-item-group>
@@ -118,10 +118,10 @@
                                         @click="select">
                                             <template v-slot:prepend>
                                                 <span class="currency-btn__img">
-                                                    <img :src="currency.icon" :alt="currency.name">
+<!--                                                    <img :src="currency.icon" :alt="currency.name">-->
                                                 </span>
                                             </template>
-                                            {{currency.name}} {{currency.tikker}}
+                                            {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
                                         </v-btn>
                                     </v-item>
                                 </v-item-group>
@@ -248,10 +248,10 @@
                                 size="x-large">
                                     <template v-slot:prepend>
                                         <span class="currency-btn__img">
-                                            <img :src="currency.icon" :alt="currency.name">
+<!--                                            <img :src="currency.icon" :alt="currency.name">-->
                                         </span>
                                     </template>
-                                    {{currency.name}} {{currency.tikker}}
+                                    {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
                                 </v-btn>
                             </v-item>
                         </v-item-group>
@@ -274,10 +274,10 @@
                                 @click="select">
                                         <template v-slot:prepend>
                                             <span class="currency-btn__img">
-                                                <img :src="currency.icon" :alt="currency.name">
+<!--                                                <img :src="currency.icon" :alt="currency.name">-->
                                             </span>
                                         </template>
-                                        {{currency.name}} {{currency.tikker}}
+                                        {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
                                     </v-btn>
                             </v-item>
                         </v-item-group>
@@ -382,7 +382,7 @@
 
 <script>
 import {defineComponent} from 'vue';
-import { mapMutations } from 'vuex';
+import {mapMutations} from 'vuex';
 
 export default defineComponent({
     name: 'ExchangeView',
@@ -422,7 +422,6 @@ export default defineComponent({
         }
     },
     computed: {
-
     },
     watch: {
       getCurrency(newCur) {
@@ -451,10 +450,55 @@ export default defineComponent({
                 this.formData.selectedGetCurrency = this.getCurrency.name;
                 this.formData.selectedGiveCurrency = this.giveCurrency.name;
                 this.setExchangeData(this.formData);
-                this.$router.push({
-                    name: 'ConfirmExchange', 
-                });
+                let isDataSended = await this.sendData();
+                if (isDataSended) {
+                  this.$router.push({
+                    name: 'ConfirmExchange',
+                  });
+                }
             }
+        },
+        async sendData() {
+          // let formData = new FormData();
+          // formData.append('client_sell_value', this.formData.give);
+          // formData.append('client_sell_tikker', this.giveCurrency.tikker);
+          // formData.append('client_buy_value', this.formData.get);
+          // formData.append('client_buy_tikker ', this.getCurrency.tikker);
+          // formData.append('client_email', this.formData.email);
+          // formData.append('client_crypto_wallet', this.formData.cryptoNumber);
+          // formData.append('client_credit_card_number', this.formData.cardNumber);
+          // formData.append('client_cc_holder', this.formData.name);
+
+          let details = {
+            'client_sell_value': this.formData.give,
+            'client_sell_tikker': this.giveCurrency.tikker,
+            'client_buy_value': this.formData.get,
+            'client_buy_tikker': this.getCurrency.tikker,
+            'client_email': this.formData.email,
+            'client_crypto_wallet': this.formData.cryptoNumber,
+            'client_credit_card_number':this.formData.cardNumber,
+            'client_cc_holder': this.formData.name,
+            // 'user_uuid': this.formData.uuid,
+          };
+
+          let formBody = [];
+          for (const property in details) {
+            const encodedKey = encodeURIComponent(property);
+            const encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+          }
+          formBody = formBody.join("&");
+
+          let response = await fetch('http://89.105.198.9:8000/exchange/exchange_form', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'accept':  'application/json',
+            },
+            body: formBody
+          });
+          return await response.json();
+
         },
         getCurrencies() {
             this.currencies = {
@@ -536,29 +580,38 @@ export default defineComponent({
 
             return 'Невалидный номер кошелька';
         },
-        setUUID() {
-            fetch('http://89.105.198.9:8000/').then(response => response.json()).then(result => console.log(result));
-        },
-         async getApiCurriencies() {
-            let response = await fetch('http://89.105.198.9:8000/currency/list');
-            let data = await response.json();
-            if (!data) {
+        async setUUID() {
+            let response = await fetch('http://89.105.198.9:8000/', {
+              method: 'GET',
+              credentials: 'include'
+            })
+            let result = await response.json();
+            if (!result) {
               return false;
             }
-            if (!Array.isArray(data)) {
-              return false;
-            }
-            data.forEach(item => {
-              if (item.type === 'fiat') {
-                this.currenciesApi.banks.push(item);
-              } else {
-                this.currenciesApi.crypto.push(item);
-              }
-            });
-            this.giveCurrency = this.currenciesApi.banks[0];
-            this.getCurrency = this.currenciesApi.crypto[0];
-            return response;
+            this.formData.uuid = result;
+            document.cookie = 'user_uuid=' + result;
         },
+       async getApiCurriencies() {
+          let response = await fetch('http://89.105.198.9/currency/list');
+          let data = await response.json();
+          if (!data) {
+            return false;
+          }
+          if (!Array.isArray(data)) {
+            return false;
+          }
+          data.forEach(item => {
+            if (item.type === 'fiat') {
+              this.currenciesApi.banks.push(item);
+            } else {
+              this.currenciesApi.crypto.push(item);
+            }
+          });
+          this.giveCurrency = this.currenciesApi.banks[0];
+          this.getCurrency = this.currenciesApi.crypto[0];
+          return response;
+      },
         async getExchangeRate(giveTikker, getTikker) {
           let response = await fetch('http://89.105.198.9:8000/exchange/' + giveTikker + '/' + getTikker);
           let result = await response.json();

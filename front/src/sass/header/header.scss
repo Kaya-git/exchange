@@ -55,12 +55,13 @@
     a {
         position: absolute;
         display: block;
-        top: 5px;
+        top: -10px;
         left: 0;
         color: $secondColor;
         font-size: 36px;
         font-weight: 700;
         letter-spacing: 5.25px;
+        text-align: center;
     }
 }
 

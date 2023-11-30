@@ -4,7 +4,7 @@
       <v-row class="header-main">
         <v-col class="header-main__col v-col-2">
             <div class="header-main__logo header-logo">
-              <Router-link to="/">Crypto</Router-link>
+              <Router-link to="/">VVS Coin</Router-link>
             </div>
         </v-col>
         <v-col class="header-main__col v-col-8">
@@ -28,9 +28,9 @@
         </v-col>
       </v-row>
       <v-row class="header-mobile justify-space-between">
-          <v-col class="v-col-6">
+          <v-col class="v-col-2">
             <div class="header-mobile__logo header-logo">
-              <Router-link to="/">Crypto</Router-link>
+              <Router-link to="/">VVS Coin</Router-link>
             </div>
           </v-col>
       </v-row>
