@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 user_lk_router = APIRouter(
-    prefix="/lk",
+    prefix="/api/lk",
     tags=["Роутер информации в лк"]
 )
 

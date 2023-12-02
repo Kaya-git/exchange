@@ -8,7 +8,7 @@ from database.db import Database, get_async_session
 from .schemas import FAQRead
 
 faq_router = APIRouter(
-    prefix="/faq",
+    prefix="/api/faq",
     tags=["Роутер FAQ"]
 )
 

@@ -2,7 +2,7 @@ import asyncio
 from decimal import Decimal
 from typing import Annotated
 
-from fastapi import (APIRouter, Cookie, Depends, Form, HTTPException, Path,
+from fastapi import (APIRouter, Depends, Form, HTTPException, Path,
                      UploadFile, status)
 from fastapi.responses import RedirectResponse
 # from payment_options.models import PaymentOption
@@ -23,7 +23,7 @@ from .handlers import (add_or_get_po, calculate_totals,  # send_email,
 
 
 exchange_router = APIRouter(
-    prefix="/exchange",
+    prefix="/api/exchange",
     tags=["Роутер обмена"]
 )
 

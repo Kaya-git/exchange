@@ -7,7 +7,7 @@ from database.db import Database, get_async_session
 
 from .schemas import ContactRead
 
-contact_router = APIRouter(prefix="/contact", tags=["Роутер контактов"])
+contact_router = APIRouter(prefix="/api/contact", tags=["Роутер контактов"])
 
 
 @contact_router.get("/list", response_model=List[ContactRead])

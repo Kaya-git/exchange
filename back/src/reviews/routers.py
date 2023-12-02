@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 reviews_router = APIRouter(
-    prefix="/reviews",
+    prefix="/api/reviews",
     tags=["Роутер отзывов пользователей"]
 )
 

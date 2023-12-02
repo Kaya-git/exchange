@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 orders_router = APIRouter(
-    prefix="/orders",
+    prefix="/api/orders",
     tags=["Роутер списка заказов для верифицированного пользователя"]
 )
 

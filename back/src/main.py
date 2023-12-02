@@ -1,8 +1,6 @@
 from fastapi import FastAPI, Response, Depends
 from database.db import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
-# from fastapi.responses import RedirectResponse
-# from config import conf
 from exchange.routers import exchange_router
 from sqladmin import Admin
 from database.db import engine
@@ -21,7 +19,6 @@ from auth.auth import auth_backend
 from auth.shemas import UserRead, UserCreate
 from auth.routers import fastapi_users
 from currencies.routers import currency_router
-# from admin.auth_back import authentication_backend
 from reviews.routers import reviews_router
 from orders.routers import orders_router
 from contacts.routers import contact_router
@@ -88,22 +85,22 @@ app.include_router(exchange_router)
 app.include_router(reviews_router)
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/jwt",
+    prefix="/api/auth/jwt",
     tags=["auth"],
 )
 app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
+    prefix="/api/auth",
     tags=["auth"],
 )
 app.include_router(
     fastapi_users.get_verify_router(UserRead),
-    prefix="/auth",
+    prefix="/api/auth",
     tags=["auth"],
 )
 app.include_router(
     fastapi_users.get_reset_password_router(),
-    prefix="/auth",
+    prefix="/api/auth",
     tags=["auth"],
 )
 

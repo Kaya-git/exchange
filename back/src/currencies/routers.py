@@ -10,7 +10,7 @@ from enums import CurrencyType
 from .schemas import CurrencyRead, CurrencyTariffsRead
 
 currency_router = APIRouter(
-    prefix="/currency",
+    prefix="/api/currency",
     tags=["Роутер валют"]
 )
 
