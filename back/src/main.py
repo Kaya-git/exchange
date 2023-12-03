@@ -64,7 +64,7 @@ admin.add_view(ContactAdmin)
 admin.add_view(FAQAdmin)
 
 
-@app.get("/")
+@app.get("/api")
 async def root(
     response: Response,
     async_session: AsyncSession = Depends(get_async_session),
