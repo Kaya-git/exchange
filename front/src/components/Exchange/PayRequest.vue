@@ -11,31 +11,45 @@
                             <tbody>
                                 <tr>
                                     <td class="request-table__item text-right">Направление обмена</td>
-                                    <td class="request-table__item">Сбербанк RUB / Dogecoin DOGE</td>
+                                    <td class="request-table__item">
+                                      {{exchangeData.selectedGiveCurrency ?? ''}} {{exchangeData.giveTikker ?? ''}} / {{exchangeData.selectedGetCurrency ?? ''}} {{exchangeData.getTikker ?? ''}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="request-table__item text-right">Обмен по курсу</td>
-                                    <td class="request-table__item">30000 RUB = 150 DOGE</td>
+                                    <td class="request-table__item">
+                                      {{ exchangeData.give ?? ''}} {{exchangeData.giveTikker ?? ''}} = {{ exchangeData.get ?? ''}} {{exchangeData.getTikker ?? ''}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="request-table__item text-right">Отправляете</td>
-                                    <td class="request-table__item">30000 RUB</td>
+                                    <td class="request-table__item">
+                                      {{ exchangeData.give ?? ''}} {{exchangeData.giveTikker ?? ''}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="request-table__item text-right">Получаете</td>
-                                    <td class="request-table__item">150 DOGE</td>
+                                    <td class="request-table__item">
+                                      {{ exchangeData.get ?? ''}} {{exchangeData.getTikker ?? ''}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="request-table__item text-right">Номер вашей карты</td>
-                                    <td class="request-table__item">4556 1243 2222 0942</td>
+                                    <td class="request-table__item">
+                                      {{ exchangeData.cardNumber ?? ''}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="request-table__item text-right">Ваш крипто кошелек</td>
-                                    <td class="request-table__item">D95REFRGERGEFRGERGERGE</td>
+                                    <td class="request-table__item">
+                                      {{ exchangeData.cryptoNumber ?? ''}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="request-table__item text-right">Ваш email</td>
-                                    <td class="request-table__item">text@test.ru</td>
+                                    <td class="request-table__item">
+                                      {{ exchangeData.email ?? ''}}
+                                    </td>
                                 </tr>
                             </tbody>
                         </v-table>
@@ -45,13 +59,13 @@
                     <p class="request__text">Курс зафиксирован на 15 минут. Заявка отменится через:</p>
                 </v-row>
                 <v-row class="request__row mb-8">
-                    <timer-view :custom-class="'request__timer'" :init="900"></timer-view>
+                    <timer-view :custom-class="'request__timer'" :init="900" :route="ExchangeView"></timer-view>
                 </v-row>
                 <v-row class="request__row mb-2">
                     <v-expansion-panels>
                         <v-expansion-panel>
                             <v-expansion-panel-title>
-                                Шаг 1. Переведите {{exchangeData.give}} {{exchangeData.giveTikker}} c указанной карты
+                                Шаг 1. Переведите {{exchangeData.give ?? ''}} {{exchangeData.giveTikker ?? ''}} c указанной карты
                             </v-expansion-panel-title>
                         </v-expansion-panel>
                         <v-expansion-panel>
@@ -63,7 +77,7 @@
                 </v-row>
                 <v-row class="request__row mb-2">
                     <v-col class="d-flex justify-end">
-                        <v-btn id="request-submit" size="large" color="success" @click="toggleWaitOverlay()">
+                        <v-btn id="request-submit" size="large" color="success" @click="toggleConfirmOverlay()">
                             Оплачено
                         </v-btn>
                     </v-col>
@@ -79,6 +93,7 @@
     <template v-if="getWaitOverlayState">
         <confirm-wait :model-value="getWaitOverlayState"></confirm-wait>
     </template>
+    <confirm-trade :is-active="getConfirmOverlayState"></confirm-trade>
 </template>
 
 <script>
@@ -90,7 +105,6 @@ export default defineComponent({
 
     data: () => ({
         exchangeData: null,
-        overlay: false,
     }),
     created() {
         this.exchangeData = this.getExchangeData;
@@ -102,17 +116,22 @@ export default defineComponent({
         ConfirmWait: defineAsyncComponent({
             loader: () => import("../Modal/ConfirmWait"),
         }),
+        ConfirmTrade: defineAsyncComponent({
+          loader: () => import("../Modal/ConfirmTrade"),
+        }),
     },
     methods: {
         ...mapMutations ([
             'openWaitOverlay',
-            'toggleWaitOverlay'
-        ])
+            'toggleWaitOverlay',
+            'toggleConfirmOverlay'
+        ]),
     },
     computed: {
         ...mapGetters([
             'getExchangeData',
             'getWaitOverlayState',
+            'getConfirmOverlayState'
         ]),
     }
 });

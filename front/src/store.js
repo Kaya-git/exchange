@@ -4,6 +4,7 @@ export default new Vuex.Store({
     state: {
       exchangeData: null,
       waitOverlay: false,
+      confirmOverlay: false,
     },
     mutations: {
       setExchangeData(state, data) {
@@ -17,10 +18,20 @@ export default new Vuex.Store({
       },
       toggleWaitOverlay(state) {
         state.waitOverlay = !state.waitOverlay;
+      },
+      openConfirmOverlay(state) {
+        state.confirmOverlay = true;
+      },
+      closeConfirmOverlay(state) {
+        state.confirmOverlay = false;
+      },
+      toggleConfirmOverlay(state) {
+        state.confirmOverlay = !state.confirmOverlay;
       }
     },
     getters: {
       getExchangeData: state => state.exchangeData,
       getWaitOverlayState: state => state.waitOverlay,
+      getConfirmOverlayState: state => state.confirmOverlay,
     }
 });
