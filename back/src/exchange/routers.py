@@ -156,7 +156,7 @@ async def confirm_order(
     return redis_dict
 
 
-@exchange_router.get("/confirm_button")
+@exchange_router.post("/confirm_button")
 async def confirm_button(
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
@@ -309,6 +309,7 @@ async def requisites(
     )
 
     return {
+            "order_id": order_id,
             "requisites_num": service_payment_option.number,
             "holder": service_payment_option.holder
         }
