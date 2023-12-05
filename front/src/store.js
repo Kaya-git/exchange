@@ -3,12 +3,16 @@ import Vuex from 'vuex';
 export default new Vuex.Store({
     state: {
       exchangeData: null,
+      verificationFile: null,
       waitOverlay: false,
       confirmOverlay: false,
     },
     mutations: {
       setExchangeData(state, data) {
         state.exchangeData = data;
+      },
+      setVerificationFile(state, data) {
+        state.verificationFile = data;
       },
       openWaitOverlay(state) {
         state.waitOverlay = true;
@@ -31,6 +35,7 @@ export default new Vuex.Store({
     },
     getters: {
       getExchangeData: state => state.exchangeData,
+      getVerificationFile: state => state.verificationFile,
       getWaitOverlayState: state => state.waitOverlay,
       getConfirmOverlayState: state => state.confirmOverlay,
     }

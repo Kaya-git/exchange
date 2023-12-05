@@ -454,7 +454,7 @@ export default defineComponent({
                 let isDataSended = await this.sendData();
                 if (isDataSended) {
                   this.$router.push({
-                    name: 'ConfirmExchange',
+                    name: 'ExchangeSteps',
                   });
                 }
             }
@@ -596,6 +596,6 @@ export default defineComponent({
     },
     mounted() {
         this.tabs = document.querySelectorAll('[data-tab-id]');
-    }
+    },
 });
 </script>
