@@ -50,7 +50,6 @@ import { mapMutations } from 'vuex';
 export default defineComponent({
 name: 'ConfirmWait',
     data: () => ({
-        overlay: false,
         confirmed: false,
     }),
     mounted() {

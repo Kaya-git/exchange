@@ -29,6 +29,8 @@
     data () {
       return {
       }
-    }
+    },
+    methods: {
+    },
   }
   </script>
