@@ -1,6 +1,6 @@
 <template>
-    <div class="request pt-8 px-2">
-        <v-sheet rounded class="request__sheet pa-3">
+    <div class="request">
+        <v-sheet rounded class="request__sheet pa-3 rounded-t-0">
             <v-container class="request__container">
                 <v-row class="request__row">
                     <h2 class="request__title title title_h2 title_black">Оплатить заявку # 244544</h2>
@@ -93,7 +93,9 @@
     <template v-if="getWaitOverlayState">
         <confirm-wait :model-value="getWaitOverlayState"></confirm-wait>
     </template>
-    <confirm-trade :is-active="getConfirmOverlayState"></confirm-trade>
+    <template v-if="getConfirmOverlayState">
+      <confirm-trade :model-value="getConfirmOverlayState"></confirm-trade>
+    </template>
 </template>
 
 <script>
@@ -101,7 +103,7 @@ import {defineComponent, defineAsyncComponent} from 'vue';
 import { mapGetters, mapMutations } from 'vuex';
 
 export default defineComponent({
-    name: 'PayRequest',
+    name: 'RequestView',
 
     data: () => ({
         exchangeData: null,

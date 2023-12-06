@@ -54,15 +54,9 @@ export default new createRouter({
           component: () => import("./components/User/AccountView")
         },
         {
-          name: 'ConfirmExchange',
-          path: '/confirm/',
-          props: true,
-          component: () => import("./components/Exchange/ConfirmExchange")
-        },
-        {
-          name: 'PayRequest',
-          path: '/request/',
-          component: () => import("./components/Exchange/PayRequest")
+          name: 'ExchangeSteps',
+          path: '/exchange/',
+          component: () => import("./components/Exchange/ExchangeSteps")
         },
     ]
   });

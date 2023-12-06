@@ -1,0 +1,21 @@
+.confirm-modal {
+  &__cardnumber {
+    padding: 20px;
+    background-color: $fifthColor;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+  }
+  &__cardnumber-wrapper {
+      span {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+  }
+  &__text {
+    text-align: center;
+    line-height: 1.2;
+  }
+}
