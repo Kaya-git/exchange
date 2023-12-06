@@ -207,11 +207,11 @@ async def add_or_get_po(
 
     if crypto_po is None and fiat_po is None:
 
-        if redis_voc["client_sell_currency"].type == CurrencyType.Fiat:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Fiat:
 
             client_sell_payment_option = await db.payment_option.new(
                 # banking_type=redis_voc["client_sell_currency"]["tikker"],
-                currency_id=redis_voc["client_sell_currency"].id,
+                currency_id=redis_voc["client_sell_currency"]["id"],
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
                 image=new_file_name,
@@ -220,24 +220,24 @@ async def add_or_get_po(
 
             client_buy_payment_option = await db.payment_option.new(
                 # banking_type=redis_voc["client_buy_currency"]["tikker"],
-                currency_id=redis_voc["client_buy_currency"].id,
+                currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
                 user_id=user.id,
             )
 
-        if redis_voc["client_sell_currency"].type == CurrencyType.Crypto:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Crypto:
 
             client_sell_payment_option = await db.payment_option.new(
                 # banking_type=redis_voc["client_buy_currency_po"],
-                currency_id=redis_voc["client_sell_currency"].id,
+                currency_id=redis_voc["client_sell_currency"]['id'],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
                 user_id=user.id,
             )
             client_buy_payment_option = await db.payment_option.new(
                 # banking_type=redis_voc["client_sell_currency_po"],
-                currency_id=redis_voc["client_buy_currency"].id,
+                currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
                 image=new_file_name,
@@ -254,11 +254,11 @@ async def add_or_get_po(
         fiat_po is None
     ):
         print("yes1")
-        if redis_voc["client_sell_currency"].type == CurrencyType.Fiat:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Fiat:
 
             client_sell_payment_option = await db.payment_option.new(
                 # banking_type=redis_voc["client_sell_currency_po"],
-                currency_id=redis_voc["client_sell_currency"].id,
+                currency_id=redis_voc["client_sell_currency"]["id"],
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
                 image=new_file_name,
@@ -269,13 +269,13 @@ async def add_or_get_po(
 
             db.session.add(client_sell_payment_option)
 
-        if redis_voc["client_sell_currency"].type == CurrencyType.Crypto:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Crypto:
 
             client_sell_payment_option = crypto_po
 
             client_buy_payment_option = await db.payment_option.new(
                 # banking_type=redis_voc["client_sell_currency_po"],
-                currency_id=redis_voc["client_buy_currency"].id,
+                currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
                 image=new_file_name,
@@ -290,24 +290,24 @@ async def add_or_get_po(
         crypto_po is None
     ):
 
-        if redis_voc["client_sell_currency"].type == CurrencyType.Fiat:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Fiat:
 
             client_sell_payment_option = fiat_po
 
             client_buy_payment_option = await db.payment_option.new(
                 # banking_type=redis_voc["client_buy_currency_po"],
-                currency_id=redis_voc["client_buy_currency"].id,
+                currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
                 user_id=user.id,
             )
             db.session.add(client_buy_payment_option)
 
-        if redis_voc["client_sell_currency"].type == CurrencyType.Crypto:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Crypto:
 
             client_sell_payment_option = await db.payment_option.new(
                 # banking_type=redis_voc["client_buy_currency_po"],
-                currency_id=redis_voc["client_sell_currency"].id,
+                currency_id=redis_voc["client_sell_currency"]["id"],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
                 user_id=user.id,
