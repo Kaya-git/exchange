@@ -134,7 +134,7 @@ async def ya_save_passport_photo(
 
         await image_storage.upload(new_file_name, f"/exchange/{new_file_name}")
         await image_storage.close()
-        os.remove(f"{new_file_name}")
+        # os.remove(f"{new_file_name}")
         return new_file_name
     except Exception as ex:
         return ex
