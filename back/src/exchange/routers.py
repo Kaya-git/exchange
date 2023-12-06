@@ -238,11 +238,11 @@ async def confirm_cc(
         user_email=redis_voc["client_email"],
         user_cookie=user_uuid,
         user_buy_sum=redis_voc["client_buy_value"],
-        buy_currency_id=redis_voc["client_buy_currency"].id,
-        buy_payment_option_id=p_o_dict["client_buy_payment_option"].id,
+        buy_currency_id=redis_voc["client_buy_currency"]["id"],
+        buy_payment_option_id=p_o_dict["client_buy_payment_option"]["id"],
         user_sell_sum=redis_voc["client_sell_value"],
-        sell_currency_id=redis_voc["client_sell_currency"].id,
-        sell_payment_option_id=p_o_dict["client_sell_payment_option"].id,
+        sell_currency_id=redis_voc["client_sell_currency"]["id"],
+        sell_payment_option_id=p_o_dict["client_sell_payment_option"]["id"],
         status=Status.Pending,
     )
     db.session.add(new_order)
