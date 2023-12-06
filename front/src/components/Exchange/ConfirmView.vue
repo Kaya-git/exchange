@@ -171,10 +171,10 @@ export default defineComponent({
         method: 'POST',
         body: formData
       });
-      console.log(response);
-      // if (response.ok) {
-      //
-      // }
+      if (response.ok) {
+        this.isVerificationModalVisible = false;
+        this.$emit('nextStep');
+      }
     }
   },
   computed: {

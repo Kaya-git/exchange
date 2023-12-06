@@ -566,7 +566,8 @@ export default defineComponent({
         },
        async getApiCurriencies() {
           let response = await fetch('/api/currency/list');
-          let data = await response.json();
+         console.log(response.status);
+         let data = await response.json();
           if (!data) {
             return false;
           }
