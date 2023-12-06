@@ -116,11 +116,11 @@ async def ya_save_passport_photo(
         cc_image_name = cc_image.filename
         extension = cc_image_name.split(".")[1]
 
-        # if extension not in ["png", "jpg", "JPG"]:
-        #     return {
-        #         "status": "error",
-        #         "detail": "File extension is not allowed"
-        #     }
+        if extension not in ["png", "jpg", "JPG"]:
+            return {
+                "status": "error",
+                "detail": "File extension is not allowed"
+            }
 
         # Создаем новое название картинки,
         # записываем в файл и отправляем на Яндекс диск
@@ -134,7 +134,7 @@ async def ya_save_passport_photo(
 
         await image_storage.upload(new_file_name, f"/exchange/{new_file_name}")
         await image_storage.close()
-        # os.remove(f"{new_file_name}")
+        os.remove(new_file_name)
         return new_file_name
     except Exception as ex:
         return ex
@@ -163,7 +163,6 @@ async def redis_discard(
     client_credit_card_number = str(client_credit_card_number, 'UTF-8')
     client_cc_holder = str(client_cc_holder, 'UTF-8')
 
-    # client_buy_currency_po = str(client_buy_currency_po, 'UTF-8')
     client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
     client_buy_tikker = str(client_buy_tikker, 'UTF-8')
     client_buy_value = str(client_buy_value, 'UTF-8')
@@ -210,7 +209,6 @@ async def add_or_get_po(
         if redis_voc["client_sell_currency"]["type"] == CurrencyType.Fiat:
 
             client_sell_payment_option = await db.payment_option.new(
-                # banking_type=redis_voc["client_sell_currency"]["tikker"],
                 currency_id=redis_voc["client_sell_currency"]["id"],
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
@@ -219,7 +217,6 @@ async def add_or_get_po(
             )
 
             client_buy_payment_option = await db.payment_option.new(
-                # banking_type=redis_voc["client_buy_currency"]["tikker"],
                 currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
@@ -229,14 +226,12 @@ async def add_or_get_po(
         if redis_voc["client_sell_currency"]["type"] == CurrencyType.Crypto:
 
             client_sell_payment_option = await db.payment_option.new(
-                # banking_type=redis_voc["client_buy_currency_po"],
                 currency_id=redis_voc["client_sell_currency"]['id'],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
                 user_id=user.id,
             )
             client_buy_payment_option = await db.payment_option.new(
-                # banking_type=redis_voc["client_sell_currency_po"],
                 currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
@@ -250,14 +245,12 @@ async def add_or_get_po(
 
     if (
         crypto_po is not None and
-        # crypto_po.user_id == user.email and
         fiat_po is None
     ):
         print("yes1")
         if redis_voc["client_sell_currency"]["type"] == CurrencyType.Fiat:
 
             client_sell_payment_option = await db.payment_option.new(
-                # banking_type=redis_voc["client_sell_currency_po"],
                 currency_id=redis_voc["client_sell_currency"]["id"],
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
@@ -274,7 +267,6 @@ async def add_or_get_po(
             client_sell_payment_option = crypto_po
 
             client_buy_payment_option = await db.payment_option.new(
-                # banking_type=redis_voc["client_sell_currency_po"],
                 currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
@@ -295,7 +287,6 @@ async def add_or_get_po(
             client_sell_payment_option = fiat_po
 
             client_buy_payment_option = await db.payment_option.new(
-                # banking_type=redis_voc["client_buy_currency_po"],
                 currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
@@ -306,7 +297,6 @@ async def add_or_get_po(
         if redis_voc["client_sell_currency"]["type"] == CurrencyType.Crypto:
 
             client_sell_payment_option = await db.payment_option.new(
-                # banking_type=redis_voc["client_buy_currency_po"],
                 currency_id=redis_voc["client_sell_currency"]["id"],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
@@ -467,12 +457,6 @@ async def check_user_registration(
         crypto_wallet = await db.payment_option.get_by_where(
             PaymentOption.number == redis_dict["client_crypto_wallet"]
         )
-        # client_sell_currency = await db.currency.get_by_where(
-        #         Currency.tikker_id == redis_dict["client_sell_tikker"]
-        # )
-        # client_buy_currency = await db.currency.get_by_where(
-        #         Currency.tikker_id == redis_dict["client_buy_tikker_id"]
-        # )
 
         if (
             credit_card is not None and
@@ -484,18 +468,15 @@ async def check_user_registration(
                 # Добавляем ордер в бд
                 if (redis_dict["client_sell_currency"]["type"] ==
                         CurrencyType.Fiat):
-                    # if client_sell_currency.type == CurrencyType.Fiat:
                     new_order = await db.order.new(
                         user_id=user.id,
                         user_email=redis_dict["client_email"],
                         user_cookie=user_uuid,
                         user_buy_sum=redis_dict["client_buy_value"],
                         buy_currency_id=redis_dict["client_buy_currency"]["id"],
-                        # client_buy_currency.id,
                         buy_payment_option_id=crypto_wallet.id,
                         user_sell_sum=redis_dict["client_sell_value"],
                         sell_currency_id=redis_dict["client_sell_currency"]["id"],
-                        # client_sell_currency.id,
                         sell_payment_option_id=credit_card.id,
                         status=Status.Approved,
                     )
@@ -529,7 +510,6 @@ async def check_user_registration(
                         order_id=new_order.id
                     )
 
-                # return RedirectResponse("/order")
                 return (
                     "Такой пользователь существует."
                     "Кредитная карта принадлежит пользователю."
@@ -546,14 +526,11 @@ async def check_user_registration(
             credit_card is not None and
             credit_card.is_verified is False
         ):
-            # return RedirectResponse("/confirm_order")
             return (
                     "Такой пользователь существует"
                     "Кредитная карта не верифицированна"
                     "Редирект на верификацию карты"
                 )
-
-        # return RedirectResponse("/confirm_order")
         return (
             "Пользователь существует."
             "Кредитная карта и кошель не верицфицирован"

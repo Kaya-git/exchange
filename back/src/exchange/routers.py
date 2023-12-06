@@ -284,7 +284,6 @@ async def conformation_await(
             user_uuid
         )
     )
-    # return RedirectResponse("/order")
 
 
 @exchange_router.post("/order")
