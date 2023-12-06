@@ -186,9 +186,9 @@ async def redis_discard(
         "client_cc_holder": client_cc_holder,
         "client_crypto_wallet": client_crypto_wallet,
         "client_sell_value": client_sell_value,
-        "client_sell_currency": client_sell_currency,
+        "client_sell_currency": client_sell_currency.__dict__,
         "client_buy_value": client_buy_value,
-        "client_buy_currency": client_buy_currency,
+        "client_buy_currency": client_buy_currency.__dict__,
     }
 
 
