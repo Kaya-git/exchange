@@ -329,8 +329,8 @@ async def add_or_get_po(
         client_buy_payment_option = fiat_po
     await db.session.flush()
     return {
-            "client_sell_payment_option": client_sell_payment_option,
-            "client_buy_payment_option": client_buy_payment_option
+            "client_sell_payment_option": client_sell_payment_option.__dict__,
+            "client_buy_payment_option": client_buy_payment_option.__dict__
         }
 
 
