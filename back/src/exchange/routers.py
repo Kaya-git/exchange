@@ -168,7 +168,7 @@ async def confirm_button(
     if does_exist != 1:
         raise HTTPException(
             status_code=status.HTTP_408_REQUEST_TIMEOUT,
-            detail="Время вышло. Необходимо создать новый обмен"
+            detail="Timeout"
         )
     redis_dict = await redis_discard(
         user_uuid=user_uuid,

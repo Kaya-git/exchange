@@ -115,12 +115,12 @@ async def ya_save_passport_photo(
         # Проверяем формат картинки
         cc_image_name = cc_image.filename
         extension = cc_image_name.split(".")[1]
-        print(extension)
-        if extension not in ["png", "jpg", "JPG"]:
-            return {
-                "status": "error",
-                "detail": "File extension is not allowed"
-            }
+
+        # if extension not in ["png", "jpg", "JPG"]:
+        #     return {
+        #         "status": "error",
+        #         "detail": "File extension is not allowed"
+        #     }
 
         # Создаем новое название картинки,
         # записываем в файл и отправляем на Яндекс диск
