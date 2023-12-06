@@ -149,7 +149,7 @@ class DB():
                     detail=f"""Не удалось верифицировать карту:
                     {order.decline_reason}"""
                 )
-            await asyncio.sleep(30)
+            await asyncio.sleep(5)
         await services.redis_values.redis_conn.delete(user_uuid)
         await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
@@ -204,12 +204,12 @@ class DB():
                 await services.redis_values.redis_conn.delete(user_uuid)
                 return "Не пришли средства, обмен отклонен"
                 # return RedirectResponse(f"exchange/declined/{order_id}")
-            await asyncio.sleep(30)
+            await asyncio.sleep(5)
 
 
 class Services:
     redis_values = RedisValues()
-    db_paralell = DB(iterations=10)
+    db_paralell = DB(iterations=100)
 
 
 services = Services()
