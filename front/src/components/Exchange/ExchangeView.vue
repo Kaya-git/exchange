@@ -483,7 +483,10 @@ export default defineComponent({
             },
             body: formBody
           });
-          return await response.json();
+          if (response.ok) {
+              return await response.json();
+          }
+          return false;
 
         },
         validateGiveNumberInput() {
@@ -566,8 +569,7 @@ export default defineComponent({
         },
        async getApiCurriencies() {
           let response = await fetch('/api/currency/list');
-         console.log(response.status);
-         let data = await response.json();
+          let data = await response.json();
           if (!data) {
             return false;
           }

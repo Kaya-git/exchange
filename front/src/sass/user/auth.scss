@@ -20,4 +20,24 @@
     &__btn {
         margin: 0 auto;
     }
+    &__form-register {
+        margin: 20px auto 0 auto;
+        span {
+            font-size: rem(16px);
+        }
+        a {
+            color: $fourthColor;
+        }
+    }
+    &__form-forgot {
+        font-size: rem(16px);
+        display: block;
+        color: $fourthColor;
+    }
+    &__form-details {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 }

@@ -1,16 +1,16 @@
 <template>
-  <div class="confirm">
-    <v-sheet rounded class="confirm__sheet pa-3 rounded-t-0">
-      <v-container fluid class="confirm__container">
-        <v-row class="confirm__row">
-          <h2 class="confirm__title title title_h2 title_black mb-4 text-center">Ожидание верификации карты</h2>
+  <div class="status">
+    <v-sheet rounded class="status__sheet pa-3 rounded-t-0">
+      <v-container fluid class="status__container">
+        <v-row class="status__row">
+          <h2 class="status__title title title_h2 title_black mb-4 text-center">Подтвердите создание заявки</h2>
         </v-row>
-        <v-row class="confirm__row">
-          <p class="confirm__text text-center">Внимательно пока проверьте правильность заполненных данных!</p>
+        <v-row class="status__row">
+          <p class="status__text text-center">Внимательно проверьте правильность заполненных данных!</p>
         </v-row>
-        <v-row class="confirm__row">
-          <v-sheet class="confirm__table-sheet" rounded>
-            <v-table class="confirm__table request-table mb-3">
+        <v-row class="status__row">
+          <v-sheet class="status__table-sheet" rounded>
+            <v-table class="status__table request-table mb-3">
               <tbody>
               <tr>
                 <td class="request-table__item text-right">Направление обмена</td>
@@ -48,6 +48,9 @@
             </v-table>
           </v-sheet>
         </v-row>
+        <v-row>
+
+        </v-row>
       </v-container>
     </v-sheet>
   </div>
@@ -55,10 +58,9 @@
 <script>
 import {defineComponent} from 'vue';
 import { mapGetters, mapMutations } from 'vuex';
-import {prepareData} from '@/helpers';
 
 export default defineComponent({
-  name: 'VerificationView',
+  name: 'StatusView',
 
   data: () => ({
     exchangeData: null,
@@ -66,35 +68,13 @@ export default defineComponent({
   created() {
     this.exchangeData = this.getExchangeData;
   },
-  mounted() {
-    this.checkVerification();
+  components: {
+
   },
   methods: {
     ...mapMutations([
       'setExchangeData',
     ]),
-    async checkVerification() {
-      let details = {
-        'user_uuid': this.getExchangeData.uuid,
-      }
-      let formBody = prepareData(details);
-
-      let response = await fetch('/api/exchange/await', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'accept':  'application/json',
-        },
-        body: formBody
-      });
-      if (response.ok) {
-        if (response.status === 200) {
-          this.$emit('nextStep');
-        }
-      } else {
-        await this.checkVerification();
-      }
-    },
   },
   computed: {
     ...mapGetters([

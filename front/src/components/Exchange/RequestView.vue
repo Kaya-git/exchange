@@ -1,3 +1,4 @@
+x1
 <template>
     <div class="request">
         <v-sheet rounded class="request__sheet pa-3 rounded-t-0">
@@ -9,53 +10,55 @@
                     <v-sheet class="request__table-sheet" rounded>
                         <v-table class="request__table request-table ">
                             <tbody>
-                                <tr>
-                                    <td class="request-table__item text-right">Направление обмена</td>
-                                    <td class="request-table__item">
-                                      {{exchangeData.selectedGiveCurrency ?? ''}} {{exchangeData.giveTikker ?? ''}} / {{exchangeData.selectedGetCurrency ?? ''}} {{exchangeData.getTikker ?? ''}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="request-table__item text-right">Обмен по курсу</td>
-                                    <td class="request-table__item">
-                                      {{ exchangeData.give ?? ''}} {{exchangeData.giveTikker ?? ''}} = {{ exchangeData.get ?? ''}} {{exchangeData.getTikker ?? ''}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="request-table__item text-right">Отправляете</td>
-                                    <td class="request-table__item">
-                                      {{ exchangeData.give ?? ''}} {{exchangeData.giveTikker ?? ''}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="request-table__item text-right">Получаете</td>
-                                    <td class="request-table__item">
-                                      {{ exchangeData.get ?? ''}} {{exchangeData.getTikker ?? ''}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="request-table__item text-right">Номер вашей карты</td>
-                                    <td class="request-table__item">
-                                      {{ exchangeData.cardNumber ?? ''}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="request-table__item text-right">Ваш крипто кошелек</td>
-                                    <td class="request-table__item">
-                                      {{ exchangeData.cryptoNumber ?? ''}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="request-table__item text-right">Ваш email</td>
-                                    <td class="request-table__item">
-                                      {{ exchangeData.email ?? ''}}
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td class="request-table__item text-right">Направление обмена</td>
+                                <td class="request-table__item">
+                                    {{ exchangeData.selectedGiveCurrency ?? '' }} {{ exchangeData.giveTikker ?? '' }} /
+                                    {{ exchangeData.selectedGetCurrency ?? '' }} {{ exchangeData.getTikker ?? '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="request-table__item text-right">Обмен по курсу</td>
+                                <td class="request-table__item">
+                                    {{ exchangeData.give ?? '' }} {{ exchangeData.giveTikker ?? '' }} =
+                                    {{ exchangeData.get ?? '' }} {{ exchangeData.getTikker ?? '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="request-table__item text-right">Отправляете</td>
+                                <td class="request-table__item">
+                                    {{ exchangeData.give ?? '' }} {{ exchangeData.giveTikker ?? '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="request-table__item text-right">Получаете</td>
+                                <td class="request-table__item">
+                                    {{ exchangeData.get ?? '' }} {{ exchangeData.getTikker ?? '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="request-table__item text-right">Номер вашей карты</td>
+                                <td class="request-table__item">
+                                    {{ exchangeData.cardNumber ?? '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="request-table__item text-right">Ваш крипто кошелек</td>
+                                <td class="request-table__item">
+                                    {{ exchangeData.cryptoNumber ?? '' }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="request-table__item text-right">Ваш email</td>
+                                <td class="request-table__item">
+                                    {{ exchangeData.email ?? '' }}
+                                </td>
+                            </tr>
                             </tbody>
                         </v-table>
                     </v-sheet>
                 </v-row>
-                <v-row class="request__row mb-2"> 
+                <v-row class="request__row mb-2">
                     <p class="request__text">Курс зафиксирован на 15 минут. Заявка отменится через:</p>
                 </v-row>
                 <v-row class="request__row mb-8">
@@ -65,7 +68,8 @@
                     <v-expansion-panels>
                         <v-expansion-panel>
                             <v-expansion-panel-title>
-                                Шаг 1. Переведите {{exchangeData.give ?? ''}} {{exchangeData.giveTikker ?? ''}} c указанной карты
+                                Шаг 1. Переведите {{ exchangeData.give ?? '' }} {{ exchangeData.giveTikker ?? '' }} c
+                                указанной карты
                             </v-expansion-panel-title>
                         </v-expansion-panel>
                         <v-expansion-panel>
@@ -77,7 +81,7 @@
                 </v-row>
                 <v-row class="request__row mb-2">
                     <v-col class="d-flex justify-end">
-                        <v-btn id="request-submit" size="large" color="success" @click="toggleConfirmOverlay()">
+                        <v-btn id="request-submit" size="large" color="success" @click="confirmOverlay = true">
                             Оплачено
                         </v-btn>
                     </v-col>
@@ -90,24 +94,25 @@
             </v-container>
         </v-sheet>
     </div>
-    <template v-if="getWaitOverlayState">
-        <confirm-wait :model-value="getWaitOverlayState"></confirm-wait>
-    </template>
-    <template v-if="getConfirmOverlayState">
-      <confirm-trade :model-value="getConfirmOverlayState"></confirm-trade>
-    </template>
+    <confirm-trade
+        :model-value="confirmOverlay"
+        @confirmed="payed"
+        @canceled="confirmOverlay = !confirmOverlay"
+    ></confirm-trade>
 </template>
 
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
-import { mapGetters, mapMutations } from 'vuex';
-// import {prepareData} from '@/helpers';
+import {mapGetters} from 'vuex';
+import {prepareData} from '@/helpers';
 
 export default defineComponent({
     name: 'RequestView',
 
     data: () => ({
         exchangeData: null,
+        confirmOverlay: false,
+        requisite: '',
     }),
     created() {
         this.exchangeData = this.getExchangeData;
@@ -116,25 +121,53 @@ export default defineComponent({
         TimerView: defineAsyncComponent({
             loader: () => import("../Utils/TimerView"),
         }),
-        ConfirmWait: defineAsyncComponent({
-            loader: () => import("../Modal/ConfirmWait"),
-        }),
         ConfirmTrade: defineAsyncComponent({
-          loader: () => import("../Modal/ConfirmTrade"),
+            loader: () => import("../Modal/ConfirmTrade"),
         }),
     },
     methods: {
-        ...mapMutations ([
-            'openWaitOverlay',
-            'toggleWaitOverlay',
-            'toggleConfirmOverlay'
-        ]),
+        async payed() {
+            let details = {
+                'user_uuid': this.getExchangeData.uuid,
+            }
+            let formBody = prepareData(details);
+
+            let response = await fetch('/api/exchange/payed', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept':  'application/json',
+                },
+                body: formBody
+            });
+            if (response.ok) {
+                console.log(response);
+            }
+        },
+        async getRequisites() {
+            let details = {
+                'user_uuid': this.getExchangeData.uuid,
+            }
+            let formBody = prepareData(details);
+
+            let response = await fetch('/api/exchange/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept':  'application/json',
+                },
+                body: formBody
+            });
+            if (response.ok) {
+                let result = await response.json();
+                console.log(result);
+                this.requisite = result;
+            }
+        },
     },
     computed: {
         ...mapGetters([
             'getExchangeData',
-            'getWaitOverlayState',
-            'getConfirmOverlayState'
         ]),
     }
 });

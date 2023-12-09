@@ -6,6 +6,8 @@ export default new Vuex.Store({
       verificationFile: null,
       waitOverlay: false,
       confirmOverlay: false,
+      requestFixedTime: 15,
+      timer: false,
     },
     mutations: {
       setExchangeData(state, data) {
@@ -33,10 +35,26 @@ export default new Vuex.Store({
         state.confirmOverlay = !state.confirmOverlay;
       }
     },
+    actions: {
+      async startCounter({ state }) {
+        state.timer = true;
+        while (state.requestFixedTime > 0 && state.timer) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          if (state.timer)
+            state.requestFixedTime--;
+        }
+        state.timer = false;
+      },
+      resetRequestTime({ state }) {
+        state.requestFixedTime = 15;
+        state.timer = false;
+      }
+    },
     getters: {
       getExchangeData: state => state.exchangeData,
       getVerificationFile: state => state.verificationFile,
       getWaitOverlayState: state => state.waitOverlay,
       getConfirmOverlayState: state => state.confirmOverlay,
+      getRequestFixedTime: state => state.requestFixedTime,
     }
 });

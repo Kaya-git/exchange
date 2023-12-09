@@ -1,43 +1,112 @@
 <template>
     <div class="auth">
-      <div class="auth__wrapper">
-        <h2 class="auth__title title title_h2">Авторизация</h2>
-        <v-form class="auth__form" v-model="valid">
-          <v-text-field
-            v-model="formData.email"
-            label="Email"
-            type="email"
-            required
-          ></v-text-field>
-          <v-text-field
-            v-model="formData.password"
-            label="Пароль"
-            type="password"
-            required
-          ></v-text-field>
-          <RouterLink to="/user/" style="display: block;margin: 0 auto;">
-            <v-btn class="auth__btn" type="submit" size="large" color="primary">
-              Войти
-            </v-btn>
-        </RouterLink>
-        </v-form>
-      </div>
+        <div class="auth__wrapper">
+            <h2 class="auth__title title title_h2">Авторизация</h2>
+            <v-form class="auth__form" validate-on="submit lazy" @submit.prevent="submit">
+                <v-container class="auth__form-container">
+                    <v-row class="auth__form-row">
+                        <v-text-field
+                            v-model="formData.email"
+                            label="Email"
+                            type="email"
+                            :rules="[rules.required]"
+                        ></v-text-field>
+                    </v-row>
+                    <v-row class="auth__form-row">
+                        <v-text-field
+                            v-model="formData.password"
+                            label="Пароль"
+                            type="password"
+                            :rules="[rules.required]"
+                        ></v-text-field>
+                    </v-row>
+                    <v-row class="auth__form-row mt-0">
+                        <div class="auth__form-details">
+                            <v-checkbox
+                                label="Запомнить меня"
+                                hide-details>
+                            </v-checkbox>
+                            <RouterLink class="auth__form-forgot" to="/forgot/">
+                                Забыли пароль?
+                            </RouterLink>
+                        </div>
+                    </v-row>
+                    <v-row class="auth__form-row">
+                        <v-btn class="auth__btn" type="submit" size="x-large" color="primary">
+                            Войти
+                        </v-btn>
+                    </v-row>
+                    <v-row class="auth__form-row">
+                        <div class="auth__form-register">
+                            <span>Еще нет аккаунта? <RouterLink to="/register/">Зарегистрируйтесь</RouterLink></span>
+                        </div>
+                    </v-row>
+                </v-container>
+            </v-form>
+        </div>
     </div>
-  </template>
-  
-  <script>
-  import {defineComponent} from 'vue';
-  
-  export default defineComponent({
+</template>
+
+<script>
+import {defineComponent} from 'vue';
+import {prepareData} from '@/helpers';
+export default defineComponent({
     name: 'AuthView',
-  
+
     data: () => ({
-      valid: false,
-      formData: {
-        email: '',
-        password: ''
-      }
+        loading: false,
+        formData: {
+            email: '',
+            password: '',
+        },
+        rules: {
+            required: value => !!value || 'Обязательно для заполнения',
+        }
     }),
-  });
-  </script>
+    methods: {
+        async submit(event) {
+            this.loading = true;
+
+            const results = await event;
+
+            this.loading = false;
+
+            if (results.valid) {
+                let isDataSended = await this.sendData();
+                if (isDataSended) {
+                    this.$router.push({
+                        name: 'AccountView',
+                    });
+                }
+            }
+        },
+        async sendData() {
+            let details = {
+                'email': this.formData.email,
+                'password': this.formData.password,
+                'grant_type': '',
+                'scope': '',
+                'client_id': '',
+                'client_secret': '',
+            }
+            let formBody = prepareData(details);
+
+            let response = await fetch('/api/auth/jwt/login',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept':  'application/json',
+                },
+                body: formBody,
+            });
+            if (response.ok) {
+                console.log(response);
+                return await response.json();
+            }
+
+            return false;
+        }
+    }
+});
+</script>
   

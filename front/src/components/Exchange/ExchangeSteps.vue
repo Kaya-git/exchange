@@ -3,21 +3,21 @@
         <v-stepper :model-value="step" class="confirm__steps rounded-b-0">
           <v-stepper-header>
             <v-stepper-item
-                title="Confirm"
+                title="Подтверждение"
                 :value="1"
             ></v-stepper-item>
 
             <v-divider></v-divider>
 
-            <v-stepper-item title="Request created" :value="2"></v-stepper-item>
+            <v-stepper-item title="Верификация" :value="2"></v-stepper-item>
 
             <v-divider></v-divider>
 
-            <v-stepper-item title="Verifyed" :value="3"></v-stepper-item>
+            <v-stepper-item title="Заявка создана" :value="3"></v-stepper-item>
 
             <v-divider></v-divider>
 
-            <v-stepper-item title="Payed" :value="4"></v-stepper-item>
+            <v-stepper-item title="Решение по заявке" :value="4"></v-stepper-item>
           </v-stepper-header>
           <v-stepper-window>
               <v-stepper-window-item :value="1">
@@ -29,7 +29,9 @@
             <v-stepper-window-item :value="3">
               <request-view @nextStep="step++"></request-view>
             </v-stepper-window-item>
-            <v-stepper-window-item :value="4"></v-stepper-window-item>
+            <v-stepper-window-item :value="4">
+              <status-view></status-view>
+            </v-stepper-window-item>
           </v-stepper-window>
         </v-stepper>
     </div>
@@ -61,6 +63,9 @@ export default defineComponent({
         }),
         RequestView: defineAsyncComponent({
           loader: () => import("../Exchange/RequestView"),
+        }),
+        StatusView: defineAsyncComponent({
+          loader: () => import("../Exchange/StatusView"),
         }),
     },
     methods: {
