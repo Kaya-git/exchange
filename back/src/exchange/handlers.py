@@ -15,6 +15,7 @@ from enums import CurrencyType, Status
 from payment_options.models import PaymentOption
 from sevices import Count, services
 from users.models import User
+import aiofiles
 import aiofiles.os
 
 
@@ -126,7 +127,7 @@ async def ya_save_passport_photo(
     new_file_name = f"{secrets.token_hex(10)}.{extension}"
     cc_image_content = await cc_image.read()
 
-    async with open(new_file_name, "wb") as file:
+    async with aiofiles.open(new_file_name, "wb") as file:
         await file.write(cc_image_content)
 
     image_storage = await conf.image_storage.build_image_storage()
