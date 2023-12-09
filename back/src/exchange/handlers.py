@@ -16,6 +16,7 @@ from enums import CurrencyType, Status
 from payment_options.models import PaymentOption
 from sevices import Count, services
 from users.models import User
+import aiofiles.os
 
 
 async def get_password_hash(password: str) -> str:
@@ -134,10 +135,10 @@ async def ya_save_passport_photo(
 
         await image_storage.upload(new_file_name, f"/exchange/{new_file_name}")
         await image_storage.close()
-        await os.remove(new_file_name)
+        await aiofiles.os.remove(new_file_name)
         return new_file_name
     except Exception as ex:
-        return ex
+        print(ex)
 
 
 # Достаем данные из редиса и декодируем их
