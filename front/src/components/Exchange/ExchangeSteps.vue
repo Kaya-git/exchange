@@ -24,9 +24,11 @@
                   <confirm-view @nextStep="step++"></confirm-view>
               </v-stepper-window-item>
             <v-stepper-window-item :value="2">
+              <verification-view @nextStep="step++"></verification-view>
+            </v-stepper-window-item>
+            <v-stepper-window-item :value="3">
               <request-view @nextStep="step++"></request-view>
             </v-stepper-window-item>
-            <v-stepper-window-item :value="3"></v-stepper-window-item>
             <v-stepper-window-item :value="4"></v-stepper-window-item>
           </v-stepper-window>
         </v-stepper>
@@ -53,6 +55,9 @@ export default defineComponent({
     components: {
         ConfirmView: defineAsyncComponent({
           loader: () => import("../Exchange/ConfirmView"),
+        }),
+        VerificationView: defineAsyncComponent({
+          loader: () => import("../Exchange/VerificationView"),
         }),
         RequestView: defineAsyncComponent({
           loader: () => import("../Exchange/RequestView"),
