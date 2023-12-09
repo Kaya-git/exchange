@@ -1,4 +1,3 @@
-import os
 import secrets
 import smtplib
 from decimal import Decimal
@@ -112,33 +111,30 @@ async def check_form_fillment(
 async def ya_save_passport_photo(
         cc_image
 ):
-    try:
-        # Проверяем формат картинки
-        cc_image_name = cc_image.filename
-        extension = cc_image_name.split(".")[1]
+    # Проверяем формат картинки
+    cc_image_name = cc_image.filename
+    extension = cc_image_name.split(".")[1]
 
-        if extension not in ["png", "jpg", "JPG"]:
-            return {
-                "status": "error",
-                "detail": "File extension is not allowed"
-            }
+    if extension not in ["png", "jpg", "JPG"]:
+        return {
+            "status": "error",
+            "detail": "File extension is not allowed"
+        }
 
-        # Создаем новое название картинки,
-        # записываем в файл и отправляем на Яндекс диск
-        new_file_name = f"{secrets.token_hex(10)}.{extension}"
-        cc_image_content = await cc_image.read()
+    # Создаем новое название картинки,
+    # записываем в файл и отправляем на Яндекс диск
+    new_file_name = f"{secrets.token_hex(10)}.{extension}"
+    cc_image_content = await cc_image.read()
 
-        with open(new_file_name, "wb") as file:
-            file.write(cc_image_content)
+    async with open(new_file_name, "wb") as file:
+        await file.write(cc_image_content)
 
-        image_storage = await conf.image_storage.build_image_storage()
+    image_storage = await conf.image_storage.build_image_storage()
 
-        await image_storage.upload(new_file_name, f"/exchange/{new_file_name}")
-        await image_storage.close()
-        await aiofiles.os.remove(new_file_name)
-        return new_file_name
-    except Exception as ex:
-        print(ex)
+    await image_storage.upload(new_file_name, f"/exchange/{new_file_name}")
+    await image_storage.close()
+    await aiofiles.os.remove(new_file_name)
+    return new_file_name
 
 
 # Достаем данные из редиса и декодируем их
