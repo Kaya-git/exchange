@@ -26,12 +26,14 @@ from faq.routers import faq_router
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
 from users.routers import user_lk_router
+from config import conf
 
 
 app = FastAPI(
     title="Exchange",
     debug=True
 )
+
 
 origins = [
     "http://89.105.198.9",
@@ -69,6 +71,11 @@ async def root(
     response: Response,
     async_session: AsyncSession = Depends(get_async_session),
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
 
     """Устанавливаем печеньки на пользователя"""
     cookies_uuid = uuid.uuid4()

@@ -14,6 +14,7 @@ from database.db import Database, get_async_session
 from enums.models import ReqAction, Status
 from sevices import services
 from users.models import User
+from config import conf
 
 # from sevices import Count
 from .handlers import (add_or_get_po, calculate_totals,  # send_email,
@@ -38,6 +39,11 @@ async def get_exchange_rates(
     ],
     session: AsyncSession = Depends(get_async_session)
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     """ Отдает словарь со стоимостью запрашиваемой пары, тикерами,
     иконками, максимальными и минимальными значениями """
     db = Database(session=session)
@@ -76,6 +82,11 @@ async def fill_order_form(
     user_uuid: str | None = Form(),
     session: AsyncSession = Depends(get_async_session)
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     """ Форма для заполнения заказа на обмен """
     db = Database(session=session)
     form_voc = {
@@ -138,6 +149,11 @@ async def confirm_order(
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     """ Отправляет пользователю заполненые данные для подтверждения заказа """
     db = Database(session=async_session)
 
@@ -161,6 +177,11 @@ async def confirm_button(
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     db = Database(session=async_session)
 
     # Проверяем есть ли ключи в реддисе и забираем значения
@@ -193,6 +214,11 @@ async def confirm_cc(
     user_uuid: str | None = Form(),
     session: AsyncSession = Depends(get_async_session)
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     """ Форма для отправки фотографии подтверждения """
     db = Database(session=session)
 
@@ -274,6 +300,11 @@ async def conformation_await(
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     """ Запускает паралельно задачу на отслеживание
     смены статуса верификации пользователя """
     db = Database(session=async_session)
@@ -291,6 +322,11 @@ async def requisites(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Form(),
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     """ Отдает данные для перевода средств """
     db = Database(session=async_session)
 
@@ -319,6 +355,11 @@ async def payed_button(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Form(),
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     """ Кнопка подтверждения оплаты пользователя
     запускает паралельно задачу на отслеживание изменения стасу ордера' """
     db = Database(session=async_session)

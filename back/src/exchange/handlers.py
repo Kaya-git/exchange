@@ -20,11 +20,21 @@ import aiofiles.os
 
 
 async def get_password_hash(password: str) -> str:
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     return pwd_context.hash(password)
 
 
 async def generate_pass():
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     return secrets.token_hex(10)
 
 
@@ -32,6 +42,11 @@ async def send_email(
     recepient_email,
     generated_pass
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     email = conf.yandex_email
     password = conf.yandex_email_pass
 
@@ -59,6 +74,11 @@ async def send_email(
 async def check_form_fillment(
         form_voc
 ) -> None:
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     if not form_voc["client_sell_value"] and not form_voc["client_buy_value"]:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -112,6 +132,11 @@ async def check_form_fillment(
 async def ya_save_passport_photo(
         cc_image
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     # Проверяем формат картинки
     cc_image_name = cc_image.filename
     extension = cc_image_name.split(".")[1]
@@ -143,6 +168,11 @@ async def redis_discard(
         user_uuid: str | None,
         db: Database
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     # Достаем из редиса список с данными ордера.
     (
         client_crypto_wallet,
@@ -195,6 +225,11 @@ async def add_or_get_po(
         user: User,
         new_file_name: str
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     crypto_po = await db.payment_option.get_by_where(
         PaymentOption.number == redis_voc["client_crypto_wallet"]
     )
@@ -329,6 +364,11 @@ async def calculate_totals(
         client_sell_value,
         client_buy_value
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     if client_sell_value != 0:
 
         if client_sell_coin.type == CurrencyType.Crypto:
@@ -396,6 +436,11 @@ async def find_exchange_rate(
     client_sell_coin,
     client_buy_coin
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
 
     if client_sell_coin.coingecko_tik == "rub":
         ids = client_buy_coin.coingecko_tik
@@ -425,6 +470,11 @@ async def check_user_registration(
         db,
         user_uuid
 ):
+    conf.log.logger.debug("Debug message")
+    conf.log.logger.info("Info message")
+    conf.log.logger.warning("Warning message")
+    conf.log.logger.error("Error message")
+    conf.log.logger.critical("Critical message")
     if user is None:
 
         credit_card = await db.payment_option.get_by_where(
