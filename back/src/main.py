@@ -21,6 +21,7 @@ from auth.routers import fastapi_users
 from currencies.routers import currency_router
 from reviews.routers import reviews_router
 from orders.routers import orders_router
+from where_am_i.routers import where_am_i_router
 from contacts.routers import contact_router
 from faq.routers import faq_router
 import uuid
@@ -84,6 +85,7 @@ async def root(
 
 
 app.include_router(user_lk_router)
+app.include_router(where_am_i_router)
 app.include_router(contact_router)
 app.include_router(faq_router)
 app.include_router(currency_router)

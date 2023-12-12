@@ -58,7 +58,6 @@ class ImageStorageConfiguration:
 
     async def build_image_storage(self):
         image_storage = yadisk_async.YaDisk(token=self.yadisk_token)
-        print(f" Яндекс диск права: {await image_storage.check_token()}")
         return image_storage
 
 
@@ -67,10 +66,12 @@ class LoggerExchange:
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     handler = logging.StreamHandler()
+    file_handler = logging.FileHandler("exchange.log")
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
     handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
     logger.addHandler(handler)
 
 

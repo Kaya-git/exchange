@@ -182,7 +182,8 @@ async def redis_discard(
         client_buy_value,
         client_sell_tikker,
         client_sell_value,
-        client_email
+        client_email,
+        router_number
     ) = await services.redis_values.redis_conn.lrange(user_uuid, 0, -1)
 
     # Декодируем из бит в пайтоновские значения
@@ -197,6 +198,8 @@ async def redis_discard(
 
     client_email = str(client_email, 'UTF-8')
 
+    router_number = int(router_number)
+
     client_sell_value = Decimal(client_sell_value)
     client_buy_value = Decimal(client_buy_value)
 
@@ -208,6 +211,7 @@ async def redis_discard(
     )
 
     return {
+        "end_point_number": router_number,
         "client_email": client_email,
         "client_credit_card_number": client_credit_card_number,
         "client_cc_holder": client_cc_holder,
@@ -230,9 +234,11 @@ async def add_or_get_po(
     conf.log.logger.warning("Warning message")
     conf.log.logger.error("Error message")
     conf.log.logger.critical("Critical message")
+
     crypto_po = await db.payment_option.get_by_where(
         PaymentOption.number == redis_voc["client_crypto_wallet"]
     )
+
     fiat_po = await db.payment_option.get_by_where(
         PaymentOption.number == redis_voc["client_credit_card_number"]
     )
@@ -264,6 +270,7 @@ async def add_or_get_po(
                 holder=redis_voc["client_email"],
                 user_id=user.id,
             )
+
             client_buy_payment_option = await db.payment_option.new(
                 currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_credit_card_number"],

@@ -68,7 +68,7 @@ async def get_exchange_rates(
     return exchange_dict
 
 
-# Заполняем форму для обмена и передаем ее в редис
+# Страница для формы обмена
 @exchange_router.post("/exchange_form")
 async def fill_order_form(
     client_sell_value: Decimal = Form(default=0),
@@ -82,6 +82,9 @@ async def fill_order_form(
     user_uuid: str | None = Form(),
     session: AsyncSession = Depends(get_async_session)
 ):
+
+    END_POINT_NUMBER = 1
+
     conf.log.logger.debug("Debug message")
     conf.log.logger.info("Info message")
     conf.log.logger.warning("Warning message")
@@ -129,6 +132,7 @@ async def fill_order_form(
         # Сохраняем переменные в редис под ключем = uuid пользователя
         await services.redis_values.set_order_info(
             user_uuid=user_uuid,
+            end_point_number=END_POINT_NUMBER,
             client_email=client_email,
             client_sell_value=totals["client_sell_value"],
             client_sell_tikker=client_sell_tikker,
@@ -139,7 +143,6 @@ async def fill_order_form(
             client_crypto_wallet=client_crypto_wallet,
         )
         return "Redis - OK"
-        # return RedirectResponse("/confirm_order")
     else:
         return "Ошибка"
 
@@ -149,6 +152,9 @@ async def confirm_order(
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ):
+
+    END_POINT_NUMBER = 2
+
     conf.log.logger.debug("Debug message")
     conf.log.logger.info("Info message")
     conf.log.logger.warning("Warning message")
@@ -164,10 +170,14 @@ async def confirm_order(
             status_code=status.HTTP_408_REQUEST_TIMEOUT,
             detail="Время вышло. Необходимо создать новый обмен"
         )
+    await services.redis_values.change_redis_router_num(
+        user_uuid=user_uuid,
+        router_num=END_POINT_NUMBER
+    )
     redis_dict = await redis_discard(
         user_uuid=user_uuid,
         db=db
-        )
+    )
     # Возвращаем значения для подтверждения
     return redis_dict
 
@@ -177,6 +187,9 @@ async def confirm_button(
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ):
+
+    END_POINT_NUMBER = 3
+
     conf.log.logger.debug("Debug message")
     conf.log.logger.info("Info message")
     conf.log.logger.warning("Warning message")
@@ -201,6 +214,11 @@ async def confirm_button(
         User.email == redis_dict["client_email"]
     )
 
+    await services.redis_values.change_redis_router_num(
+        user_uuid=user_uuid,
+        router_num=END_POINT_NUMBER
+    )
+
     return await check_user_registration(
         redis_dict, user,
         db, user_uuid
@@ -214,6 +232,9 @@ async def confirm_cc(
     user_uuid: str | None = Form(),
     session: AsyncSession = Depends(get_async_session)
 ):
+
+    END_POINT_NUMBER = 4
+
     conf.log.logger.debug("Debug message")
     conf.log.logger.info("Info message")
     conf.log.logger.warning("Warning message")
@@ -286,8 +307,9 @@ async def confirm_cc(
     await services.redis_values.change_keys(
                     user_uuid=user_uuid,
                     order_id=new_order.id,
-                    user_id=user.id
-                )
+                    user_id=user.id,
+                    router_num=END_POINT_NUMBER
+    )
 
     await db.session.commit()
 
@@ -300,6 +322,9 @@ async def conformation_await(
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ) -> RedirectResponse:
+
+    END_POINT_NUMBER = 5
+
     conf.log.logger.debug("Debug message")
     conf.log.logger.info("Info message")
     conf.log.logger.warning("Warning message")
@@ -308,6 +333,11 @@ async def conformation_await(
     """ Запускает паралельно задачу на отслеживание
     смены статуса верификации пользователя """
     db = Database(session=async_session)
+
+    await services.redis_values.change_redis_router_num(
+        user_uuid=user_uuid,
+        router_num=END_POINT_NUMBER
+    )
 
     return await asyncio.create_task(
         services.db_paralell.conformation_await(
@@ -322,6 +352,9 @@ async def requisites(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Form(),
 ):
+
+    END_POINT_NUMBER = 6
+
     conf.log.logger.debug("Debug message")
     conf.log.logger.info("Info message")
     conf.log.logger.warning("Warning message")
@@ -330,6 +363,10 @@ async def requisites(
     """ Отдает данные для перевода средств """
     db = Database(session=async_session)
 
+    await services.redis_values.change_redis_router_num(
+        user_uuid=user_uuid,
+        router_num=END_POINT_NUMBER
+    )
     # Достаем из редиса тикер заказа
     order_id = (
             await services.redis_values.redis_conn.lindex(
@@ -355,6 +392,9 @@ async def payed_button(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Form(),
 ):
+
+    END_POINT_NUMBER = 7
+
     conf.log.logger.debug("Debug message")
     conf.log.logger.info("Info message")
     conf.log.logger.warning("Warning message")
@@ -367,10 +407,17 @@ async def payed_button(
     # Проверяем редис на наличие ключей,
     # если исчезли, то ставим статус ордера на просрок
     does_exist = await services.redis_values.redis_conn.exists(user_uuid)
+
+    await services.redis_values.change_redis_router_num(
+        user_uuid=user_uuid,
+        router_num=END_POINT_NUMBER
+    )
+
     order_id = await services.redis_values.redis_conn.lindex(
         user_uuid,
         1
     )
+
     user_id = await services.redis_values.redis_conn.lindex(
         user_uuid,
         0

@@ -47,6 +47,7 @@ class RedisValues:
     async def set_order_info(
         self,
         user_uuid: str,
+        end_point_number: int,
         client_email: str,
         client_sell_value: float,
         client_sell_tikker: str,
@@ -55,11 +56,10 @@ class RedisValues:
         client_credit_card_number: int,
         client_cc_holder: str,
         client_crypto_wallet: str,
-        # client_sell_currency_po: str,
-        # client_buy_currency_po: str
     ):
         await self.redis_conn.lpush(
             f"{user_uuid}",
+            f"{end_point_number}",
             f"{client_email}",
             f"{client_sell_value}",
             f"{client_sell_tikker}",
@@ -67,9 +67,7 @@ class RedisValues:
             f"{client_buy_tikker}",
             f"{client_credit_card_number}",
             f"{client_cc_holder}",
-            f"{client_crypto_wallet}",
-            # f"{client_sell_currency_po}",
-            # f"{client_buy_currency_po}"
+            f"{client_crypto_wallet}"
         )
         # await self.redis_conn.expire(name=f'{user_uuid}', time=900)
         self.redis_conn.close
@@ -77,11 +75,13 @@ class RedisValues:
     async def change_keys(self,
                           user_uuid,
                           order_id,
-                          user_id
+                          user_id,
+                          router_num
                           ):
         await self.redis_conn.delete(user_uuid)
         await self.redis_conn.lpush(
             user_uuid,
+            router_num,
             order_id,
             user_id
             )
@@ -89,6 +89,18 @@ class RedisValues:
         #     name=f'{user_id}',
         #     time=1200
         # )
+        self.redis_conn.close
+
+    async def change_redis_router_num(
+            self,
+            user_uuid,
+            router_num
+    ):
+        await self.redis_conn.lset(
+            name=user_uuid,
+            index=-1,
+            value=router_num
+        )
         self.redis_conn.close
 
 
