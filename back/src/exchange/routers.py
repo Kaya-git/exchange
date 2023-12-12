@@ -265,7 +265,8 @@ async def confirm_cc(
 
         user = await db.user.new(
             email=redis_voc["client_email"],
-            hashed_password=hashed_password
+            hashed_password=hashed_password,
+            is_verified=True
         )
         db.session.add(user)
         await db.session.flush()

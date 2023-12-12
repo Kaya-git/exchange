@@ -30,7 +30,8 @@ class UserRepo(Repository[User]):
         hashed_password: str = None,
         first_name: str = None,
         second_name: str = None,
-        buy_volume: Decimal = 0
+        buy_volume: Decimal = 0,
+        is_verified: bool = False
     ) -> None:
 
         new_user = await self.session.merge(
@@ -39,7 +40,8 @@ class UserRepo(Repository[User]):
                 hashed_password=hashed_password,
                 first_name=first_name,
                 second_name=second_name,
-                buy_volume=buy_volume
+                buy_volume=buy_volume,
+                is_verified=is_verified
             )
         )
         return new_user
