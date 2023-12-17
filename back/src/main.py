@@ -26,13 +26,16 @@ from contacts.routers import contact_router
 from faq.routers import faq_router
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from users.routers import user_lk_router
 from config import conf
 
 
 app = FastAPI(
+    ssl_keyfile="/etc/letsencrypt/live/dev.vvscoin.com/privkey.pem",
+    ssl_certfile="/etc/letsencrypt/live/dev.vvscoin.com/cert.pem",
     title="Exchange",
-    debug=True
+    debug=True,
 )
 
 
@@ -47,7 +50,7 @@ origins = [
     "http://89.105.198.9:8080",
     "http://89.105.198.9:8000",
     "https://89.105.198.9",
-    "https://89.105.198.9:8080"
+    "https://89.105.198.9:8080",
     "https://89.105.198.9:8000",
 ]
 
@@ -55,11 +58,18 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
-    allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
-                   "Authorization"],
+    allow_methods=[
+        "GET", "POST",
+        "OPTIONS", "DELETE",
+        "PATCH", "PUT"
+    ],
+    allow_headers=[
+        "Content-Type", "Set-Cookie",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Origin",
+        "Authorization"],
 )
-
+app.add_middleware(HTTPSRedirectMiddleware)
 
 admin = Admin(
     app=app,
@@ -78,7 +88,7 @@ admin.add_view(ContactAdmin)
 admin.add_view(FAQAdmin)
 
 
-@app.get("/api")
+@app.get("/api/uuid")
 async def root(
     response: Response,
     async_session: AsyncSession = Depends(get_async_session),
