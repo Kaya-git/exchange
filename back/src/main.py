@@ -26,14 +26,12 @@ from contacts.routers import contact_router
 from faq.routers import faq_router
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+# from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from users.routers import user_lk_router
 from config import conf
 
 
 app = FastAPI(
-    ssl_keyfile="/etc/letsencrypt/live/dev.vvscoin.com/privkey.pem",
-    ssl_certfile="/etc/letsencrypt/live/dev.vvscoin.com/cert.pem",
     title="Exchange",
     debug=True,
 )
@@ -69,7 +67,7 @@ app.add_middleware(
         "Access-Control-Allow-Origin",
         "Authorization"],
 )
-app.add_middleware(HTTPSRedirectMiddleware)
+# app.add_middleware(HTTPSRedirectMiddleware)
 
 admin = Admin(
     app=app,
