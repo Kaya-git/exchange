@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from enums import CurrencyType
 
 
-class CurrencyBase(BaseModel):
+class CurrencyAddDTO(BaseModel):
     coingecko_tik: str
     tikker: str
     type: CurrencyType
@@ -19,18 +19,14 @@ class CurrencyBase(BaseModel):
     icon: Optional[str]
 
 
-class CurrencyCreate(CurrencyBase):
-    ...
-
-
-class CurrencyRead(CurrencyBase):
+class CurrencyDTO(CurrencyAddDTO):
     id: int
 
     class Config:
         from_attributes = True
 
 
-class CurrencyTariffsRead(BaseModel):
+class CurrencyTariffsDTO(BaseModel):
     id: int
     name: str
     tikker: str

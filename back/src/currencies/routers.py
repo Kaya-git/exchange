@@ -7,7 +7,7 @@ from price_parser.parser import CoinGekkoParser, parse_the_price
 from database.db import Database, get_async_session
 from enums import CurrencyType
 
-from .schemas import CurrencyRead, CurrencyTariffsRead
+from .schemas import CurrencyDTO, CurrencyTariffsDTO
 from fastapi_cache.decorator import cache
 from dataclasses import dataclass
 
@@ -23,28 +23,26 @@ class CoingekkoParamsDTO:
     vs_currencies: str
 
 
-@currency_router.get("/list", response_model=List[CurrencyRead])
+@currency_router.get("/list", response_model=List[CurrencyDTO])
 @cache(expire=300)
 async def currency_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):
     db = Database(async_session)
-    currency_list = await db.currency.get_all()
-    return currency_list
+    return await db.currency.get_all()
 
 
-@currency_router.get("/currency/{id}", response_model=CurrencyRead)
+@currency_router.get("/currency/{id}", response_model=CurrencyDTO)
 @cache(expire=300)
 async def currency_id(
     id: Annotated[int, Path(title="The ID of the item to get")],
     async_session: AsyncSession = Depends(get_async_session)
 ):
     db = Database(async_session)
-    currency = await db.currency.get(ident=id)
-    return currency
+    return await db.currency.get(ident=id)
 
 
-@currency_router.get("/tariffs", response_model=List[CurrencyTariffsRead])
+@currency_router.get("/tariffs", response_model=List[CurrencyTariffsDTO])
 @cache(expire=300)
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)

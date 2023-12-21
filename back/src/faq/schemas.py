@@ -1,16 +1,12 @@
 from pydantic import BaseModel
 
 
-class FAQBase(BaseModel):
+class FAQAddDTO(BaseModel):
     question: str
     answer: str
 
 
-class FAQCreate(FAQBase):
-    ...
-
-
-class FAQRead(FAQBase):
+class FAQDTO(FAQAddDTO):
     id: int
 
     class Config:

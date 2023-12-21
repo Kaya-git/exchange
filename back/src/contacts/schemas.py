@@ -1,16 +1,12 @@
 from pydantic import BaseModel
 
 
-class ContactBase(BaseModel):
+class ContactAddDTO(BaseModel):
     name: str
     link: str
 
 
-class ContactCreate(ContactBase):
-    ...
-
-
-class ContactRead(ContactBase):
+class ContactDTO(ContactAddDTO):
     id: int
 
     class Config:
