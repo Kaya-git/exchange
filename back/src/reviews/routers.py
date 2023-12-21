@@ -7,7 +7,7 @@ from auth.routers import current_active_verified_user
 from database.db import Database, get_async_session
 from enums import Mark
 from enums.models import ReqAction
-
+from fastapi_cache.decorator import cache
 from .models import Review
 
 if TYPE_CHECKING:
@@ -21,6 +21,7 @@ reviews_router = APIRouter(
 
 
 @reviews_router.get("/list")
+@cache(expire=300)
 async def reviews_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):
@@ -32,6 +33,7 @@ async def reviews_list(
 
 
 @reviews_router.get("/{review_id}")
+@cache(expire=300)
 async def review_id(
     review_id: Annotated[int, Path(title="The ID of the item to get")],
     async_session: AsyncSession = Depends(get_async_session),

@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
 from .schemas import UuidDTO
-from config import conf
 from sevices import services
 
 
@@ -14,12 +13,6 @@ where_am_i_router = APIRouter(
 async def where_am_i(
     user_uuid: UuidDTO
 ):
-    conf.log.logger.debug("Debug message")
-    conf.log.logger.info("Info message")
-    conf.log.logger.warning("Warning message")
-    conf.log.logger.error("Error message")
-    conf.log.logger.critical("Critical message")
-
     does_exist = await services.redis_values.redis_conn.exists(
         user_uuid.user_uuid
     )

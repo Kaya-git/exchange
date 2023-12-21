@@ -8,6 +8,8 @@ from database.db import Database, get_async_session
 from enums import CurrencyType
 
 from .schemas import CurrencyRead, CurrencyTariffsRead
+from fastapi_cache.decorator import cache
+
 
 currency_router = APIRouter(
     prefix="/api/currency",
@@ -16,6 +18,7 @@ currency_router = APIRouter(
 
 
 @currency_router.get("/list", response_model=List[CurrencyRead])
+@cache(expire=300)
 async def currency_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):
@@ -25,6 +28,7 @@ async def currency_list(
 
 
 @currency_router.get("/currency/{id}", response_model=CurrencyRead)
+@cache(expire=300)
 async def currency_id(
     id: Annotated[int, Path(title="The ID of the item to get")],
     async_session: AsyncSession = Depends(get_async_session)
@@ -35,6 +39,7 @@ async def currency_id(
 
 
 @currency_router.get("/tariffs", response_model=List[CurrencyTariffsRead])
+@cache(expire=300)
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)
 ):

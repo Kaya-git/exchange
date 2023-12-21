@@ -26,9 +26,13 @@ from contacts.routers import contact_router
 from faq.routers import faq_router
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
-# from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from users.routers import user_lk_router
 from config import conf
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+
+from redis import asyncio as aioredis
 
 
 app = FastAPI(
@@ -87,16 +91,11 @@ admin.add_view(FAQAdmin)
 
 
 @app.get("/api/uuid")
+@cache(expire=120)
 async def root(
     response: Response,
     async_session: AsyncSession = Depends(get_async_session),
 ):
-    conf.log.logger.debug("Debug message")
-    conf.log.logger.info("Info message")
-    conf.log.logger.warning("Warning message")
-    conf.log.logger.error("Error message")
-    conf.log.logger.critical("Critical message")
-
     """Устанавливаем печеньки на пользователя"""
     cookies_uuid = uuid.uuid4()
     response.set_cookie(key="user_uuid", value=cookies_uuid)
@@ -131,6 +130,16 @@ app.include_router(
     prefix="/api/auth",
     tags=["auth"],
 )
+
+
+@app.on_event("startup")
+async def startup():
+    redis = aioredis.from_url(
+        f"redis://{conf.redis.host}:{conf.redis.port}",
+        encoding="utf8", decode_responses=True
+    )
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+
 
 if __name__ == "__main__":
     import uvicorn

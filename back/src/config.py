@@ -5,7 +5,6 @@ import yadisk_async
 from dotenv import load_dotenv
 from fastapi_storages import FileSystemStorage
 from sqlalchemy.engine import URL
-import logging
 load_dotenv()
 
 
@@ -62,20 +61,6 @@ class ImageStorageConfiguration:
 
 
 @dataclass
-class LoggerExchange:
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
-    handler = logging.StreamHandler()
-    file_handler = logging.FileHandler("exchange.log")
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
-    handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    logger.addHandler(handler)
-
-
-@dataclass
 class Auth:
     "JWT secret"
     jwt_token = os.environ.get("SECRET_JWT")
@@ -98,7 +83,6 @@ class Configuration:
     redis = RedisConfig()
     db = DataBaseConfig()
     auth = Auth()
-    log = LoggerExchange()
 
 
 conf = Configuration()

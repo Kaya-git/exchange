@@ -3,7 +3,6 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from currencies.models import Currency
-# from enums import BankingType
 from database.abstract_repo import Repository
 from orders.models import Order
 from service_payment_options.models import ServicePaymentOption
@@ -25,7 +24,6 @@ class ServicePaymentOptionRepo(Repository[ServicePaymentOption]):
 
     async def new(
         self,
-        # banking_type: BankingType,
         currency_id: Currency,
         number: str,
         holder: str,
@@ -33,7 +31,6 @@ class ServicePaymentOptionRepo(Repository[ServicePaymentOption]):
 
         new_service_po = await self.session.merge(
             ServicePaymentOption(
-                # banking_type=banking_type,
                 currency_id=currency_id,
                 number=number,
                 holder=holder,

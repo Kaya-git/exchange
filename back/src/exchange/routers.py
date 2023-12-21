@@ -15,7 +15,6 @@ from enums.models import ReqAction, Status
 from sevices import services
 from users.models import User
 from config import conf
-
 # from sevices import Count
 from .handlers import (add_or_get_po, calculate_totals,  # send_email,
                        check_form_fillment, check_user_registration,
@@ -39,11 +38,6 @@ async def get_exchange_rates(
     ],
     session: AsyncSession = Depends(get_async_session)
 ):
-    conf.log.logger.debug("Debug message")
-    conf.log.logger.info("Info message")
-    conf.log.logger.warning("Warning message")
-    conf.log.logger.error("Error message")
-    conf.log.logger.critical("Critical message")
     """ Отдает словарь со стоимостью запрашиваемой пары, тикерами,
     иконками, максимальными и минимальными значениями """
     db = Database(session=session)
@@ -85,11 +79,6 @@ async def fill_order_form(
 
     END_POINT_NUMBER = 1
 
-    conf.log.logger.debug("Debug message")
-    conf.log.logger.info("Info message")
-    conf.log.logger.warning("Warning message")
-    conf.log.logger.error("Error message")
-    conf.log.logger.critical("Critical message")
     """ Форма для заполнения заказа на обмен """
     db = Database(session=session)
     form_voc = {
@@ -155,11 +144,6 @@ async def confirm_order(
 
     END_POINT_NUMBER = 2
 
-    conf.log.logger.debug("Debug message")
-    conf.log.logger.info("Info message")
-    conf.log.logger.warning("Warning message")
-    conf.log.logger.error("Error message")
-    conf.log.logger.critical("Critical message")
     """ Отправляет пользователю заполненые данные для подтверждения заказа """
     db = Database(session=async_session)
 
@@ -190,11 +174,6 @@ async def confirm_button(
 
     END_POINT_NUMBER = 3
 
-    conf.log.logger.debug("Debug message")
-    conf.log.logger.info("Info message")
-    conf.log.logger.warning("Warning message")
-    conf.log.logger.error("Error message")
-    conf.log.logger.critical("Critical message")
     db = Database(session=async_session)
 
     # Проверяем есть ли ключи в реддисе и забираем значения
@@ -235,11 +214,6 @@ async def confirm_cc(
 
     END_POINT_NUMBER = 4
 
-    conf.log.logger.debug("Debug message")
-    conf.log.logger.info("Info message")
-    conf.log.logger.warning("Warning message")
-    conf.log.logger.error("Error message")
-    conf.log.logger.critical("Critical message")
     """ Форма для отправки фотографии подтверждения """
     db = Database(session=session)
 
@@ -326,11 +300,6 @@ async def conformation_await(
 
     END_POINT_NUMBER = 5
 
-    conf.log.logger.debug("Debug message")
-    conf.log.logger.info("Info message")
-    conf.log.logger.warning("Warning message")
-    conf.log.logger.error("Error message")
-    conf.log.logger.critical("Critical message")
     """ Запускает паралельно задачу на отслеживание
     смены статуса верификации пользователя """
     db = Database(session=async_session)
