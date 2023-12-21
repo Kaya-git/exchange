@@ -19,7 +19,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         user: User,
         request: Optional[Request] = None
     ):
-        return f"User {user.id} has registered."
+        ...
 
     async def on_after_forgot_password(
         self,
@@ -27,10 +27,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         token: str,
         request: Optional[Request] = None
     ):
-        return {
-            "user": user.id,
-            "token": token
-            }
+        ...
 
     async def on_after_request_verify(
         self,
@@ -38,14 +35,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         token: str,
         request: Optional[Request] = None
     ):
-        return {
-            "user": user.id,
-            "token": token
-            }
-        # print(
-        #     f"Verification requested for user {user.id}."
-        #     f"Verification token: {token}"
-        # )
+        ...
 
     async def create(
         self,
