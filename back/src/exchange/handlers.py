@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from fastapi import HTTPException, status
 from passlib.context import CryptContext
 
-from binance_parser import find_price
+from price_parser.parser import CoinGekkoParser, parse_the_price
 from config import conf
 from currencies.models import Currency
 from database.db import Database
@@ -17,6 +17,7 @@ from sevices import Count, services
 from users.models import User
 import aiofiles
 import aiofiles.os
+from currencies.routers import CoingekkoParamsDTO
 
 
 async def get_password_hash(password: str) -> str:
@@ -404,17 +405,23 @@ async def find_exchange_rate(
 ):
 
     if client_sell_coin.coingecko_tik == "rub":
-        ids = client_buy_coin.coingecko_tik
-        vs_currencies = client_sell_coin.coingecko_tik
+
+        coingekko_params = CoingekkoParamsDTO(
+            ids=client_buy_coin.coingecko_tik,
+            vs_currencies=client_sell_coin.coingecko_tik
+        )
 
     if client_buy_coin.coingecko_tik == "rub":
-        ids = client_sell_coin.coingecko_tik
-        vs_currencies = client_buy_coin.coingecko_tik
 
-    coin_price = await find_price(
-        ids,
-        vs_currencies
-    )
+        coingekko_params = CoingekkoParamsDTO(
+            ids=client_sell_coin.coingecko_tik,
+            vs_currencies=client_buy_coin.coingecko_tik
+        )
+
+    coin_price = await parse_the_price(
+        parse_params=coingekko_params,
+        parser=CoinGekkoParser()
+        )
 
     exchange_rate = await Count.count_send_value(
         get_value=1,

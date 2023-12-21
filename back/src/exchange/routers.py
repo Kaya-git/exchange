@@ -205,7 +205,7 @@ async def confirm_button(
 
 # Отправляем фото паспорта на верификацию админу
 @exchange_router.post("/cc_conformation_form")
-async def confirm_cc(
+async def _confirm_cc(
     cc_image: UploadFile,
     user_uuid: str | None = Form(),
     session: AsyncSession = Depends(get_async_session)
