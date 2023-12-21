@@ -14,7 +14,6 @@ from database.db import Database, get_async_session
 from enums.models import ReqAction, Status
 from sevices import services
 from users.models import User
-from config import conf
 # from sevices import Count
 from .handlers import (add_or_get_po, calculate_totals,  # send_email,
                        check_form_fillment, check_user_registration,
@@ -325,11 +324,6 @@ async def requisites(
 
     END_POINT_NUMBER = 6
 
-    conf.log.logger.debug("Debug message")
-    conf.log.logger.info("Info message")
-    conf.log.logger.warning("Warning message")
-    conf.log.logger.error("Error message")
-    conf.log.logger.critical("Critical message")
     """ Отдает данные для перевода средств """
     db = Database(session=async_session)
 
@@ -365,11 +359,6 @@ async def payed_button(
 
     END_POINT_NUMBER = 7
 
-    conf.log.logger.debug("Debug message")
-    conf.log.logger.info("Info message")
-    conf.log.logger.warning("Warning message")
-    conf.log.logger.error("Error message")
-    conf.log.logger.critical("Critical message")
     """ Кнопка подтверждения оплаты пользователя
     запускает паралельно задачу на отслеживание изменения стасу ордера' """
     db = Database(session=async_session)

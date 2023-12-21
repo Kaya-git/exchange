@@ -116,7 +116,7 @@ async def ya_save_passport_photo(
     cc_image_name = cc_image.filename
     extension = cc_image_name.split(".")[1]
 
-    if extension not in ["png", "jpg", "JPG"]:
+    if extension not in ["png", "jpg", "JPG", "PNG"]:
         return {
             "status": "error",
             "detail": "File extension is not allowed"
