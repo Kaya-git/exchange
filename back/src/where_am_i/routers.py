@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 from .schemas import UuidDTO
 from sevices import services
 
@@ -8,24 +8,12 @@ where_am_i_router = APIRouter(
     tags=["Роутер определения последней страницы пользователя"]
 )
 
+RouterNumber = int
+
 
 @where_am_i_router.post("/")
 async def where_am_i(
     user_uuid: UuidDTO
-):
-    does_exist = await services.redis_values.redis_conn.exists(
-        user_uuid.user_uuid
-    )
-    if does_exist != 1:
-        raise HTTPException(
-            status_code=status.HTTP_408_REQUEST_TIMEOUT,
-            detail="Пользователя нет в редисе"
-        )
-    router_number = (
-            await services.redis_values.redis_conn.lindex(
-                user_uuid.user_uuid,
-                -1
-            )
-        )
-
-    return router_number
+) -> RouterNumber:
+    if await services.redis_values.check_existance(user_uuid):
+        return await services.redis_values.get_router_num(user_uuid)

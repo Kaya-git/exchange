@@ -5,18 +5,14 @@ from pydantic import BaseModel
 from enums import Mark
 
 
-class ReviewBase(BaseModel):
+class ReviewAddDTO(BaseModel):
     text: str
     data: datetime
     rating: Mark
     user_id: int
 
 
-class ReviewCreation(ReviewBase):
-    ...
-
-
-class ReviewRead(ReviewBase):
+class ReviewDTO(ReviewAddDTO):
     id: int
 
     class Config:

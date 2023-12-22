@@ -11,8 +11,10 @@ from enums import CurrencyType, Status
 from payment_options.models import PaymentOption
 from pendings.models import PendingAdmin
 from users.models import User
+from typing import TYPE_CHECKING
 
-# from fastapi.responses import RedirectResponse
+if TYPE_CHECKING:
+    from where_am_i.schemas import UuidDTO
 
 
 # Класс для пересчета операций с учетом маржи и комиссий
@@ -39,10 +41,33 @@ class Count:
         return send_value
 
 
-# Класс для работы с редис
 class RedisValues:
-
+    """Redis class"""
     redis_conn = redis.Redis(host=conf.redis.host, port=conf.redis.port)
+
+    async def get_router_num(
+            self,
+            user_uuid: "UuidDTO"
+    ):
+        return await self.redis_conn.lindex(
+            user_uuid.user_uuid,
+            -1
+        )
+
+    async def check_existance(
+            self,
+            user_uuid: "UuidDTO"
+    ):
+        does_exist = await self.redis_conn.exists(
+            user_uuid.user_uuid
+        )
+        if does_exist != 1:
+            raise HTTPException(
+                status_code=status.HTTP_408_REQUEST_TIMEOUT,
+                detail="Пользователя нет в редисе"
+            )
+        else:
+            return True
 
     async def set_order_info(
         self,

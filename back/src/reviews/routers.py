@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Annotated, Optional
+from typing import TYPE_CHECKING, Annotated, Optional, List
 
 from fastapi import APIRouter, Depends, Form, Path
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,7 +9,7 @@ from enums import Mark
 from enums.models import ReqAction
 from fastapi_cache.decorator import cache
 from .models import Review
-
+from .schemas import ReviewDTO
 if TYPE_CHECKING:
     from users.models import User
 
@@ -20,7 +20,7 @@ reviews_router = APIRouter(
 )
 
 
-@reviews_router.get("/list")
+@reviews_router.get("/list", response_model=List[ReviewDTO])
 @cache(expire=300)
 async def reviews_list(
     async_session: AsyncSession = Depends(get_async_session)
@@ -32,7 +32,7 @@ async def reviews_list(
     return reviews
 
 
-@reviews_router.get("/{review_id}")
+@reviews_router.get("/{review_id}", response_model=ReviewDTO)
 @cache(expire=300)
 async def review_id(
     review_id: Annotated[int, Path(title="The ID of the item to get")],

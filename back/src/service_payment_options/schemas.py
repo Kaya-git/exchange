@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from currencies.schemas import CurrencyRead
 
 
-class SPOBase(BaseModel):
+class SPOAddDTO(BaseModel):
     banking_type: BankingType
     number: str
     holder: str
@@ -16,12 +16,8 @@ class SPOBase(BaseModel):
     currency: 'CurrencyRead'
 
 
-class SPORead(SPOBase):
+class SPODTO(SPOAddDTO):
     id: int
 
     class Config:
         from_attributes = True
-
-
-class SPOCreate(SPOBase):
-    ...
