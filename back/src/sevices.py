@@ -1,10 +1,11 @@
 import asyncio
 from decimal import Decimal
-
+import aiosmtplib
 import redis.asyncio as redis
 from fastapi import HTTPException, status
 from sqlalchemy import update
-
+from email.header import Header
+from email.mime.text import MIMEText
 from config import conf
 from database.db import Database
 from enums import CurrencyType, Status
@@ -15,6 +16,9 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from where_am_i.schemas import UuidDTO
+
+Email = str
+Pass = str
 
 
 # Класс для пересчета операций с учетом маржи и комиссий
@@ -45,10 +49,30 @@ class RedisValues:
     """Redis class"""
     redis_conn = redis.Redis(host=conf.redis.host, port=conf.redis.port)
 
+    async def get_user_id(
+            self,
+            user_uuid: "UuidDTO"
+    ) -> int:
+        user_id = await self.redis_conn.lindex(
+            user_uuid,
+            0
+        )
+        return int(user_id)
+
+    async def get_order_id(
+            self,
+            user_uuid: "UuidDTO"
+    ) -> int:
+        order_id = await self.redis_conn.lindex(
+            user_uuid,
+            1
+        )
+        return int(order_id)
+
     async def get_router_num(
             self,
             user_uuid: "UuidDTO"
-    ):
+    ) -> int:
         return await self.redis_conn.lindex(
             user_uuid.user_uuid,
             -1
@@ -129,7 +153,7 @@ class RedisValues:
         self.redis_conn.close
 
 
-class DB():
+class DB:
 
     def __init__(self, iterations):
         self.iterations = iterations
@@ -197,7 +221,6 @@ class DB():
             detail="""Не удалось верифицировать карту,
                     истекло время"""
         )
-        # return RedirectResponse("/cancel")
 
     async def payed_button_db(
         self,
@@ -232,7 +255,6 @@ class DB():
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 return " Успешно завершили обмен"
-                # return RedirectResponse(f"exchange/succes/{order_id}")
             if order.status is Status.Canceled:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
@@ -240,13 +262,55 @@ class DB():
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 return "Не пришли средства, обмен отклонен"
-                # return RedirectResponse(f"exchange/declined/{order_id}")
             await asyncio.sleep(5)
+
+
+class Mail:
+
+    def __init__(
+            self,
+            email: Email,
+            password: Pass
+    ) -> None:
+        self.email = email
+        self.password = password
+
+    async def send_email(
+            self,
+            recepient_email: Email,
+            generated_pass: Pass
+    ) -> None:
+
+        msg = MIMEText(
+            f"Ваш пароль от лк VVS-Coin: {generated_pass}",
+            'plain', 'utf-8'
+        )
+        msg['Subject'] = Header('Пароль от лк VVS-Coin', 'utf-8')
+        msg['From'] = self.email
+        msg['To'] = recepient_email
+
+        s = aiosmtplib.SMTP('smtp.yandex.ru', 587, timeout=10)
+
+        try:
+            await s.starttls()
+            await s.login(self.email, self.password)
+            await s.sendmail(msg['From'], recepient_email, msg.as_string())
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Проблемы с отправлением сообщения на почту"
+            )
+        finally:
+            await s.quit()
 
 
 class Services:
     redis_values = RedisValues()
     db_paralell = DB(iterations=100)
+    mail = Mail(
+        email=conf.yandex_email,
+        password=conf.yandex_email_pass
+    )
 
 
 services = Services()

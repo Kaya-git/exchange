@@ -1,8 +1,6 @@
 import secrets
-import smtplib
+
 from decimal import Decimal
-from email.header import Header
-from email.mime.text import MIMEText
 
 from fastapi import HTTPException, status
 from passlib.context import CryptContext
@@ -27,34 +25,6 @@ async def get_password_hash(password: str) -> str:
 
 async def generate_pass():
     return secrets.token_hex(10)
-
-
-async def send_email(
-    recepient_email,
-    generated_pass
-):
-    email = conf.yandex_email
-    password = conf.yandex_email_pass
-
-    msg = MIMEText(
-        f"Ваш пароль от лк VVS-Coin: {generated_pass}",
-        'plain', 'utf-8'
-    )
-    msg['Subject'] = Header('Пароль от лк VVS-Coin', 'utf-8')
-    msg['From'] = email
-    msg['To'] = recepient_email
-
-    s = smtplib.SMTP('smtp.yandex.ru', 587, timeout=10)
-
-    try:
-        s.starttls()
-        s.login(email, password)
-        s.sendmail(msg['From'], recepient_email, msg.as_string())
-    except Exception as ex:
-        print(ex)
-    finally:
-        s.quit()
-    return generated_pass
 
 
 async def check_form_fillment(

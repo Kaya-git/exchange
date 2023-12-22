@@ -1,15 +1,15 @@
-from typing import TYPE_CHECKING, Annotated, Optional, List
+from typing import TYPE_CHECKING, Annotated, List
 
-from fastapi import APIRouter, Depends, Form, Path
+from fastapi import APIRouter, Depends, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.routers import current_active_verified_user
 from database.db import Database, get_async_session
-from enums import Mark
+
 from enums.models import ReqAction
 from fastapi_cache.decorator import cache
 from .models import Review
-from .schemas import ReviewDTO
+from .schemas import ReviewDTO, ReviewCreateDTO
 if TYPE_CHECKING:
     from users.models import User
 
@@ -45,8 +45,7 @@ async def review_id(
 
 @reviews_router.post("/review_form")
 async def review_form(
-    text: Optional[str] = Form(max_length=250),
-    rating: Mark = Form(),
+    review_create: ReviewCreateDTO,
     async_session: AsyncSession = Depends(get_async_session),
     user: "User" = Depends(current_active_verified_user)
 ) -> str:
@@ -54,8 +53,8 @@ async def review_form(
 
     review = await db.review.new(
         user_id=user.id,
-        text=text,
-        rating=rating,
+        text=review_create.text,
+        rating=review_create.rating,
         moderated=False
     )
     db.session.add(review)

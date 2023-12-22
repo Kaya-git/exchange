@@ -15,7 +15,7 @@ from enums.models import ReqAction, Status
 from sevices import services
 from users.models import User
 # from sevices import Count
-from .handlers import (add_or_get_po, calculate_totals,  # send_email,
+from .handlers import (add_or_get_po, calculate_totals,
                        check_form_fillment, check_user_registration,
                        find_exchange_rate, generate_pass, get_password_hash,
                        redis_discard, ya_save_passport_photo)
@@ -205,7 +205,7 @@ async def confirm_button(
 
 # Отправляем фото паспорта на верификацию админу
 @exchange_router.post("/cc_conformation_form")
-async def _confirm_cc(
+async def confirm_cc(
     cc_image: UploadFile,
     user_uuid: str | None = Form(),
     session: AsyncSession = Depends(get_async_session)
@@ -216,10 +216,7 @@ async def _confirm_cc(
     """ Форма для отправки фотографии подтверждения """
     db = Database(session=session)
 
-    # Проверяем есть ли ключи в реддисе
-    does_exist = await services.redis_values.redis_conn.exists(user_uuid)
-    if does_exist != 1:
-        return "Время вышло"
+    await services.redis_values.check_existance(user_uuid)
 
     new_file_name = await ya_save_passport_photo(cc_image)
 
@@ -243,7 +240,8 @@ async def _confirm_cc(
         )
         db.session.add(user)
         await db.session.flush()
-        # await send_email(
+
+        # await services.mail.send_email(
         #     recepient_email=redis_voc["client_email"],
         #     generated_pass=new_password
         # )
@@ -288,7 +286,6 @@ async def _confirm_cc(
     await db.session.commit()
 
     return "Pending order created"
-    # return RedirectResponse("/exchange/await")
 
 
 @exchange_router.post("/await")
@@ -332,13 +329,9 @@ async def requisites(
         router_num=END_POINT_NUMBER
     )
     # Достаем из редиса тикер заказа
-    order_id = (
-            await services.redis_values.redis_conn.lindex(
-                user_uuid,
-                1
-            )
-        )
-    order_id = int(order_id)
+    order_id = await services.redis_values.get_order_id(
+        user_uuid
+    )
 
     service_payment_option = await db.service_payment_option.spo_equal_sp(
         order_id
@@ -363,8 +356,6 @@ async def payed_button(
     запускает паралельно задачу на отслеживание изменения стасу ордера' """
     db = Database(session=async_session)
 
-    # Проверяем редис на наличие ключей,
-    # если исчезли, то ставим статус ордера на просрок
     does_exist = await services.redis_values.redis_conn.exists(user_uuid)
 
     await services.redis_values.change_redis_router_num(
@@ -372,17 +363,13 @@ async def payed_button(
         router_num=END_POINT_NUMBER
     )
 
-    order_id = await services.redis_values.redis_conn.lindex(
-        user_uuid,
-        1
+    order_id = services.redis_values.get_order_id(
+        user_uuid
     )
 
-    user_id = await services.redis_values.redis_conn.lindex(
-        user_uuid,
-        0
+    user_id = services.redis_values.get_user_id(
+        user_uuid
     )
-    user_id = int(user_id)
-    order_id = int(order_id)
 
     await db.pending_admin.new(
         order_id=order_id,

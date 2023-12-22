@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from pydantic import BaseModel
 
 from enums import Mark
@@ -17,3 +16,8 @@ class ReviewDTO(ReviewAddDTO):
 
     class Config:
         from_attributes = True
+
+
+class ReviewCreateDTO(BaseModel):
+    text: str | None
+    rating: Mark

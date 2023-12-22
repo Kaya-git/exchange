@@ -9,8 +9,8 @@ from enums import Status, VerifDeclineReason
 
 class OrderBase(BaseModel):
     buy_payment_option_id: int
-    decline_reason: Optional[VerifDeclineReason]
-    service_buy_po_id: Optional[int]
+    decline_reason: VerifDeclineReason | None
+    service_buy_po_id: int | None
     sell_payment_option_id: int
     user_id: int
     sell_currency_id: int
