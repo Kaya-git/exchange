@@ -1,10 +1,9 @@
-x1
 <template>
     <div class="request">
         <v-sheet rounded class="request__sheet pa-3 rounded-t-0">
             <v-container class="request__container">
                 <v-row class="request__row">
-                    <h2 class="request__title title title_h2 title_black">Оплатить заявку # 244544</h2>
+                    <h2 class="request__title title title_h2 title_black">Оплатить заявку</h2>
                 </v-row>
                 <v-row class="request__row mb-2">
                     <v-sheet class="request__table-sheet" rounded>
@@ -62,7 +61,7 @@ x1
                     <p class="request__text">Курс зафиксирован на 15 минут. Заявка отменится через:</p>
                 </v-row>
                 <v-row class="request__row mb-8">
-                    <timer-view :custom-class="'request__timer'" :init="900" :route="ExchangeView"></timer-view>
+                    <timer-view :custom-class="'request__timer'" :init="900" @timeout="$emit('error', 'Время заявки вышло')"></timer-view>
                 </v-row>
                 <v-row class="request__row mb-2">
                     <v-expansion-panels>
@@ -81,7 +80,7 @@ x1
                 </v-row>
                 <v-row class="request__row mb-2">
                     <v-col class="d-flex justify-end">
-                        <v-btn id="request-submit" size="large" color="success" @click="confirmOverlay = true">
+                        <v-btn id="request-submit" size="large" color="success" @click="this.confirmOverlay = true">
                             Оплачено
                         </v-btn>
                     </v-col>
@@ -96,6 +95,7 @@ x1
     </div>
     <confirm-trade
         :model-value="confirmOverlay"
+        :requisite="requisite"
         @confirmed="payed"
         @canceled="confirmOverlay = !confirmOverlay"
     ></confirm-trade>
@@ -116,6 +116,8 @@ export default defineComponent({
     }),
     created() {
         this.exchangeData = this.getExchangeData;
+        let requisites = this.getRequisites();
+        this.requisite = requisites.requisites_num + " " + requisites.holder;
     },
     components: {
         TimerView: defineAsyncComponent({
@@ -128,7 +130,7 @@ export default defineComponent({
     methods: {
         async payed() {
             let details = {
-                'user_uuid': this.getExchangeData.uuid,
+                'user_uuid': this.getUuid,
             }
             let formBody = prepareData(details);
 
@@ -141,12 +143,16 @@ export default defineComponent({
                 body: formBody
             });
             if (response.ok) {
-                console.log(response);
+                this.confirmOverlay = false;
+                this.$emit('complete');
+                this.$emit('nextStep');
+            } else {
+                await this.payed();
             }
         },
         async getRequisites() {
             let details = {
-                'user_uuid': this.getExchangeData.uuid,
+                'user_uuid': this.getUuid,
             }
             let formBody = prepareData(details);
 
@@ -159,15 +165,15 @@ export default defineComponent({
                 body: formBody
             });
             if (response.ok) {
-                let result = await response.json();
-                console.log(result);
-                this.requisite = result;
+                return await response.json();
             }
+            return false;
         },
     },
     computed: {
         ...mapGetters([
             'getExchangeData',
+            'getUuid',
         ]),
     }
 });

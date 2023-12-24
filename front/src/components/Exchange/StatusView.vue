@@ -3,7 +3,7 @@
     <v-sheet rounded class="status__sheet pa-3 rounded-t-0">
       <v-container fluid class="status__container">
         <v-row class="status__row">
-          <h2 class="status__title title title_h2 title_black mb-4 text-center">Подтвердите создание заявки</h2>
+          <h2 class="status__title title title_h2 title_black mb-4 text-center">Заявка подтверждена</h2>
         </v-row>
         <v-row class="status__row">
           <p class="status__text text-center">Внимательно проверьте правильность заполненных данных!</p>
@@ -48,8 +48,12 @@
             </v-table>
           </v-sheet>
         </v-row>
-        <v-row>
-
+        <v-row class="status__row">
+            <RouterLink to="/">
+                <v-btn color="success" class="status__btn" size="large">
+                    На главную
+                </v-btn>
+            </RouterLink>
         </v-row>
       </v-container>
     </v-sheet>

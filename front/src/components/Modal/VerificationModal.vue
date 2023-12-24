@@ -78,7 +78,6 @@ export default defineComponent({
         if (results.valid) {
           this.setVerificationFile(this.file[0]);
           this.$emit('confirmed');
-          console.log('valid');
         }
     },
   }

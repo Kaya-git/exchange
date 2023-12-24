@@ -49,7 +49,8 @@
 
 <script>
 import {defineComponent} from 'vue';
-import {prepareData} from '@/helpers';
+import {setCookie, prepareData} from '@/helpers';
+import {mapMutations } from 'vuex';
 export default defineComponent({
     name: 'AuthView',
 
@@ -58,12 +59,17 @@ export default defineComponent({
         formData: {
             email: '',
             password: '',
+            rememberMe: false,
         },
         rules: {
             required: value => !!value || 'Обязательно для заполнения',
         }
     }),
     methods: {
+        ...mapMutations([
+            'auth',
+            'setUserEmail',
+        ]),
         async submit(event) {
             this.loading = true;
 
@@ -82,7 +88,7 @@ export default defineComponent({
         },
         async sendData() {
             let details = {
-                'email': this.formData.email,
+                'username': this.formData.email,
                 'password': this.formData.password,
                 'grant_type': '',
                 'scope': '',
@@ -100,11 +106,14 @@ export default defineComponent({
                 body: formBody,
             });
             if (response.ok) {
-                console.log(response);
-                return await response.json();
+                this.auth();
+                this.setUserEmail(this.formData.email);
+                setCookie('user_email', this.formData.email);
+                localStorage.setItem('auth', 'true');
+                this.$router.push({
+                    name: 'AccountView',
+                });
             }
-
-            return false;
         }
     }
 });
