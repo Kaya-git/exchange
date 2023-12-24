@@ -35,7 +35,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         token: str,
         request: Optional[Request] = None
     ):
-        ...
+        return token
 
     async def create(
         self,
