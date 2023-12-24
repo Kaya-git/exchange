@@ -4,13 +4,20 @@
             <v-container class="exchange-mobile">
                 <v-row class="exchange__tabs mb-n7">
                     <v-col class="exchange__tab-col d-flex justify-center" @click="activeTab = 'step1'">
-                        <v-btn class="exchange__tab-btn sky-btn" data-tab-id="step1" :disabled="activeTab !== 'step1'">Шаг 1</v-btn>
+                        <v-btn class="exchange__tab-btn sky-btn" data-tab-id="step1" :disabled="activeTab !== 'step1'">
+                            Шаг 1
+                        </v-btn>
                     </v-col>
-                    <v-col class="exchange__tab-col d-flex justify-center" @click="activeTab == 'step3' ? activeTab = 'step2' : false">
-                        <v-btn class="exchange__tab-btn sky-btn" data-tab-id="step2" :disabled="activeTab !== 'step2'">Шаг 2</v-btn>
+                    <v-col class="exchange__tab-col d-flex justify-center"
+                           @click="activeTab == 'step3' ? activeTab = 'step2' : false">
+                        <v-btn class="exchange__tab-btn sky-btn" data-tab-id="step2" :disabled="activeTab !== 'step2'">
+                            Шаг 2
+                        </v-btn>
                     </v-col>
                     <v-col class="exchange__tab-col d-flex justify-center">
-                        <v-btn class="exchange__tab-btn sky-btn" data-tab-id="step3" :disabled="activeTab !== 'step3'">Шаг 3</v-btn>
+                        <v-btn class="exchange__tab-btn sky-btn" data-tab-id="step3" :disabled="activeTab !== 'step3'">
+                            Шаг 3
+                        </v-btn>
                     </v-col>
                 </v-row>
                 <v-row v-if="activeTab === 'step1'" class="exchange__tab exchange-tab mx-n4">
@@ -32,8 +39,8 @@
                         <v-row class="exchange-tab__content-row">
                             <v-col class="exchange-tab__search col-8">
                                 <v-text-field
-                                    class="currency-text-field" 
-                                    placeholder="Найти валюту" 
+                                    class="currency-text-field"
+                                    placeholder="Найти валюту"
                                     color="white"
                                     bg-color="white"
                                     hide-details="auto"
@@ -44,26 +51,27 @@
                         <v-row class="exchange-tab__content-row">
                             <v-container class="exchange-tab__currency-list currency-list">
                                 <v-item-group
-                                v-model="giveCurrency"
-                                selected-class="bg-primary"
-                                class="currency-list__group">
-                                    <v-item 
-                                    class="currency-list__item"
-                                    v-for="(currency, i) in currenciesApi.banks"
-                                    :key="i"
-                                    :value="currency"
-                                    v-slot="{selectedClass, select}">
-                                        <v-btn 
-                                        class="currency-list__btn currency-btn"
-                                        :class="selectedClass"
-                                        size="x-large"
-                                        @click="select">
+                                    v-model="giveCurrency"
+                                    selected-class="bg-primary"
+                                    class="currency-list__group">
+                                    <v-item
+                                        class="currency-list__item"
+                                        v-for="(currency, i) in currenciesApi.banks"
+                                        :key="i"
+                                        :value="currency"
+                                        v-slot="{selectedClass, select}">
+                                        <v-btn
+                                            class="currency-list__btn currency-btn"
+                                            :class="selectedClass"
+                                            size="x-large"
+                                            @click="select">
                                             <template v-slot:prepend>
                                                 <span class="currency-btn__img">
-<!--                                                    <img :src="currency.icon" :alt="currency.name">-->
+                                                    <img :src="currency.icon" :alt="currency.name">
                                                 </span>
                                             </template>
-                                            {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
+                                            {{ currency.name }}
+                                            {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
                                         </v-btn>
                                     </v-item>
                                 </v-item-group>
@@ -90,8 +98,8 @@
                         <v-row class="exchange-tab__content-row">
                             <v-col class="exchange-tab__search col-8">
                                 <v-text-field
-                                    class="currency-text-field" 
-                                    placeholder="Найти валюту" 
+                                    class="currency-text-field"
+                                    placeholder="Найти валюту"
                                     color="white"
                                     bg-color="white"
                                     hide-details="auto"
@@ -101,27 +109,28 @@
                         </v-row>
                         <v-row class="exchange-tab__content-row">
                             <v-container class="exchange-tab__currency-list currency-list">
-                                <v-item-group 
-                                class="currency-list__group"
-                                selected-class="bg-primary"
-                                v-model="getCurrency">
+                                <v-item-group
+                                    class="currency-list__group"
+                                    selected-class="bg-primary"
+                                    v-model="getCurrency">
                                     <v-item
                                         class="currency-list__item"
                                         v-for="(currency, i) in currenciesApi.crypto"
                                         :key="i"
                                         :value="currency"
                                         v-slot="{selectedClass, select}">
-                                        <v-btn 
-                                        class="currency-list__btn currency-btn" 
-                                        :class="selectedClass"
-                                        size="x-large"
-                                        @click="select">
+                                        <v-btn
+                                            class="currency-list__btn currency-btn"
+                                            :class="selectedClass"
+                                            size="x-large"
+                                            @click="select">
                                             <template v-slot:prepend>
                                                 <span class="currency-btn__img">
-<!--                                                    <img :src="currency.icon" :alt="currency.name">-->
+                                                    <img :src="currency.icon" :alt="currency.name">
                                                 </span>
                                             </template>
-                                            {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
+                                            {{ currency.name }}
+                                            {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
                                         </v-btn>
                                     </v-item>
                                 </v-item-group>
@@ -146,74 +155,76 @@
                                             <h3 class="exchange-data__title title title_h3">
                                                 Меняем
                                             </h3>
-                                            <v-text-field 
-                                            class="exchange-data__text-field"
-                                            type="text"
-                                            placeholder="1000"
-                                            v-model="formData.give"
-                                            :rules="[rules.required]"
-                                            @input="validateGiveNumberInput"
-                                            :suffix="giveCurrency.tikker">
+                                            <v-text-field
+                                                class="exchange-data__text-field"
+                                                type="text"
+                                                placeholder="1000"
+                                                v-model="formData.give"
+                                                :rules="[rules.required]"
+                                                @input="validateGiveNumberInput"
+                                                :suffix="giveCurrency.tikker">
                                             </v-text-field>
                                             <v-text-field
-                                            class="exchange-data__text-field"
-                                            type="text"
-                                            placeholder="ФИО"
-                                            v-model="formData.name"
-                                            :rules="[rules.required]">
+                                                class="exchange-data__text-field"
+                                                type="text"
+                                                placeholder="ФИО"
+                                                v-model="formData.name"
+                                                :rules="[rules.required]">
                                             </v-text-field>
                                             <v-text-field
-                                            class="exchange-data__text-field"
-                                            type="text"
-                                            placeholder="Номер карты"
-                                            v-model="formData.cardNumber"
-                                            :rules="[rules.required, rules.cardNumberRule]"
-                                            @input="formatCardNumber">
+                                                class="exchange-data__text-field"
+                                                type="text"
+                                                placeholder="Номер карты"
+                                                v-model="formData.cardNumber"
+                                                :rules="[rules.required, rules.cardNumberRule]"
+                                                @input="formatCardNumber">
                                             </v-text-field>
                                             <h3 class="exchange-data__title title title_h3">
                                                 На
                                             </h3>
                                             <v-text-field
-                                            class="exchange-data__text-field"
-                                            type="text"
-                                            :placeholder="randomPlaceholderCrypto()"
-                                            v-model="formData.get"
-                                            :rules="[rules.required]"
-                                            @input="validateGetNumberInput"
-                                            :suffix="getCurrency.tikker">
+                                                class="exchange-data__text-field"
+                                                type="text"
+                                                :placeholder="randomPlaceholderCrypto()"
+                                                v-model="formData.get"
+                                                :rules="[rules.required]"
+                                                @input="validateGetNumberInput"
+                                                :suffix="getCurrency.tikker">
                                             </v-text-field>
                                             <v-text-field
-                                            class="exchange-data__text-field"
-                                            type="text"
-                                            placeholder="Крипто кошелек"
-                                            v-model="formData.cryptoNumber"
-                                            :rules="[rules.required, validateCryptoWallet]">
+                                                class="exchange-data__text-field"
+                                                type="text"
+                                                placeholder="Крипто кошелек"
+                                                v-model="formData.cryptoNumber"
+                                                :rules="[rules.required, validateCryptoWallet]">
                                             </v-text-field>
                                             <v-text-field
-                                            class="exchange-data__text-field"
-                                            type="email"
-                                            placeholder="E-mail"
-                                            v-model="formData.email"
-                                            :rules="[rules.required]">
+                                                class="exchange-data__text-field"
+                                                type="email"
+                                                placeholder="E-mail"
+                                                v-model="formData.email"
+                                                :rules="[rules.required]">
                                             </v-text-field>
                                             <div class="exchange-data__privacy">
                                                 <v-checkbox
-                                                required
-                                                v-model="formData.privacy"
-                                                :error="!formData.privacy"
-                                                :rules="[rules.required]"
-                                                class="exchange-data__checkbox">
+                                                    v-model="formData.privacy.value"
+                                                    :error="formData.privacy.error && !formData.privacy.value"
+                                                    :rules="[rules.required]"
+                                                    class="exchange-data__checkbox">
                                                     <template v-slot:label>
-                                                        <div>Даю согласие с <a href="#">условиями обмена</a>, <a href="#">соглашением</a> и <a href="#">политикой KYC/AML</a></div>
+                                                        <div>Даю согласие с <a href="#">условиями обмена</a>, <a
+                                                            href="#">соглашением</a> и <a href="#">политикой KYC/AML</a>
+                                                        </div>
                                                     </template>
                                                 </v-checkbox>
-                                                <v-checkbox required 
-                                                v-model="formData.rules"
-                                                :error="!formData.rules"
-                                                :rules="[rules.required]"
-                                                class="exchange-data__checkbox">
+                                                <v-checkbox
+                                                        v-model="formData.rules.value"
+                                                        :error="formData.rules.error && !formData.rules.value"
+                                                        :rules="[rules.required]"
+                                                        class="exchange-data__checkbox">
                                                     <template v-slot:label>
-                                                        <div>Согласен с тем, что сумму более ₽300'000 необходимо <a href="#">отправлять частями</a></div>
+                                                        <div>Согласен с тем, что сумму более ₽300'000 необходимо <a
+                                                            href="#">отправлять частями</a></div>
                                                     </template>
                                                 </v-checkbox>
                                             </div>
@@ -232,53 +243,96 @@
                 <v-row class="exchange-desktop__content">
                     <v-col class="exchange-desktop__col v-col-3">
                         <h3 class="exchange-desktop__title title title_h3">Отдаете</h3>
-                        <v-item-group 
-                        v-model="giveCurrency"
-                        selected-class="bg-primary"
-                        class="exchange-desktop__list currency-list">
+                        <v-item-group
+                            v-model="giveCurrency"
+                            selected-class="bg-primary"
+                            class="exchange-desktop__list currency-list">
                             <v-item
-                            v-for="(currency, i) in currenciesApi.banks"
-                            :key="i"
-                            :value="currency"
-                            v-slot="{selectedClass,select}">
+                                v-for="(currency, i) in currenciesApi.banks"
+                                :key="i"
+                                :value="currency"
+                                v-slot="{selectedClass,select}">
                                 <v-btn
-                                class="currency-list__btn currency-btn"
-                                @click="select"
-                                :class="selectedClass"
-                                size="x-large">
+                                    class="currency-list__btn currency-btn"
+                                    @click="select"
+                                    :class="selectedClass"
+                                    size="x-large">
                                     <template v-slot:prepend>
                                         <span class="currency-btn__img">
-<!--                                            <img :src="currency.icon" :alt="currency.name">-->
+                                            <img :src="currency.icon" :alt="currency.name">
                                         </span>
                                     </template>
-                                    {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
+                                    {{ currency.name }} {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
                                 </v-btn>
                             </v-item>
-                        </v-item-group>
-                    </v-col>
-                    <v-col class="exchange-desktop__col v-col-3">
-                        <h3 class="exchange-desktop__title title title_h3">Получаете</h3>
-                        <v-item-group 
-                        v-model="getCurrency"
-                        class="exchange-desktop__list currency-list"
-                        selected-class="bg-primary">
                             <v-item
                                 v-for="(currency, i) in currenciesApi.crypto"
                                 :key="i"
                                 :value="currency"
                                 v-slot="{selectedClass,select}">
                                 <v-btn
-                                class="currency-list__btn currency-btn"
-                                :class="selectedClass"
-                                size="x-large"
-                                @click="select">
-                                        <template v-slot:prepend>
+                                    class="currency-list__btn currency-btn"
+                                    @click="select"
+                                    :class="selectedClass"
+                                    size="x-large">
+                                    <template v-slot:prepend>
+                                        <span class="currency-btn__img">
+                                            <img :src="currency.icon" :alt="currency.name">
+                                        </span>
+                                    </template>
+                                    {{ currency.name }} {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
+                                </v-btn>
+                            </v-item>
+                        </v-item-group>
+                    </v-col>
+                    <v-col class="exchange-desktop__col v-col-3">
+                        <h3 class="exchange-desktop__title title title_h3">Получаете</h3>
+                        <v-item-group
+                            v-model="getCurrency"
+                            v-if="giveCurrency && giveCurrency.type === 'fiat'"
+                            class="exchange-desktop__list currency-list"
+                            selected-class="bg-primary">
+                            <v-item
+                                v-for="(currency, i) in currenciesApi.crypto"
+                                :key="i"
+                                :value="currency"
+                                v-slot="{selectedClass,select}">
+                                <v-btn
+                                    class="currency-list__btn currency-btn"
+                                    :class="selectedClass"
+                                    size="x-large"
+                                    @click="select">
+                                    <template v-slot:prepend>
                                             <span class="currency-btn__img">
-<!--                                                <img :src="'images/' + currency.icon" :alt="currency.name">-->
+                                                <img :src="currency.icon" :alt="currency.name">
                                             </span>
-                                        </template>
-                                        {{currency.name}} {{currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker}}
-                                    </v-btn>
+                                    </template>
+                                    {{ currency.name }} {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
+                                </v-btn>
+                            </v-item>
+                        </v-item-group>
+                        <v-item-group
+                            v-model="getCurrency"
+                            v-if="giveCurrency && giveCurrency.type === 'crypto'"
+                            class="exchange-desktop__list currency-list"
+                            selected-class="bg-primary">
+                            <v-item
+                                v-for="(currency, i) in currenciesApi.banks"
+                                :key="i"
+                                :value="currency"
+                                v-slot="{selectedClass,select}">
+                                <v-btn
+                                    class="currency-list__btn currency-btn"
+                                    :class="selectedClass"
+                                    size="x-large"
+                                    @click="select">
+                                    <template v-slot:prepend>
+                                        <span class="currency-btn__img">
+                                            <img :src="currency.icon" :alt="currency.name">
+                                        </span>
+                                    </template>
+                                    {{ currency.name }} {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
+                                </v-btn>
                             </v-item>
                         </v-item-group>
                     </v-col>
@@ -289,79 +343,82 @@
                                 <v-row>
                                     <v-col>
                                         <v-form
-                                        validate-on="submit lazy" @submit.prevent="submit">
+                                            validate-on="submit lazy" @submit.prevent="submit">
                                             <h3 class="exchange-data__title title title_h3">
                                                 Меняем
                                             </h3>
-                                            <v-text-field 
-                                            class="exchange-data__text-field"
-                                            type="text"
-                                            placeholder="1000"
-                                            v-model="formData.give"
-                                            :rules="[rules.required]"
-                                            @input="validateGiveNumberInput"
-                                            :suffix="giveCurrency ? giveCurrency.tikker : ''">
+                                            <v-text-field
+                                                class="exchange-data__text-field"
+                                                type="text"
+                                                placeholder="1000"
+                                                v-model="formData.give"
+                                                :rules="[rules.required]"
+                                                @input="validateGiveNumberInput"
+                                                :suffix="giveCurrency ? giveCurrency.tikker : ''">
                                             </v-text-field>
                                             <v-text-field
-                                            class="exchange-data__text-field"
-                                            type="text"
-                                            placeholder="ФИО"
-                                            v-model="formData.name"
-                                            :rules="[rules.required]">
+                                                class="exchange-data__text-field"
+                                                type="text"
+                                                placeholder="ФИО"
+                                                v-model="formData.name"
+                                                :rules="[rules.required]">
                                             </v-text-field>
                                             <v-text-field
-                                            class="exchange-data__text-field"
-                                            type="text"
-                                            placeholder="Номер карты"
-                                            v-model="formData.cardNumber"
-                                            :rules="[rules.required, rules.cardNumberRule]"
-                                            @input="formatCardNumber">
+                                                class="exchange-data__text-field"
+                                                type="text"
+                                                placeholder="Номер карты"
+                                                v-model="formData.cardNumber"
+                                                :rules="[rules.required, rules.cardNumberRule]"
+                                                @input="formatCardNumber">
                                             </v-text-field>
                                             <h3 class="exchange-data__title title title_h3">
                                                 На
                                             </h3>
                                             <v-text-field
-                                            class="exchange-data__text-field"
-                                            type="text"
-                                            :placeholder="randomPlaceholderCrypto()"
-                                            v-model="formData.get"
-                                            :rules="[rules.required]"
-                                            @input="validateGetNumberInput"
-                                            :suffix="getCurrency ? getCurrency.tikker : ''">
+                                                class="exchange-data__text-field"
+                                                type="text"
+                                                :placeholder="randomPlaceholderCrypto()"
+                                                v-model="formData.get"
+                                                :rules="[rules.required]"
+                                                @input="validateGetNumberInput"
+                                                :suffix="getCurrency ? getCurrency.tikker : ''">
                                             </v-text-field>
                                             <v-text-field
-                                            class="exchange-data__text-field"
-                                            type="text"
-                                            placeholder="Крипто кошелек"
-                                            v-model="formData.cryptoNumber"
-                                            :rules="[rules.required, validateCryptoWallet]">
+                                                class="exchange-data__text-field"
+                                                type="text"
+                                                placeholder="Крипто кошелек"
+                                                v-model="formData.cryptoNumber"
+                                                :rules="[rules.required, validateCryptoWallet]">
                                             </v-text-field>
                                             <v-text-field
-                                            class="exchange-data__text-field"
-                                            type="email"
-                                            placeholder="E-mail"
-                                            v-model="formData.email"
-                                            :rules="[rules.required]">
+                                                class="exchange-data__text-field"
+                                                type="email"
+                                                placeholder="E-mail"
+                                                v-model="formData.email"
+                                                :rules="[rules.required]">
                                             </v-text-field>
                                             <div class="exchange-data__privacy">
-                                                <v-checkbox 
-                                                required 
-                                                v-model="formData.privacy"
-                                                :error="!formData.privacy"
-                                                class="exchange-data__checkbox"
-                                                :rules="[rules.required]">
+                                                <v-checkbox
+                                                    hide-details
+                                                    v-model="formData.privacy.value"
+                                                    :error="formData.privacy.error && !formData.privacy.value"
+                                                    class="exchange-data__checkbox"
+                                                    :rules="[rules.required]">
                                                     <template v-slot:label>
-                                                        <div>Даю согласие с <a href="#">условиями обмена</a>, <a href="#">соглашением</a> и <a href="#">политикой KYC/AML</a></div>
+                                                        <div>Даю согласие с <a href="#">условиями обмена</a>, <a
+                                                            href="#">соглашением</a> и <a href="#">политикой KYC/AML</a>
+                                                        </div>
                                                     </template>
                                                 </v-checkbox>
-                                                <v-checkbox 
-                                                required 
-                                                v-model="formData.rules"
-                                                :error="!formData.rules"
-                                                :rules="[rules.required]"
-                                                class="exchange-data__checkbox">
+                                                <v-checkbox
+                                                    hide-details
+                                                    v-model="formData.rules.value"
+                                                    :error="formData.rules.error && !formData.rules.value"
+                                                    :rules="[rules.required]"
+                                                    class="exchange-data__checkbox">
                                                     <template v-slot:label>
-                                                        <div>Согласен с тем, что сумму более ₽300'000 необходимо <a href="#">отправлять частями</a></div>
+                                                        <div>Согласен с тем, что сумму более ₽300'000 необходимо <a
+                                                            href="#">отправлять частями</a></div>
                                                     </template>
                                                 </v-checkbox>
                                             </div>
@@ -382,7 +439,7 @@
 
 <script>
 import {defineComponent} from 'vue';
-import {mapMutations} from 'vuex';
+import {mapMutations, mapGetters} from 'vuex';
 import {prepareData} from '@/helpers';
 
 export default defineComponent({
@@ -397,13 +454,18 @@ export default defineComponent({
             giveCurrency: null,
             getCurrency: null,
             formData: {
-                uuid: '',
                 name: '',
                 email: '',
                 cardNumber: '',
                 cryptoNumber: '',
-                privacy: false,
-                rules: false,
+                privacy: {
+                    value: false,
+                    error: false,
+                },
+                rules: {
+                    value: false,
+                    error: false,
+                },
                 give: null,
                 get: null,
                 giveTikker: '',
@@ -413,8 +475,8 @@ export default defineComponent({
                 exchangeRate: null,
             },
             currenciesApi: {
-              banks: [],
-              crypto: [],
+                banks: [],
+                crypto: [],
             },
             rules: {
                 required: value => !!value || 'Обязательно для заполнения',
@@ -423,18 +485,41 @@ export default defineComponent({
         }
     },
     computed: {
+        ...mapGetters([
+           'getUuid'
+        ]),
     },
     watch: {
-      getCurrency(newCur) {
-        this.getExchangeRate(this.giveCurrency.tikker, newCur.tikker).then(result => {
-          this.formData.exchangeRate = result;
-        });
-      },
+        getCurrency(newCur) {
+            this.getExchangeRate(this.giveCurrency.tikker, newCur.tikker).then(result => {
+                this.formData.exchangeRate = result;
+                this.recalculate();
+            });
+        },
+        giveCurrency(newCur) {
+            if (newCur.type === 'crypto') {
+                this.getCurrency = this.currenciesApi['banks'][0];
+            }
+            if (newCur.type === 'fiat') {
+                this.getCurrency = this.currenciesApi['crypto'][0];
+            }
+        }
     },
     methods: {
         ...mapMutations([
             'setExchangeData',
         ]),
+        recalculate() {
+            let get = null;
+            if (this.formData.exchangeRate && this.formData.give && this.formData.get) {
+                if (this.giveCurrency.type === 'crypto') {
+                    get = (this.formData.give * this.formData.exchangeRate).toFixed(2);
+                } else {
+                    get = (this.formData.give / this.formData.exchangeRate).toFixed(8);
+                }
+            }
+            this.formData.get = get;
+        },
         randomPlaceholderCrypto() {
             return Math.random().toFixed(8);
         },
@@ -453,40 +538,43 @@ export default defineComponent({
                 this.setExchangeData(this.formData);
                 let isDataSended = await this.sendData();
                 if (isDataSended) {
-                  this.$router.push({
-                    name: 'ExchangeSteps',
-                  });
+                    this.$router.push({
+                        name: 'ExchangeSteps',
+                    });
                 }
+            } else {
+                this.formData.rules.error = !this.formData.rules.value;
+                this.formData.privacy.error = !this.formData.privacy.value;
             }
         },
         async sendData() {
-          let details = {
-            'client_sell_value': this.formData.give,
-            'client_sell_tikker': this.giveCurrency.tikker,
-            'client_buy_value': this.formData.get,
-            'client_buy_tikker': this.getCurrency.tikker,
-            'client_email': this.formData.email,
-            'client_crypto_wallet': this.formData.cryptoNumber,
-            'client_credit_card_number':this.formData.cardNumber,
-            'client_cc_holder': this.formData.name,
-            'user_uuid': this.formData.uuid,
-          };
+            let details = {
+                'client_sell_value': this.formData.give,
+                'client_sell_tikker': this.giveCurrency.tikker,
+                'client_buy_value': this.formData.get,
+                'client_buy_tikker': this.getCurrency.tikker,
+                'client_email': this.formData.email,
+                'client_crypto_wallet': this.formData.cryptoNumber,
+                'client_credit_card_number': this.formData.cardNumber,
+                'client_cc_holder': this.formData.name,
+                'user_uuid': this.getUuid,
+            };
 
 
-          let formBody = prepareData(details);
+            let formBody = prepareData(details);
 
-          let response = await fetch('/api/exchange/exchange_form', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'accept':  'application/json',
-            },
-            body: formBody
-          });
-          if (response.ok) {
-              return await response.json();
-          }
-          return false;
+            let response = await fetch('/api/exchange/exchange_form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept': 'application/json',
+                },
+                body: formBody
+            });
+            if (response.ok) {
+                return await response.json();
+            }
+            return false;
 
         },
         validateGiveNumberInput() {
@@ -497,7 +585,11 @@ export default defineComponent({
             }
             let amount = null;
             if (this.formData.exchangeRate && this.formData.give) {
-              amount = this.formData.give / this.formData.exchangeRate;
+                if (this.giveCurrency.type === 'crypto') {
+                    amount = (this.formData.give * this.formData.exchangeRate).toFixed(2);
+                } else {
+                    amount = (this.formData.give / this.formData.exchangeRate).toFixed(8);
+                }
             }
             this.formData.get = amount;
         },
@@ -509,7 +601,11 @@ export default defineComponent({
             }
             let amount = null;
             if (this.formData.exchangeRate && this.formData.get) {
-              amount = this.formData.get * this.formData.exchangeRate;
+                if (this.giveCurrency.type === 'fiat') {
+                    amount = (this.formData.get / this.formData.exchangeRate).toFixed(8);
+                } else {
+                    amount = (this.formData.get * this.formData.exchangeRate).toFixed(2);
+                }
             }
             this.formData.give = amount;
         },
@@ -526,7 +622,7 @@ export default defineComponent({
             this.formData.cardNumber = formattedInput;
         },
         validateCryptoWallet() {
-            let regex = /^(1|3|bc1q|bc1p)[A-Za-z0-9]{22,40}$/; 
+            let regex = /^(1|3|bc1q|bc1p)[A-Za-z0-9]{22,40}$/;
             if (regex.test(this.formData.cryptoNumber)) {
                 return true;
             }
@@ -553,49 +649,35 @@ export default defineComponent({
 
             return 'Невалидный номер кошелька';
         },
-        async setUUID() {
-            let response = await fetch('/api/', {
-              method: 'GET',
-              credentials: 'include',
-              headers: {
-                'accept': 'application/json',
-              }
-            })
-            let result = await response.json();
-            if (!result) {
-              return false;
+        async getApiCurriencies() {
+            let response = await fetch('/api/currency/list');
+            let data = await response.json();
+            if (!data) {
+                return false;
             }
-            this.formData.uuid = result;
+            if (!Array.isArray(data)) {
+                return false;
+            }
+            data.forEach(item => {
+                if (item.type === 'fiat') {
+                    this.currenciesApi.banks.push(item);
+                } else {
+                    this.currenciesApi.crypto.push(item);
+                }
+            });
+            this.giveCurrency = this.currenciesApi.banks[0];
+            this.getCurrency = this.currenciesApi.crypto[0];
+            return response;
         },
-       async getApiCurriencies() {
-          let response = await fetch('/api/currency/list');
-          let data = await response.json();
-          if (!data) {
-            return false;
-          }
-          if (!Array.isArray(data)) {
-            return false;
-          }
-          data.forEach(item => {
-            if (item.type === 'fiat') {
-              this.currenciesApi.banks.push(item);
-            } else {
-              this.currenciesApi.crypto.push(item);
-            }
-          });
-          this.giveCurrency = this.currenciesApi.banks[0];
-          this.getCurrency = this.currenciesApi.crypto[0];
-          return response;
-      },
         async getExchangeRate(giveTikker, getTikker) {
-          let response = await fetch('/api/exchange/' + giveTikker + '/' + getTikker);
-          let result = await response.json();
-          return result['exchange_rate'] ?? null;
+            let response = await fetch('/api/exchange/' + giveTikker + '/' + getTikker);
+            let result = await response.json();
+
+            return result['exchange_rate'] ?? null;
         },
     },
     created() {
         this.getApiCurriencies();
-        this.setUUID();
     },
     mounted() {
         this.tabs = document.querySelectorAll('[data-tab-id]');

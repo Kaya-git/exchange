@@ -11,12 +11,12 @@
           <p class="confirm-modal__text">{{ msg }}</p>
         </v-row>
         <v-row>
-          <v-col class="d-flex justify-end">
+          <v-col class="d-flex justify-center">
             <v-btn size="large" color="success" @click="$emit('confirmed')">
               {{successMsg}}
             </v-btn>
           </v-col>
-          <v-col>
+          <v-col class="d-flex justify-center">
             <v-btn size="large" color="error" @click="$emit('canceled')">{{rejectMsg}}</v-btn>
           </v-col>
         </v-row>
