@@ -1,10 +1,7 @@
 """  Review repository file """
-from datetime import datetime
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.abstract_repo import Repository
-from enums import Mark
 from reviews.models import Review
 
 
@@ -23,18 +20,16 @@ class ReviewRepo(Repository[Review]):
     async def new(
         self,
         text: str,
-        rating: Mark,
-        user_id: int,
+        rating: int,
+        name: str,
         moderated: bool,
-        data: datetime = datetime.utcnow(),
     ) -> None:
 
         new_review = await self.session.merge(
             Review(
-                user_id=user_id,
+                name=name,
                 text=text,
                 rating=rating,
-                data=data,
                 moderated=moderated
             )
         )

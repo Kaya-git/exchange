@@ -16,6 +16,14 @@ from users.models import User
 import aiofiles
 import aiofiles.os
 from currencies.routers import CoingekkoParamsDTO
+import datetime
+
+
+Time = str
+
+
+async def start_time() -> Time:
+    return datetime.datetime.now().time()
 
 
 async def get_password_hash(password: str) -> str:

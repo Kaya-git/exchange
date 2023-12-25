@@ -15,10 +15,13 @@ from enums.models import ReqAction, Status
 from sevices import services
 from users.models import User
 # from sevices import Count
-from .handlers import (add_or_get_po, calculate_totals,
-                       check_form_fillment, check_user_registration,
-                       find_exchange_rate, generate_pass, get_password_hash,
-                       redis_discard, ya_save_passport_photo)
+from .handlers import (
+    add_or_get_po, calculate_totals,
+    check_form_fillment, check_user_registration,
+    find_exchange_rate, generate_pass, get_password_hash,
+    redis_discard, ya_save_passport_photo,
+    start_time
+)
 
 
 exchange_router = APIRouter(
@@ -130,7 +133,8 @@ async def fill_order_form(
             client_cc_holder=client_cc_holder,
             client_crypto_wallet=client_crypto_wallet,
         )
-        return "Redis - OK"
+
+        return await start_time()
     else:
         return "Ошибка"
 

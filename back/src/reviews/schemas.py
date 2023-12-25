@@ -1,14 +1,11 @@
-from datetime import datetime
 from pydantic import BaseModel
-
-from enums import Mark
 
 
 class ReviewAddDTO(BaseModel):
     text: str
-    data: datetime
-    rating: Mark
+    rating: int
     user_id: int
+    moderated: bool
 
 
 class ReviewDTO(ReviewAddDTO):
@@ -19,5 +16,6 @@ class ReviewDTO(ReviewAddDTO):
 
 
 class ReviewCreateDTO(BaseModel):
+    name: str
     text: str | None
-    rating: Mark
+    rating: int

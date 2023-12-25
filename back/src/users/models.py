@@ -10,7 +10,7 @@ from enums import Role
 
 if TYPE_CHECKING:
     from payment_options.models import PaymentOption
-    from reviews.models import Review
+    # from reviews.models import Review
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
@@ -72,9 +72,9 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     payment_options: Mapped[List["PaymentOption"]] = relationship(
         back_populates="user"
     )
-    reviews: Mapped[List["Review"]] = relationship(
-        back_populates="user"
-    )
+    # reviews: Mapped[List["Review"]] = relationship(
+    #     back_populates="user"
+    # )
 
     def __str__(self) -> str:
         return f"{self.email}"

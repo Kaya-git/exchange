@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import TYPE_CHECKING
 
 import sqlalchemy as sa
@@ -9,7 +8,6 @@ from enums import Mark
 
 if TYPE_CHECKING:
     from pendings.models import PendingAdmin
-    from users.models import User
 
 
 class Review(Base):
@@ -20,37 +18,29 @@ class Review(Base):
         primary_key=True,
         autoincrement=True,
     )
-    text: Mapped[str] = mapped_column(
-        sa.Text,
+    name: Mapped[str] = mapped_column(
+        sa.String(30),
         nullable=False
     )
-    data: Mapped[int] = mapped_column(
-        sa.TIMESTAMP,
-        default=datetime.utcnow,
+    text: Mapped[str] = mapped_column(
+        sa.String(250),
         nullable=False
     )
     rating: Mapped[Mark] = mapped_column(
-        sa.Enum(Mark)
+        sa.SmallInteger,
+        nullable=False
     )
     moderated: Mapped[bool] = mapped_column(
         sa.Boolean,
         default=False
     )
 
-    user_id: Mapped[int] = mapped_column(
-        sa.ForeignKey("user.id")
-    )
-
-    user: Mapped["User"] = relationship(
-        "User",
-        back_populates="reviews"
-    )
     pending_admin: Mapped["PendingAdmin"] = relationship(
         back_populates="review"
     )
 
     def __str__(self) -> str:
-        return f"{self.rating}"
+        return f"{self.id}"
 
     def __repr__(self) -> str:
-        return f"{self.rating}"
+        return f"{self.id}"

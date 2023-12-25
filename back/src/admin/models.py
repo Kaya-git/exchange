@@ -155,9 +155,8 @@ class ReviewAdmin(ModelView, model=Review):
     name_plural = "Отзывы"
     column_list = [
         Review.id,
-        Review.user_id,
+        Review.name,
         Review.text,
-        Review.data,
         Review.rating
     ]
     can_create = False

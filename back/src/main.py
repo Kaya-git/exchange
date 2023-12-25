@@ -26,7 +26,7 @@ from contacts.routers import contact_router
 from faq.routers import faq_router
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
-from users.routers import user_lk_router
+from users.routers import lk_router
 from config import conf
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -71,7 +71,7 @@ app.add_middleware(
         "Access-Control-Allow-Origin",
         "Authorization"],
 )
-# app.add_middleware(HTTPSRedirectMiddleware)
+
 
 admin = Admin(
     app=app,
@@ -102,7 +102,7 @@ async def root(
     return cookies_uuid
 
 
-app.include_router(user_lk_router)
+app.include_router(lk_router)
 app.include_router(where_am_i_router)
 app.include_router(contact_router)
 app.include_router(faq_router)

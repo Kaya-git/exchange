@@ -162,13 +162,7 @@ class DB:
         """
         Забираем из редиса айди заказа
         """
-        order_id = (
-            await services.redis_values.redis_conn.lindex(
-                user_uuid,
-                1
-            )
-        )
-        order_id = int(order_id)
+        order_id = services.redis_values.get_order_id(user_uuid)
         """
         Делаем цикл с определенным количеством итераций для
         пулинга ордера из базы данных
@@ -198,7 +192,7 @@ class DB:
                 )
                 await db.session.commit()
                 return "Верифицировали карту. Обмен разрешен"
-                # return RedirectResponse(f"/exchange/order/{order.id}")
+
             if order.status is Status.NotVerified:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
