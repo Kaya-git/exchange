@@ -134,6 +134,17 @@ export default defineComponent({
     created() {
         this.exchangeData = this.getExchangeData;
     },
+    mounted() {
+        // if (this.getCurExchangeStep) {
+        //     if ([1, 2, 3, 4].includes(Number(this.getCurExchangeStep))) {
+        //         this.curStep = 1;
+        //     } else if (Number(this.getCurExchangeStep) === 5) {
+        //         this.curStep = 2;
+        //     } else if ([6, 7].includes(Number(this.getCurExchangeStep))) {
+        //         this.curStep = 3;
+        //     }
+        // }
+    },
     watch: {
         curStep(newStep, oldStep) {
             this.steps[oldStep].complete = true;
@@ -177,7 +188,8 @@ export default defineComponent({
     },
     computed: {
         ...mapGetters([
-            'getExchangeData'
+            'getExchangeData',
+            'getCurExchangeStep',
         ]),
     }
 });

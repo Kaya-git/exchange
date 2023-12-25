@@ -1,5 +1,5 @@
 import Vuex from 'vuex';
-import {getCookie} from '@/helpers';
+import {getCookie, setCookie} from '@/helpers';
 
 const Store = new Vuex.Store({
     state: {
@@ -114,7 +114,22 @@ const Store = new Vuex.Store({
             if (response.ok) {
                 commit('setCurExchangeStep', await response.json());
             }
-        }
+        },
+        async logout({state}) {
+            let response = await fetch('/api/auth/jwt/logout', {
+                method: 'POST',
+                headers: {
+                    'accept':  'application/json',
+                },
+            });
+            if (response.ok) {
+                state.isAuth = false;
+                if (getCookie('user_email')) {
+                    setCookie('user_email', '', 0);
+                }
+                location.reload();
+            }
+        },
     },
     getters: {
         getExchangeData: state => state.exchangeData,

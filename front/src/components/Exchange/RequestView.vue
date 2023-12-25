@@ -116,8 +116,7 @@ export default defineComponent({
     }),
     created() {
         this.exchangeData = this.getExchangeData;
-        let requisites = this.getRequisites();
-        this.requisite = requisites.requisites_num + " " + requisites.holder;
+        this.getRequisites();
     },
     components: {
         TimerView: defineAsyncComponent({
@@ -165,9 +164,9 @@ export default defineComponent({
                 body: formBody
             });
             if (response.ok) {
-                return await response.json();
+                let requisites = await response.json();
+                this.requisite = requisites.requisites_num + " " + this.requisites.holder;
             }
-            return false;
         },
     },
     computed: {

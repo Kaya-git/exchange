@@ -51,6 +51,7 @@
 
 <script>
 import {defineComponent} from 'vue';
+import {mapState} from 'vuex';
 
 export default defineComponent({
     name: 'AccountForm',
@@ -65,5 +66,13 @@ export default defineComponent({
             confirmPassword: '',
         }
     }),
+    mounted() {
+        this.formData.email = this.user.email;
+    },
+    computed: {
+        ...mapState([
+            'user'
+        ])
+    }
 });
 </script>
