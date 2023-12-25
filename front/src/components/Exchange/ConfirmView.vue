@@ -98,6 +98,7 @@ export default defineComponent({
         },
         isModalVisible: false,
         isVerificationModalVisible: false,
+        loading: false,
     }),
     created() {
         this.exchangeData = this.getExchangeData;
@@ -180,13 +181,14 @@ export default defineComponent({
             const formData = new FormData();
             formData.append('user_uuid', this.getUuid);
             formData.append('cc_image', this.getVerificationFile);
-
+            this.loading = true;
             let response = await fetch('/api/exchange/cc_conformation_form', {
                 method: 'POST',
                 body: formData
             });
+            this.isVerificationModalVisible = false;
+            this.loading = false;
             if (response.ok) {
-                this.isVerificationModalVisible = false;
                 this.$emit('complete');
                 this.$emit('nextStep');
             } else {

@@ -11,7 +11,7 @@ const Store = new Vuex.Store({
         user: {
             email: null,
         },
-        requestFixedTime: 600
+        requestFixedTime: 600,
     },
     mutations: {
         setExchangeData(state, data) {

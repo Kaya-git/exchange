@@ -36,6 +36,7 @@ body {
 	}
 	&__content {
 		padding-top: 100px;
+		height: inherit;
 	}
 }
 
@@ -66,6 +67,7 @@ body {
 @import 'tariffs/tariffs.scss';
 @import 'reviews/reviews.scss';
 @import 'contacts/contacts.scss';
+@import 'notfound/notfound.scss';
 @import 'modals/review-modal.scss';
 @import 'modals/wait-modal.scss';
 @import 'modals/confirm-modal.scss';

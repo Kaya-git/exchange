@@ -60,6 +60,11 @@ const Router = new createRouter({
             path: '/exchange/',
             component: () => import("./components/Exchange/ExchangeSteps")
         },
+        {
+            name: 'NotFound',
+            path: '/:pathMatch(.*)*',
+            component: () => import("./components/Pages/NotFound")
+        },
     ]
 });
 Store.dispatch('checkAuth').then(() => {
