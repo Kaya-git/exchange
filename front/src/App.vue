@@ -18,7 +18,7 @@
 import {defineAsyncComponent} from 'vue';
 import {mapActions, mapMutations, mapGetters} from 'vuex';
 import {getCookie} from '@/helpers';
-import router from './router';
+// import router from './router';
 
 export default {
     name: 'App',
@@ -45,9 +45,9 @@ export default {
 
         this.whereAmI().then(() => {
             if (this.getCurExchangeStep && localStorage.getItem('startTime')) {
-                router.push({
-                    name: 'ExchangeSteps',
-                })
+                // router.push({
+                //     name: 'ExchangeSteps',
+                // })
             }
         });
 

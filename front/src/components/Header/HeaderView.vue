@@ -26,7 +26,21 @@
                             </v-btn>
                         </RouterLink>
                     </template>
-                    <template v-else>
+                    <template v-else-if="getAuthState && curRoute === '/user/'">
+                        <v-btn
+                            class="header-main__auth outlined-btn"
+                            variant="outlined"
+                            size="large"
+                            @click.prevent="logout">
+                            <template v-slot:prepend>
+                              <span>
+                                  <img src="/icons/user-circle-o.svg" alt="">
+                              </span>
+                            </template>
+                            Выйти
+                        </v-btn>
+                    </template>
+                    <template v-else-if="getAuthState && curRoute !== '/user/'">
                         <RouterLink to="/user/">
                             <v-btn
                                 class="header-main__auth outlined-btn"
@@ -57,7 +71,7 @@
 
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
-import {mapGetters} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
 export default defineComponent({
     name: 'HeaderView',
     data: () => ({}),
@@ -69,7 +83,11 @@ export default defineComponent({
             loader: () => import("../Navigation/NavMobile"),
         }),
     },
-    methods: {},
+    methods: {
+        ...mapActions([
+            'logout',
+        ]),
+    },
     computed: {
         ...mapGetters([
             'getAuthState',
@@ -78,7 +96,7 @@ export default defineComponent({
             return this.$route.path;
         },
         isExcludeRoute() {
-            const excluded = ['/auth/', '/register/', '/user/'];
+            const excluded = ['/auth/', '/register/'];
             if (excluded.includes(this.curRoute)) {
                 return true;
             }

@@ -354,7 +354,7 @@
                                                 v-model="formData.give"
                                                 :rules="[rules.required]"
                                                 @input="validateGiveNumberInput"
-                                                :suffix="giveCurrency ? giveCurrency.tikker : ''">
+                                                :suffix="giveCurrency ? (giveCurrency.type === 'fiat' ? 'RUB' : giveCurrency.tikker) : ''">
                                             </v-text-field>
                                             <v-text-field
                                                 class="exchange-data__text-field"
@@ -381,7 +381,7 @@
                                                 v-model="formData.get"
                                                 :rules="[rules.required]"
                                                 @input="validateGetNumberInput"
-                                                :suffix="getCurrency ? getCurrency.tikker : ''">
+                                                :suffix="getCurrency ? (getCurrency.type === 'fiat' ? 'RUB' : getCurrency.tikker) : ''">
                                             </v-text-field>
                                             <v-text-field
                                                 class="exchange-data__text-field"
