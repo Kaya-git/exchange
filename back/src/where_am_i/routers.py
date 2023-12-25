@@ -1,5 +1,4 @@
-from fastapi import APIRouter
-from .schemas import UuidDTO
+from fastapi import APIRouter, Form
 from sevices import services
 
 
@@ -13,7 +12,7 @@ RouterNumber = int
 
 @where_am_i_router.post("/")
 async def where_am_i(
-    user_uuid: UuidDTO
+    user_uuid: str | None = Form()
 ) -> RouterNumber:
     if await services.redis_values.check_existance(user_uuid):
         return await services.redis_values.get_router_num(user_uuid)

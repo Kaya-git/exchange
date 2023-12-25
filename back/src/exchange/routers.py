@@ -22,6 +22,7 @@ from .handlers import (
     redis_discard, ya_save_passport_photo,
     start_time
 )
+from where_am_i.schemas import UuidDTO
 
 
 exchange_router = APIRouter(
@@ -367,11 +368,11 @@ async def payed_button(
         router_num=END_POINT_NUMBER
     )
 
-    order_id = services.redis_values.get_order_id(
+    order_id = await services.redis_values.get_order_id(
         user_uuid
     )
 
-    user_id = services.redis_values.get_user_id(
+    user_id = await services.redis_values.get_user_id(
         user_uuid
     )
 

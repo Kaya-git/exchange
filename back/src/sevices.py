@@ -61,7 +61,7 @@ class RedisValues:
 
     async def get_order_id(
             self,
-            user_uuid: "UuidDTO"
+            user_uuid: str
     ) -> int:
         order_id = await self.redis_conn.lindex(
             user_uuid,
@@ -82,8 +82,9 @@ class RedisValues:
             self,
             user_uuid: "UuidDTO"
     ):
+        print(user_uuid)
         does_exist = await self.redis_conn.exists(
-            user_uuid.user_uuid
+            user_uuid
         )
         if does_exist != 1:
             raise HTTPException(
@@ -142,8 +143,8 @@ class RedisValues:
 
     async def change_redis_router_num(
             self,
-            user_uuid,
-            router_num
+            user_uuid: str,
+            router_num: int
     ):
         await self.redis_conn.lset(
             name=user_uuid,
@@ -162,7 +163,7 @@ class DB:
         """
         Забираем из редиса айди заказа
         """
-        order_id = services.redis_values.get_order_id(user_uuid)
+        order_id = await services.redis_values.get_order_id(user_uuid)
         """
         Делаем цикл с определенным количеством итераций для
         пулинга ордера из базы данных
