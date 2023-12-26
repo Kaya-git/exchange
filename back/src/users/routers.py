@@ -8,7 +8,6 @@ from database.db import Database, get_async_session
 from payment_options.models import PaymentOption
 from .scheemas import ChangePassDTO
 from auth.manager import UserManager
-from  exchange.handlers import get_password_hash
 
 if TYPE_CHECKING:
     from users.models import User
