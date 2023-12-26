@@ -31,7 +31,7 @@ from config import conf
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
-
+from redis_ttl.routers import redis_router
 from redis import asyncio as aioredis
 
 
@@ -102,6 +102,7 @@ async def root(
     return cookies_uuid
 
 
+app.include_router(redis_router)
 app.include_router(lk_router)
 app.include_router(where_am_i_router)
 app.include_router(contact_router)

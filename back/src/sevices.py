@@ -119,6 +119,7 @@ class RedisValues:
             f"{client_cc_holder}",
             f"{client_crypto_wallet}"
         )
+
         # await self.redis_conn.expire(name=f'{user_uuid}', time=900)
         self.redis_conn.close
 
