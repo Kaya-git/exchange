@@ -2,15 +2,14 @@ from typing import TYPE_CHECKING
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from sqlalchemy import update
 from auth.routers import current_active_user
 from database.db import Database, get_async_session
 from payment_options.models import PaymentOption
 from .scheemas import ChangePassDTO
 from auth.manager import UserManager
-
-if TYPE_CHECKING:
-    from users.models import User
+from auth.db import get_user_db
+from users.models import User
 
 
 lk_router = APIRouter(
@@ -46,25 +45,29 @@ async def change_pass(
     user: "User" = Depends(current_active_user)
 ):
     db = Database(async_session)
-    user_manager = UserManager()
+    user_manager = UserManager(user_db=Depends(get_user_db))
     new_pass = payload.new_pass
     old_pass = payload.old_pass
     user_hashed_pass = user.hashed_password
-    verif = await user_manager.password_helper.verify_and_update(
+    verif = user_manager.password_helper.verify_and_update(
         plain_password=old_pass,
         hashed_password=user_hashed_pass
     )
-    if verif is True:
+
+    if verif[0] is True:
         new_hash_pass = user_manager.password_helper.hash(
             new_pass
         )
 
-        await db.user.update(
-            whereclause=(User.id == user.id),
-            table_name='hashed_pass',
-            values=new_hash_pass
+        statement = update(
+            User
+        ).where(
+            User.id == user.id
+        ).values(
+            hashed_password=new_hash_pass
         )
-        db.session.commit()
+        await db.session.execute(statement)
+        await db.session.commit()
         return 'Поменял пасс'
     else:
         return 'Проблемс'
