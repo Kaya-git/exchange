@@ -115,7 +115,7 @@ const Store = new Vuex.Store({
                 commit('setCurExchangeStep', await response.json());
             }
         },
-        async logout({state}) {
+        async logout() {
             let response = await fetch('/api/auth/jwt/logout', {
                 method: 'POST',
                 headers: {
@@ -123,7 +123,7 @@ const Store = new Vuex.Store({
                 },
             });
             if (response.ok) {
-                state.isAuth = false;
+                localStorage.removeItem('auth');
                 if (getCookie('user_email')) {
                     setCookie('user_email', '', 0);
                 }

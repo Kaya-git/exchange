@@ -97,12 +97,23 @@ import {defineComponent, defineAsyncComponent} from 'vue';
 export default defineComponent({
 name: 'ReviewView',
     data: () => ({
-        
+        reviews: [],
     }),
+    created() {
+        this.getReviews();
+    },
     components: {
         ReviewModal: defineAsyncComponent({
             loader: () => import("../Modal/ReviewModal"),
         }),
     },
+    methods: {
+        async getReviews() {
+            let response = await fetch('/api/reviews/list');
+            if (response.ok && response.status === 200) {
+                this.reviews = await response.json();
+            }
+        }
+    }
 });
 </script>

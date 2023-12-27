@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -7,9 +7,26 @@
     <title>VVS Coin - Мультивалютный обменный сервис</title>
   </head>
   <body>
-    <div class="wrapper">
+    <div id="wrapper" class="wrapper">
       <div id="app" class="app">
       </div>
     </div>
   </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+  <script>
+    window.onload = () => {
+      VANTA.NET({
+        el: "#app-wrapper",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0xff4484
+      })
+    }
+  </script>
 </html>

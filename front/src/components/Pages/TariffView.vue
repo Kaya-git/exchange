@@ -5,196 +5,194 @@
             <v-container fluid class="tariff__container">
                 <v-table class="tariff__table">
                     <thead class="tariff__table-head">
-                        <tr class="tariff__table-head-row">
-                            <th>Отдаете</th>
-                            <th>Получаете</th>
-                            <th>Резерв средств</th>
-                        </tr>
+                    <tr class="tariff__table-head-row">
+                        <th v-for="(title, i) in tariffs.thead" :key="i">{{title}}</th>
+                    </tr>
                     </thead>
                     <tbody class="tariff__table-body">
-                        <tr class="tariff__table-body-row">
-                            <td colspan="3">
-                                Тинькофф
-                            </td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons/banks/tinkoff.svg" alt="">
-                                    <span>3554274 Тинькофф RUB</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
-                                    <span>1 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <span>19.97441957 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons/banks/tinkoff.svg" alt="">
-                                    <span>3554274 Тинькофф RUB</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
-                                    <span>1 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <span>19.97441957 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons/banks/tinkoff.svg" alt="">
-                                    <span>3554274 Тинькофф RUB</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
-                                    <span>1 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <span>19.97441957 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td colspan="3">Ethereum</td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons/banks/tinkoff.svg" alt="">
-                                    <span>3554274 Тинькофф RUB</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
-                                    <span>1 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <span>19.97441957 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons/banks/tinkoff.svg" alt="">
-                                    <span>3554274 Тинькофф RUB</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
-                                    <span>1 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <span>19.97441957 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td colspan="3">Ethereum</td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons/banks/tinkoff.svg" alt="">
-                                    <span>3554274 Тинькофф RUB</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
-                                    <span>1 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <span>19.97441957 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons/banks/tinkoff.svg" alt="">
-                                    <span>3554274 Тинькофф RUB</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
-                                    <span>1 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <span>19.97441957 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons/banks/tinkoff.svg" alt="">
-                                    <span>3554274 Тинькофф RUB</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
-                                    <span>1 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <span>19.97441957 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="tariff__table-body-row">
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons/banks/tinkoff.svg" alt="">
-                                    <span>3554274 Тинькофф RUB</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
-                                    <span>1 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="tariff__table-cell">
-                                    <span>19.97441957 Bitcoin BTC</span>
-                                </div>
-                            </td>
-                        </tr>
-                        
+                    <tr class="tariff__table-body-row">
+                        <td colspan="3">
+                            Тинькофф
+                        </td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons/banks/tinkoff.svg" alt="">
+                                <span>3554274 Тинькофф RUB</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
+                                <span>1 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <span>19.97441957 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons/banks/tinkoff.svg" alt="">
+                                <span>3554274 Тинькофф RUB</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
+                                <span>1 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <span>19.97441957 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons/banks/tinkoff.svg" alt="">
+                                <span>3554274 Тинькофф RUB</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
+                                <span>1 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <span>19.97441957 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td colspan="3">Ethereum</td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons/banks/tinkoff.svg" alt="">
+                                <span>3554274 Тинькофф RUB</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
+                                <span>1 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <span>19.97441957 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons/banks/tinkoff.svg" alt="">
+                                <span>3554274 Тинькофф RUB</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
+                                <span>1 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <span>19.97441957 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td colspan="3">Ethereum</td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons/banks/tinkoff.svg" alt="">
+                                <span>3554274 Тинькофф RUB</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
+                                <span>1 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <span>19.97441957 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons/banks/tinkoff.svg" alt="">
+                                <span>3554274 Тинькофф RUB</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
+                                <span>1 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <span>19.97441957 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons/banks/tinkoff.svg" alt="">
+                                <span>3554274 Тинькофф RUB</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
+                                <span>1 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <span>19.97441957 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tariff__table-body-row">
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons/banks/tinkoff.svg" alt="">
+                                <span>3554274 Тинькофф RUB</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <img src="../icons\cryptos\bitcoin-btc-logo.svg" alt="">
+                                <span>1 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tariff__table-cell">
+                                <span>19.97441957 Bitcoin BTC</span>
+                            </div>
+                        </td>
+                    </tr>
+
                     </tbody>
                 </v-table>
             </v-container>
@@ -206,10 +204,28 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-name: 'TariffView',
+    name: 'TariffView',
 
-data: () => ({
-    
-}),
+    data: () => ({
+        tariffs: {
+            thead: [
+                'Отдаете',
+                'Получаете',
+                'Резерв средств',
+            ],
+            tbody: [],
+        },
+    }),
+    created() {
+        this.getTariffs();
+    },
+    methods: {
+        async getTariffs() {
+            let response = await fetch('/api/currency/tariffs');
+            if (response.ok && response.status === 200) {
+                this.tariffs.tbody = await response.json();
+            }
+        }
+    }
 });
 </script>

@@ -7,12 +7,6 @@
                 </h2>
                 <v-text-field
                     class="account-form__field"
-                    v-model="formData.login"
-                    label="Логин"
-                    type="text"
-                ></v-text-field>
-                <v-text-field
-                    class="account-form__field"
                     v-model="formData.email"
                     label="Email"
                     type="email"
@@ -59,7 +53,6 @@ export default defineComponent({
     data: () => ({
         valid: false,
         formData: {
-            login: '',
             email: '',
             password: '',
             newPassword: '',
