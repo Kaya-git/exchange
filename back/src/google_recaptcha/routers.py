@@ -18,3 +18,8 @@ async def verify_recaptcha(token: str):
         return {'success': True}
     else:
         return {'success': False}
+
+
+@recaptcha_router.get('/pbc')
+async def give_pbc() -> str:
+    return conf.google_recaptcha.gpk

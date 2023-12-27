@@ -73,7 +73,7 @@ class Google_reCaptcha:
     """Google reCapthca set up"""
     google_url = os.environ.get("Google_URL")
     gsk = os.environ.get("GSK")
-    gt = os.environ.get("GT")
+    gpk = os.environ.get("GPK")
 
 
 @dataclass
