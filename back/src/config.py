@@ -69,6 +69,14 @@ class Auth:
 
 
 @dataclass
+class Google_reCaptcha:
+    """Google reCapthca set up"""
+    google_url = os.environ.get("Google_URL")
+    gsk = os.environ.get("GSK")
+    gt = os.environ.get("GT")
+
+
+@dataclass
 class Configuration:
     """ All in one's configuration class """
     secret_key = os.environ.get("SECRET_KEY")
@@ -79,6 +87,7 @@ class Configuration:
     yandex_email = os.environ.get("EMAIL")
     yandex_email_pass = os.environ.get("EMAIL_PASSWORD")
     image_storage = ImageStorageConfiguration()
+    google_recaptcha = Google_reCaptcha()
     parser = ParserConfiguration()
     redis = RedisConfig()
     db = DataBaseConfig()
