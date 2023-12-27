@@ -71,18 +71,17 @@ class RedisValues:
 
     async def get_router_num(
             self,
-            user_uuid: "UuidDTO"
+            user_uuid: str
     ) -> int:
         return await self.redis_conn.lindex(
-            user_uuid.user_uuid,
+            user_uuid,
             -1
         )
 
     async def check_existance(
             self,
-            user_uuid: "UuidDTO"
+            user_uuid: str
     ):
-        print(user_uuid)
         does_exist = await self.redis_conn.exists(
             user_uuid
         )
