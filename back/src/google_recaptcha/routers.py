@@ -3,7 +3,7 @@ from .handlers import ver_recaptcha
 from config import conf
 
 recaptcha_router = APIRouter(
-    prefix='/recaptcha',
+    prefix='/api/recaptcha',
     tags=['Роутер Google reCaptcha']
 )
 
