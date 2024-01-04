@@ -4,7 +4,6 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.base_model import Base
-from enums import Mark
 
 if TYPE_CHECKING:
     from pendings.models import PendingAdmin
@@ -26,7 +25,7 @@ class Review(Base):
         sa.String(250),
         nullable=False
     )
-    rating: Mapped[Mark] = mapped_column(
+    rating: Mapped[int] = mapped_column(
         sa.SmallInteger,
         nullable=False
     )

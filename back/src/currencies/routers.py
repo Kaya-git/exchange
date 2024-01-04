@@ -52,7 +52,7 @@ async def tariffs(
     all_currencies = await db.currency.get_all()
     currency_list = []
     for currency in all_currencies:
-        if currency.type is CurrencyType.Crypto:
+        if currency.type is CurrencyType.Крипта:
 
             show_currency = {}
 

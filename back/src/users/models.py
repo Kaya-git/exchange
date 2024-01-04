@@ -66,7 +66,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     )
     role: Mapped["Role"] = mapped_column(
         sa.Enum(Role),
-        default=Role.User
+        default=Role.Клиент
     )
 
     payment_options: Mapped[List["PaymentOption"]] = relationship(

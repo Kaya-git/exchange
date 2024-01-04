@@ -189,7 +189,7 @@ async def add_or_get_po(
 
     if crypto_po is None and fiat_po is None:
 
-        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Fiat:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Фиат:
 
             client_sell_payment_option = await db.payment_option.new(
                 currency_id=redis_voc["client_sell_currency"]["id"],
@@ -206,7 +206,7 @@ async def add_or_get_po(
                 user_id=user.id,
             )
 
-        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Crypto:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Крипта:
 
             client_sell_payment_option = await db.payment_option.new(
                 currency_id=redis_voc["client_sell_currency"]['id'],
@@ -231,7 +231,7 @@ async def add_or_get_po(
         crypto_po is not None and
         fiat_po is None
     ):
-        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Fiat:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Фиат:
 
             client_sell_payment_option = await db.payment_option.new(
                 currency_id=redis_voc["client_sell_currency"]["id"],
@@ -245,7 +245,7 @@ async def add_or_get_po(
 
             db.session.add(client_sell_payment_option)
 
-        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Crypto:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Крипта:
 
             client_sell_payment_option = crypto_po
 
@@ -265,7 +265,7 @@ async def add_or_get_po(
         crypto_po is None
     ):
 
-        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Fiat:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Фиат:
 
             client_sell_payment_option = fiat_po
 
@@ -277,7 +277,7 @@ async def add_or_get_po(
             )
             db.session.add(client_buy_payment_option)
 
-        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Crypto:
+        if redis_voc["client_sell_currency"]["type"] == CurrencyType.Крипта:
 
             client_sell_payment_option = await db.payment_option.new(
                 currency_id=redis_voc["client_sell_currency"]["id"],
@@ -316,7 +316,7 @@ async def calculate_totals(
 ):
     if client_sell_value != 0:
 
-        if client_sell_coin.type == CurrencyType.Crypto:
+        if client_sell_coin.type == CurrencyType.Крипта:
 
             client_buy_value = round(await Count.count_send_value(
                 get_value=client_sell_value,
@@ -329,7 +329,7 @@ async def calculate_totals(
                     status_code=status.HTTP_406_NOT_ACCEPTABLE,
                     detail="Клиент указал ноль на покупке"
                 )
-        if client_sell_coin.type == CurrencyType.Fiat:
+        if client_sell_coin.type == CurrencyType.Фиат:
 
             client_buy_value = round(await Count.count_get_value(
                 send_value=client_sell_value,
@@ -345,7 +345,7 @@ async def calculate_totals(
 
     if client_sell_value == 0:
 
-        if client_buy_coin.type == CurrencyType.Crypto:
+        if client_buy_coin.type == CurrencyType.Крипта:
 
             client_sell_value = round(await Count.count_send_value(
                 get_value=client_buy_value,
@@ -358,7 +358,7 @@ async def calculate_totals(
                     status_code=status.HTTP_406_NOT_ACCEPTABLE,
                     detail="Клиент указал ноль на продаже"
                 )
-        if client_buy_coin.type == CurrencyType.Fiat:
+        if client_buy_coin.type == CurrencyType.Фиат:
 
             client_sell_value = round(await Count.count_get_value(
                 send_value=client_buy_value,
@@ -456,7 +456,7 @@ async def check_user_registration(
             if credit_card.user is user:
                 # Добавляем ордер в бд
                 if (redis_dict["client_sell_currency"]["type"] ==
-                        CurrencyType.Fiat):
+                        CurrencyType.Фиат):
                     new_order = await db.order.new(
                         user_id=user.id,
                         user_email=redis_dict["client_email"],
@@ -478,7 +478,7 @@ async def check_user_registration(
                     )
 
                 if (redis_dict["client_sell_currency"]["type"] ==
-                        CurrencyType.Crypto):
+                        CurrencyType.Крипта):
                     new_order = await db.order.new(
                         user_id=user.id,
                         user_email=redis_dict["client_email"],

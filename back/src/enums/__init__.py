@@ -1,10 +1,8 @@
-from .models import (BankingType, CurrencyType, Mark, Role, Status,
+from .models import (CurrencyType, Role, Status,
                      VerifDeclineReason)
 
 __all__ = [
     'CurrencyType',
-    'BankingType',
-    'Mark',
     'Role',
     'Status',
     'VerifDeclineReason'

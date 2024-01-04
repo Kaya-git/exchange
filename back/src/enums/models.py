@@ -1,58 +1,39 @@
 import enum
 
 
-class BankingType(enum.StrEnum):
-    RUBSBER = "RUBSBER"
-    LTC = "LTC"
-    RUBQIWI = "RUBQIWI"
-    QIWIUSD = "QIWIUSD"
-    YAMONEY = "YAMONEY"
-    RUBPAY = "RUBPAY"
-    USDPAY = "USDPAY"
-    EURPAY = "EURPAY"
-
-
 class CurrencyType(enum.Enum):
-    Crypto = "crypto"
-    Fiat = "fiat"
-
-
-class Mark(enum.IntEnum):
-    one_star = 1
-    two_stars = 2
-    three_stars = 3
-    four_stars = 4
-    five_stars = 5
+    Крипта = "Крипто-валюта"
+    Фиат = "Фиатная валюта"
 
 
 class Role(enum.StrEnum):
-    User = "user"
-    Moderator = "moderator"
-    Admin = "admin"
+    Клиент = "Клиент"
+    Модератор = "Модератор"
+    Администратор = "Администратор"
 
 
 class Status(enum.StrEnum):
-    Pending = "pending"
-    Timeout = "timeout"
-    Canceled = "canceled"
-    Inprocces = "inprocces"
-    Verified = "verified"
-    NotVerified = "not verified"
-    Completed = "completed"
+    в_ожидании = "pending"
+    время_вышло = "timeout"
+    отменена = "canceled"
+    в_процессе = "inprocces"
+    верифицирована = "verified"
+    не_верифицирована = "not verified"
+    исполнена = "completed"
 
 
 class ReqAction(enum.StrEnum):
-    VerifyNewOrder = """Необходимо верифицировать клиента и
+    Верифицировать_Клиента = """Необходимо верифицировать клиента и
                             его платежные средства"""
-    VerifyTransaction = """Клиент оплатил заказ.
+    Верифицировать_Транзакцию = """Клиент оплатил заказ.
                             Необходимо верифицировать платеж и
                             провести оплату"""
-    VerifyReview = "Необходимо валидировать новый отзыв"
+    Верифицировать_Отзыв = "Необходимо валидировать новый отзыв"
 
 
 class VerifDeclineReason(enum.StrEnum):
-    Last4Digits = "Не видно последние 4 цифры карты"
-    WebDomen = "Не видно домен сайта"
-    NoOrder = "Не видно номер заявки"
-    Inittials = "Не видно ФИО"
-    BadQuality = "Плохое качество фотографии"
+    последние_4_цифры = "Не видно последние 4 цифры карты"
+    не_видно_домена_сайта = "Не видно домен сайта"
+    не_видно_номер_заявки = "Не видно номер заявки"
+    не_видно_фио = "Не видно ФИО"
+    плохое_качество_фото = "Плохое качество фотографии"

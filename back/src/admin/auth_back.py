@@ -16,7 +16,7 @@ class AdminAuth(AuthenticationBackend):
         username, password = form["username"], form["password"]
 
         user = await authenticate_admin(username, password)
-        if user and user.role is Role.Admin:
+        if user and user.role is Role.Администратор:
             acces_token = create_access_token({"sub": str(user.id)})
             request.session.update({"token": acces_token})
             return True

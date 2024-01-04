@@ -67,6 +67,6 @@ class OrderRepo(Repository[Order]):
         statement = (
             update(Order).
             where(Order.id == order_id).
-            values(status=Status.Timeout)
+            values(status=Status.время_вышло)
         )
         return (await self.session.execute(statement)).scalar_one_or_none()

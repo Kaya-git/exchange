@@ -119,8 +119,8 @@ class OrderAdmin(ModelView, model=Order):
         Order.service_buy_po
     ]
     column_default_sort = [
-        (Order.status, Status.Pending),
-        (Order.status, Status.Verified),
+        (Order.status, Status.в_ожидании),
+        (Order.status, Status.верифицирована),
     ]
     can_create = True
     can_edit = True

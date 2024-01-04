@@ -22,7 +22,6 @@ from .handlers import (
     redis_discard, ya_save_passport_photo,
     start_time
 )
-from where_am_i.schemas import UuidDTO
 
 
 exchange_router = APIRouter(
@@ -267,7 +266,7 @@ async def confirm_cc(
         user_sell_sum=redis_voc["client_sell_value"],
         sell_currency_id=redis_voc["client_sell_currency"]["id"],
         sell_payment_option_id=p_o_dict["client_sell_payment_option"]["id"],
-        status=Status.Pending,
+        status=Status.в_ожидании,
     )
     db.session.add(new_order)
     await db.session.flush()
@@ -275,7 +274,7 @@ async def confirm_cc(
     # Добавляем ордер в оповещение администратору
     new_pending = await db.pending_admin.new(
         order_id=new_order.id,
-        req_act=ReqAction.VerifyNewOrder
+        req_act=ReqAction.Верифицировать_Клиента
     )
     db.session.add(new_pending)
     await db.session.flush()
@@ -378,7 +377,7 @@ async def payed_button(
 
     await db.pending_admin.new(
         order_id=order_id,
-        req_act=ReqAction.VerifyTransaction
+        req_act=ReqAction.Верифицировать_Транзакцию
     )
     await db.session.commit()
     if not does_exist:

@@ -184,7 +184,7 @@ class DB:
                 whereclause=(PaymentOption.id == order.sell_payment_option_id)
             )
             if (
-                order.status is Status.Verified and
+                order.status is Status.верифицирована and
                 buy_po.is_verified is True and
                 sell_po.is_verified is True
             ):
@@ -194,7 +194,7 @@ class DB:
                 await db.session.commit()
                 return "Верифицировали карту. Обмен разрешен"
 
-            if order.status is Status.NotVerified:
+            if order.status is Status.не_верифицирована:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
@@ -228,18 +228,18 @@ class DB:
             order = None
             order = await db.order.get(order_id)
             user = await db.user.get(user_id)
-            if order.status is Status.Completed:
+            if order.status is Status.исполнена:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
 
                 buy_currency = await db.currency.get(order.buy_currency_id)
                 sell_currency = await db.currency.get(order.sell_currency_id)
-                if buy_currency.type is CurrencyType.Fiat:
+                if buy_currency.type is CurrencyType.Фиат:
                     user_volume = user.buy_volume
                     user_volume += order.user_buy_sum
 
-                if sell_currency.type is CurrencyType.Fiat:
+                if sell_currency.type is CurrencyType.Фиат:
                     user_volume = user.buy_volume
                     user_volume += order.user_sell_sum
 
@@ -250,7 +250,7 @@ class DB:
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
                 return " Успешно завершили обмен"
-            if order.status is Status.Canceled:
+            if order.status is Status.отменена:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
