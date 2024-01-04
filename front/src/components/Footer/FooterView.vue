@@ -7,7 +7,7 @@
       <v-row class="footer__row justify-center">
         <div class="footer__rights">
           VVS Coin - Мультивалютный обменный сервис,<br>
-          All rights reserved © 2019-2023
+          All rights reserved © 2023-2024
         </div>
       </v-row>
     </v-container>

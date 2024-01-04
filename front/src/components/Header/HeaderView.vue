@@ -4,7 +4,14 @@
             <v-row class="header-main">
                 <v-col class="header-main__col v-col-2">
                     <div class="header-main__logo header-logo">
-                        <Router-link to="/">VVS Coin</Router-link>
+                        <Router-link to="/">
+                            <h1 class="header-logo__container">
+                                <span class="header-logo__letter text-anim text-anim-1">V</span>
+                                <span class="header-logo__letter text-anim text-anim-2">V</span>
+                                <span class="header-logo__letter text-anim text-anim-3">S</span>
+                                Coin
+                            </h1>
+                        </Router-link>
                     </div>
                 </v-col>
                 <v-col class="header-main__col v-col-8">

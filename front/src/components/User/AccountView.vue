@@ -6,10 +6,13 @@
             <v-tab class="account__tab" :value="3">Настройки</v-tab>
         </v-tabs>
         <v-window class="account__window" v-model="tab">
-            <v-window-item class="account__window-item" :value="3">
+            <v-window-item class="account__window-item" :value="1">
                 <v-container class="account__window-container" fluid>
                     <v-sheet class="account__window-sheet pa-4 pa-md-6" rounded>
-                        <account-form></account-form>
+                        <h2 class="account__window-title title title_h2 title_black">
+                            Заявки
+                        </h2>
+                        <request-table></request-table>
                     </v-sheet>
                 </v-container>
             </v-window-item>
@@ -23,13 +26,10 @@
                     </v-sheet>
                 </v-container>
             </v-window-item>
-            <v-window-item class="account__window-item" :value="1">
+            <v-window-item class="account__window-item" :value="3">
                 <v-container class="account__window-container" fluid>
                     <v-sheet class="account__window-sheet pa-4 pa-md-6" rounded>
-                        <h2 class="account__window-title title title_h2 title_black">
-                            Заявки
-                        </h2>
-                        <request-table></request-table>
+                        <account-form></account-form>
                     </v-sheet>
                 </v-container>
             </v-window-item>
@@ -44,7 +44,7 @@ export default defineComponent({
     name: 'AccountView',
 
     data: () => ({
-        tab: 3,
+        tab: 1,
     }),
     components: {
         AccountForm: defineAsyncComponent({
@@ -56,6 +56,9 @@ export default defineComponent({
         AccountTable: defineAsyncComponent({
             loader: () => import("../Tables/AccountTable"),
         }),
+    },
+    mounted() {
+        fetch('/api/lk/user')
     }
 });
 </script>

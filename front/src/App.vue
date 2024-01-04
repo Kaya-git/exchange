@@ -1,5 +1,5 @@
 <template>
-    <v-app class="app-wrapper">
+    <v-app id="app-wrapper" class="app-wrapper">
         <v-container class="app-container">
             <header-view></header-view>
             <main class="page">
@@ -18,7 +18,8 @@
 import {defineAsyncComponent} from 'vue';
 import {mapActions, mapMutations, mapGetters} from 'vuex';
 import {getCookie} from '@/helpers';
-// import router from './router';
+// import NET from 'vanta/dist/vanta.net.min';
+// import * as THREE from 'three';
 
 export default {
     name: 'App',
@@ -31,18 +32,34 @@ export default {
         }),
     },
     data() {
-        return {}
+        return {
+            vantaEffect: null,
+        }
     },
     created() {
+
         this.getApiUUID();
         this.loadDataFromLocalStorage();
     },
     mounted() {
+        // window.onload = () => {
+        //     this.vantaEffect = NET({
+        //         el: '#app-wrapper',
+        //         THREE:THREE,
+        //         color: 0xff4484,
+        //         mouseControls: true,
+        //         touchControls: true,
+        //         gyroControls: false,
+        //         minHeight: 200.00,
+        //         minWidth: 200.00,
+        //         scale: 1.00,
+        //         scaleMobile: 1.00
+        //     });
+        // };
         if (getCookie('user_email')) {
             this.setUserEmail(getCookie('user_email'));
         }
         this.checkAuth();
-
         this.whereAmI().then(() => {
             if (this.getCurExchangeStep && localStorage.getItem('startTime')) {
                 // router.push({

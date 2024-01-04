@@ -6,40 +6,19 @@
                     Резервы валют
                 </h1>
                 <div class="reserves__cards">
-                    <v-card class="reserves__card reserve-card">
-                        <v-img 
-                        class="reserve-card__img"
-                        src="/icons/cryptos/bitcoin-btc-logo.svg"
+                    <v-card
+                        class="reserves__card reserve-card"
+                        v-for="(reserve, i) in reserves"
+                        :key="i">
+                        <v-img
+                            class="reserve-card__img"
+                            :src="'/' + reserve.icon"
                         ></v-img>
                         <v-card-title class="reserve-card__title">
-                            Bitcoin
+                            {{reserve.name}}
                         </v-card-title>
                         <v-card-subtitle class="reserve-card__subtitle">
-                            100 BTC
-                        </v-card-subtitle>
-                    </v-card>
-                    <v-card class="reserves__card reserve-card">
-                        <v-img 
-                        class="reserve-card__img"
-                        src="/icons/cryptos/ethereum-eth-logo.svg"
-                        ></v-img>
-                        <v-card-title class="reserve-card__title">
-                            Ethereum
-                        </v-card-title>
-                        <v-card-subtitle class="reserve-card__subtitle">
-                            200 ETH
-                        </v-card-subtitle>
-                    </v-card>
-                    <v-card class="reserves__card reserve-card">
-                        <v-img 
-                        class="reserve-card__img"
-                        src="/icons/cryptos/tether-usdt-logo.svg"
-                        ></v-img>
-                        <v-card-title class="reserve-card__title">
-                            Tether
-                        </v-card-title>
-                        <v-card-subtitle class="reserve-card__subtitle">
-                            150 USDT
+                            {{reserve.reserve}} {{reserve.tikker}}
                         </v-card-subtitle>
                     </v-card>
                 </div>
@@ -52,10 +31,29 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-name: 'ReservesView',
+    name: 'ReservesView',
 
-data: () => ({
-    
-}),
+    data: () => ({
+        reserves: [],
+    }),
+    created() {
+        this.getReserves();
+    },
+    methods: {
+        async getReserves() {
+            let response = await fetch('/api/currency/list');
+            if (response.ok && response.status === 200) {
+                this.reserves = await response.json();
+                if (this.reserves.length) {
+                    this.reserves = this.reserves.filter(function (item) {
+                        if (item.type == 'crypto') {
+                            return true;
+                        }
+                        return false;
+                    });
+                }
+            }
+        }
+    },
 });
 </script>

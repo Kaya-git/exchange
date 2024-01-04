@@ -10,7 +10,7 @@
                     </v-card-item>
                     <v-card-text class="contacts-card__text">
                         По финансовым и техническим вопросам: 
-                        <a class="contacts-card__link" href="mailto:support@gmail.com">support@gmail.com</a>
+                        <a class="contacts-card__link" href="mailto:vvs.coin777@gmail.com">vvs.coin777@gmail.com</a>
                     </v-card-text>
                 </v-card>
                 <v-card class="contacts__card contacts-card pa-4 mb-6">

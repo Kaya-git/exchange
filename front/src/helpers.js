@@ -4,14 +4,9 @@ export function prepareData(details) {
     }
     let formBody = [];
     for (const property in details) {
-        // if (details[property] instanceof File) {
-        //     // Если свойство является файлом, добавляем его к формируемому телу запроса
-        //     formBody.push(details[property]);
-        // } else {
-            const encodedKey = encodeURIComponent(property);
-            const encodedValue = encodeURIComponent(details[property]);
-            formBody.push(encodedKey + "=" + encodedValue);
-        // }
+        const encodedKey = encodeURIComponent(property);
+        const encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
     }
     return formBody.join("&");
 }
