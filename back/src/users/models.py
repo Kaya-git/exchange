@@ -64,6 +64,11 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         default=0,
         nullable=True,
     )
+    sell_volume: Mapped[sa.Numeric] = mapped_column(
+        sa.Numeric,
+        default=0,
+        nullable=True
+    )
     role: Mapped["Role"] = mapped_column(
         sa.Enum(Role),
         default=Role.Клиент

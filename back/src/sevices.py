@@ -234,18 +234,23 @@ class DB:
                 )
 
                 buy_currency = await db.currency.get(order.buy_currency_id)
-                sell_currency = await db.currency.get(order.sell_currency_id)
+
+                if buy_currency.type is CurrencyType.Крипта:
+                    user_volume = user.buy_volume
+                    user_volume += order.user_sell_sum
+
+                    statement = update(User).where(
+                        User.id == user_id
+                        ).values(buy_volume=user_volume)
+
                 if buy_currency.type is CurrencyType.Фиат:
                     user_volume = user.buy_volume
                     user_volume += order.user_buy_sum
 
-                if sell_currency.type is CurrencyType.Фиат:
-                    user_volume = user.buy_volume
-                    user_volume += order.user_sell_sum
+                    statement = update(User).where(
+                        User.id == user_id
+                        ).values(sell_volume=user_volume)
 
-                statement = update(User).where(
-                    User.id == user_id
-                    ).values(buy_volume=user_volume)
                 await db.session.execute(statement)
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
