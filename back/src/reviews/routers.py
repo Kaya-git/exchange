@@ -67,7 +67,7 @@ async def review_form(
 
     new_pending_review = await db.pending_admin.new(
         review_id=review.id,
-        req_act=ReqAction.Верифицировать_Отзыв
+        req_act=ReqAction.верифицировать_отзыв
     )
     db.session.add(new_pending_review)
     await db.session.flush()

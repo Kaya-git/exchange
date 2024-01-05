@@ -274,7 +274,7 @@ async def confirm_cc(
     # Добавляем ордер в оповещение администратору
     new_pending = await db.pending_admin.new(
         order_id=new_order.id,
-        req_act=ReqAction.Верифицировать_Клиента
+        req_act=ReqAction.верифицировать_клиента
     )
     db.session.add(new_pending)
     await db.session.flush()
@@ -377,7 +377,7 @@ async def payed_button(
 
     await db.pending_admin.new(
         order_id=order_id,
-        req_act=ReqAction.Верифицировать_Транзакцию
+        req_act=ReqAction.верифицировать_транзакцию
     )
     await db.session.commit()
     if not does_exist:
