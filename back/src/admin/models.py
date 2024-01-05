@@ -16,7 +16,6 @@ class PendingAdminAdmin(ModelView, model=PendingAdmin):
     name = "Актуальная заявка"
     name_plural = "Актуальные заявки"
     column_list = [
-        PendingAdmin.id,
         PendingAdmin.req_act,
         PendingAdmin.order_id,
         PendingAdmin.review_id
@@ -51,8 +50,8 @@ class UserAdmin(ModelView, model=User):
         User.first_name: "Имя",
         User.second_name: "Фамилия",
         User.registered_on: "Дата регистрации",
-        User.buy_volume: "Оборот покупки",
-        User.sell_volume: "Оборот продажи",
+        User.buy_volume: "Оборот покупок",
+        User.sell_volume: "Оборот продаж",
         User.role: "Роль",
         User.payment_options: "ID верификаций",
         User.id: "ID",
@@ -70,6 +69,10 @@ class UserAdmin(ModelView, model=User):
         User.registered_on,
         User.role,
     ]
+    column_sortable_list = [
+        User.buy_volume,
+        User.sell_volume
+    ]
     can_create = False
     can_delete = True
     can_edit = True
@@ -81,7 +84,6 @@ class OrderAdmin(ModelView, model=Order):
     name = "История заказов"
     name_plural = "История заказов"
     column_list = [
-        Order.id,
         Order.user,
         Order.user_buy_sum,
         Order.buy_currency,
@@ -124,9 +126,13 @@ class OrderAdmin(ModelView, model=Order):
         (Order.status, Status.в_ожидании),
         (Order.status, Status.верифицирована),
     ]
-    can_create = True
+    column_sortable_list = [
+        Order.date,
+        Order.status
+    ]
+    can_create = False
     can_edit = True
-    can_delete = True
+    can_delete = False
     can_export = True
     can_view_details = True
 
@@ -135,7 +141,6 @@ class CurrencyAdmin(ModelView, model=Currency):
     name = "Валюта"
     name_plural = "Валюты"
     column_list = [
-        Currency.coingecko_tik,
         Currency.tikker,
         Currency.name,
         Currency.buy_gas,
@@ -164,6 +169,9 @@ class CurrencyAdmin(ModelView, model=Currency):
     column_details_exclude_list = [
         Currency.service_payment_options, Currency.payment_options
     ]
+    column_default_sort = [
+        (Currency.tikker, True)
+    ]
     can_create = True
     can_edit = True
     can_delete = True
@@ -175,7 +183,7 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
     name = "Верификация"
     name_plural = "Верификация"
     column_list = [
-        PaymentOption.id,
+        PaymentOption.user,
         PaymentOption.currency,
         PaymentOption.number,
         PaymentOption.holder,
@@ -195,6 +203,10 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
         PaymentOption.user_id,
         PaymentOption.currency_id
     ]
+    column_searchable_list = [
+        PaymentOption.user,
+    ]
+    column_sortable_list = [PaymentOption.is_verified]
     can_create = False
     can_edit = True
     can_delete = True
@@ -229,7 +241,6 @@ class ReviewAdmin(ModelView, model=Review):
     name = "Отзыв"
     name_plural = "Отзывы"
     column_list = [
-        Review.id,
         Review.name,
         Review.text,
         Review.rating
@@ -263,9 +274,6 @@ class ContactAdmin(ModelView, model=Contact):
         Contact.link: "Ссылка",
         Contact.id: "ID"
     }
-    column_searchable_list = [
-        Contact.name
-    ]
     can_create = True
     can_delete = True
     can_edit = True
@@ -285,9 +293,6 @@ class FAQAdmin(ModelView, model=FAQ):
         FAQ.answer: "Ответ",
         FAQ.id: "ID"
     }
-    column_searchable_list = [
-        FAQ.question,
-    ]
     can_create = True
     can_delete = True
     can_edit = True

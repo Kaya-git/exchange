@@ -467,7 +467,7 @@ async def check_user_registration(
                         user_sell_sum=redis_dict["client_sell_value"],
                         sell_currency_id=redis_dict["client_sell_currency"]["id"],
                         sell_payment_option_id=credit_card.id,
-                        status=Status.Approved,
+                        status=Status.верифицирована,
                     )
                     db.session.add(new_order)
                     await db.session.flush()
@@ -489,7 +489,7 @@ async def check_user_registration(
                         user_sell_sum=redis_dict["client_sell_value"],
                         sell_currency_id=redis_dict["client_sell_currency"]["id"],
                         sell_payment_option_id=crypto_wallet.id,
-                        status=Status.Approved,
+                        status=Status.верифицирована,
                     )
                     db.session.add(new_order)
                     await db.session.flush()
