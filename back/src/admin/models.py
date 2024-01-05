@@ -28,7 +28,7 @@ class PendingAdminAdmin(ModelView, model=PendingAdmin):
     }
     can_create = False
     can_delete = True
-    can_edit = True
+    can_edit = False
     can_export = False
     can_view_details = True
 
@@ -209,7 +209,7 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
     column_sortable_list = [PaymentOption.is_verified]
     can_create = False
     can_edit = True
-    can_delete = True
+    can_delete = False
     can_export = False
     can_view_details = True
 

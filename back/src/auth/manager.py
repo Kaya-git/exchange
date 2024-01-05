@@ -6,7 +6,7 @@ from fastapi_users import (BaseUserManager, IntegerIDMixin, exceptions, models,
 
 from config import conf
 from users.models import User
-
+from enums import Role
 from .db import get_user_db
 
 
@@ -63,7 +63,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         )
         password = user_dict.pop("password")
         user_dict["hashed_password"] = self.password_helper.hash(password)
-        user_dict["role"] = "user"
+        user_dict["role"] = Role.Клиент
         created_user = await self.user_db.create(user_dict)
 
         await self.on_after_register(created_user, request)
