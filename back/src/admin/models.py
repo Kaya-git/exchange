@@ -43,6 +43,7 @@ class UserAdmin(ModelView, model=User):
         User.second_name,
         User.registered_on,
         User.buy_volume,
+        User.sell_volume,
         User.role,
     ]
     column_labels = {
@@ -50,7 +51,8 @@ class UserAdmin(ModelView, model=User):
         User.first_name: "Имя",
         User.second_name: "Фамилия",
         User.registered_on: "Дата регистрации",
-        User.buy_volume: "Оборот торгов",
+        User.buy_volume: "Оборот покупки",
+        User.sell_volume: "Оборот продажи",
         User.role: "Роль",
         User.payment_options: "ID верификаций",
         User.id: "ID",
