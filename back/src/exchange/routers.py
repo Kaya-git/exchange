@@ -356,7 +356,7 @@ async def payed_button(
     запускает паралельно задачу на отслеживание изменения стасу ордера' """
     db = Database(session=async_session)
 
-    does_exist = await services.redis_values.redis_conn.exists(user_uuid)
+    redis_existance = await services.redis_values.check_existance(user_uuid=user_uuid)
 
     await services.redis_values.change_redis_router_num(
         user_uuid=user_uuid,

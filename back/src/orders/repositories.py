@@ -67,7 +67,12 @@ class OrderRepo(Repository[Order]):
         statement = (
             update(Order).
             where(Order.id == order_id).
-            values(status=Status.отклонена)
+            values(
+                [
+                    {"status": Status.отклонена},
+                    {"decline_reason": VerifDeclineReason.истечение_времени}
+                ]
+            )
         )
         return await self.session.execute(statement)
 

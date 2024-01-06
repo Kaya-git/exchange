@@ -81,12 +81,17 @@ class RedisValues:
 
     async def check_existance(
             self,
-            user_uuid: str
+            user_uuid: str,
+            order_id: int | None,
+            db: Database | None
     ):
         does_exist = await self.redis_conn.exists(
             user_uuid
         )
         if does_exist != 1:
+            if order_id is not None:
+                await db.order.order_status_timout(order_id)
+
             raise HTTPException(
                 status_code=status.HTTP_408_REQUEST_TIMEOUT,
                 detail="Пользователя нет в редисе"
