@@ -42,6 +42,7 @@ class Count:
                 (get_value * margin) / 100
             ) * get_value) + gas
         )
+        print(type(send_value))
         return send_value
 
 
@@ -81,8 +82,8 @@ class RedisValues:
     async def check_existance(
             self,
             user_uuid: str,
-            order_id: int | None,
-            db: Database | None
+            order_id: int | None = None,
+            db: Database | None = None
     ):
         does_exist = await self.redis_conn.exists(
             user_uuid
@@ -335,17 +336,17 @@ class Mail:
 
         smtp_client = smtplib.SMTP('smtp.yandex.ru', 587, timeout=10)
 
-        try:
-            smtp_client.starttls()
-            smtp_client.login(self.email, self.password)
-            smtp_client.sendmail(msg['From'], recepient_email, msg.as_string())
-        except Exception:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Проблемы с отправлением сообщения на почту"
-            )
-        finally:
-            smtp_client.quit()
+        # try:
+        smtp_client.starttls()
+        smtp_client.login(self.email, self.password)
+        smtp_client.sendmail(msg['From'], recepient_email, msg.as_string())
+        # except Exception:
+        #     raise HTTPException(
+        #         status_code=status.HTTP_400_BAD_REQUEST,
+        #         detail="Проблемы с отправлением сообщения на почту"
+        #     )
+        # finally:
+        smtp_client.quit()
 
 
 class Services:

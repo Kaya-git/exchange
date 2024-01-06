@@ -10,7 +10,7 @@ from pendings.models import PendingAdmin
 from reviews.models import Review
 from service_payment_options.models import ServicePaymentOption
 from users.models import User
-
+from decimal import Decimal
 
 class PendingAdminAdmin(ModelView, model=PendingAdmin):
     name = "Актуальная заявка"
@@ -95,6 +95,15 @@ class OrderAdmin(ModelView, model=Order):
         Order.status,
         Order.transaction_link
     ]
+    column_formatters_detail = {
+        Order.user_sell_sum: lambda m, a: format(Decimal(m.user_sell_sum), "f"),
+        Order.user_buy_sum: lambda m, a: format(Decimal(m.user_buy_sum), "f")
+    }
+    column_formatters = {
+        Order.user_sell_sum: lambda m, a: format(Decimal(m.user_sell_sum), "f"),
+        Order.user_buy_sum: lambda m, a: format(Decimal(m.user_buy_sum), "f")
+    }
+
     column_labels = {
         Order.id: "ID",
         Order.user: "Пользователь",
@@ -109,7 +118,6 @@ class OrderAdmin(ModelView, model=Order):
         Order.decline_reason: "Причина отмены",
         Order.transaction_link: "Ссылка на транзакцию"
     }
-
     column_details_exclude_list = [
         Order.user_cookie,
         Order.user_id,
