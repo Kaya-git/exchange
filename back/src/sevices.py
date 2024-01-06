@@ -1,6 +1,5 @@
 import asyncio
 from decimal import Decimal
-from currencies.models import Currency
 import smtplib
 import redis.asyncio as redis
 from fastapi import HTTPException, status
@@ -257,18 +256,17 @@ class DB:
         order_id: int,
         user_id: int
     ):
-        while self.iterations != 0:
+        ttl = await services.redis_values.redis_conn.ttl()
+
+        while ttl != 0:
             order = None
             order = await db.order.get(order_id)
             user = await db.user.get(user_id)
+
             if (
-                order.status is Status.исполнена
-                ) and (
-                order.transaction_link
+                order.status is Status.исполнена and
+                order.transaction_link is not None
             ):
-                await db.pending_admin.delete(
-                    PendingAdmin.order_id == order_id
-                )
 
                 buy_currency = await db.currency.get(order.buy_currency_id)
 
@@ -291,16 +289,23 @@ class DB:
                 await db.session.execute(statement)
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
-                return {
-                    "link": order.transaction_link
-                }
+                await db.pending_admin.delete(
+                    PendingAdmin.order_id == order_id
+                )
+                if buy_currency.type is CurrencyType.Крипта:
+                    return {
+                        "link": order.transaction_link
+                    }
+                return None
             if order.status is Status.отклонена:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
-                return "Не пришли средства, обмен отклонен"
+                return {
+                    "reason": order.decline_reason
+                }
             await asyncio.sleep(5)
 
 

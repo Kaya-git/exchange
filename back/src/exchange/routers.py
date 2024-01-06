@@ -5,16 +5,13 @@ from typing import Annotated
 from fastapi import (APIRouter, Depends, Form, HTTPException, Path,
                      UploadFile, status)
 from fastapi.responses import RedirectResponse
-# from payment_options.models import PaymentOption
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from currencies.models import Currency
 from database.db import Database, get_async_session
-# from orders.models import Order
 from enums.models import ReqAction, Status
 from sevices import services
 from users.models import User
-# from sevices import Count
 from .handlers import (
     add_or_get_po, calculate_totals,
     check_form_fillment, check_user_registration,
@@ -356,7 +353,9 @@ async def payed_button(
     запускает паралельно задачу на отслеживание изменения стасу ордера' """
     db = Database(session=async_session)
 
-    redis_existance = await services.redis_values.check_existance(user_uuid=user_uuid)
+    await services.redis_values.check_existance(
+        user_uuid=user_uuid
+    )
 
     await services.redis_values.change_redis_router_num(
         user_uuid=user_uuid,
@@ -376,13 +375,11 @@ async def payed_button(
         req_act=ReqAction.верифицировать_транзакцию
     )
     await db.session.commit()
-    if not does_exist:
-
-        timeout = await db.order.order_status_timout(order_id)
-
-        if timeout:
-
-            return "Время вышло, необходим новый ордер"
+    await services.redis_values.check_existance(
+        user_uuid=user_uuid,
+        order_id=order_id,
+        db=db
+    )
 
     task = asyncio.create_task(services.db_paralell.payed_button_db(
             db=db,
