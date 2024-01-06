@@ -49,6 +49,11 @@ class Order(Base):
         sa.Enum(VerifDeclineReason),
         nullable=True
     )
+    transaction_link: Mapped[str] = mapped_column(
+        sa.Text,
+        nullable=True,
+        default=None,
+    )
 
     sell_payment_option_id: Mapped[int] = mapped_column(
         sa.ForeignKey("payment_option.id")

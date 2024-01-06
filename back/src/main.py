@@ -33,6 +33,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
 from redis_ttl.routers import redis_router
 from redis import asyncio as aioredis
+from mail_verif.routers import email_router
 # from google_recaptcha.routers import recaptcha_router
 
 app = FastAPI(
@@ -102,6 +103,7 @@ async def root(
     return cookies_uuid
 
 # app.include_router(recaptcha_router)
+app.include_router(email_router)
 app.include_router(redis_router)
 app.include_router(lk_router)
 app.include_router(where_am_i_router)

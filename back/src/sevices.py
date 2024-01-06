@@ -1,6 +1,7 @@
 import asyncio
 from decimal import Decimal
-import aiosmtplib
+from currencies.models import Currency
+import smtplib
 import redis.asyncio as redis
 from fastapi import HTTPException, status
 from sqlalchemy import update
@@ -119,7 +120,7 @@ class RedisValues:
             f"{client_crypto_wallet}"
         )
 
-        # await self.redis_conn.expire(name=f'{user_uuid}', time=900)
+        await self.redis_conn.expire(name=f'{user_uuid}', time=900)
         self.redis_conn.close
 
     async def change_keys(self,
@@ -135,10 +136,10 @@ class RedisValues:
             order_id,
             user_id
             )
-        # await self.redis_conn.expire(
-        #     name=f'{user_id}',
-        #     time=1200
-        # )
+        await self.redis_conn.expire(
+            name=f'{user_id}',
+            time=900
+        )
         self.redis_conn.close
 
     async def change_redis_router_num(
@@ -163,12 +164,15 @@ class DB:
         """
         Забираем из редиса айди заказа
         """
+        await services.redis_values.check_existance(user_uuid)
         order_id = await services.redis_values.get_order_id(user_uuid)
         """
         Делаем цикл с определенным количеством итераций для
         пулинга ордера из базы данных
         """
-        while self.iterations != 0:
+        end_timer = await services.redis_values.redis_conn.ttl(name=user_uuid)
+
+        while end_timer != 0:
             order = None
             buy_po = None
             sell_po = None
@@ -180,21 +184,42 @@ class DB:
             buy_po = await db.payment_option.get_by_where(
                 whereclause=(PaymentOption.id == order.buy_payment_option_id)
             )
-            sell_po = await db.payment_option.get_by_where(
-                whereclause=(PaymentOption.id == order.sell_payment_option_id)
-            )
-            if (
-                order.status is Status.верифицирована and
-                buy_po.is_verified is True and
-                sell_po.is_verified is True
-            ):
-                await db.pending_admin.delete(
-                    PendingAdmin.order_id == order_id
-                )
-                await db.session.commit()
-                return "Верифицировали карту. Обмен разрешен"
+            buy_currency = await db.currency.get(buy_po.currency_id)
+            # Новая логика
+            if buy_currency.type == CurrencyType.Фиат:
+                if buy_po.is_verified is True:
+                    await db.order.order_status_update(
+                        new_status=Status.ожидание_оплаты,
+                        order_id=order_id
+                    )
+                    await db.pending_admin.delete(
+                        PendingAdmin.order_id == order_id
+                    )
+                    await db.session.commit()
+                    return {
+                        "verified": True
+                    }
 
-            if order.status is Status.не_верифицирована:
+            sell_po = await db.payment_option.get_by_where(
+                    whereclause=(
+                        PaymentOption.id == order.sell_payment_option_id
+                    )
+                )
+            if buy_currency.type != CurrencyType.Фиат:
+                if sell_po.is_verified is True:
+                    await db.order.order_status_update(
+                        new_status=Status.ожидание_оплаты,
+                        order_id=order_id
+                    )
+                    await db.pending_admin.delete(
+                        PendingAdmin.order_id == order_id
+                    )
+                    await db.session.commit()
+                    return {
+                        "verified": True
+                    }
+
+            if order.status is Status.отклонена:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
@@ -206,6 +231,9 @@ class DB:
                     {order.decline_reason}"""
                 )
             await asyncio.sleep(5)
+            end_timer = await services.redis_values.redis_conn.ttl(
+                name=user_uuid
+            )
         await services.redis_values.redis_conn.delete(user_uuid)
         await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
@@ -228,7 +256,11 @@ class DB:
             order = None
             order = await db.order.get(order_id)
             user = await db.user.get(user_id)
-            if order.status is Status.исполнена:
+            if (
+                order.status is Status.исполнена
+                ) and (
+                order.transaction_link
+            ):
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
@@ -254,8 +286,10 @@ class DB:
                 await db.session.execute(statement)
                 await db.session.commit()
                 await services.redis_values.redis_conn.delete(user_uuid)
-                return " Успешно завершили обмен"
-            if order.status is Status.отменена:
+                return {
+                    "link": order.transaction_link
+                }
+            if order.status is Status.отклонена:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
@@ -275,33 +309,33 @@ class Mail:
         self.email = email
         self.password = password
 
-    async def send_email(
+    async def send_password(
             self,
             recepient_email: Email,
             generated_pass: Pass
     ) -> None:
 
         msg = MIMEText(
-            f"Ваш пароль от лк VVS-Coin: {generated_pass}",
+            f"Ваш пароль от лк VVS-Coin: {generated_pass}.",
             'plain', 'utf-8'
         )
         msg['Subject'] = Header('Пароль от лк VVS-Coin', 'utf-8')
         msg['From'] = self.email
         msg['To'] = recepient_email
 
-        s = aiosmtplib.SMTP('smtp.yandex.ru', 587, timeout=10)
+        smtp_client = smtplib.SMTP('smtp.yandex.ru', 587, timeout=10)
 
         try:
-            await s.starttls()
-            await s.login(self.email, self.password)
-            await s.sendmail(msg['From'], recepient_email, msg.as_string())
+            smtp_client.starttls()
+            smtp_client.login(self.email, self.password)
+            smtp_client.sendmail(msg['From'], recepient_email, msg.as_string())
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Проблемы с отправлением сообщения на почту"
             )
         finally:
-            await s.quit()
+            smtp_client.quit()
 
 
 class Services:

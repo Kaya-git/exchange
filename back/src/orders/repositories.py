@@ -67,6 +67,22 @@ class OrderRepo(Repository[Order]):
         statement = (
             update(Order).
             where(Order.id == order_id).
-            values(status=Status.время_вышло)
+            values(status=Status.отклонена)
         )
-        return (await self.session.execute(statement)).scalar_one_or_none()
+        return await self.session.execute(statement)
+
+    async def order_status_update(
+            self,
+            new_status: Status,
+            order_id: int
+    ):
+        statement = (
+            update(
+                Order
+            ).where(
+                Order.id == order_id
+            ).values(
+                status=new_status
+            )
+        )
+        return await self.session.execute(statement)

@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING, List
 import sqlalchemy as sa
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+import uuid
 from database.base_model import Base
 from enums import Role
-
+from sqlalchemy.dialects.postgresql import UUID
 if TYPE_CHECKING:
     from payment_options.models import PaymentOption
     # from reviews.models import Review
@@ -73,7 +73,11 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         sa.Enum(Role),
         default=Role.Клиент
     )
-
+    verification_token: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True),
+        default=uuid.uuid4,
+        unique=True
+    )
     payment_options: Mapped[List["PaymentOption"]] = relationship(
         back_populates="user"
     )

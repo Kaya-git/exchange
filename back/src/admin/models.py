@@ -93,19 +93,21 @@ class OrderAdmin(ModelView, model=Order):
         Order.sell_payment_option,
         Order.date,
         Order.status,
+        Order.transaction_link
     ]
     column_labels = {
         Order.id: "ID",
         Order.user: "Пользователь",
         Order.user_buy_sum: "Сумма покупки",
         Order.buy_currency: "Валюта покупки",
-        Order.buy_payment_option: "ID способа оплаты пользователя",
-        Order.user_sell_sum: "Сумма к обмену",
-        Order.sell_currency: "Валюта к обмену",
-        Order.sell_payment_option: "ID способа обмена пользователя",
+        Order.buy_payment_option: "ID способа покупки пользователя",
+        Order.user_sell_sum: "Сумма оплаты",
+        Order.sell_currency: "Валюта оплаты",
+        Order.sell_payment_option: "ID способа оплаты пользователя",
         Order.date: "Дата обмена",
         Order.status: "Статус заявки",
-        Order.decline_reason: "Причина отмены"
+        Order.decline_reason: "Причина отмены",
+        Order.transaction_link: "Ссылка на транзакцию"
     }
 
     column_details_exclude_list = [
@@ -123,8 +125,12 @@ class OrderAdmin(ModelView, model=Order):
         Order.service_buy_po
     ]
     column_default_sort = [
-        (Order.status, Status.в_ожидании),
-        (Order.status, Status.верифицирована),
+        (Order.status, Status.верификация_карты),
+        (Order.status, Status.ожидание_оплаты),
+        (Order.status, Status.проверка_оплаты),
+        (Order.status, Status.в_процессе_выплаты),
+        (Order.status, Status.исполнена),
+        (Order.status, Status.отклонена)
     ]
     column_sortable_list = [
         Order.date,
@@ -132,7 +138,7 @@ class OrderAdmin(ModelView, model=Order):
     ]
     can_create = False
     can_edit = True
-    can_delete = False
+    can_delete = True
     can_export = True
     can_view_details = True
 
@@ -209,7 +215,7 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
     column_sortable_list = [PaymentOption.is_verified]
     can_create = False
     can_edit = True
-    can_delete = False
+    can_delete = True
     can_export = False
     can_view_details = True
 

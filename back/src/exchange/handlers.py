@@ -423,14 +423,9 @@ async def check_user_registration(
         )
         if credit_card is None:
 
-            # return RedirectResponse("/cc_conformation_form")
-            return (
-                '''
-                Пользователь не найден.
-                Карта не зарегестрирована.
-                Редирект на верификацию карты.
-                '''
-            )
+            return {
+                "verified": False
+            }
         if credit_card.user is not None:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
@@ -467,7 +462,7 @@ async def check_user_registration(
                         user_sell_sum=redis_dict["client_sell_value"],
                         sell_currency_id=redis_dict["client_sell_currency"]["id"],
                         sell_payment_option_id=credit_card.id,
-                        status=Status.верифицирована,
+                        status=Status.ожидание_оплаты,
                     )
                     db.session.add(new_order)
                     await db.session.flush()
@@ -489,7 +484,7 @@ async def check_user_registration(
                         user_sell_sum=redis_dict["client_sell_value"],
                         sell_currency_id=redis_dict["client_sell_currency"]["id"],
                         sell_payment_option_id=crypto_wallet.id,
-                        status=Status.верифицирована,
+                        status=Status.ожидание_оплаты,
                     )
                     db.session.add(new_order)
                     await db.session.flush()
@@ -499,11 +494,9 @@ async def check_user_registration(
                         order_id=new_order.id
                     )
 
-                return (
-                    "Такой пользователь существует."
-                    "Кредитная карта принадлежит пользователю."
-                    "Ордер создан"
-                )
+                return {
+                    "verified": True
+                }
             else:
                 raise HTTPException(
                     status_code=status.HTTP_406_NOT_ACCEPTABLE,
@@ -515,13 +508,9 @@ async def check_user_registration(
             credit_card is not None and
             credit_card.is_verified is False
         ):
-            return (
-                    "Такой пользователь существует"
-                    "Кредитная карта не верифицированна"
-                    "Редирект на верификацию карты"
-                )
-        return (
-            "Пользователь существует."
-            "Кредитная карта и кошель не верицфицирован"
-            "редирект на страницу верификации"
-        )
+            return {
+                "verified": False
+            }
+        return {
+            "verified": False
+        }

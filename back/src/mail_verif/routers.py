@@ -5,7 +5,7 @@ from users.models import User
 from sqlalchemy import update
 
 email_router = APIRouter(
-    prefix="email_verif",
+    prefix="/email_verif",
     tags=["Роутер для верификации почты пользователя с лк"]
 )
 

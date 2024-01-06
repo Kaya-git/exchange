@@ -180,12 +180,8 @@ async def confirm_button(
     db = Database(session=async_session)
 
     # Проверяем есть ли ключи в реддисе и забираем значения
-    does_exist = await services.redis_values.redis_conn.exists(user_uuid)
-    if does_exist != 1:
-        raise HTTPException(
-            status_code=status.HTTP_408_REQUEST_TIMEOUT,
-            detail="Timeout"
-        )
+    await services.redis_values.check_existance(user_uuid)
+
     redis_dict = await redis_discard(
         user_uuid=user_uuid,
         db=db
@@ -245,10 +241,10 @@ async def confirm_cc(
         db.session.add(user)
         await db.session.flush()
 
-        # await services.mail.send_email(
-        #     recepient_email=redis_voc["client_email"],
-        #     generated_pass=new_password
-        # )
+        await services.mail.send_password(
+            recepient_email=redis_voc["client_email"],
+            generated_pass=new_password
+        )
 
     p_o_dict = await add_or_get_po(
         db, redis_voc,
@@ -266,7 +262,7 @@ async def confirm_cc(
         user_sell_sum=redis_voc["client_sell_value"],
         sell_currency_id=redis_voc["client_sell_currency"]["id"],
         sell_payment_option_id=p_o_dict["client_sell_payment_option"]["id"],
-        status=Status.в_ожидании,
+        status=Status.верификация_карты,
     )
     db.session.add(new_order)
     await db.session.flush()
@@ -289,7 +285,7 @@ async def confirm_cc(
 
     await db.session.commit()
 
-    return "Pending order created"
+    return "Ордер создан"
 
 
 @exchange_router.post("/await")

@@ -31,7 +31,7 @@ class UserRepo(Repository[User]):
         first_name: str = None,
         second_name: str = None,
         buy_volume: Decimal = 0,
-        sell_volme: Decimal = 0,
+        sell_volume: Decimal = 0,
         is_verified: bool = False
     ) -> None:
 
@@ -42,7 +42,7 @@ class UserRepo(Repository[User]):
                 first_name=first_name,
                 second_name=second_name,
                 buy_volume=buy_volume,
-                sell_volme=sell_volme,
+                sell_volume=sell_volume,
                 is_verified=is_verified
             )
         )
