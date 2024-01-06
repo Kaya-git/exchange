@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
-import {getCookie, setCookie} from '@/helpers';
+import {getCookie, deleteCookie, prepareData} from '@/helpers';
+import NET from 'vanta/dist/vanta.net.min';
 
 const Store = new Vuex.Store({
     state: {
@@ -10,8 +11,12 @@ const Store = new Vuex.Store({
         uuid: null,
         user: {
             email: null,
+            orders: [],
+            data: {},
         },
         requestFixedTime: 600,
+        vantaEffect: null,
+        timer: null,
     },
     mutations: {
         setExchangeData(state, data) {
@@ -37,7 +42,26 @@ const Store = new Vuex.Store({
         },
         setRequestFixedTime(state, data) {
             state.requestFixedTime = data;
-        }
+        },
+        setVantaEffect(state) {
+            state.vantaEffect = NET({
+                el: '#app-wrapper',
+                color: 0xff4484,
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: window.innerHeight,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00
+            });
+        },
+        setUserOrders(state, data) {
+            state.user.orders = data;
+        },
+        setUserData(state, data) {
+            state.user.data = data;
+        },
     },
     actions: {
         loadDataFromLocalStorage({ commit }) {
@@ -66,22 +90,17 @@ const Store = new Vuex.Store({
             }
         },
         async checkAuth({commit, state}) {
-            if (state.user.email && !state.isAuth) {
-                let body = {
-                    'email': state.user.email,
-                }
-                let response = await fetch('/api/auth/request-verify-token',{
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'accept':  'application/json',
-                    },
-                    body: JSON.stringify(body),
-                });
+            if (state.user.email) {
+                let response = await fetch('/api/lk/user');
                 if (response.ok) {
+                    let result = await response.json();
                     await commit('auth');
-                    localStorage.setItem('auth', 'true');
+                    await commit('setUserData', result);
                     return state.isAuth;
+                } else {
+                    if (getCookie('user_email')) {
+                        deleteCookie('user_email');
+                    }
                 }
             }
         },
@@ -100,16 +119,19 @@ const Store = new Vuex.Store({
             }
         },
         async whereAmI({commit, state}) {
-            let body = {
+            let details = {
                 'user_uuid': state.uuid,
             }
+
+            let formBody = prepareData(details);
+
             let response = await fetch('/api/where_am_i/', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                     'accept':  'application/json',
                 },
-                body: JSON.stringify(body),
+                body: formBody
             });
             if (response.ok) {
                 commit('setCurExchangeStep', await response.json());
@@ -125,10 +147,15 @@ const Store = new Vuex.Store({
             if (response.ok) {
                 localStorage.removeItem('auth');
                 if (getCookie('user_email')) {
-                    setCookie('user_email', '', 0);
+                    deleteCookie('user_email');
                 }
                 location.reload();
             }
+        },
+        resizeBg({state}) {
+            setTimeout(() => {
+                state.vantaEffect.resize();
+            }, 100);
         },
     },
     getters: {
@@ -137,6 +164,8 @@ const Store = new Vuex.Store({
         getAuthState: state => state.isAuth,
         getUuid: state => state.uuid,
         getCurExchangeStep: state => state.curExchangeStep,
+        getUserOrders: state => state.user.orders,
+        getUserData: state => state.user.data,
     }
 });
 

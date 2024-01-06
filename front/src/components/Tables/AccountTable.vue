@@ -9,25 +9,51 @@
         <tr v-if="!table.tbody.length" class="account-table__body-row">
             <td class="account-table__empty" :colspan="table.thead.length"><span>Здесь пока ничего нет</span></td>
         </tr>
+        <template v-else>
+            <tr
+                v-for="item in table.tbody"
+                :key="item.id"
+                class="account-table__body-row">
+                <td class="account-table__item">
+                    {{item.holder}}
+                </td>
+                <td class="account-table__item">
+                    {{item.number}}
+                </td>
+                <td class="account-table__item">
+
+                </td>
+            </tr>
+        </template>
         </tbody>
     </v-table>
 
 </template>
 <script>
-import {defineComponent} from 'vue';
+import {defineComponent, reactive} from 'vue';
+import {mapGetters} from 'vuex';
 
 export default defineComponent({
     name: 'AccountTable',
 
     data: () => ({
-        table: {
+        table: reactive({
             thead: [
                 'Наименование',
                 'Номер счета',
                 'Действия',
             ],
             tbody: []
-        }
+        })
     }),
+    mounted() {
+        this.table.tbody = this.getUserData.verified_po;
+    },
+    computed: {
+        ...mapGetters([
+           'getUserData',
+            'getUuid'
+        ]),
+    }
 });
 </script>

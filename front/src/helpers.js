@@ -23,7 +23,7 @@ export function getCookie(name) {
     }
 }
 
-export function setCookie(name, value, days) {
+export function setCookie(name, value = '', days = 0) {
     let expires = "";
     if (days) {
         const date = new Date();
@@ -31,4 +31,8 @@ export function setCookie(name, value, days) {
         expires = `; expires=${date.toUTCString()}`;
     }
     document.cookie = `${name}=${value}${expires}; path=/`;
+}
+
+export function deleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 }

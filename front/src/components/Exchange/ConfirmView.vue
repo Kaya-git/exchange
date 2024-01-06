@@ -78,13 +78,14 @@
     <verification-modal
         :model-value="isVerificationModalVisible"
         :msg="'Загрузите фото для верификации вашей карты'"
+        :loader="loading"
         @confirmed="verification"
         @canceled="isVerificationModalVisible = !isVerificationModalVisible"
     ></verification-modal>
 </template>
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
-import {mapGetters, mapMutations} from 'vuex';
+import {mapGetters, mapMutations, mapActions} from 'vuex';
 import {prepareData} from '@/helpers';
 
 export default defineComponent({
@@ -106,6 +107,11 @@ export default defineComponent({
         //     this.$emit('error', 'Упс! Что-то пошло не так...');
         // }
     },
+    mounted() {
+        setTimeout(() => {
+            this.resizeBg();
+        }, 100);
+    },
     components: {
         TimerView: defineAsyncComponent({
             loader: () => import("../Utils/TimerView"),
@@ -120,6 +126,9 @@ export default defineComponent({
     methods: {
         ...mapMutations([
             'setExchangeData',
+        ]),
+        ...mapActions([
+            'resizeBg',
         ]),
         async confirmRequest() {
             let details = {
@@ -178,22 +187,22 @@ export default defineComponent({
             this.isModalVisible = false;
         },
         async verification() {
+            this.loading = true;
             const formData = new FormData();
             formData.append('user_uuid', this.getUuid);
             formData.append('cc_image', this.getVerificationFile);
-            this.loading = true;
             let response = await fetch('/api/exchange/cc_conformation_form', {
                 method: 'POST',
                 body: formData
             });
             this.isVerificationModalVisible = false;
-            this.loading = false;
             if (response.ok) {
                 this.$emit('complete');
                 this.$emit('nextStep');
             } else {
                 this.$emit('error', 'Не удалось отправить запрос');
             }
+            this.loading = false;
         }
     },
     computed: {

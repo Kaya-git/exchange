@@ -96,7 +96,7 @@
     <confirm-trade
         :model-value="confirmOverlay"
         :requisite="requisite"
-        @confirmed="payed"
+        @confirmed="confirmTrade"
         @canceled="confirmOverlay = !confirmOverlay"
     ></confirm-trade>
 </template>
@@ -112,7 +112,7 @@ export default defineComponent({
     data: () => ({
         exchangeData: null,
         confirmOverlay: false,
-        requisite: '',
+        requisites: '',
     }),
     created() {
         this.exchangeData = this.getExchangeData;
@@ -127,34 +127,11 @@ export default defineComponent({
         }),
     },
     methods: {
-        async payed() {
-            let details = {
-                'user_uuid': this.getUuid,
-            }
-            let formBody = prepareData(details);
-
-            let response = await fetch('/api/exchange/payed', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'accept':  'application/json',
-                },
-                body: formBody
-            });
-            if (response.ok) {
-                this.confirmOverlay = false;
-                this.$emit('complete');
-                this.$emit('nextStep');
-            } else {
-                await this.payed();
-            }
-        },
         async getRequisites() {
             let details = {
                 'user_uuid': this.getUuid,
             }
             let formBody = prepareData(details);
-
             let response = await fetch('/api/exchange/order', {
                 method: 'POST',
                 headers: {
@@ -164,16 +141,24 @@ export default defineComponent({
                 body: formBody
             });
             if (response.ok) {
-                let requisites = await response.json();
-                this.requisite = requisites.requisites_num + " " + this.requisites.holder;
+                this.requisites = await response.json();
+
             }
         },
+        confirmTrade() {
+            this.confirmOverlay = !this.confirmOverlay;
+            this.$emit('complete');
+            this.$emit('nextStep');
+        }
     },
     computed: {
         ...mapGetters([
             'getExchangeData',
             'getUuid',
         ]),
+        requisite() {
+            return  this.requisites.requisites_num + " " + this.requisites.holder;
+        }
     }
 });
 </script>

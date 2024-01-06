@@ -1,5 +1,8 @@
 .wait-modal {
-    &__icon {
-        font-size: 60px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &__title {
+        margin-bottom: 20px;
     }
 }

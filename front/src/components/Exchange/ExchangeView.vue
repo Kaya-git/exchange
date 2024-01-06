@@ -55,23 +55,39 @@
                                     selected-class="bg-primary"
                                     class="currency-list__group">
                                     <v-item
-                                        class="currency-list__item"
                                         v-for="(currency, i) in currenciesApi.banks"
                                         :key="i"
                                         :value="currency"
-                                        v-slot="{selectedClass, select}">
+                                        v-slot="{selectedClass,select}">
                                         <v-btn
                                             class="currency-list__btn currency-btn"
+                                            @click="select"
                                             :class="selectedClass"
-                                            size="x-large"
-                                            @click="select">
+                                            size="x-large">
                                             <template v-slot:prepend>
-                                                <span class="currency-btn__img">
-                                                    <img :src="currency.icon" :alt="currency.name">
-                                                </span>
+                                        <span class="currency-btn__img">
+                                            <img :src="currency.icon" :alt="currency.name">
+                                        </span>
                                             </template>
-                                            {{ currency.name }}
-                                            {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
+                                            {{ currency.name }} {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
+                                        </v-btn>
+                                    </v-item>
+                                    <v-item
+                                        v-for="(currency, i) in currenciesApi.crypto"
+                                        :key="i"
+                                        :value="currency"
+                                        v-slot="{selectedClass,select}">
+                                        <v-btn
+                                            class="currency-list__btn currency-btn"
+                                            @click="select"
+                                            :class="selectedClass"
+                                            size="x-large">
+                                            <template v-slot:prepend>
+                                        <span class="currency-btn__img">
+                                            <img :src="currency.icon" :alt="currency.name">
+                                        </span>
+                                            </template>
+                                            {{ currency.name }} {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
                                         </v-btn>
                                     </v-item>
                                 </v-item-group>
@@ -110,27 +126,50 @@
                         <v-row class="exchange-tab__content-row">
                             <v-container class="exchange-tab__currency-list currency-list">
                                 <v-item-group
+                                    v-model="getCurrency"
+                                    v-if="giveCurrency && giveCurrency.type === 'fiat'"
                                     class="currency-list__group"
-                                    selected-class="bg-primary"
-                                    v-model="getCurrency">
+                                    selected-class="bg-primary">
                                     <v-item
-                                        class="currency-list__item"
                                         v-for="(currency, i) in currenciesApi.crypto"
                                         :key="i"
                                         :value="currency"
-                                        v-slot="{selectedClass, select}">
+                                        v-slot="{selectedClass,select}">
                                         <v-btn
                                             class="currency-list__btn currency-btn"
                                             :class="selectedClass"
                                             size="x-large"
                                             @click="select">
                                             <template v-slot:prepend>
-                                                <span class="currency-btn__img">
-                                                    <img :src="currency.icon" :alt="currency.name">
-                                                </span>
+                                            <span class="currency-btn__img">
+                                                <img :src="currency.icon" :alt="currency.name">
+                                            </span>
                                             </template>
-                                            {{ currency.name }}
-                                            {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
+                                            {{ currency.name }} {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
+                                        </v-btn>
+                                    </v-item>
+                                </v-item-group>
+                                <v-item-group
+                                    v-model="getCurrency"
+                                    v-if="giveCurrency && giveCurrency.type === 'crypto'"
+                                    class="currency-list__group"
+                                    selected-class="bg-primary">
+                                    <v-item
+                                        v-for="(currency, i) in currenciesApi.banks"
+                                        :key="i"
+                                        :value="currency"
+                                        v-slot="{selectedClass,select}">
+                                        <v-btn
+                                            class="currency-list__btn currency-btn"
+                                            :class="selectedClass"
+                                            size="x-large"
+                                            @click="select">
+                                            <template v-slot:prepend>
+                                        <span class="currency-btn__img">
+                                            <img :src="currency.icon" :alt="currency.name">
+                                        </span>
+                                            </template>
+                                            {{ currency.name }} {{ currency.coingecko_tik === 'rub' ? 'RUB' : currency.tikker }}
                                         </v-btn>
                                     </v-item>
                                 </v-item-group>
@@ -212,8 +251,8 @@
                                                     :rules="[rules.required]"
                                                     class="exchange-data__checkbox">
                                                     <template v-slot:label>
-                                                        <div>Даю согласие с <a href="#">условиями обмена</a>, <a
-                                                            href="#">соглашением</a> и <a href="#">политикой KYC/AML</a>
+                                                        <div>Даю согласие с <RouterLink to="/privacy/">условиями обмена</RouterLink>, <RouterLink
+                                                            to="/privacy/">соглашением</RouterLink> и <RouterLink to="/privacy/">политикой KYC/AML</RouterLink>
                                                         </div>
                                                     </template>
                                                 </v-checkbox>
@@ -223,13 +262,19 @@
                                                         :rules="[rules.required]"
                                                         class="exchange-data__checkbox">
                                                     <template v-slot:label>
-                                                        <div>Согласен с тем, что сумму более ₽300'000 необходимо <a
-                                                            href="#">отправлять частями</a></div>
+                                                        <div>Согласен с тем, что сумму более ₽300'000 необходимо <RouterLink
+                                                            to="/privacy/">отправлять частями</RouterLink></div>
                                                     </template>
                                                 </v-checkbox>
                                             </div>
                                             <div class="exchange-data__submit">
-                                                <v-btn type="submit" size="large">Перейти к оплате</v-btn>
+                                                <v-btn
+                                                    type="submit"
+                                                    size="large"
+                                                    :loading="loading"
+                                                    :disabled="loading">
+                                                    Перейти к оплате
+                                                </v-btn>
                                             </div>
                                         </v-form>
                                     </v-col>
@@ -405,8 +450,8 @@
                                                     class="exchange-data__checkbox"
                                                     :rules="[rules.required]">
                                                     <template v-slot:label>
-                                                        <div>Даю согласие с <a href="#">условиями обмена</a>, <a
-                                                            href="#">соглашением</a> и <a href="#">политикой KYC/AML</a>
+                                                        <div>Даю согласие с <RouterLink to="/privacy/">условиями обмена</RouterLink>, <RouterLink
+                                                            to="/privacy/">соглашением</RouterLink> и <RouterLink to="/privacy/">политикой KYC/AML</RouterLink>
                                                         </div>
                                                     </template>
                                                 </v-checkbox>
@@ -417,13 +462,19 @@
                                                     :rules="[rules.required]"
                                                     class="exchange-data__checkbox">
                                                     <template v-slot:label>
-                                                        <div>Согласен с тем, что сумму более ₽300'000 необходимо <a
-                                                            href="#">отправлять частями</a></div>
+                                                        <div>Согласен с тем, что сумму более ₽300'000 необходимо <RouterLink
+                                                            to="/privacy/">отправлять частями</RouterLink></div>
                                                     </template>
                                                 </v-checkbox>
                                             </div>
                                             <div class="exchange-data__submit">
-                                                <v-btn type="submit" size="large">Перейти к оплате</v-btn>
+                                                <v-btn
+                                                    type="submit"
+                                                    size="large"
+                                                    :loading="loading"
+                                                    :disabled="loading">
+                                                    Перейти к оплате
+                                                </v-btn>
                                             </div>
                                         </v-form>
                                     </v-col>
@@ -528,8 +579,6 @@ export default defineComponent({
 
             const results = await event;
 
-            this.loading = false;
-
             if (results.valid) {
                 this.formData.giveTikker = this.giveCurrency.tikker;
                 this.formData.getTikker = this.getCurrency.tikker;
@@ -546,6 +595,7 @@ export default defineComponent({
                 this.formData.rules.error = !this.formData.rules.value;
                 this.formData.privacy.error = !this.formData.privacy.value;
             }
+            // this.loading = false;
         },
         async sendData() {
             let details = {
