@@ -2,7 +2,7 @@
   <v-footer class="footer">
     <v-container class="footer__container">
       <v-row class="footer__row">
-        
+
       </v-row>
       <v-row class="footer__row justify-center">
         <div class="footer__rights">
@@ -21,7 +21,7 @@ export default defineComponent({
   name: 'FooterView',
 
   data: () => ({
-    
+
   }),
 });
 </script>

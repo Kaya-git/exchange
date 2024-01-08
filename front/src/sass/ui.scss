@@ -67,6 +67,9 @@
 		font-size: rem(18px);
 		margin-bottom: 10px;
 	}
+	&_h4 {
+		font-size: rem(16px);
+	}
 
 	&_black {
 		color: #000;
@@ -183,15 +186,16 @@ $textDur: 500ms;
 		left: 0rem;
 		animation: text $textDur * 0.8 linear;
 		animation-fill-mode: forwards;
+		animation-delay: 200ms;
 	}
 	&-2 {
 		left: 5.4rem;
-		animation-delay: 150ms;
+		animation-delay: 350ms;
 		animation-duration: $textDur * 0.9;
 	}
 	&-3 {
 		left: 9.6rem;
-		animation-delay: 330ms;
+		animation-delay: 530ms;
 	}
 }
 

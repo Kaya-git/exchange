@@ -4,7 +4,15 @@
     }
     &__submit {
         display: block !important;
-        margin: 20px auto 0 auto;
+        margin: 20px 20px 20px 0;
+    }
+    &__btns {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    &__logout {
+        justify-self: flex-start;
     }
 }
 
@@ -17,6 +25,9 @@
         &__col {
             padding: 0 20px;
             flex: 1 1 50%;
+        }
+        &__logout {
+            display: none !important;
         }
     }
 }

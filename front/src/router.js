@@ -1,7 +1,8 @@
 import {createRouter, createWebHistory} from 'vue-router';
 import {nextTick} from 'vue';
+import store from './store';
 
-const Router = new createRouter({
+const router = new createRouter({
     history: createWebHistory(),
     routes: [
         {
@@ -69,7 +70,10 @@ const Router = new createRouter({
         {
             name: 'ExchangeSteps',
             path: '/exchange/',
-            component: () => import("./components/Exchange/ExchangeSteps")
+            component: () => import("./components/Exchange/ExchangeSteps"),
+            meta: {
+                needStep: true,
+            }
         },
         {
             name: 'NotFound',
@@ -80,21 +84,34 @@ const Router = new createRouter({
 });
 
 // eslint-disable-next-line
-Router.beforeEach((to, from) => {
-    if (to.meta.requiresAuth && localStorage.getItem('auth') !== 'true') {
-        return {
-            path: '/auth/',
-            // save the location we were at to come back later
-            query: { redirect: to.fullPath },
-        }
+router.beforeEach((to, from, next) => {
+    if (to.meta.requiresAuth) {
+        store.dispatch('checkAuth').then(() => {
+            if (!store.state.isAuth) {
+                next({
+                    name: 'AuthView',
+                });
+            } else {
+                next()
+            }
+        })
+    } else if (to.meta.needStep && !store.state.curExchangeStep) {
+        next({
+            name: 'ExchangeView',
+        });
+    } else {
+        next();
     }
 });
 
 const DEFAULT_TITLE = 'Мультивалютный обменный сервис';
 const PREFIX = 'VVS Coin - '
-Router.afterEach((to) => {
+router.afterEach((to) => {
     nextTick(() => {
         document.title = PREFIX + (to.meta.title || DEFAULT_TITLE);
+        if (store.state.vantaEffect) {
+            store.dispatch('resizeBg');
+        }
     });
 });
-export default Router;
+export default router;

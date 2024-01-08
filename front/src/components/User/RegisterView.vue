@@ -96,7 +96,6 @@ export default defineComponent({
                 body: JSON.stringify(body),
             });
             if (response.ok) {
-                console.log(response);
                 return await response.json();
             }
 

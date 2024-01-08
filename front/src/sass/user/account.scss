@@ -5,6 +5,13 @@
         background-color: $fourthColor !important;
     }
 
+    &__window-title {
+        text-align: center;
+    }
+
+    &__window-sheet {
+        min-height: 300px;
+    }
     &__tab {
         color: $secondColor !important;
     }

@@ -8,77 +8,29 @@
                             Отзывы наших клиентов
                         </h1>
                         <v-list rounded class="reviews__list reviews-list">
-                            <v-list-item class="reviews-list__item">
+                            <v-list-item
+                                class="reviews-list__item"
+                                v-for="(review, i) in curReviews"
+                                :key="i">
                                 <v-card class="reviews-list__card" rounded color="grey-lighten-3">
                                     <v-card-title class="reviews-list__title">
-                                        Отзыв 1
+                                        {{review.name}}
                                     </v-card-title>
                                     <v-card-subtitle class="reviews-list__subtitle">
                                         05.11.2023
                                     </v-card-subtitle>
                                     <v-card-text class="reviews-list__text">
-                                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt, odio?
-                                    </v-card-text>
-                                </v-card>
-                            </v-list-item>
-                            <v-list-item class="reviews-list__item">
-                                <v-card class="reviews-list__card" rounded color="grey-lighten-3">
-                                    <v-card-title class="reviews-list__title">
-                                        Отзыв 1
-                                    </v-card-title>
-                                    <v-card-subtitle class="reviews-list__subtitle">
-                                        05.11.2023
-                                    </v-card-subtitle>
-                                    <v-card-text class="reviews-list__text">
-                                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt, odio?
-                                    </v-card-text>
-                                </v-card>
-                            </v-list-item>
-                            <v-list-item class="reviews-list__item">
-                                <v-card class="reviews-list__card" rounded color="grey-lighten-3">
-                                    <v-card-title class="reviews-list__title">
-                                        Отзыв 1
-                                    </v-card-title>
-                                    <v-card-subtitle class="reviews-list__subtitle">
-                                        05.11.2023
-                                    </v-card-subtitle>
-                                    <v-card-text class="reviews-list__text">
-                                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt, odio?
-                                    </v-card-text>
-                                </v-card>
-                            </v-list-item>
-                            <v-list-item class="reviews-list__item">
-                                <v-card class="reviews-list__card" rounded color="grey-lighten-3">
-                                    <v-card-title class="reviews-list__title">
-                                        Отзыв 1
-                                    </v-card-title>
-                                    <v-card-subtitle class="reviews-list__subtitle">
-                                        05.11.2023
-                                    </v-card-subtitle>
-                                    <v-card-text class="reviews-list__text">
-                                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt, odio?
-                                    </v-card-text>
-                                </v-card>
-                            </v-list-item>
-                            <v-list-item class="reviews-list__item">
-                                <v-card class="reviews-list__card" rounded color="grey-lighten-3">
-                                    <v-card-title class="reviews-list__title">
-                                        Отзыв 1
-                                    </v-card-title>
-                                    <v-card-subtitle class="reviews-list__subtitle">
-                                        05.11.2023
-                                    </v-card-subtitle>
-                                    <v-card-text class="reviews-list__text">
-                                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt, odio?
+                                        {{review.text}}
                                     </v-card-text>
                                 </v-card>
                             </v-list-item>
                         </v-list>
                         <v-pagination 
                             class="mt-3"
-                            :length="5" 
+                            :length="Math.ceil(reviews.length / reviewsPerPage)"
                             color="white"
                             :total-visible="2"
+                            v-model="page"
                         >
                         </v-pagination>
                         <div class="reviews__bottom">
@@ -93,14 +45,22 @@
 
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
+import {mapActions} from 'vuex';
 
 export default defineComponent({
 name: 'ReviewView',
     data: () => ({
         reviews: [],
+        page: 1,
+        reviewsPerPage: 5,
     }),
     created() {
         this.getReviews();
+    },
+    mounted() {
+        setTimeout(() => {
+            this.resizeBg();
+        }, 100);
     },
     components: {
         ReviewModal: defineAsyncComponent({
@@ -108,11 +68,19 @@ name: 'ReviewView',
         }),
     },
     methods: {
+        ...mapActions([
+            'resizeBg',
+        ]),
         async getReviews() {
             let response = await fetch('/api/reviews/list');
             if (response.ok && response.status === 200) {
                 this.reviews = await response.json();
             }
+        }
+    },
+    computed: {
+        curReviews() {
+            return this.reviews.slice((this.page - 1) * this.reviewsPerPage, this.page * this.reviewsPerPage);
         }
     }
 });

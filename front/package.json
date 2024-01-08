@@ -21,6 +21,7 @@
     "vue-chartjs": "^5.2.0",
     "vue-router": "^4.2.5",
     "vue-the-mask": "^0.11.1",
+    "vue-vanta": "^0.0.1",
     "vue-yandex-maps": "^0.12.3",
     "vuetify": "^3.4.4",
     "vuex": "^4.1.0",

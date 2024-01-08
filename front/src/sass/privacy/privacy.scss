@@ -20,6 +20,27 @@
         }
     }
 
+    &__title-h4 {
+        margin-top: rem(10px);
+        margin-bottom: rem(5px);
+        line-height: 1.5;
+    }
+
+    &__link {
+        color: $thirdColor;
+    }
+
+    &__order-num {
+        font-weight: 600;
+        font-size: rem(15px);
+    }
+
+    &__text {
+        font-size: rem(14px);
+        line-height: 1.2;
+        margin-bottom: rem(5px);
+    }
+
     &__main-list-item {
         font-size: rem(16px);
         font-weight: 700;

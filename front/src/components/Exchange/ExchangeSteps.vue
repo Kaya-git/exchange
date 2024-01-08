@@ -74,9 +74,11 @@
                                 :subtitle="steps[curStep].subtitle"></error-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="4">
-                    <status-view @complete="completeStep" @error="errorStep"></status-view>
+                    <status-view v-if="!steps[curStep].complete && !steps[curStep].error" @complete="completeStep" @error="errorStep"></status-view>
                     <error-view v-if="steps[curStep].error" :title="steps[curStep].message"
                                 :subtitle="steps[curStep].subtitle"></error-view>
+                    <success-view v-if="!steps[curStep].error && steps[curStep].message" :title="steps[curStep].message"
+                                :subtitle="steps[curStep].subtitle"></success-view>
                 </v-stepper-window-item>
             </v-stepper-window>
         </v-stepper>
@@ -135,15 +137,15 @@ export default defineComponent({
         this.exchangeData = this.getExchangeData;
     },
     mounted() {
-        // if (this.getCurExchangeStep) {
-        //     if ([1, 2, 3, 4].includes(Number(this.getCurExchangeStep))) {
-        //         this.curStep = 1;
-        //     } else if (Number(this.getCurExchangeStep) === 5) {
-        //         this.curStep = 2;
-        //     } else if ([6, 7].includes(Number(this.getCurExchangeStep))) {
-        //         this.curStep = 3;
-        //     }
-        // }
+        if (this.getCurExchangeStep) {
+            if ([1, 2, 3].includes(Number(this.getCurExchangeStep))) {
+                this.curStep = 1;
+            } else if ([4, 5].includes(Number(this.getCurExchangeStep))) {
+                this.curStep = 2;
+            } else if ([6, 7].includes(Number(this.getCurExchangeStep))) {
+                this.curStep = 3;
+            }
+        }
     },
     watch: {
         curStep(newStep, oldStep) {
@@ -166,6 +168,9 @@ export default defineComponent({
         ErrorView: defineAsyncComponent({
             loader: () => import("../Exchange/ErrorView"),
         }),
+        SuccessView: defineAsyncComponent({
+            loader: () => import("../Exchange/SuccessView"),
+        }),
     },
     methods: {
         ...mapMutations([
@@ -181,9 +186,10 @@ export default defineComponent({
             this.steps[this.curStep].subtitle = subtitle;
             this.clearDataFromLocalStorage();
         },
-        completeStep() {
+        completeStep(message = '',) {
             this.steps[this.curStep].complete = true;
             this.steps[this.curStep].color = 'success';
+            this.steps[this.curStep].message = message;
         }
     },
     computed: {

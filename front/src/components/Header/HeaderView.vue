@@ -67,7 +67,14 @@
             <v-row class="header-mobile justify-space-between">
                 <v-col class="v-col-2">
                     <div class="header-mobile__logo header-logo">
-                        <Router-link to="/">VVS Coin</Router-link>
+                        <Router-link to="/">
+                            <h1 class="header-logo__container">
+                                <span class="header-logo__letter text-anim text-anim-1">V</span>
+                                <span class="header-logo__letter text-anim text-anim-2">V</span>
+                                <span class="header-logo__letter text-anim text-anim-3">S</span>
+                                Coin
+                            </h1>
+                        </Router-link>
                     </div>
                 </v-col>
             </v-row>

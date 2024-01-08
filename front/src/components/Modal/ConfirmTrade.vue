@@ -10,7 +10,7 @@
                 <v-row class="justify-center">
                     <div class="confirm-modal__cardnumber">
                         <div class="confirm-modal__cardnumber-wrapper">
-                            <span>{{requisite}} Денис Н.</span>
+                            <span>{{requisite}}</span>
                         </div>
                     </div>
                 </v-row>

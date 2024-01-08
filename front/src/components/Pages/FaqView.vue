@@ -6,40 +6,15 @@
                     Вопросы и ответы
                 </h1>
                 <v-expansion-panels class="faq__panels faq-panels">
-                    <v-expansion-panel class="faq-panels__panel">
+                    <v-expansion-panel
+                        v-for="question in questions"
+                        :key="question.id"
+                        class="faq-panels__panel">
                         <v-expansion-panel-title class="faq-panels__title">
-                            Вопрос 1
+                            {{question.question}}
                         </v-expansion-panel-title>
                         <v-expansion-panel-text class="faq-panels__text">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad tempore rerum quos qui
-                            doloremque esse necessitatibus tempora nemo? Autem, vel?
-                        </v-expansion-panel-text>
-                    </v-expansion-panel>
-                    <v-expansion-panel class="faq-panels__panel">
-                        <v-expansion-panel-title class="faq-panels__title">
-                            Вопрос 2
-                        </v-expansion-panel-title>
-                        <v-expansion-panel-text class="faq-panels__text">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad tempore rerum quos qui
-                            doloremque esse necessitatibus tempora nemo? Autem, vel?
-                        </v-expansion-panel-text>
-                    </v-expansion-panel>
-                    <v-expansion-panel class="faq-panels__panel">
-                        <v-expansion-panel-title class="faq-panels__title">
-                            Вопрос 3
-                        </v-expansion-panel-title>
-                        <v-expansion-panel-text class="faq-panels__text">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad tempore rerum quos qui
-                            doloremque esse necessitatibus tempora nemo? Autem, vel?
-                        </v-expansion-panel-text>
-                    </v-expansion-panel>
-                    <v-expansion-panel class="faq-panels__panel">
-                        <v-expansion-panel-title class="faq-panels__title">
-                            Вопрос 4
-                        </v-expansion-panel-title>
-                        <v-expansion-panel-text class="faq-panels__text">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad tempore rerum quos qui
-                            doloremque esse necessitatibus tempora nemo? Autem, vel?
+                            {{question.answer}}
                         </v-expansion-panel-text>
                     </v-expansion-panel>
                 </v-expansion-panels>
