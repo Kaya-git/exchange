@@ -83,6 +83,7 @@ class UserAdmin(ModelView, model=User):
         User.buy_volume,
         User.sell_volume
     ]
+    list_template = "custom_list.html"
     can_create = False
     can_delete = True
     can_edit = True
@@ -162,6 +163,7 @@ class OrderAdmin(ModelView, model=Order):
         Order.date,
         Order.status
     ]
+    list_template = "custom_list.html"
     can_create = False
     can_edit = True
     can_delete = True
@@ -238,6 +240,7 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
     column_searchable_list = [
         PaymentOption.user,
     ]
+    list_template = "custom_list.html"
     column_sortable_list = [PaymentOption.is_verified]
     can_create = False
     can_edit = True
@@ -287,6 +290,7 @@ class ReviewAdmin(ModelView, model=Review):
     column_details_exclude_list = [
         Review.pending_admin
     ]
+    list_template = "custom_list.html"
     can_create = False
     can_edit = True
     can_delete = True
