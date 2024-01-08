@@ -1,10 +1,10 @@
 import asyncio
 from decimal import Decimal
-import smtplib
+from aiosmtplib import SMTP
+from email.mime.multipart import MIMEMultipart
 import redis.asyncio as redis
 from fastapi import HTTPException, status
 from sqlalchemy import update
-from email.header import Header
 from email.mime.text import MIMEText
 from config import conf
 from database.db import Database
@@ -257,7 +257,7 @@ class DB:
         order_id: int,
         user_id: int
     ):
-        ttl = await services.redis_values.redis_conn.ttl()
+        ttl = await services.redis_values.redis_conn.ttl(name=user_uuid)
 
         while ttl != 0:
             order = None
@@ -326,27 +326,28 @@ class Mail:
             generated_pass: Pass
     ) -> None:
 
-        msg = MIMEText(
-            f"Ваш пароль от лк VVS-Coin: {generated_pass}.",
-            'plain', 'utf-8'
+        message = MIMEMultipart()
+        message["From"] = self.email
+        message["To"] = recepient_email
+        message["Subject"] = "VSS COIN"
+        message.attach(
+            MIMEText(
+                f"<html><body><h1>Ваш пароль от лк VVS-Coin:\n{generated_pass}<h1></body>", "html", "utf-8"
+            )
         )
-        msg['Subject'] = Header('Пароль от лк VVS-Coin', 'utf-8')
-        msg['From'] = self.email
-        msg['To'] = recepient_email
 
-        smtp_client = smtplib.SMTP('smtp.yandex.ru', 587, timeout=10)
-
-        # try:
-        smtp_client.starttls()
-        smtp_client.login(self.email, self.password)
-        smtp_client.sendmail(msg['From'], recepient_email, msg.as_string())
-        # except Exception:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_400_BAD_REQUEST,
-        #         detail="Проблемы с отправлением сообщения на почту"
-        #     )
-        # finally:
-        smtp_client.quit()
+        smtp_client = SMTP(
+            hostname='smtp.yandex.ru', port=465, use_tls=True, timeout=10
+        )
+        try:
+            async with smtp_client:
+                await smtp_client.login(self.email, self.password)
+                await smtp_client.send_message(message)
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Проблемы с отправлением сообщения на почту"
+            )
 
 
 class Services:

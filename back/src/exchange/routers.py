@@ -380,6 +380,7 @@ async def payed_button(
         order_id=order_id,
         db=db
     )
+    await db.order.order_status_update(Status.проверка_оплаты)
 
     task = asyncio.create_task(services.db_paralell.payed_button_db(
             db=db,

@@ -59,6 +59,14 @@ class UserAdmin(ModelView, model=User):
         User.is_superuser: "Супер-Пользователь",
         User.is_verified: "Статус верификации"
     }
+    column_formatters = {
+        User.buy_volume: lambda m, a: format(Decimal(m.buy_volume), "f"),
+        User.sell_volume: lambda m, a: format(Decimal(m.sell_volume), "f")
+    }
+    column_formatters_detail = {
+        User.buy_volume: lambda m, a: format(Decimal(m.buy_volume), "f"),
+        User.sell_volume: lambda m, a: format(Decimal(m.sell_volume), "f")
+    }
     column_details_exclude_list = [
         User.hashed_password
     ]
