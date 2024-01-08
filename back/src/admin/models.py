@@ -12,6 +12,7 @@ from service_payment_options.models import ServicePaymentOption
 from users.models import User
 from decimal import Decimal
 
+
 class PendingAdminAdmin(ModelView, model=PendingAdmin):
     name = "Актуальная заявка"
     name_plural = "Актуальные заявки"
@@ -104,12 +105,20 @@ class OrderAdmin(ModelView, model=Order):
         Order.transaction_link
     ]
     column_formatters_detail = {
-        Order.user_sell_sum: lambda m, a: format(Decimal(m.user_sell_sum), "f"),
-        Order.user_buy_sum: lambda m, a: format(Decimal(m.user_buy_sum), "f")
+        Order.user_sell_sum: lambda m, a: format(
+            Decimal(m.user_sell_sum), "f"
+        ),
+        Order.user_buy_sum: lambda m, a: format(
+            Decimal(m.user_buy_sum), "f"
+        )
     }
     column_formatters = {
-        Order.user_sell_sum: lambda m, a: format(Decimal(m.user_sell_sum), "f"),
-        Order.user_buy_sum: lambda m, a: format(Decimal(m.user_buy_sum), "f")
+        Order.user_sell_sum: lambda m, a: format(
+            Decimal(m.user_sell_sum), "f"
+        ),
+        Order.user_buy_sum: lambda m, a: format(
+            Decimal(m.user_buy_sum), "f"
+        )
     }
 
     column_labels = {

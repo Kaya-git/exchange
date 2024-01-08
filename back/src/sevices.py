@@ -332,7 +332,9 @@ class Mail:
         message["Subject"] = "VSS COIN"
         message.attach(
             MIMEText(
-                f"<html><body><h1>Ваш пароль от лк VVS-Coin:\n{generated_pass}<h1></body>", "html", "utf-8"
+                f"<html><body><h1>Ваш пароль от лк VVS-Coin: \n {generated_pass}<h1></body>",
+                "html",
+                "utf-8"
             )
         )
 
