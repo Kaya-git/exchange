@@ -292,6 +292,7 @@ async def add_or_get_po(
         fiat_po is not None and
         crypto_po is not None
     ):
+        print(f"fiat_po.user: {fiat_po.user_id}")
         if str(fiat_po.user) != user.email:
             return {"Номер карты зарегестрирован под другим имейлом"}
 

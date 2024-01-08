@@ -27,6 +27,7 @@ class PendingAdminAdmin(ModelView, model=PendingAdmin):
         PendingAdmin.order_id: "ID ордера",
         PendingAdmin.review_id: "ID отзыва"
     }
+    list_template = "custom_list.html"
     can_create = False
     can_delete = True
     can_edit = False
