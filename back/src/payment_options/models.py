@@ -39,7 +39,8 @@ class PaymentOption(Base):
     )
 
     user_id: Mapped[int] = mapped_column(
-        sa.ForeignKey("user.id")
+        sa.ForeignKey("user.id", ondelete="CASCADE"),
+        nullable=True
     )
     currency_id: Mapped[int] = mapped_column(
         sa.ForeignKey("currency.id")
@@ -50,7 +51,8 @@ class PaymentOption(Base):
         single_parent=True
     )
     user: Mapped["User"] = relationship(
-        back_populates="payment_options"
+        back_populates="payment_options",
+        passive_deletes=True
     )
     # orders: Mapped[List["Order"]] = relationship(
     #     "Order",

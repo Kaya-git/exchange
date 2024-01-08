@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 
 Email = str
 Pass = str
+Token = str
 
 
 # Класс для пересчета операций с учетом маржи и комиссий
@@ -333,6 +334,36 @@ class Mail:
         message.attach(
             MIMEText(
                 f"<html><body><h1>Ваш пароль от лк VVS-Coin: \n {generated_pass}<h1></body>",
+                "html",
+                "utf-8"
+            )
+        )
+
+        smtp_client = SMTP(
+            hostname='smtp.yandex.ru', port=465, use_tls=True, timeout=10
+        )
+        try:
+            async with smtp_client:
+                await smtp_client.login(self.email, self.password)
+                await smtp_client.send_message(message)
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Проблемы с отправлением сообщения на почту"
+            )
+
+    async def send_token(
+            self,
+            recepient_email: Email,
+            generated_token: Token
+    ):
+        message = MIMEMultipart()
+        message["From"] = self.email
+        message["To"] = recepient_email
+        message["Subject"] = "VSS COIN"
+        message.attach(
+            MIMEText(
+                f"<html><body><h1>Ваш токен для подтверждения VVS-Coin: \n {generated_token}<h1></body>",
                 "html",
                 "utf-8"
             )

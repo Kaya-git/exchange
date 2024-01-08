@@ -24,7 +24,7 @@ class Order(Base):
         autoincrement=True,
     )
     user_email: Mapped[str] = mapped_column(
-        sa.ForeignKey("user.email")
+        sa.ForeignKey("user.email", ondelete="CASCADE")
     )
     user_cookie: Mapped[str] = mapped_column(
         sa.Text,
@@ -73,10 +73,10 @@ class Order(Base):
         sa.ForeignKey("user.id", ondelete="CASCADE")
     )
     sell_currency_id: Mapped[str] = mapped_column(
-        sa.ForeignKey("currency.id", ondelete="CASCADE")
+        sa.ForeignKey("currency.id")
     )
     buy_currency_id: Mapped[str] = mapped_column(
-        sa.ForeignKey("currency.id", ondelete="CASCADE")
+        sa.ForeignKey("currency.id")
     )
 
     sell_payment_option: Mapped["PaymentOption"] = relationship(
@@ -89,7 +89,8 @@ class Order(Base):
     )
     user: Mapped["User"] = relationship(
         "User",
-        foreign_keys="Order.user_id"
+        foreign_keys="Order.user_id",
+        passive_deletes=True
     )
     service_sell_po: Mapped["ServicePaymentOption"] = relationship(
         "ServicePaymentOption",
@@ -108,7 +109,8 @@ class Order(Base):
         foreign_keys="[Order.buy_currency_id]"
     )
     pending_admin: Mapped["PendingAdmin"] = relationship(
-        back_populates="order"
+        back_populates="order",
+        passive_deletes=True
     )
 
     def __str__(self) -> str:

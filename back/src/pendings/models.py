@@ -25,17 +25,19 @@ class PendingAdmin(Base):
         nullable=True
     )
     order_id: Mapped[int | None] = mapped_column(
-        sa.ForeignKey("order.id"),
+        sa.ForeignKey("order.id", ondelete="CASCADE"),
         unique=True
     )
     review_id: Mapped[int | None] = mapped_column(
-        sa.ForeignKey("review.id"),
+        sa.ForeignKey("review.id", ondelete="CASCADE"),
         unique=True
     )
 
     order: Mapped["Order"] = relationship(
-        back_populates="pending_admin"
+        back_populates="pending_admin",
+        passive_deletes=True
     )
     review: Mapped["Review"] = relationship(
-        back_populates="pending_admin"
+        back_populates="pending_admin",
+        passive_deletes=True
     )

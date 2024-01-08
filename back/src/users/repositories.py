@@ -1,7 +1,7 @@
 """  User repository file """
 from decimal import Decimal
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.abstract_repo import Repository
@@ -32,7 +32,7 @@ class UserRepo(Repository[User]):
         second_name: str = None,
         buy_volume: Decimal = 0,
         sell_volume: Decimal = 0,
-        is_verified: bool = False
+        is_verified: bool = False,
     ) -> None:
 
         new_user = await self.session.merge(
@@ -65,3 +65,18 @@ class UserRepo(Repository[User]):
             statement = select(User).where(User.id == ident)
             result = await session.execute(statement)
             return result.scalar_one_or_none()
+
+    async def update_verification(
+            self,
+            ident: int
+    ):
+        async with async_session_maker() as session:
+            statement = update(
+                User
+            ).where(
+                User.id == ident
+            ).values(
+                is_verified=True
+            )
+            await session.execute(statement)
+            await session.commit()

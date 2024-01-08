@@ -8,6 +8,7 @@ from config import conf
 from users.models import User
 from enums import Role
 from .db import get_user_db
+from sevices import services
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
@@ -19,6 +20,11 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         user: User,
         request: Optional[Request] = None
     ):
+
+        await services.mail.send_token(
+            recepient_email=user.email,
+            generated_token=user.verification_token
+        )
         return f"User {user.id} has registered."
 
     async def on_after_forgot_password(
