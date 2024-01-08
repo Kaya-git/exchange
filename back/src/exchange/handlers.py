@@ -261,7 +261,7 @@ async def add_or_get_po(
 
     if (
         fiat_po is not None and
-        str(fiat_po.user_id) == user.email and
+        fiat_po.user_id == user.id and
         crypto_po is None
     ):
 
@@ -293,11 +293,17 @@ async def add_or_get_po(
         crypto_po is not None
     ):
         print(f"fiat_po.user: {fiat_po.user_id}")
-        if str(fiat_po.user) != user.email:
-            return {"Номер карты зарегестрирован под другим имейлом"}
+        if fiat_po.user_id != user.id:
+            raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail="Номер карты зарегестрирован под другим имейлом"
+            )
 
-        if str(crypto_po.user) != user.email:
-            return {"Крипто Кошель зарегестрирован под другим имейлом"}
+        if crypto_po.user_id != user.id:
+            raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail="Номер карты зарегестрирован под другим имейлом"
+            )
 
         client_sell_payment_option = fiat_po
         client_buy_payment_option = fiat_po
@@ -427,7 +433,7 @@ async def check_user_registration(
             return {
                 "verified": False
             }
-        if credit_card.user is not None:
+        if credit_card is not None:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
                 detail="Кредитная карта зарегестрированна под другим имеилом"
