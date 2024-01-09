@@ -78,7 +78,8 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         unique=True
     )
     payment_options: Mapped[List["PaymentOption"]] = relationship(
-        back_populates="user"
+        back_populates="user",
+        cascade="all,delete"
     )
 
     def __str__(self) -> str:
