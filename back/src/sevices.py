@@ -4,14 +4,12 @@ from aiosmtplib import SMTP
 from email.mime.multipart import MIMEMultipart
 import redis.asyncio as redis
 from fastapi import HTTPException, status
-from sqlalchemy import update
 from email.mime.text import MIMEText
 from config import conf
 from database.db import Database
 from enums import CurrencyType, Status
 from payment_options.models import PaymentOption
 from pendings.models import PendingAdmin
-from users.models import User
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -276,20 +274,19 @@ class DB:
                     user_volume = user.buy_volume
                     user_volume += order.user_sell_sum
 
-                    statement = update(User).where(
-                        User.id == user_id
-                        ).values(buy_volume=user_volume)
+                    await db.user.update_buy_volume(
+                        ident=user_id,
+                        user_volume=user_volume
+                    )
 
                 if buy_currency.type is CurrencyType.Фиат:
                     user_volume = user.buy_volume
                     user_volume += order.user_buy_sum
 
-                    statement = update(User).where(
-                        User.id == user_id
-                        ).values(sell_volume=user_volume)
-
-                await db.session.execute(statement)
-                await db.session.commit()
+                    await db.user.update_sell_volume(
+                        ident=user_id,
+                        user_volume=user_volume
+                    )
                 await services.redis_values.redis_conn.delete(user_uuid)
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
@@ -333,7 +330,8 @@ class Mail:
         message["Subject"] = "VSS COIN"
         message.attach(
             MIMEText(
-                f"<html><body><h1>Ваш пароль от лк VVS-Coin: \n {generated_pass}<h1></body>",
+                f"""<html><body><h1>Ваш пароль от лк VVS-Coin: \n
+                {generated_pass}<h1></body>""",
                 "html",
                 "utf-8"
             )
@@ -363,7 +361,8 @@ class Mail:
         message["Subject"] = "VSS COIN"
         message.attach(
             MIMEText(
-                f"<html><body><h1>Ваш токен для подтверждения VVS-Coin: \n {generated_token}<h1></body>",
+                f"""<html><body><h1>Ваш токен для подтверждения VVS-Coin: \n
+                {generated_token}<h1></body>""",
                 "html",
                 "utf-8"
             )

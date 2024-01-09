@@ -69,7 +69,7 @@ class UserRepo(Repository[User]):
     async def update_verification(
             self,
             ident: int
-    ):
+    ) -> None:
         async with async_session_maker() as session:
             statement = update(
                 User
@@ -77,6 +77,48 @@ class UserRepo(Repository[User]):
                 User.id == ident
             ).values(
                 is_verified=True
+            )
+            await session.execute(statement)
+            await session.commit()
+
+    async def update_buy_volume(
+            self,
+            ident: int,
+            user_volume: Decimal
+    ) -> None:
+        async with async_session_maker() as session:
+            statement = update(User).where(
+                User.id == ident
+            ).values(buy_volume=user_volume)
+
+        await session.execute(statement)
+        await session.commit()
+
+    async def update_sell_volume(
+            self,
+            ident: int,
+            user_volume: Decimal
+    ) -> None:
+        async with async_session_maker() as session:
+            statement = update(User).where(
+                User.id == ident
+            ).values(sell_volume=user_volume)
+
+        await session.execute(statement)
+        await session.commit()
+
+    async def update_hash_pass(
+            self,
+            ident: int,
+            new_hash_pass: str
+    ) -> None:
+        async with async_session_maker() as session:
+            statement = update(
+                User
+            ).where(
+                User.id == ident
+            ).values(
+                hashed_password=new_hash_pass
             )
             await session.execute(statement)
             await session.commit()

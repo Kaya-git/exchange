@@ -1,8 +1,5 @@
-from typing import TYPE_CHECKING
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import update
 from auth.routers import current_active_user
 from database.db import Database, get_async_session
 from payment_options.models import PaymentOption
@@ -58,16 +55,14 @@ async def change_pass(
         new_hash_pass = user_manager.password_helper.hash(
             new_pass
         )
-
-        statement = update(
-            User
-        ).where(
-            User.id == user.id
-        ).values(
-            hashed_password=new_hash_pass
+        db.user.update_hash_pass(
+            ident=user.id,
+            new_hash_pass=new_hash_pass
         )
-        await db.session.execute(statement)
-        await db.session.commit()
-        return 'Поменял пасс'
+        return {
+            "status": "Success"
+        }
     else:
-        return 'Проблемс'
+        return {
+            "status": "Declined"
+        }
