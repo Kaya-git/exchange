@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Form
 from sevices import services
 
-
 where_am_i_router = APIRouter(
     prefix="/api/where_am_i",
     tags=["Роутер определения последней страницы пользователя"]

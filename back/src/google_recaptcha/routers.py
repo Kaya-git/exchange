@@ -1,6 +1,7 @@
-from fastapi import APIRouter
-from .handlers import ver_recaptcha
 from config import conf
+from fastapi import APIRouter
+
+from .handlers import ver_recaptcha
 
 recaptcha_router = APIRouter(
     prefix='/api/recaptcha',

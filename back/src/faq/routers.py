@@ -1,10 +1,10 @@
 from typing import Annotated, List
 
+from database.db import Database, get_async_session
 from fastapi import APIRouter, Depends, Path
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.db import Database, get_async_session
-from fastapi_cache.decorator import cache
 from .schemas import FAQDTO
 
 faq_router = APIRouter(

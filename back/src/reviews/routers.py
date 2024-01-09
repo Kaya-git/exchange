@@ -1,16 +1,15 @@
+import asyncio
 from typing import Annotated, List
 
+from database.db import Database, get_async_session
+from enums.models import ReqAction
 from fastapi import APIRouter, Depends, Path
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.db import Database, get_async_session
-
-from enums.models import ReqAction
-from fastapi_cache.decorator import cache
-from .models import Review
-from .schemas import ReviewDTO, ReviewCreateDTO
 from .handlers import check_review_verif
-import asyncio
+from .models import Review
+from .schemas import ReviewCreateDTO, ReviewDTO
 
 reviews_router = APIRouter(
     prefix="/api/reviews",

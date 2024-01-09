@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING
 
 import sqlalchemy as sa
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from database.base_model import Base
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
     from currencies.models import Currency

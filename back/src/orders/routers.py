@@ -1,14 +1,14 @@
 from typing import TYPE_CHECKING, List
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from auth.routers import current_active_user
 from database.db import Database, get_async_session
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from users.routers import lk_router
 
 from .models import Order
 from .shemas import OrderRead
-from users.routers import lk_router
+
 if TYPE_CHECKING:
     from users.models import User
 

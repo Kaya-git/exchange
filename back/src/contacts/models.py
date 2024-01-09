@@ -1,7 +1,6 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import Mapped, mapped_column
-
 from database.base_model import Base
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class Contact(Base):

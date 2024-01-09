@@ -1,39 +1,32 @@
-from fastapi import FastAPI, Response, Depends
-from database.db import get_async_session
-from sqlalchemy.ext.asyncio import AsyncSession
-from exchange.routers import exchange_router
-from sqladmin import Admin
-from database.db import engine
-from admin import (
-    UserAdmin,
-    ServicePaymentOptionAdmin,
-    CurrencyAdmin,
-    PaymentOptionAdmin,
-    ReviewAdmin,
-    OrderAdmin,
-    ContactAdmin,
-    FAQAdmin,
-    PendingAdminAdmin
-)
-from auth.auth import auth_backend
-from auth.shemas import UserRead, UserCreate
-from auth.routers import fastapi_users
-from currencies.routers import currency_router
-from reviews.routers import reviews_router
-from orders.routers import orders_router
-from where_am_i.routers import where_am_i_router
-from contacts.routers import contact_router
-from faq.routers import faq_router
 import uuid
-from fastapi.middleware.cors import CORSMiddleware
-from users.routers import lk_router
+
+from admin import (ContactAdmin, CurrencyAdmin, FAQAdmin, OrderAdmin,
+                   PaymentOptionAdmin, PendingAdminAdmin, ReviewAdmin,
+                   ServicePaymentOptionAdmin, UserAdmin)
+from auth.auth import auth_backend
+from auth.routers import fastapi_users
+from auth.shemas import UserCreate, UserRead
 from config import conf
+from contacts.routers import contact_router
+from currencies.routers import currency_router
+from database.db import engine, get_async_session
+from exchange.routers import exchange_router
+from faq.routers import faq_router
+from fastapi import Depends, FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
-from redis_ttl.routers import redis_router
-from redis import asyncio as aioredis
 from mail_verif.routers import email_router
+from orders.routers import orders_router
+from redis import asyncio as aioredis
+from redis_ttl.routers import redis_router
+from reviews.routers import reviews_router
+from sqladmin import Admin
+from sqlalchemy.ext.asyncio import AsyncSession
+from users.routers import lk_router
+from where_am_i.routers import where_am_i_router
+
 # from google_recaptcha.routers import recaptcha_router
 
 app = FastAPI(

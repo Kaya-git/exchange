@@ -1,8 +1,7 @@
+from enums import Role
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-
-from enums import Role
 from users.dependecies import get_current_user
 
 from .handlers import authenticate_admin, create_access_token

@@ -2,24 +2,20 @@ import asyncio
 from decimal import Decimal
 from typing import Annotated
 
-from fastapi import (APIRouter, Depends, Form, HTTPException, Path,
-                     UploadFile, status)
-from fastapi.responses import RedirectResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from currencies.models import Currency
 from database.db import Database, get_async_session
 from enums.models import ReqAction, Status
+from fastapi import (APIRouter, Depends, Form, HTTPException, Path, UploadFile,
+                     status)
+from fastapi.responses import RedirectResponse
 from sevices import services
+from sqlalchemy.ext.asyncio import AsyncSession
 from users.models import User
-from .handlers import (
-    add_or_get_po, calculate_totals,
-    check_form_fillment, check_user_registration,
-    find_exchange_rate, generate_pass, get_password_hash,
-    redis_discard, ya_save_passport_photo,
-    start_time
-)
 
+from .handlers import (add_or_get_po, calculate_totals, check_form_fillment,
+                       check_user_registration, find_exchange_rate,
+                       generate_pass, get_password_hash, redis_discard,
+                       start_time, ya_save_passport_photo)
 
 exchange_router = APIRouter(
     prefix="/api/exchange",

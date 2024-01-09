@@ -1,7 +1,8 @@
 from decimal import Decimal
+from typing import TYPE_CHECKING, Protocol
+
 import httpx
 from fastapi import HTTPException, status
-from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
     from currencies.routers import CoingekkoParamsDTO

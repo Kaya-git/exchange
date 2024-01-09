@@ -1,23 +1,20 @@
+import datetime
 import secrets
-
 from decimal import Decimal
 
-from fastapi import HTTPException, status
-from passlib.context import CryptContext
-
-from price_parser.parser import CoinGekkoParser, parse_the_price
-from config import conf
-from currencies.models import Currency
-from database.db import Database
-from enums import CurrencyType, Status
-from payment_options.models import PaymentOption
-from sevices import Count, services
-from users.models import User
 import aiofiles
 import aiofiles.os
+from config import conf
+from currencies.models import Currency
 from currencies.routers import CoingekkoParamsDTO
-import datetime
-
+from database.db import Database
+from enums import CurrencyType, Status
+from fastapi import HTTPException, status
+from passlib.context import CryptContext
+from payment_options.models import PaymentOption
+from price_parser.parser import CoinGekkoParser, parse_the_price
+from sevices import Count, services
+from users.models import User
 
 Time = str
 

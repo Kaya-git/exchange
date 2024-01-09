@@ -1,17 +1,19 @@
 import os
 import sys
+
 sys.path.append(os.path.join(sys.path[0], 'src'))
 
 import asyncio
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from src.config import conf
-from src.database.base_model import Base
 from src.contacts.models import *
 from src.currencies.models import *
+from src.database.base_model import Base
 from src.enums.models import *
 from src.faq.models import *
 from src.orders.models import *
@@ -20,7 +22,6 @@ from src.pendings.models import *
 from src.reviews.models import *
 from src.service_payment_options.models import *
 from src.users.models import *
-from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

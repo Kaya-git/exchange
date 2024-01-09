@@ -1,14 +1,14 @@
 from typing import Optional
 
+from config import conf
+from enums import Role
 from fastapi import Depends, Request
 from fastapi_users import (BaseUserManager, IntegerIDMixin, exceptions, models,
                            schemas)
-
-from config import conf
-from users.models import User
-from enums import Role
-from .db import get_user_db
 from sevices import services
+from users.models import User
+
+from .db import get_user_db
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):

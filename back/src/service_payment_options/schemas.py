@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel
-
 from enums import BankingType
+from pydantic import BaseModel
 
 if TYPE_CHECKING:
     from currencies.schemas import CurrencyRead

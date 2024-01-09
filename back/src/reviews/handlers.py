@@ -1,7 +1,9 @@
-from database.db import Database
-from .schemas import ReviewDTO
-from pendings.models import PendingAdmin
 from asyncio import sleep
+
+from database.db import Database
+from pendings.models import PendingAdmin
+
+from .schemas import ReviewDTO
 
 
 async def check_review_verif(

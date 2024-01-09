@@ -1,8 +1,7 @@
 """  Review repository file """
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from database.abstract_repo import Repository
 from reviews.models import Review
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class ReviewRepo(Repository[Review]):

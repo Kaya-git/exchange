@@ -1,5 +1,4 @@
-from .models import (CurrencyType, Role, Status,
-                     VerifDeclineReason)
+from .models import CurrencyType, Role, Status, VerifDeclineReason
 
 __all__ = [
     'CurrencyType',

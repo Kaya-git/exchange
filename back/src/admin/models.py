@@ -1,4 +1,4 @@
-from sqladmin import ModelView
+from decimal import Decimal
 
 from contacts.models import Contact
 from currencies.models import Currency
@@ -9,8 +9,8 @@ from payment_options.models import PaymentOption
 from pendings.models import PendingAdmin
 from reviews.models import Review
 from service_payment_options.models import ServicePaymentOption
+from sqladmin import ModelView
 from users.models import User
-from decimal import Decimal
 
 
 class PendingAdminAdmin(ModelView, model=PendingAdmin):

@@ -1,9 +1,8 @@
+from auth.routers import current_active_user
+from database.db import Database, get_async_session
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.db import get_async_session, Database
 from users.models import User
-from auth.routers import current_active_user
-
 
 email_router = APIRouter(
     prefix="/email_verif",

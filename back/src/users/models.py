@@ -1,13 +1,14 @@
+import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, List
 
 import sqlalchemy as sa
-from fastapi_users.db import SQLAlchemyBaseUserTable
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-import uuid
 from database.base_model import Base
 from enums import Role
+from fastapi_users.db import SQLAlchemyBaseUserTable
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 if TYPE_CHECKING:
     from payment_options.models import PaymentOption
 

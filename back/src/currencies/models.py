@@ -2,12 +2,11 @@
 from typing import TYPE_CHECKING, List
 
 import sqlalchemy as sa
-from fastapi_storages.integrations.sqlalchemy import FileType
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from config import conf
 from database.base_model import Base
 from enums import CurrencyType
+from fastapi_storages.integrations.sqlalchemy import FileType
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
     from payment_options.models import PaymentOption
