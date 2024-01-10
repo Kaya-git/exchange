@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, List
 
 from auth.routers import current_active_user
 from database.db import Database, get_async_session
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from users.routers import lk_router
 
@@ -29,3 +29,18 @@ async def order_list(
         Order.user_email == user.email
     )
     return completed_orders
+
+
+@orders_router.get("get_order_status")
+async def get_order_status(
+    user_uuid: str | None = Form(),
+    session: AsyncSession = Depends(get_async_session)
+) -> str:
+    db = Database(session=session)
+
+    order = await db.order.get_by_where(
+        Order.user_cookie == user_uuid
+    )
+    return {
+        "status": order.status
+    }

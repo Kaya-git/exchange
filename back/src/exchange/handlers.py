@@ -108,7 +108,10 @@ async def ya_save_passport_photo(
 
     image_storage = await conf.image_storage.build_image_storage()
 
-    await image_storage.upload(new_file_name, f"/exchange/{new_file_name}")
+    await image_storage.upload(
+        new_file_name,
+        f"/exchange/{new_file_name}"
+    )
     await image_storage.close()
     await aiofiles.os.remove(new_file_name)
     return new_file_name
