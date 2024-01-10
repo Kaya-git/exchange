@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, List
 
 from auth.routers import current_active_user
 from database.db import Database, get_async_session
-from fastapi import APIRouter, Depends, Form
+from fastapi import APIRouter, Depends, Form, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from users.routers import lk_router
 
@@ -41,6 +41,11 @@ async def get_order_status(
     order = await db.order.get_by_where(
         Order.user_cookie == user_uuid
     )
-    return {
-        "status": order.status
-    }
+    if order is not None:
+        return {
+            "status": order.status
+        }
+    raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Ордера нет в базе"
+            )
