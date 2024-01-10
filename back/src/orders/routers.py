@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 orders_router = APIRouter(
     prefix="/api/orders",
-    tags=["Роутер списка заказов для верифицированного пользователя"]
+    tags=["Роутер заявок"]
 )
 
 
@@ -31,7 +31,7 @@ async def order_list(
     return completed_orders
 
 
-@orders_router.get("get_order_status")
+@orders_router.get("/get_order_status")
 async def get_order_status(
     user_uuid: str | None = Form(),
     session: AsyncSession = Depends(get_async_session)
