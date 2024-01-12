@@ -42,7 +42,6 @@ class Count:
                 (get_value * margin) / 100
             ) * get_value) + gas
         )
-        print(type(send_value))
         return send_value
 
 
