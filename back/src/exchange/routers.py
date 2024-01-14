@@ -367,11 +367,12 @@ async def payed_button(
         user_uuid
     )
 
-    await db.pending_admin.new(
+    pending = await db.pending_admin.new(
         order_id=order_id,
         req_act=ReqAction.верифицировать_транзакцию
     )
-    await db.session.commit()
+    db.session.add(pending)
+    await db.session.flush()
     await services.redis_values.check_existance(
         user_uuid=user_uuid,
         order_id=order_id,
@@ -381,6 +382,7 @@ async def payed_button(
         new_status=Status.проверка_оплаты,
         order_id=order_id
     )
+    await db.session.commit()
 
     task = asyncio.create_task(services.db_paralell.payed_button_db(
             db=db,
