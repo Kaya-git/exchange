@@ -2,6 +2,7 @@
 import sqlalchemy as sa
 from currencies.models import Currency
 from database.abstract_repo import Repository
+from database.engines import async_session_maker
 from enums import Status, VerifDeclineReason
 from orders.models import Order
 from payment_options.models import PaymentOption
@@ -63,30 +64,35 @@ class OrderRepo(Repository[Order]):
             self,
             order_id: int
     ) -> None:
-        statement = (
-            update(Order).
-            where(Order.id == order_id).
-            values(
-                [
-                    {"status": Status.отклонена},
-                    {"decline_reason": VerifDeclineReason.истечение_времени}
-                ]
+        async with async_session_maker() as session:
+            statement = (
+                update(Order).
+                where(Order.id == order_id).
+                values(
+                    [
+                        {"status": Status.отклонена},
+                        {"decline_reason": VerifDeclineReason.истечение_времени}
+                    ]
+                )
             )
-        )
-        return await self.session.execute(statement)
+            await session.execute(statement)
+            await session.commit()
+
 
     async def order_status_update(
             self,
             new_status: Status,
             order_id: int
     ):
-        statement = (
-            update(
-                Order
-            ).where(
-                Order.id == order_id
-            ).values(
-                status=new_status
+        async with async_session_maker() as session:
+            statement = (
+                update(
+                    Order
+                ).where(
+                    Order.id == order_id
+                ).values(
+                    status=new_status
+                )
             )
-        )
-        return await self.session.execute(statement)
+            await session.execute(statement)
+            await session.commit()

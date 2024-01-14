@@ -347,7 +347,7 @@ async def payed_button(
     END_POINT_NUMBER = 7
 
     """ Кнопка подтверждения оплаты пользователя
-    запускает паралельно задачу на отслеживание изменения стасу ордера' """
+    запускает паралельно задачу на отслеживание изменения стасу ордера """
     db = Database(session=async_session)
 
     await services.redis_values.check_existance(
@@ -367,12 +367,11 @@ async def payed_button(
         user_uuid
     )
 
-    pending = await db.pending_admin.new(
+    await db.pending_admin.new(
         order_id=order_id,
         req_act=ReqAction.верифицировать_транзакцию
     )
-    db.session.add(pending)
-    await db.session.flush()
+    await db.session.commit()
     await services.redis_values.check_existance(
         user_uuid=user_uuid,
         order_id=order_id,
@@ -382,7 +381,6 @@ async def payed_button(
         new_status=Status.проверка_оплаты,
         order_id=order_id
     )
-    await db.session.commit()
 
     task = asyncio.create_task(services.db_paralell.payed_button_db(
             db=db,
