@@ -291,6 +291,7 @@ class DB:
                 await db.pending_admin.delete(
                     PendingAdmin.order_id == order_id
                 )
+                await db.session.commit()
                 if buy_currency.type is CurrencyType.Крипта:
                     return {
                         "link": order.transaction_link

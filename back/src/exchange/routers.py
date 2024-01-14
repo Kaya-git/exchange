@@ -389,5 +389,5 @@ async def payed_button(
             user_id=user_id
         )
     )
-    answer = await task
-    return answer
+    
+    return await task
