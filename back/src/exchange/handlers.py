@@ -421,7 +421,8 @@ async def check_user_registration(
         redis_dict,
         user,
         db,
-        user_uuid
+        user_uuid,
+        end_point_number
 ):
     if user is None:
 
@@ -476,7 +477,9 @@ async def check_user_registration(
                     await db.session.commit()
                     await services.redis_values.change_keys(
                         user_uuid=user_uuid,
-                        order_id=new_order.id
+                        order_id=new_order.id,
+                        user_id=user.id,
+                        router_num=end_point_number
                     )
 
                 if (redis_dict["client_sell_currency"]["type"] ==

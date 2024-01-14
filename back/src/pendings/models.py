@@ -24,12 +24,10 @@ class PendingAdmin(Base):
         nullable=True
     )
     order_id: Mapped[int | None] = mapped_column(
-        sa.ForeignKey("order.id", ondelete="CASCADE"),
-        unique=True
+        sa.ForeignKey("order.id", ondelete="CASCADE")
     )
     review_id: Mapped[int | None] = mapped_column(
-        sa.ForeignKey("review.id", ondelete="CASCADE"),
-        unique=True
+        sa.ForeignKey("review.id", ondelete="CASCADE")
     )
 
     order: Mapped["Order"] = relationship(

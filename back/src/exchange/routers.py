@@ -192,7 +192,8 @@ async def confirm_button(
 
     return await check_user_registration(
         redis_dict, user,
-        db, user_uuid
+        db, user_uuid,
+        END_POINT_NUMBER
     )
 
 
