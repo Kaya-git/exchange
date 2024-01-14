@@ -6,7 +6,7 @@ from currencies.models import Currency
 from database.db import Database, get_async_session
 from enums.models import ReqAction, Status
 from fastapi import (APIRouter, Depends, Form, HTTPException, Path, UploadFile,
-                     status)
+                     status, BackgroundTasks)
 from fastapi.responses import RedirectResponse
 from sevices import services
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -89,8 +89,7 @@ async def fill_order_form(
     }
 
     # Проверяем наполненость формы
-    formfillment = await check_form_fillment(form_voc)
-    if formfillment is True:
+    if await check_form_fillment(form_voc):
         # Просчитываем стоимость валюты с учетом коммисий и
         # стоимости за перевод
         client_sell_coin = await db.currency.get_by_where(
@@ -126,30 +125,28 @@ async def fill_order_form(
             client_cc_holder=client_cc_holder,
             client_crypto_wallet=client_crypto_wallet,
         )
-
         return await start_time()
-    else:
-        return "Ошибка"
 
 
 @exchange_router.post("/confirm_order")
 async def confirm_order(
+    background_tasks: BackgroundTasks,
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ):
 
     END_POINT_NUMBER = 2
 
+
+
     """ Отправляет пользователю заполненые данные для подтверждения заказа """
     db = Database(session=async_session)
-
     # Проверяем есть ли ключи в реддисе и забираем значения
-    does_exist = await services.redis_values.redis_conn.exists(user_uuid)
-    if does_exist != 1:
-        raise HTTPException(
-            status_code=status.HTTP_408_REQUEST_TIMEOUT,
-            detail="Время вышло. Необходимо создать новый обмен"
-        )
+    background_tasks.add_task(services.redis_values.check_existance, user_uuid)
+    # await services.redis_values.check_existance(
+    #     user_uuid=user_uuid
+    # )
+
     await services.redis_values.change_redis_router_num(
         user_uuid=user_uuid,
         router_num=END_POINT_NUMBER

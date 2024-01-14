@@ -57,7 +57,10 @@ class RedisValues:
             user_uuid,
             0
         )
-        return int(user_id)
+        if user_id != None:
+            return int(user_id)
+        else:
+            return None
 
     async def get_order_id(
             self,
@@ -67,7 +70,10 @@ class RedisValues:
             user_uuid,
             1
         )
-        return int(order_id)
+        if order_id != None:
+            return int(order_id)
+        else:
+            return None
 
     async def get_router_num(
             self,
@@ -81,22 +87,25 @@ class RedisValues:
     async def check_existance(
             self,
             user_uuid: str,
-            order_id: int | None = None,
             db: Database | None = None
-    ):
-        does_exist = await self.redis_conn.exists(
-            user_uuid
-        )
-        if does_exist != 1:
-            if order_id is not None:
-                await db.order.order_status_timout(order_id)
-
-            raise HTTPException(
-                status_code=status.HTTP_408_REQUEST_TIMEOUT,
-                detail="Пользователя нет в редисе"
-            )
-        else:
-            return True
+    ) -> None:
+        order_id = await self.get_order_id(user_uuid=user_uuid)
+        ttl = await self.redis_conn.ttl
+        while ttl != 0:
+            await asyncio.sleep(15)
+            ttl = await self.redis_conn.ttl
+            print(ttl)
+        await db.order.order_status_timout(order_id=order_id)
+        # does_exist = await self.redis_conn.exists(
+        #     user_uuid
+        # )
+        # if does_exist != 1:
+        #     raise HTTPException(
+        #         status_code=status.HTTP_408_REQUEST_TIMEOUT,
+        #         detail="Пользователя нет в редисе"
+        #     )
+        # else:
+        #     return True
 
     async def set_order_info(
         self,

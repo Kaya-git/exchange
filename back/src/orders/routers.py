@@ -4,6 +4,7 @@ from auth.routers import current_active_user
 from database.db import Database, get_async_session
 from fastapi import APIRouter, Depends, Form, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sevices import services
 from users.routers import lk_router
 
 from .models import Order
@@ -17,6 +18,22 @@ orders_router = APIRouter(
     prefix="/api/orders",
     tags=["Роутер заявок"]
 )
+
+
+@orders_router.get("/decline_order")
+async def decline_order(
+    user_uuid: str | None = Form(),
+    async_session: AsyncSession = Depends(get_async_session)
+):
+    db = Database(session=async_session)
+    await services.redis_values.check_existance(
+        user_uuid=user_uuid
+    )
+    order_id = await services.redis_values.get_order_id()
+    if order_id != None:
+        await db.order.delete(Order.id==order_id)
+        await db.session.commit()
+    await services.redis_values.redis_conn.delete(user_uuid)
 
 
 @lk_router.get("/orders", response_model=List[OrderRead])
