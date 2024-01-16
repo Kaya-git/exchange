@@ -49,6 +49,13 @@ class RedisValues:
     """Redis class"""
     redis_conn = redis.Redis(host=conf.redis.host, port=conf.redis.port)
 
+    async def set_ttl(
+        self,
+        user_uuid,
+        time_out
+    ):
+        await self.redis_conn.expire(name=f'{user_uuid}', time=time_out)
+
     async def get_user_id(
             self,
             user_uuid: "UuidDTO"
@@ -57,7 +64,7 @@ class RedisValues:
             user_uuid,
             0
         )
-        if user_id != None:
+        if user_id is None:
             return int(user_id)
         else:
             return None
@@ -70,7 +77,7 @@ class RedisValues:
             user_uuid,
             1
         )
-        if order_id != None:
+        if order_id is not None:
             return int(order_id)
         else:
             return None
@@ -88,24 +95,17 @@ class RedisValues:
             self,
             user_uuid: str,
             db: Database | None = None
-    ) -> None:
-        order_id = await self.get_order_id(user_uuid=user_uuid)
-        ttl = await self.redis_conn.ttl
-        while ttl != 0:
-            await asyncio.sleep(15)
-            ttl = await self.redis_conn.ttl
-            print(ttl)
-        await db.order.order_status_timout(order_id=order_id)
-        # does_exist = await self.redis_conn.exists(
-        #     user_uuid
-        # )
-        # if does_exist != 1:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_408_REQUEST_TIMEOUT,
-        #         detail="Пользователя нет в редисе"
-        #     )
-        # else:
-        #     return True
+    ) -> bool | None:
+        does_exist = await self.redis_conn.exists(
+            user_uuid
+        )
+        if does_exist != 1:
+            raise HTTPException(
+                status_code=status.HTTP_408_REQUEST_TIMEOUT,
+                detail="Пользователя нет в редисе"
+            )
+        else:
+            return True
 
     async def set_order_info(
         self,
@@ -133,7 +133,8 @@ class RedisValues:
             f"{client_crypto_wallet}"
         )
 
-        await self.redis_conn.expire(name=f'{user_uuid}', time=900)
+        # await self.set_ttl(user_uuid=user_uuid, time_out=120)
+        # await self.redis_conn.expire(name=f'{user_uuid}', time=120)
         self.redis_conn.close
 
     async def change_keys(self,
@@ -151,7 +152,7 @@ class RedisValues:
             )
         await self.redis_conn.expire(
             name=f'{user_id}',
-            time=900
+            time=10
         )
         self.redis_conn.close
 

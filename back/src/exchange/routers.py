@@ -17,6 +17,9 @@ from .handlers import (add_or_get_po, calculate_totals, check_form_fillment,
                        generate_pass, get_password_hash, redis_discard,
                        start_time, ya_save_passport_photo)
 
+from background_tasks.handlers import controll_order
+
+
 exchange_router = APIRouter(
     prefix="/api/exchange",
     tags=["Роутер обмена"]
@@ -88,7 +91,7 @@ async def fill_order_form(
         "user_uuid": user_uuid
     }
 
-    # Проверяем наполненость формы
+    # Проверяем наполненость формы, либо отдаем ошибку
     if await check_form_fillment(form_voc):
         # Просчитываем стоимость валюты с учетом коммисий и
         # стоимости за перевод
@@ -125,6 +128,11 @@ async def fill_order_form(
             client_cc_holder=client_cc_holder,
             client_crypto_wallet=client_crypto_wallet,
         )
+
+        # Выставляем время жизни заявки до дальнейщего перехода по цепочке
+        await services.redis_values.set_ttl(user_uuid=user_uuid, time_out=50)
+
+        # Отдаем время старт заявки для запуска таймера на фронте
         return await start_time()
 
 
@@ -134,15 +142,16 @@ async def confirm_order(
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ):
-
+    """ Отправляет пользователю данные заявки на проверку"""
     END_POINT_NUMBER = 2
 
-
-
-    """ Отправляет пользователю заполненые данные для подтверждения заказа """
     db = Database(session=async_session)
+
+    await services.redis_values.check_existance(
+        user_uuid=user_uuid
+    )
     # Проверяем есть ли ключи в реддисе и забираем значения
-    background_tasks.add_task(services.redis_values.check_existance, user_uuid)
+    background_tasks.add_task(controll_order, user_uuid, db)
     # await services.redis_values.check_existance(
     #     user_uuid=user_uuid
     # )
@@ -155,6 +164,7 @@ async def confirm_order(
         user_uuid=user_uuid,
         db=db
     )
+    await services.redis_values.set_ttl(user_uuid=user_uuid, time_out=120)
     # Возвращаем значения для подтверждения
     return redis_dict
 
