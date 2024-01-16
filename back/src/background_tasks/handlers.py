@@ -2,6 +2,7 @@ from sevices import services
 from asyncio import sleep as async_sleep
 from redis_ttl.routers import get_ttl
 from database.db import Database
+from pendings.models import PendingAdmin
 
 
 async def controll_order(
@@ -27,6 +28,7 @@ async def controll_order(
         router_num = await services.redis_values.get_router_num(
             user_uuid=user_uuid
         )
+        print(f"номер роутера: {router_num}")
 
         # Если номер роутера от 3, то можно получить номер заявки
         if router_num >= 3:
@@ -35,6 +37,7 @@ async def controll_order(
             )
             print(order_id)
 
+        # Отдаем контроль на 10 сек
         print("Сплю 10 сек")
         await async_sleep(10)
 
@@ -51,7 +54,7 @@ async def controll_order(
     ):
         # Удаляем заявку из актуальных
         await db.pending_admin.delete(
-            pending_admin.c.order_id == order_id
+            PendingAdmin.order_id == order_id
         )
         await db.session.commit()
         print("Удалили заявку в актуальных")

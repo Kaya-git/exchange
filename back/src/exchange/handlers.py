@@ -251,6 +251,7 @@ async def add_or_get_po(
         client_sell_payment_option = fiat_po
         client_buy_payment_option = fiat_po
     await db.session.flush()
+    await db.session.commit()
     return {
             "client_sell_payment_option": client_sell_payment_option.__dict__,
             "client_buy_payment_option": client_buy_payment_option.__dict__
@@ -419,10 +420,15 @@ async def check_user_registration(
             await db.session.commit()
 
             # Заменить список с информацией в редисе на айди ордера
-            await services.redis_values.change_keys(
+            await services.redis_values.add_keys(
                 user_uuid=user_uuid,
                 order_id=new_order.id,
-                user_id=user.id,
+                user_id=user.id
+            )
+
+            # Выставляем следующий номер эндпоинта в роутере
+            await services.redis_values.change_redis_router_num(
+                user_uuid=user_uuid,
                 router_num=end_point_number
             )
             return {
@@ -493,11 +499,16 @@ async def check_user_registration(
             await db.session.flush()
             await db.session.commit()
 
-            # Изменяем содержание ключей в редисе
-            await services.redis_values.change_keys(
+            # Заменить список с информацией в редисе на айди ордера
+            await services.redis_values.add_keys(
                 user_uuid=user_uuid,
                 order_id=new_order.id,
                 user_id=user.id,
+            )
+
+            # Выставляем следующий номер эндпоинта в роутере
+            await services.redis_values.change_redis_router_num(
+                user_uuid=user_uuid,
                 router_num=end_point_number
             )
             return {
@@ -530,10 +541,15 @@ async def check_user_registration(
         await db.session.commit()
 
         # Заменить список с информацией в редисе на айди ордера
-        await services.redis_values.change_keys(
+        await services.redis_values.add_keys(
             user_uuid=user_uuid,
             order_id=new_order.id,
             user_id=user.id,
+        )
+
+        # Выставляем следующий номер эндпоинта в роутере
+        await services.redis_values.change_redis_router_num(
+            user_uuid=user_uuid,
             router_num=end_point_number
         )
         return {
@@ -554,10 +570,15 @@ async def check_user_registration(
     await db.session.commit()
 
     # Заменить список с информацией в редисе на айди ордера
-    await services.redis_values.change_keys(
+    await services.redis_values.add_keys(
         user_uuid=user_uuid,
         order_id=new_order.id,
-        user_id=user.id,
+        user_id=user.id
+    )
+
+    # Выставляем следующий номер эндпоинта в роутере
+    await services.redis_values.change_redis_router_num(
+        user_uuid=user_uuid,
         router_num=end_point_number
     )
     return {

@@ -55,20 +55,36 @@ class RedisValues:
     async def decode_values(
         self,
         user_uuid: str,
-        db: Database
+        db: Database,
+        end_point_number: int = None
     ):
-        # Достаем из редиса список с данными ордера.
-        (
-            client_crypto_wallet,
-            client_cc_holder,
-            client_credit_card_number,
-            client_buy_tikker,
-            client_buy_value,
-            client_sell_tikker,
-            client_sell_value,
-            client_email,
-            router_number
-        ) = await self.redis_conn.lrange(user_uuid, 0, -1)
+        if end_point_number == 4:
+            (
+                client_crypto_wallet,
+                client_cc_holder,
+                client_credit_card_number,
+                client_buy_tikker,
+                client_buy_value,
+                client_sell_tikker,
+                client_sell_value,
+                client_email,
+                router_number,
+                order_id,
+                user_id
+            ) = await self.redis_conn.lrange(user_uuid, 0, -1)
+        else:
+            # Достаем из редиса список с данными ордера.
+            (
+                client_crypto_wallet,
+                client_cc_holder,
+                client_credit_card_number,
+                client_buy_tikker,
+                client_buy_value,
+                client_sell_tikker,
+                client_sell_value,
+                client_email,
+                router_number
+            ) = await self.redis_conn.lrange(user_uuid, 0, -1)
 
         # Декодируем из бит в пайтоновские значения
         client_sell_tikker = str(client_sell_tikker, 'UTF-8')
@@ -119,7 +135,7 @@ class RedisValues:
     ) -> int | None:
         user_id = await self.redis_conn.lindex(
             user_uuid,
-            0
+            10
         )
 
         if user_id is not None:
@@ -136,7 +152,7 @@ class RedisValues:
     ) -> int | None:
         order_id = await self.redis_conn.lindex(
             user_uuid,
-            1
+            9
         )
         if order_id is not None:
             return int(order_id)
@@ -152,7 +168,7 @@ class RedisValues:
     ) -> int:
         router_num = await self.redis_conn.lindex(
             user_uuid,
-            -1
+            8
         )
 
         if router_num is not None:
@@ -189,37 +205,31 @@ class RedisValues:
         client_crypto_wallet: str,
     ):
         await self.redis_conn.lpush(
-            f"{user_uuid}",
-            f"{end_point_number}",
-            f"{client_email}",
-            f"{client_sell_value}",
-            f"{client_sell_tikker}",
-            f"{client_buy_value}",
-            f"{client_buy_tikker}",
-            f"{client_credit_card_number}",
-            f"{client_cc_holder}",
-            f"{client_crypto_wallet}"
+            user_uuid,  # 0
+            f"{end_point_number}",  # 8
+            f"{client_email}",  # 7
+            f"{client_sell_value}",  # 6
+            f"{client_sell_tikker}",  # 5
+            f"{client_buy_value}",  # 4
+            f"{client_buy_tikker}",  # 3
+            f"{client_credit_card_number}",  # 2
+            f"{client_cc_holder}",  # 1
+            f"{client_crypto_wallet}"  # 0
         )
 
         self.redis_conn.close
 
-    async def change_keys(self,
-                          user_uuid,
-                          order_id,
-                          user_id,
-                          router_num
-                          ):
-        await self.redis_conn.delete(user_uuid)
-        await self.redis_conn.lpush(
+    async def add_keys(
+        self,
+        user_uuid: str,
+        order_id: int,
+        user_id: int,
+    ):
+        await self.redis_conn.rpush(
             user_uuid,
-            router_num,
-            order_id,
-            user_id
+            order_id,  # 9
+            user_id  # 10
             )
-        await self.redis_conn.expire(
-            name=f'{user_id}',
-            time=10
-        )
         self.redis_conn.close
 
     async def change_redis_router_num(
@@ -229,7 +239,7 @@ class RedisValues:
     ):
         await self.redis_conn.lset(
             name=user_uuid,
-            index=-1,
+            index=8,
             value=router_num
         )
         self.redis_conn.close

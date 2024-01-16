@@ -67,17 +67,27 @@ class OrderRepo(Repository[Order]):
         po_sell: int
     ):
         async with async_session_maker() as session:
-            statement = (
-                update(Order).
-                where(Order.id == order_id).
-                values(
-                    [
-                        {"sell_payment_option_id": po_sell},
-                        {"buy_payment_option_id": po_buy}
-                    ]
+
+            update_sell_po = (
+                update(
+                    Order
+                ).where(
+                    Order.id == order_id
+                ).values(
+                    sell_payment_option_id=po_sell
                 )
             )
-            await session.execute(statement)
+            update_buy_po = (
+                update(
+                    Order
+                ).where(
+                    Order.id == order_id
+                ).values(
+                    buy_payment_option_id=po_buy
+                )
+            )
+            await session.execute(update_sell_po)
+            await session.execute(update_buy_po)
             await session.commit()
 
     async def order_status_timout(
@@ -85,17 +95,28 @@ class OrderRepo(Repository[Order]):
             order_id: int
     ) -> None:
         async with async_session_maker() as session:
-            statement = (
-                update(Order).
-                where(Order.id == order_id).
-                values(
-                    [
-                        {"status": Status.отклонена},
-                        {"decline_reason": VerifDeclineReason.истечение_времени}
-                    ]
+
+            status_update = (
+                update(
+                    Order
+                ).where(
+                    Order.id == order_id
+                ).values(
+                    status=Status.отклонена
                 )
             )
-            await session.execute(statement)
+
+            reason_update = (
+                update(
+                    Order
+                ).where(
+                    Order.id == order_id
+                ).values(
+                    decline_reason=VerifDeclineReason.истечение_времени
+                )
+            )
+            await session.execute(status_update)
+            await session.execute(reason_update)
             await session.commit()
 
     async def order_status_update(

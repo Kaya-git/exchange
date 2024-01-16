@@ -215,12 +215,6 @@ async def confirm_button(
         db=db
         )
 
-    # Выставляем следующий номер эндпоинта в роутере
-    await services.redis_values.change_redis_router_num(
-        user_uuid=user_uuid,
-        router_num=END_POINT_NUMBER
-    )
-
     # Проверяем зарегистрирован пользователь или нет
     registration_status = await check_user_registration(
         redis_dict=redis_dict,
@@ -271,13 +265,14 @@ async def confirm_cc(
     # Декодируем значения редиса в пайтоновские типы
     redis_dict = await services.redis_values.decode_values(
         user_uuid=user_uuid,
-        db=db
+        db=db,
+        end_point_number=END_POINT_NUMBER
         )
 
     # Добавляем новые способы оплаты пользователю
     p_o_dict = await add_or_get_po(
         db=db,
-        redis_dict=redis_dict,
+        redis_voc=redis_dict,
         user_id=user_id,
         new_file_name=new_file_name
     )
