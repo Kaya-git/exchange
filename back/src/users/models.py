@@ -11,6 +11,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
     from payment_options.models import PaymentOption
+    from orders.models import Order
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
