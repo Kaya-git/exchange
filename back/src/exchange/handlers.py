@@ -118,7 +118,7 @@ async def ya_save_passport_photo(
 async def add_or_get_po(
         db: Database,
         redis_voc: dict,
-        user: User,
+        user_id: int,
         new_file_name: str
 ):
 
@@ -139,14 +139,14 @@ async def add_or_get_po(
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
                 image=new_file_name,
-                user_id=user.id,
+                user_id=user_id,
             )
 
             client_buy_payment_option = await db.payment_option.new(
                 currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
-                user_id=user.id,
+                user_id=user_id,
             )
 
         if redis_voc["client_sell_currency"]["type"] == CurrencyType.Крипта:
@@ -155,7 +155,7 @@ async def add_or_get_po(
                 currency_id=redis_voc["client_sell_currency"]['id'],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
-                user_id=user.id,
+                user_id=user_id,
             )
 
             client_buy_payment_option = await db.payment_option.new(
@@ -163,7 +163,7 @@ async def add_or_get_po(
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
                 image=new_file_name,
-                user_id=user.id,
+                user_id=user_id,
             )
 
         db.session.add_all(
@@ -181,7 +181,7 @@ async def add_or_get_po(
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
                 image=new_file_name,
-                user_id=user.id,
+                user_id=user_id,
             )
 
             client_buy_payment_option = crypto_po
@@ -197,14 +197,14 @@ async def add_or_get_po(
                 number=redis_voc["client_credit_card_number"],
                 holder=redis_voc["client_cc_holder"],
                 image=new_file_name,
-                user_id=user.id,
+                user_id=user_id,
             )
 
             db.session.add(client_buy_payment_option)
 
     if (
         fiat_po is not None and
-        fiat_po.user_id == user.id and
+        fiat_po.user_id == user_id and
         crypto_po is None
     ):
 
@@ -216,7 +216,7 @@ async def add_or_get_po(
                 currency_id=redis_voc["client_buy_currency"]["id"],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
-                user_id=user.id,
+                user_id=user_id,
             )
             db.session.add(client_buy_payment_option)
 
@@ -226,7 +226,7 @@ async def add_or_get_po(
                 currency_id=redis_voc["client_sell_currency"]["id"],
                 number=redis_voc["client_crypto_wallet"],
                 holder=redis_voc["client_email"],
-                user_id=user.id,
+                user_id=user_id,
             )
             client_buy_payment_option = fiat_po
             db.session.add(client_sell_payment_option)
@@ -236,13 +236,13 @@ async def add_or_get_po(
         crypto_po is not None
     ):
         print(f"fiat_po.user: {fiat_po.user_id}")
-        if fiat_po.user_id != user.id:
+        if fiat_po.user_id != user_id:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
                 detail="Номер карты зарегестрирован под другим имейлом"
             )
 
-        if crypto_po.user_id != user.id:
+        if crypto_po.user_id != user_id:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
                 detail="Номер карты зарегестрирован под другим имейлом"
@@ -382,6 +382,49 @@ async def check_user_registration(
 
         if credit_card is None:
 
+            # Новая строка пароля
+            new_password = await generate_pass()
+
+            # Захешированый пароль
+            hashed_password = await get_password_hash(new_password)
+
+            # Создаем пользователя
+            user = await db.user.new(
+                email=redis_dict["client_email"],
+                hashed_password=hashed_password,
+                is_verified=True
+            )
+            db.session.add(user)
+            await db.session.flush()
+
+            # Отправляем пользователю новый пароль
+            await services.mail.send_password(
+                recepient_email=redis_dict["client_email"],
+                generated_pass=new_password
+            )
+
+            # Создаем заявку
+            new_order = await db.order.new(
+                user_id=user.id,
+                user_email=redis_dict["client_email"],
+                user_cookie=user_uuid,
+                user_buy_sum=redis_dict["client_buy_value"],
+                buy_currency_id=redis_dict["client_buy_currency"]["id"],
+                user_sell_sum=redis_dict["client_sell_value"],
+                sell_currency_id=redis_dict["client_sell_currency"]["id"],
+                status=Status.верификация_карты,
+            )
+            db.session.add(new_order)
+            await db.session.flush()
+            await db.session.commit()
+
+            # Заменить список с информацией в редисе на айди ордера
+            await services.redis_values.change_keys(
+                user_uuid=user_uuid,
+                order_id=new_order.id,
+                user_id=user.id,
+                router_num=end_point_number
+            )
             return {
                 "verified": False
             }
@@ -472,11 +515,51 @@ async def check_user_registration(
         credit_card is not None and
         credit_card.is_verified is False
     ):
+        new_order = await db.order.new(
+            user_id=user.id,
+            user_email=redis_dict["client_email"],
+            user_cookie=user_uuid,
+            user_buy_sum=redis_dict["client_buy_value"],
+            buy_currency_id=redis_dict["client_buy_currency"]["id"],
+            user_sell_sum=redis_dict["client_sell_value"],
+            sell_currency_id=redis_dict["client_sell_currency"]["id"],
+            status=Status.верификация_карты,
+        )
+        db.session.add(new_order)
+        await db.session.flush()
+        await db.session.commit()
 
+        # Заменить список с информацией в редисе на айди ордера
+        await services.redis_values.change_keys(
+            user_uuid=user_uuid,
+            order_id=new_order.id,
+            user_id=user.id,
+            router_num=end_point_number
+        )
         return {
             "verified": False
         }
+    new_order = await db.order.new(
+        user_id=user.id,
+        user_email=redis_dict["client_email"],
+        user_cookie=user_uuid,
+        user_buy_sum=redis_dict["client_buy_value"],
+        buy_currency_id=redis_dict["client_buy_currency"]["id"],
+        user_sell_sum=redis_dict["client_sell_value"],
+        sell_currency_id=redis_dict["client_sell_currency"]["id"],
+        status=Status.верификация_карты,
+    )
+    db.session.add(new_order)
+    await db.session.flush()
+    await db.session.commit()
 
+    # Заменить список с информацией в редисе на айди ордера
+    await services.redis_values.change_keys(
+        user_uuid=user_uuid,
+        order_id=new_order.id,
+        user_id=user.id,
+        router_num=end_point_number
+    )
     return {
         "verified": False
     }

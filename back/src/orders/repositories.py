@@ -31,11 +31,11 @@ class OrderRepo(Repository[Order]):
         user_cookie: str,
         user_buy_sum: sa.Numeric,
         sell_currency_id: Currency,
-        buy_payment_option_id: PaymentOption,
         user_sell_sum: sa.Numeric,
         buy_currency_id: Currency,
-        sell_payment_option_id: PaymentOption,
         status: Status,
+        buy_payment_option_id: PaymentOption = None,
+        sell_payment_option_id: PaymentOption = None,
         decline_reason: VerifDeclineReason = None,
         service_sell_po_id: ServicePaymentOption = None,
         service_buy_po_id: ServicePaymentOption = None,
@@ -60,6 +60,26 @@ class OrderRepo(Repository[Order]):
         )
         return new_order
 
+    async def update_pos(
+        self,
+        order_id: int,
+        po_buy: int,
+        po_sell: int
+    ):
+        async with async_session_maker() as session:
+            statement = (
+                update(Order).
+                where(Order.id == order_id).
+                values(
+                    [
+                        {"sell_payment_option_id": po_sell},
+                        {"buy_payment_option_id": po_buy}
+                    ]
+                )
+            )
+            await session.execute(statement)
+            await session.commit()
+
     async def order_status_timout(
             self,
             order_id: int
@@ -77,7 +97,6 @@ class OrderRepo(Repository[Order]):
             )
             await session.execute(statement)
             await session.commit()
-
 
     async def order_status_update(
             self,

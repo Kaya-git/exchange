@@ -116,13 +116,15 @@ class RedisValues:
     async def get_user_id(
             self,
             user_uuid: "UuidDTO"
-    ) -> int:
+    ) -> int | None:
         user_id = await self.redis_conn.lindex(
             user_uuid,
             0
         )
+
         if user_id is not None:
             return int(user_id)
+
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Отсутствует пользователь в редис"
@@ -131,13 +133,14 @@ class RedisValues:
     async def get_order_id(
             self,
             user_uuid: str
-    ) -> int:
+    ) -> int | None:
         order_id = await self.redis_conn.lindex(
             user_uuid,
             1
         )
         if order_id is not None:
             return int(order_id)
+
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Отсутствует номер заявки в редис"
@@ -147,22 +150,26 @@ class RedisValues:
             self,
             user_uuid: str
     ) -> int:
-        return await self.redis_conn.lindex(
+        router_num = await self.redis_conn.lindex(
             user_uuid,
             -1
         )
 
+        if router_num is not None:
+            return int(router_num)
+        return 0
+
     async def check_existance(
             self,
             user_uuid: str,
-            db: Database | None = None
     ) -> bool | None:
         does_exist = await self.redis_conn.exists(
             user_uuid
         )
+
         if does_exist != 1:
             raise HTTPException(
-                status_code=status.HTTP_408_REQUEST_TIMEOUT,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="Пользователя нет в редисе"
             )
         else:
@@ -194,8 +201,6 @@ class RedisValues:
             f"{client_crypto_wallet}"
         )
 
-        # await self.set_ttl(user_uuid=user_uuid, time_out=120)
-        # await self.redis_conn.expire(name=f'{user_uuid}', time=120)
         self.redis_conn.close
 
     async def change_keys(self,

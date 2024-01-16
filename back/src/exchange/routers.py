@@ -10,12 +10,10 @@ from fastapi import (
 )
 from sevices import services
 from sqlalchemy.ext.asyncio import AsyncSession
-from users.models import User
 
 from .handlers import (
     add_or_get_po, calculate_totals, check_form_fillment,
     check_user_registration, find_exchange_rate,
-    generate_pass, get_password_hash,
     start_time, ya_save_passport_photo
 )
 
@@ -40,6 +38,8 @@ async def get_exchange_rates(
 ):
     """ Отдает словарь со стоимостью запрашиваемой пары, тикерами,
     иконками, максимальными и минимальными значениями """
+
+    # Экземпляр обстракции для обращения к бд
     db = Database(session=session)
 
     client_sell_coin = await db.currency.get_by_where(
@@ -256,86 +256,49 @@ async def confirm_cc(
     # Проверяем существование ключа в редисе
     await services.redis_values.check_existance(user_uuid)
 
+    # Выставляем следующий номер эндпоинта в роутере
+    await services.redis_values.change_redis_router_num(
+        user_uuid=user_uuid,
+        router_num=END_POINT_NUMBER
+    )
+
     # Отправляем фотографию в Яндекс Диск
     new_file_name = await ya_save_passport_photo(cc_image)
+
+    # Получаем пользователя
+    user_id = await services.redis_values.get_user_id(user_uuid=user_uuid)
 
     # Декодируем значения редиса в пайтоновские типы
     redis_dict = await services.redis_values.decode_values(
         user_uuid=user_uuid,
         db=db
-    )
-
-    # Проверяем существует ли пользователь с данным мылом,
-    # если нет создаем нового пользователя по email ордера с пустым паролем и
-    # возвращаем его из бд
-
-    # Находим пользователя по email
-    user = await db.user.get_by_where(
-        User.email == redis_dict["client_email"]
-    )
-
-    # Если пользователя нет, регистрируем нового, со сгенерированным паролем
-    if user is None:
-
-        # Новая строка пароля
-        new_password = await generate_pass()
-
-        # Захешированый пароль
-        hashed_password = await get_password_hash(new_password)
-
-        # Создаем пользователя
-        user = await db.user.new(
-            email=redis_dict["client_email"],
-            hashed_password=hashed_password,
-            is_verified=True
-        )
-        db.session.add(user)
-        await db.session.flush()
-
-        # Отправляем пользователю новый пароль
-        await services.mail.send_password(
-            recepient_email=redis_dict["client_email"],
-            generated_pass=new_password
         )
 
     # Добавляем новые способы оплаты пользователю
     p_o_dict = await add_or_get_po(
-        db, redis_dict,
-        user, new_file_name
+        db=db,
+        redis_dict=redis_dict,
+        user_id=user_id,
+        new_file_name=new_file_name
     )
 
-    # Записываем новый ордер на обмен в базу данных
-    new_order = await db.order.new(
-        user_id=user.id,
-        user_email=redis_dict["client_email"],
-        user_cookie=user_uuid,
-        user_buy_sum=redis_dict["client_buy_value"],
-        buy_currency_id=redis_dict["client_buy_currency"]["id"],
-        buy_payment_option_id=p_o_dict["client_buy_payment_option"]["id"],
-        user_sell_sum=redis_dict["client_sell_value"],
-        sell_currency_id=redis_dict["client_sell_currency"]["id"],
-        sell_payment_option_id=p_o_dict["client_sell_payment_option"]["id"],
-        status=Status.верификация_карты,
+    # Получаем номер
+    order_id = await services.redis_values.get_order_id(user_uuid=user_uuid)
+
+    await db.order.update_pos(
+        order_id=order_id,
+        po_buy=p_o_dict["client_buy_payment_option"]["id"],
+        po_sell=p_o_dict["client_sell_payment_option"]["id"]
     )
-    db.session.add(new_order)
-    await db.session.flush()
 
     # Добавляем ордер в оповещение администратору
     new_pending = await db.pending_admin.new(
-        order_id=new_order.id,
+        order_id=order_id,
         req_act=ReqAction.верифицировать_клиента
     )
     db.session.add(new_pending)
     await db.session.flush()
     await db.session.commit()
-
-    # Заменить список с информацией в редисе на айди ордера
-    await services.redis_values.change_keys(
-                    user_uuid=user_uuid,
-                    order_id=new_order.id,
-                    user_id=user.id,
-                    router_num=END_POINT_NUMBER
-    )
 
     # Выставляем таймер на время жизни заявки
     await services.redis_values.set_ttl(

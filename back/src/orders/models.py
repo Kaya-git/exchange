@@ -55,10 +55,12 @@ class Order(Base):
     )
 
     sell_payment_option_id: Mapped[int] = mapped_column(
-        sa.ForeignKey("payment_option.id")
+        sa.ForeignKey("payment_option.id"),
+        nullable=True
     )
     buy_payment_option_id: Mapped[int] = mapped_column(
-        sa.ForeignKey("payment_option.id")
+        sa.ForeignKey("payment_option.id"),
+        nullable=True
     )
     service_sell_po_id: Mapped[int] = mapped_column(
         sa.ForeignKey("service_payment_option.id"),
