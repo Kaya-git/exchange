@@ -14,7 +14,7 @@ from users.models import User
 
 from .handlers import (add_or_get_po, calculate_totals, check_form_fillment,
                        check_user_registration, find_exchange_rate,
-                       generate_pass, get_password_hash, redis_discard,
+                       generate_pass, get_password_hash, decode_values,
                        start_time, ya_save_passport_photo)
 
 from background_tasks.handlers import controll_order
@@ -63,6 +63,7 @@ async def get_exchange_rates(
 # Страница для формы обмена
 @exchange_router.post("/exchange_form")
 async def fill_order_form(
+    background_tasks: BackgroundTasks,
     client_sell_value: Decimal = Form(default=0),
     client_sell_tikker: str = Form(),
     client_buy_value: Decimal = Form(default=0),
@@ -74,11 +75,15 @@ async def fill_order_form(
     user_uuid: str | None = Form(),
     session: AsyncSession = Depends(get_async_session)
 ):
+    """ Форма для создания заявки"""
 
+    # Номер ендпоинта в цепочке заявки
     END_POINT_NUMBER = 1
 
-    """ Форма для заполнения заказа на обмен """
+    # Экземпляр обстракции для обращения к бд
     db = Database(session=session)
+
+    # Формируем словарь с данными
     form_voc = {
         "client_sell_value": client_sell_value,
         "client_sell_tikker": client_sell_tikker,
@@ -93,6 +98,7 @@ async def fill_order_form(
 
     # Проверяем наполненость формы, либо отдаем ошибку
     if await check_form_fillment(form_voc):
+
         # Просчитываем стоимость валюты с учетом коммисий и
         # стоимости за перевод
         client_sell_coin = await db.currency.get_by_where(
@@ -129,8 +135,18 @@ async def fill_order_form(
             client_crypto_wallet=client_crypto_wallet,
         )
 
-        # Выставляем время жизни заявки до дальнейщего перехода по цепочке
-        await services.redis_values.set_ttl(user_uuid=user_uuid, time_out=50)
+        # Выставляем время жизни заявки до дальнейшего перехода по цепочке
+        await services.redis_values.set_ttl(
+            user_uuid=user_uuid,
+            time_out=50
+        )
+
+        # Запускаем фоновую задачу на котроль заявки
+        background_tasks.add_task(
+            controll_order,
+            user_uuid,
+            db
+        )
 
         # Отдаем время старт заявки для запуска таймера на фронте
         return await start_time()
@@ -138,33 +154,40 @@ async def fill_order_form(
 
 @exchange_router.post("/confirm_order")
 async def confirm_order(
-    background_tasks: BackgroundTasks,
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
 ):
     """ Отправляет пользователю данные заявки на проверку"""
+
+    # Номер ендпоинта в цепочке заявки
     END_POINT_NUMBER = 2
 
+    # Экземпляр обстракции для обращения к бд
     db = Database(session=async_session)
 
+    # Проверяем существование ключа в редисе
     await services.redis_values.check_existance(
         user_uuid=user_uuid
     )
-    # Проверяем есть ли ключи в реддисе и забираем значения
-    background_tasks.add_task(controll_order, user_uuid, db)
-    # await services.redis_values.check_existance(
-    #     user_uuid=user_uuid
-    # )
 
+    # Выставляем следующий номер эндпоинта в роутере
     await services.redis_values.change_redis_router_num(
         user_uuid=user_uuid,
         router_num=END_POINT_NUMBER
     )
-    redis_dict = await redis_discard(
+
+    # Декодируем значения редиса в пайтоновские типы
+    redis_dict = await services.redis_values.decode_values(
         user_uuid=user_uuid,
         db=db
     )
-    await services.redis_values.set_ttl(user_uuid=user_uuid, time_out=120)
+
+    # Выставляем таймер на
+    await services.redis_values.set_ttl(
+        user_uuid=user_uuid,
+        time_out=120
+    )
+
     # Возвращаем значения для подтверждения
     return redis_dict
 
@@ -175,33 +198,42 @@ async def confirm_button(
     async_session: AsyncSession = Depends(get_async_session)
 ):
 
+    # Номер ендпоинта в цепочке заявки
     END_POINT_NUMBER = 3
 
+    # Экземпляр обстракции для обращения к бд
     db = Database(session=async_session)
 
-    # Проверяем есть ли ключи в реддисе и забираем значения
+    # Проверяем существование ключа в редисе
     await services.redis_values.check_existance(user_uuid)
 
-    redis_dict = await redis_discard(
+    # Декодируем значения редиса в пайтоновские типы
+    redis_dict = await services.redis_values.decode_values(
         user_uuid=user_uuid,
         db=db
         )
-    # Проверяем зарегестрировани ли пользователь и
-    # верифицирована ли его банковская карта и
-    user = await db.user.get_by_where(
-        User.email == redis_dict["client_email"]
-    )
 
+    # Выставляем следующий номер эндпоинта в роутере
     await services.redis_values.change_redis_router_num(
         user_uuid=user_uuid,
         router_num=END_POINT_NUMBER
     )
 
-    return await check_user_registration(
-        redis_dict, user,
-        db, user_uuid,
-        END_POINT_NUMBER
+    # Проверяем зарегистрирован пользователь или нет
+    registration_status = await check_user_registration(
+        redis_dict=redis_dict,
+        db=db,
+        user_uuid=user_uuid,
+        end_point_number=END_POINT_NUMBER
     )
+
+    # Выставляем таймер на
+    await services.redis_values.set_ttl(
+        user_uuid=user_uuid,
+        time_out=120
+    )
+
+    return registration_status
 
 
 # Отправляем фото паспорта на верификацию админу
@@ -211,57 +243,75 @@ async def confirm_cc(
     user_uuid: str | None = Form(),
     session: AsyncSession = Depends(get_async_session)
 ):
+    """ Форма для отправки фотографии с картой"""
 
+    # Номер ендпоинта в цепочке заявки
     END_POINT_NUMBER = 4
 
-    """ Форма для отправки фотографии подтверждения """
+    # Экземпляр обстракции для обращения к бд
     db = Database(session=session)
 
+    # Проверяем существование ключа в редисе
     await services.redis_values.check_existance(user_uuid)
 
+    # Отправляем фотографию в Яндекс Диск
     new_file_name = await ya_save_passport_photo(cc_image)
 
-    redis_voc = await redis_discard(user_uuid, db)
+    # Декодируем значения редиса в пайтоновские типы
+    redis_dict = await services.redis_values.decode_values(
+        user_uuid=user_uuid,
+        db=db
+    )
 
     # Проверяем существует ли пользователь с данным мылом,
     # если нет создаем нового пользователя по email ордера с пустым паролем и
     # возвращаем его из бд
+
+    # Находим пользователя по email
     user = await db.user.get_by_where(
-        User.email == redis_voc["client_email"]
+        User.email == redis_dict["client_email"]
     )
+
+    # Если пользователя нет, регистрируем нового, со сгенерированным паролем
     if user is None:
 
+        # Новая строка пароля
         new_password = await generate_pass()
+
+        # Захешированый пароль
         hashed_password = await get_password_hash(new_password)
 
+        # Создаем пользователя
         user = await db.user.new(
-            email=redis_voc["client_email"],
+            email=redis_dict["client_email"],
             hashed_password=hashed_password,
             is_verified=True
         )
         db.session.add(user)
         await db.session.flush()
 
+        # Отправляем пользователю новый пароль
         await services.mail.send_password(
-            recepient_email=redis_voc["client_email"],
+            recepient_email=redis_dict["client_email"],
             generated_pass=new_password
         )
 
+    # Добавляем новые способы оплаты пользователю
     p_o_dict = await add_or_get_po(
-        db, redis_voc,
+        db, redis_dict,
         user, new_file_name
     )
 
     # Записываем новый ордер на обмен в базу данных
     new_order = await db.order.new(
         user_id=user.id,
-        user_email=redis_voc["client_email"],
+        user_email=redis_dict["client_email"],
         user_cookie=user_uuid,
-        user_buy_sum=redis_voc["client_buy_value"],
-        buy_currency_id=redis_voc["client_buy_currency"]["id"],
+        user_buy_sum=redis_dict["client_buy_value"],
+        buy_currency_id=redis_dict["client_buy_currency"]["id"],
         buy_payment_option_id=p_o_dict["client_buy_payment_option"]["id"],
-        user_sell_sum=redis_voc["client_sell_value"],
-        sell_currency_id=redis_voc["client_sell_currency"]["id"],
+        user_sell_sum=redis_dict["client_sell_value"],
+        sell_currency_id=redis_dict["client_sell_currency"]["id"],
         sell_payment_option_id=p_o_dict["client_sell_payment_option"]["id"],
         status=Status.верификация_карты,
     )
@@ -275,6 +325,7 @@ async def confirm_cc(
     )
     db.session.add(new_pending)
     await db.session.flush()
+    await db.session.commit()
 
     # Заменить список с информацией в редисе на айди ордера
     await services.redis_values.change_keys(
@@ -284,28 +335,39 @@ async def confirm_cc(
                     router_num=END_POINT_NUMBER
     )
 
-    await db.session.commit()
+    # Выставляем таймер на время жизни заявки
+    await services.redis_values.set_ttl(
+        user_uuid=user_uuid,
+        time_out=120
+    )
 
-    return "Ордер создан"
+    return True
 
 
 @exchange_router.post("/await")
 async def conformation_await(
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
-) -> RedirectResponse:
-
-    END_POINT_NUMBER = 5
-
+) -> dict:
     """ Запускает паралельно задачу на отслеживание
     смены статуса верификации пользователя """
+
+    # Номер ендпоинта в цепочке заявки
+    END_POINT_NUMBER = 5
+
+    # Экземпляр обстракции для обращения к бд
     db = Database(session=async_session)
 
+    # Проверяем существование ключа в редисе
+    await services.redis_values.check_existance(user_uuid)
+
+    # Выставляем следующий номер эндпоинта в роутере
     await services.redis_values.change_redis_router_num(
         user_uuid=user_uuid,
         router_num=END_POINT_NUMBER
     )
 
+    # Создаем таск на пулинг актуального статуса верификации кредитной карты
     return await asyncio.create_task(
         services.db_paralell.conformation_await(
             db,
@@ -319,23 +381,37 @@ async def requisites(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Form(),
 ):
+    """ Отдает данные для перевода средств """
 
+    # Номер ендпоинта в цепочке заявки
     END_POINT_NUMBER = 6
 
-    """ Отдает данные для перевода средств """
+    # Экземпляр обстракции для обращения к бд
     db = Database(session=async_session)
 
+    # Проверяем существование ключа в редисе
+    await services.redis_values.check_existance(user_uuid)
+
+    # Выставляем следующий номер эндпоинта в роутере
     await services.redis_values.change_redis_router_num(
         user_uuid=user_uuid,
         router_num=END_POINT_NUMBER
     )
-    # Достаем из редиса тикер заказа
+
+    # Достаем из редиса номер заявки
     order_id = await services.redis_values.get_order_id(
         user_uuid
     )
 
+    # Находим в платежных средствах сервиса актуальный способ оплаты
     service_payment_option = await db.service_payment_option.spo_equal_sp(
         order_id
+    )
+
+    # Выставляем таймер на время жизни заявки
+    await services.redis_values.set_ttl(
+        user_uuid=user_uuid,
+        time_out=120
     )
 
     return {
@@ -350,45 +426,44 @@ async def payed_button(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Form(),
 ):
-
-    END_POINT_NUMBER = 7
-
     """ Кнопка подтверждения оплаты пользователя
     запускает паралельно задачу на отслеживание изменения стасу ордера """
+
+    # Номер ендпоинта в цепочке заявки
+    END_POINT_NUMBER = 7
+
+    # Экземпляр обстракции для обращения к бд
     db = Database(session=async_session)
 
-    await services.redis_values.check_existance(
-        user_uuid=user_uuid
-    )
+    # Проверяем существование ключа в редисе
+    await services.redis_values.check_existance(user_uuid)
 
+    # Выставляем следующий номер эндпоинта в роутере
     await services.redis_values.change_redis_router_num(
         user_uuid=user_uuid,
         router_num=END_POINT_NUMBER
     )
-
+    # Достаем из редиса номер заявки
     order_id = await services.redis_values.get_order_id(
         user_uuid
     )
-
+    # Достаем из редиса номер пользователя
     user_id = await services.redis_values.get_user_id(
         user_uuid
     )
-
+    # Добавляем актуальную заявку
     await db.pending_admin.new(
         order_id=order_id,
         req_act=ReqAction.верифицировать_транзакцию
     )
     await db.session.commit()
-    await services.redis_values.check_existance(
-        user_uuid=user_uuid,
-        order_id=order_id,
-        db=db
-    )
+
+    # Обновляем статус заявки
     await db.order.order_status_update(
         new_status=Status.проверка_оплаты,
         order_id=order_id
     )
-
+    # Создаем таск на пулинг подтверждения оплаты от сервиса
     task = asyncio.create_task(services.db_paralell.payed_button_db(
             db=db,
             user_uuid=user_uuid,
@@ -396,5 +471,5 @@ async def payed_button(
             user_id=user_id
         )
     )
-    
+
     return await task
