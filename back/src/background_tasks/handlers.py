@@ -8,23 +8,32 @@ async def controll_order(
     user_uuid: str | None,
     db: Database
 ):
-    router_num = await services.redis_values.get_router_num(
-        user_uuid=user_uuid
-    )
 
     # Получаем оставшееся время жизни ключа
     order_ttl = await get_ttl(
         user_uuid=user_uuid
     )
-    print("Запускаем цикл")
 
+    # Если ключ -1 то не назначено время
+    if order_ttl == -1:
+        print('У ключа не назначено время')
+        return None
+
+    print("Запускаем цикл")
     # Запускаем цикл, пока жив ключ
     while order_ttl != -2:
 
-        # Если ключ -1 то не назначено время
-        if order_ttl == -1:
-            print('У ключа не назначено время')
-            return None
+        # Актуальный номер роутера
+        router_num = await services.redis_values.get_router_num(
+            user_uuid=user_uuid
+        )
+
+        # Если номер роутера от 3, то можно получить номер заявки
+        if router_num >= 3:
+            order_id = await services.redis_values.get_order_id(
+                user_uuid=user_uuid
+            )
+            print(order_id)
 
         print("Сплю 10 сек")
         await async_sleep(10)
@@ -33,21 +42,9 @@ async def controll_order(
             user_uuid=user_uuid
         )
         print(order_ttl)
-
     print("Закончилось время")
 
-    # Если номер роутера больше 4, то создана заявка
-    if router_num >= 3:
-        order_id = await services.redis_values.get_order_id(
-            user_uuid=user_uuid
-        )
-        print(order_id)
-
-        # Меняем статус заявки на истекло время
-        await db.order.order_status_timout(
-            order_id
-        )
-        print("поменяли статус заявки")
+    # C 4 по 5 и с 7 по 8 заявка находиться актуальных
     if (
         4 <= router_num >= 5 or
         7 <= router_num >= 8
@@ -58,6 +55,14 @@ async def controll_order(
         )
         await db.session.commit()
         print("Удалили заявку в актуальных")
+
+    if router_num >= 3:
+        # Меняем статус заявки на истекло время
+        await db.order.order_status_timout(
+            order_id
+        )
+        print("поменяли статус заявки")
+        return None
     else:
-        print("Что то так")
-        return
+        print("Заявка тайм аут раньше 3 роутера")
+        return None
