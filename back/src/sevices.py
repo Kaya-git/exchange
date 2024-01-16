@@ -53,8 +53,9 @@ class RedisValues:
 
     # Достаем данные из редиса и декодируем их
     async def decode_values(
-            user_uuid: str | None,
-            db: Database
+        self,
+        user_uuid: str,
+        db: Database
     ):
         # Достаем из редиса список с данными ордера.
         (
@@ -67,7 +68,7 @@ class RedisValues:
             client_sell_value,
             client_email,
             router_number
-        ) = await services.redis_values.redis_conn.lrange(user_uuid, 0, -1)
+        ) = await self.redis_conn.lrange(user_uuid, 0, -1)
 
         # Декодируем из бит в пайтоновские значения
         client_sell_tikker = str(client_sell_tikker, 'UTF-8')
@@ -120,10 +121,12 @@ class RedisValues:
             user_uuid,
             0
         )
-        if user_id is None:
+        if user_id is not None:
             return int(user_id)
-        else:
-            return None
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Отсутствует пользователь в редис"
+        )
 
     async def get_order_id(
             self,
@@ -135,8 +138,10 @@ class RedisValues:
         )
         if order_id is not None:
             return int(order_id)
-        else:
-            return None
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Отсутствует номер заявки в редис"
+        )
 
     async def get_router_num(
             self,
@@ -355,6 +360,9 @@ class DB:
     ):
         # Запускаем цикл по оставшемуся времени заявки
         ttl = await services.redis_values.redis_conn.ttl(name=user_uuid)
+        print(f"заявка{order_id}")
+        print(f"Пользователь{user_id}")
+
         while ttl != -2:
             order = None
             order = await db.order.get(order_id)

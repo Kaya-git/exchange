@@ -1,11 +1,9 @@
 import datetime
 import secrets
-from decimal import Decimal
 
 import aiofiles
 import aiofiles.os
 from config import conf
-from currencies.models import Currency
 from currencies.routers import CoingekkoParamsDTO
 from database.db import Database
 from enums import CurrencyType, Status
