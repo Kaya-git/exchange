@@ -79,19 +79,20 @@ async def tariffs(
 
     return currency_list
 
-    @currency_router.get("/wallet_val")
-    async def get_wallet_val(
-        currency_tik: str,
-        async_session: AsyncSession = Depends(get_async_session)
-    ) -> dict:
-        """ Роутер для валидации крипто-кошельков """
 
-        db = Database(session=async_session)
-        currency = await db.currency.get_by_where(
-            Currency.tikker == currency_tik
-        )
-        return {
-            "min": currency.symbols_max,
-            "max": currency.symbols_min,
-            "start": currency.wallet_startsS
-        }
+@currency_router.get("/wallet_val")
+async def get_wallet_val(
+    currency_tik: str,
+    async_session: AsyncSession = Depends(get_async_session)
+) -> dict:
+    """ Роутер для валидации крипто-кошельков """
+
+    db = Database(session=async_session)
+    currency = await db.currency.get_by_where(
+        Currency.tikker == currency_tik
+    )
+    return {
+        "min": currency.symbols_max,
+        "max": currency.symbols_min,
+        "start": currency.wallet_starts
+    }
