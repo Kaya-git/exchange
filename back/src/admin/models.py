@@ -243,6 +243,28 @@ class CurrencyAdmin(ModelView, model=Currency):
     column_default_sort = [
         (Currency.tikker, True)
     ]
+    column_formatters_detail = {
+        Currency.reserve: lambda m, a: format(
+            Decimal(m.reserve), "f"
+        ),
+        Currency.max: lambda m, a: format(
+            Decimal(m.max), "f"
+        ),
+        Currency.min: lambda m, a: format(
+            Decimal(m.min), "f"
+        )
+    }
+    column_formatters = {
+        Currency.reserve: lambda m, a: format(
+            Decimal(m.reserve), "f"
+        ),
+        Currency.max: lambda m, a: format(
+            Decimal(m.max), "f"
+        ),
+        Currency.min: lambda m, a: format(
+            Decimal(m.min), "f"
+        )
+    }
     can_create = True
     can_edit = True
     can_delete = True
