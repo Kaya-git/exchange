@@ -27,7 +27,7 @@ class ServicePaymentOption(Base):
     )
 
     currency_id: Mapped[int] = mapped_column(
-        sa.ForeignKey("currency.id")
+        sa.ForeignKey("currency.id", ondelete="CASCADE")
     )
 
     currency: Mapped["Currency"] = relationship(

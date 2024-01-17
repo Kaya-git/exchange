@@ -82,7 +82,9 @@ class Currency(Base):
     service_payment_options: Mapped[
         List["ServicePaymentOption"]
     ] = relationship(
-        back_populates="currency"
+        back_populates="currency",
+        cascade="all, delete",
+        passive_deletes=True
     )
     payment_options: Mapped[
         List["PaymentOption"]
