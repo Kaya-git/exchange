@@ -63,6 +63,21 @@ class Currency(Base):
         FileType(storage=conf.image_admin_storage),
         nullable=True
     )
+    symbols_min: Mapped[int] = mapped_column(
+        sa.Integer,
+        default=0,
+        nullable=True
+    )
+    symbols_max: Mapped[int] = mapped_column(
+        sa.Integer,
+        default=0,
+        nullable=True
+    )
+    wallet_starts: Mapped[str] = mapped_column(
+        sa.CHAR,
+        default=None,
+        nullable=True
+    )
 
     service_payment_options: Mapped[
         List["ServicePaymentOption"]
