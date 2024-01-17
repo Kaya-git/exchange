@@ -18,16 +18,21 @@ class PendingAdminAdmin(ModelView, model=PendingAdmin):
     name_plural = "Актуальные заявки"
     column_list = [
         PendingAdmin.req_act,
-        PendingAdmin.order_id,
-        PendingAdmin.review_id
+        PendingAdmin.order,
+        PendingAdmin.review
     ]
     column_labels = {
         PendingAdmin.id: "ID",
         PendingAdmin.req_act: "Статус",
-        PendingAdmin.order_id: "ID ордера",
-        PendingAdmin.review_id: "ID отзыва"
+        PendingAdmin.order: "ID ордера",
+        PendingAdmin.review: "ID отзыва"
     }
-    # list_template = "custom_list.html"
+    column_details_exclude_list = {
+        PendingAdmin.order_id,
+        PendingAdmin.review_id,
+        PendingAdmin.id
+    }
+    list_template = "custom_list.html"
     can_create = False
     can_delete = True
     can_edit = False
@@ -40,8 +45,6 @@ class UserAdmin(ModelView, model=User):
     name_plural = "Пользователи"
     column_list = [
         User.email,
-        User.first_name,
-        User.second_name,
         User.registered_on,
         User.buy_volume,
         User.sell_volume,
@@ -57,9 +60,19 @@ class UserAdmin(ModelView, model=User):
         User.role: "Роль",
         User.payment_options: "ID верификаций",
         User.id: "ID",
+        User.hashed_password: "Захешированый пароль",
+        User.verification_token: "Токен верификации",
         User.is_active: "Статус активации",
         User.is_superuser: "Супер-Пользователь",
         User.is_verified: "Статус верификации"
+    }
+    form_excluded_columns = {
+        User.hashed_password,
+        User.verification_token,
+        User.is_superuser,
+        User.registered_on,
+        User.verification_token,
+        User.payment_options
     }
     column_formatters = {
         User.buy_volume: lambda m, a: format(Decimal(m.buy_volume), "f"),
@@ -83,7 +96,7 @@ class UserAdmin(ModelView, model=User):
         User.buy_volume,
         User.sell_volume
     ]
-    # list_template = "custom_list.html"
+    list_template = "custom_list.html"
     can_create = False
     can_delete = True
     can_edit = True
@@ -151,6 +164,23 @@ class OrderAdmin(ModelView, model=Order):
         Order.service_sell_po,
         Order.service_buy_po
     ]
+    form_excluded_columns = {
+        Order.service_sell_po,
+        Order.service_buy_po,
+        Order.pending_admin,
+        Order.user_cookie,
+        Order.date,
+        Order.user_buy_sum,
+        Order.user_sell_sum,
+        Order.sell_currency,
+        Order.sell_currency,
+        Order.buy_currency,
+        Order.user,
+        Order.buy_payment_option_id,
+        Order.sell_payment_option_id,
+        Order.buy_payment_option,
+        Order.sell_payment_option
+    }
     column_default_sort = [
         (Order.status, Status.верификация_карты),
         (Order.status, Status.ожидание_оплаты),
@@ -163,7 +193,7 @@ class OrderAdmin(ModelView, model=Order):
         Order.date,
         Order.status
     ]
-    # list_template = "custom_list.html"
+    list_template = "custom_list.html"
     can_create = False
     can_edit = True
     can_delete = True
@@ -240,6 +270,14 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
         PaymentOption.image: "Фото",
         PaymentOption.user: "Пользователь"
     }
+    form_excluded_columns = {
+        PaymentOption.id,
+        PaymentOption.user,
+        PaymentOption.currency,
+        PaymentOption.number,
+        PaymentOption.holder,
+        PaymentOption.image
+    }
     column_details_exclude_list = [
         PaymentOption.user_id,
         PaymentOption.currency_id
@@ -247,7 +285,7 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
     column_searchable_list = [
         PaymentOption.user,
     ]
-    # list_template = "custom_list.html"
+    list_template = "custom_list.html"
     column_sortable_list = [PaymentOption.is_verified]
     can_create = False
     can_edit = True
@@ -264,7 +302,11 @@ class ServicePaymentOptionAdmin(ModelView, model=ServicePaymentOption):
         ServicePaymentOption.number,
         ServicePaymentOption.holder,
     ]
+    column_details_exclude_list = {
+        ServicePaymentOption.id
+    }
     column_labels = {
+        ServicePaymentOption.id: "ID",
         ServicePaymentOption.currency: "Валюта",
         ServicePaymentOption.number: "Номер карты/кошелька",
         ServicePaymentOption.holder: "Владелец"
@@ -297,7 +339,7 @@ class ReviewAdmin(ModelView, model=Review):
     column_details_exclude_list = [
         Review.pending_admin
     ]
-    # list_template = "custom_list.html"
+    list_template = "custom_list.html"
     can_create = False
     can_edit = True
     can_delete = True
