@@ -3,6 +3,7 @@ from asyncio import sleep as async_sleep
 from redis_ttl.routers import get_ttl
 from database.db import Database
 from pendings.models import PendingAdmin
+from enums.models import Status
 
 
 async def controll_order(
@@ -35,7 +36,7 @@ async def controll_order(
             order_id = await services.redis_values.get_order_id(
                 user_uuid=user_uuid
             )
-            print(order_id)
+            print(f"номер заявки;{order_id}")
 
         # Отдаем контроль на 10 сек
         print("Сплю 10 сек")
@@ -60,11 +61,14 @@ async def controll_order(
         print("Удалили заявку в актуальных")
 
     if router_num >= 3:
-        # Меняем статус заявки на истекло время
-        await db.order.order_status_timout(
-            order_id
-        )
-        print("поменяли статус заявки")
+        order = await db.order.get(order_id)
+        if order.status != Status.исполнена:
+            # Меняем статус заявки на истекло время
+            await db.order.order_status_timout(
+                order_id
+            )
+            print("поменяли статус заявки")
+        print("не меняли статус заявки")
         return None
     else:
         print("Заявка тайм аут раньше 3 роутера")
