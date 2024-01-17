@@ -250,12 +250,6 @@ async def confirm_cc(
     # Проверяем существование ключа в редисе
     await services.redis_values.check_existance(user_uuid)
 
-    # Выставляем следующий номер эндпоинта в роутере
-    await services.redis_values.change_redis_router_num(
-        user_uuid=user_uuid,
-        router_num=END_POINT_NUMBER
-    )
-
     # Отправляем фотографию в Яндекс Диск
     new_file_name = await ya_save_passport_photo(cc_image)
 
@@ -291,6 +285,13 @@ async def confirm_cc(
         order_id=order_id,
         req_act=ReqAction.верифицировать_клиента
     )
+
+    # Выставляем следующий номер эндпоинта в роутере
+    await services.redis_values.change_redis_router_num(
+        user_uuid=user_uuid,
+        router_num=END_POINT_NUMBER
+    )
+
     db.session.add(new_pending)
     await db.session.flush()
     await db.session.commit()
