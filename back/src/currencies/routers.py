@@ -84,6 +84,8 @@ async def tariffs(
         currency_tik: str,
         async_session: AsyncSession = Depends(get_async_session)
     ) -> dict:
+        """ Роутер для валидации крипто-кошельков """
+
         db = Database(session=async_session)
         currency = await db.currency.get_by_where(
             Currency.tikker == currency_tik
