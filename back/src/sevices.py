@@ -247,9 +247,6 @@ class RedisValues:
 
 class DB:
 
-    def __init__(self, iterations):
-        self.iterations = iterations
-
     async def conformation_await(self, db: Database, user_uuid: str):
         """Забираем из редиса айди заказа"""
 
@@ -521,7 +518,7 @@ class Mail:
 
 class Services:
     redis_values = RedisValues()
-    db_paralell = DB(iterations=100)
+    db_paralell = DB()
     mail = Mail(
         email=conf.yandex_email,
         password=conf.yandex_email_pass
