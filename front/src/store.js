@@ -7,6 +7,7 @@ const Store = new Vuex.Store({
         exchangeData: null,
         curExchangeStep: null,
         isAuth: false,
+        isLoaded: false,
         verificationFile: null,
         uuid: null,
         user: {
@@ -14,7 +15,7 @@ const Store = new Vuex.Store({
             orders: [],
             data: {},
         },
-        requestFixedTime: 600,
+        requestFixedTime: -2,
         vantaEffect: null,
         timer: null,
     },
@@ -62,6 +63,9 @@ const Store = new Vuex.Store({
         setUserData(state, data) {
             state.user.data = data;
         },
+        setLoaded(state) {
+            state.isLoaded = true;
+        }
     },
     actions: {
         loadDataFromLocalStorage({ commit }) {
@@ -71,17 +75,20 @@ const Store = new Vuex.Store({
             }
         },
         async startCounter({ state }) {
-            state.timer = true;
-            while (state.requestFixedTime > 0 && state.timer) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                if (state.timer)
-                    state.requestFixedTime--;
-            }
-            state.timer = false;
-        },
-        resetRequestTime({ state }) {
-            state.requestFixedTime = 600;
-            state.timer = false;
+            // state.timer = true;
+            state.timer = setInterval(() => {
+                if (state.seconds > 0) {
+                    state.seconds--;
+                } else {
+                    clearInterval(state.timer); // Остановить таймер, когда время истекло
+                }
+            }, 1000);
+            // while (state.requestFixedTime > 0 && state.timer) {
+            //     await new Promise(resolve => setTimeout(resolve, 1000));
+            //     if (state.timer)
+            //         state.requestFixedTime--;
+            // }
+            // state.timer = false;
         },
         clearDataFromLocalStorage() {
             localStorage.removeItem('exchangeData');
@@ -136,6 +143,7 @@ const Store = new Vuex.Store({
             if (response.ok) {
                 commit('setCurExchangeStep', await response.json());
             }
+            return state.curExchangeStep;
         },
         async logout() {
             let response = await fetch('/api/auth/jwt/logout', {
@@ -152,10 +160,15 @@ const Store = new Vuex.Store({
                 location.reload();
             }
         },
+        async ttl({commit, state}) {
+            let response = await fetch('/api/redis/ttl' + '?user_uuid=' + state.uuid);
+            if (response.ok) {
+                let result = await response.json();
+                commit('setRequestFixedTime', result);
+            }
+        },
         resizeBg({state}) {
-            setTimeout(() => {
-                state.vantaEffect.resize();
-            }, 100);
+            state.vantaEffect.resize();
         },
     },
     getters: {
@@ -166,6 +179,7 @@ const Store = new Vuex.Store({
         getCurExchangeStep: state => state.curExchangeStep,
         getUserOrders: state => state.user.orders,
         getUserData: state => state.user.data,
+        getRequestFixedTime: state => state.requestFixedTime,
     }
 });
 

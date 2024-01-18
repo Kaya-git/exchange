@@ -29,6 +29,7 @@
 
 <script>
 import {defineComponent} from 'vue';
+import {mapActions} from 'vuex';
 
 export default defineComponent({
     name: 'ReservesView',
@@ -39,14 +40,20 @@ export default defineComponent({
     created() {
         this.getReserves();
     },
+    mounted() {
+        this.resizeBg();
+    },
     methods: {
+        ...mapActions([
+            'resizeBg',
+        ]),
         async getReserves() {
             let response = await fetch('/api/currency/list');
             if (response.ok && response.status === 200) {
                 this.reserves = await response.json();
                 if (this.reserves.length) {
                     this.reserves = this.reserves.filter(function (item) {
-                        if (item.type == 'crypto') {
+                        if (item.type == 'Крипто-валюта') {
                             return true;
                         }
                         return false;

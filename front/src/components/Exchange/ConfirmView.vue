@@ -57,9 +57,9 @@
                 </v-row>
                 <v-row class="confirm__row mb-8 flex-column align-center">
                     <p class="confirm__text text-center mb-4">
-                        Курс зафиксирован на 10 минут, до отмены подтверждения заявки:
+                        Курс зафиксирован на 15 минут, до отмены подтверждения заявки:
                     </p>
-                    <timer-view :custom-class="'confirm__timer'" :init="600" @timeout="$emit('error', 'Время подтверждения заявки вышло');"></timer-view>
+                    <timer-view :custom-class="'confirm__timer'" :init="getRequestFixedTime" @timeout="$emit('error', 'Время подтверждения заявки вышло');"></timer-view>
                 </v-row>
                 <v-row class="confirm__row">
                     <v-btn @click="isModalVisible = true" color="success" class="confirm__btn" size="large">Создать
@@ -209,7 +209,8 @@ export default defineComponent({
         ...mapGetters([
             'getExchangeData',
             'getVerificationFile',
-            'getUuid'
+            'getUuid',
+            'getRequestFixedTime',
         ]),
     },
 });

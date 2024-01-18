@@ -36,6 +36,9 @@ export default {
         WaitModal: defineAsyncComponent({
             loader: () => import("./components/Modal/WaitModal"),
         }),
+        // StatusModal: defineAsyncComponent({
+        //     loader: () => import("./components/Modal/StatusModal"),
+        // }),
     },
     data() {
         return {
@@ -46,23 +49,32 @@ export default {
         if (getCookie('user_email')) {
             this.setUserEmail(getCookie('user_email'));
         }
-        this.getApiUUID();
+        this.getApiUUID().then(() => {
+            this.ttl().then(() => {
+                if (this.getRequestFixedTime > 0) {
+                    this.whereAmI().then(() => {
+                        if (this.getCurExchangeStep ) {
+                            this.$router.push({
+                                name: 'ExchangeSteps',
+                            })
+                        }
+                    });
+                }
+            });
+        });
         this.loadDataFromLocalStorage();
         this.checkAuth();
     },
     mounted() {
         this.setVantaEffect();
-        this.whereAmI().then(() => {
-            if (this.getCurExchangeStep && localStorage.getItem('startTime')) {
-                // router.push({
-                //     name: 'ExchangeSteps',
-                // })
-            }
+        let vm = this;
+        window.addEventListener('load',() => {
+            vm.loaded();
+            vm.resizeBg();
         });
-
-        fetch('/api/redis/ttl' + '?user_uuid=' + this.getUuid);
-
-        this.startCounter();
+        window.addEventListener('resize', () => {
+            vm.resizeBg();
+        });
     },
     methods: {
         ...mapActions([
@@ -70,20 +82,29 @@ export default {
             'loadDataFromLocalStorage',
             'checkAuth',
             'whereAmI',
+            'resizeBg',
             'startCounter',
+            'ttl',
         ]),
         ...mapMutations([
             'setUserEmail',
-            'setVantaEffect'
+            'setVantaEffect',
+            'setLoaded',
         ]),
         toggleWaitModal() {
             this.wait = !this.wait;
         },
+        loaded() {
+            let body = document.querySelector('body');
+            body.classList.add('loaded');
+            this.setLoaded();
+        }
     },
     computed: {
         ...mapGetters([
             'getUuid',
             'getCurExchangeStep',
+            'getRequestFixedTime',
         ]),
     },
 }

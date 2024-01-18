@@ -44,13 +44,13 @@
 </template>
 
 <script>
-import {defineComponent, defineAsyncComponent} from 'vue';
+import {defineComponent, defineAsyncComponent, reactive} from 'vue';
 import {mapActions} from 'vuex';
 
 export default defineComponent({
 name: 'ReviewView',
     data: () => ({
-        reviews: [],
+        reviews: reactive([]),
         page: 1,
         reviewsPerPage: 5,
     }),
@@ -58,9 +58,7 @@ name: 'ReviewView',
         this.getReviews();
     },
     mounted() {
-        setTimeout(() => {
-            this.resizeBg();
-        }, 100);
+        // this.resizeBg();
     },
     components: {
         ReviewModal: defineAsyncComponent({
@@ -76,6 +74,8 @@ name: 'ReviewView',
             if (response.ok && response.status === 200) {
                 this.reviews = await response.json();
             }
+            await this.$nextTick();
+            this.resizeBg();
         }
     },
     computed: {

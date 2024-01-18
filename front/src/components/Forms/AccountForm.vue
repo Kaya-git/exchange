@@ -10,6 +10,7 @@
                     v-model="formData.email"
                     label="Email"
                     type="email"
+                    readonly
                 ></v-text-field>
             </div>
             <div class="account-form__col">
@@ -19,26 +20,29 @@
                 <v-text-field
                     class="account-form__field"
                     v-model="formData.password"
-                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                    :append-inner-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                     label="Пароль"
                     :type="show1 ? 'text' : 'password'"
-                    @click:append="show1 = !show1"
+                    :rules="[rules.required]"
+                    @click:append-inner="show1 = !show1"
                 ></v-text-field>
                 <v-text-field
                     class="account-form__field"
                     v-model="formData.newPassword"
-                    :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                    :append-inner-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                     label="Новый пароль"
                     :type="show2 ? 'text' : 'password'"
-                    @click:append="show2 = !show2"
+                    :rules="[rules.required]"
+                    @click:append-inner="show2 = !show2"
                 ></v-text-field>
                 <v-text-field
                     class="account-form__field"
                     v-model="formData.confirmPassword"
                     label="Подтвердите пароль"
-                    :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
+                    :append-inner-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
                     :type="show3 ? 'text' : 'password'"
-                    @click:append="show3 = !show3"
+                    :rules="[rules.required]"
+                    @click:append-inner="show3 = !show3"
                 ></v-text-field>
             </div>
         </div>
@@ -62,10 +66,15 @@
             </v-btn>
         </div>
     </v-form>
+    <status-modal
+        :model-value="statusModal.modelValue"
+        :status="statusModal.status"
+        :msg="statusModal.msg"
+    ></status-modal>
 </template>
 
 <script>
-import {defineComponent} from 'vue';
+import {defineComponent, defineAsyncComponent} from 'vue';
 import {mapState, mapActions} from 'vuex';
 
 export default defineComponent({
@@ -74,6 +83,11 @@ export default defineComponent({
     data: () => ({
         valid: false,
         loading: false,
+        statusModal: {
+            modelValue: false,
+            status: 'success',
+            msg: "Вы успешно сменили пароль!",
+        },
         show1: false,
         show2: false,
         show3: false,
@@ -82,11 +96,19 @@ export default defineComponent({
             password: '',
             newPassword: '',
             confirmPassword: '',
+        },
+        rules: {
+            required: value => !!value || 'Обязательно для заполнения',
         }
     }),
     mounted() {
         this.formData.email = this.user.email;
         this.resizeBg();
+    },
+    components: {
+        StatusModal: defineAsyncComponent({
+            loader: () => import("../Modal/StatusModal"),
+        }),
     },
     methods: {
         ...mapActions([
@@ -110,6 +132,12 @@ export default defineComponent({
             if (response.ok) {
                 let result = await response.json();
                 console.log(result);
+                this.statusModal.modelValue = true;
+                this.formData.newPassword = '';
+                this.formData.confirmPassword = '';
+            } else {
+                this.statusModal.status = 'reject';
+                this.statusModal.msg = 'Ошибка смены пароля';
             }
             this.loading = false;
         }

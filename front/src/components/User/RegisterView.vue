@@ -16,14 +16,17 @@
                     <v-text-field
                         v-model="formData.password"
                         label="Пароль"
-                        type="password"
                         :rules="[rules.required]"
+                        :type="show ? 'text' : 'password'"
+                        :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                        @click:append-inner="show = !show"
                     ></v-text-field>
                 </v-row>
                 <v-row class="register__form-row mt-0">
                     <div class="register__form-details">
                         <v-checkbox
-                            hide-details>
+                            hide-details
+                            :rules="[rules.required]">
                             <template v-slot:label>
                                 <span>Я согласен с <RouterLink to="/privacy/">условиями правилами сервиса</RouterLink></span>
                             </template>
@@ -31,7 +34,13 @@
                     </div>
                 </v-row>
                 <v-row class="register__form-row">
-                    <v-btn class="register__btn" type="submit" size="large" color="primary">
+                    <v-btn
+                        class="register__btn"
+                        type="submit"
+                        size="large"
+                        color="primary"
+                        :loading="loading"
+                        :disabled="loading">
                         Зарегистрироваться
                     </v-btn>
                 </v-row>
@@ -48,11 +57,14 @@
   
 <script>
 import {defineComponent} from 'vue';
+import {setCookie} from '@/helpers';
+import {mapMutations} from 'vuex';
 export default defineComponent({
     name: 'RegisterView',
 
     data: () => ({
         loading: false,
+        show: false,
         formData: {
         email: '',
         password: ''
@@ -62,20 +74,25 @@ export default defineComponent({
         }
     }),
     methods: {
+        ...mapMutations([
+            'setUserEmail',
+        ]),
         async submit(event) {
             this.loading = true;
 
             const results = await event;
 
-            this.loading = false;
-
             if (results.valid) {
                 let isDataSended = await this.sendData();
                 if (isDataSended) {
+                    this.setUserEmail(this.formData.email);
+                    setCookie('user_email', this.formData.email);
                     this.$router.push({
                         name: 'AccountView',
                     });
                 }
+            } else {
+                this.loading = false;
             }
         },
         async sendData() {

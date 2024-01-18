@@ -86,7 +86,9 @@ const router = new createRouter({
 // eslint-disable-next-line
 router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth) {
-        store.dispatch('checkAuth').then(() => {
+        store.dispatch('checkAuth').then((data) => {
+            console.log(data);
+            console.log(store.state.isAuth);
             if (!store.state.isAuth) {
                 next({
                     name: 'AuthView',

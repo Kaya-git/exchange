@@ -83,7 +83,6 @@ export default defineComponent({
         this.getTariffs();
     },
     mounted() {
-        this.resizeBg();
     },
     methods: {
         ...mapActions([
@@ -104,6 +103,8 @@ export default defineComponent({
                 });
                 this.tariffs.tbody = tariffs;
             }
+            await this.$nextTick();
+            this.resizeBg();
         }
     }
 });

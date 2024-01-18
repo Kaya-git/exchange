@@ -61,7 +61,7 @@
                     <p class="request__text">Курс зафиксирован на 15 минут. Заявка отменится через:</p>
                 </v-row>
                 <v-row class="request__row mb-8">
-                    <timer-view :custom-class="'request__timer'" :init="900" @timeout="$emit('error', 'Время заявки вышло')"></timer-view>
+                    <timer-view :custom-class="'request__timer'" :init="getRequestFixedTime" @timeout="$emit('error', 'Время заявки вышло')"></timer-view>
                 </v-row>
                 <v-row class="request__row mb-2">
                     <v-expansion-panels>
@@ -103,7 +103,7 @@
 
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
-import {mapGetters} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
 import {prepareData} from '@/helpers';
 
 export default defineComponent({
@@ -118,6 +118,9 @@ export default defineComponent({
         this.exchangeData = this.getExchangeData;
         this.getRequisites();
     },
+    mounted() {
+        this.resizeBg();
+    },
     components: {
         TimerView: defineAsyncComponent({
             loader: () => import("../Utils/TimerView"),
@@ -127,6 +130,9 @@ export default defineComponent({
         }),
     },
     methods: {
+        ...mapActions([
+            'resizeBg',
+        ]),
         async getRequisites() {
             let details = {
                 'user_uuid': this.getUuid,
@@ -155,6 +161,7 @@ export default defineComponent({
         ...mapGetters([
             'getExchangeData',
             'getUuid',
+            'getRequestFixedTime',
         ]),
         requisite() {
             return  this.requisites.requisites_num + " " + this.requisites.holder;

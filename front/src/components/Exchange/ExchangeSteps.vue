@@ -142,8 +142,10 @@ export default defineComponent({
                 this.curStep = 1;
             } else if ([4, 5].includes(Number(this.getCurExchangeStep))) {
                 this.curStep = 2;
-            } else if ([6, 7].includes(Number(this.getCurExchangeStep))) {
+            } else if ([6].includes(Number(this.getCurExchangeStep))) {
                 this.curStep = 3;
+            } else if ([7].includes(Number(this.getCurExchangeStep))) {
+                this.curStep = 4;
             }
         }
     },

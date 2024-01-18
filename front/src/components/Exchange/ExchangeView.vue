@@ -191,82 +191,153 @@
                                 <v-row>
                                     <v-col>
                                         <v-form validate-on="submit lazy" @submit.prevent="submit">
-                                            <h3 class="exchange-data__title title title_h3">
-                                                Меняем
-                                            </h3>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="text"
-                                                placeholder="1000"
-                                                v-model="formData.give"
-                                                :rules="[rules.required]"
-                                                @input="validateGiveNumberInput"
-                                                :suffix="giveCurrency.tikker">
-                                            </v-text-field>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="text"
-                                                placeholder="ФИО"
-                                                v-model="formData.name"
-                                                :rules="[rules.required]">
-                                            </v-text-field>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="text"
-                                                placeholder="Номер карты"
-                                                v-model="formData.cardNumber"
-                                                :rules="[rules.required, rules.cardNumberRule]"
-                                                @input="formatCardNumber">
-                                            </v-text-field>
-                                            <h3 class="exchange-data__title title title_h3">
-                                                На
-                                            </h3>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="text"
-                                                :placeholder="randomPlaceholderCrypto()"
-                                                v-model="formData.get"
-                                                :rules="[rules.required]"
-                                                @input="validateGetNumberInput"
-                                                :suffix="getCurrency.tikker">
-                                            </v-text-field>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="text"
-                                                placeholder="Крипто кошелек"
-                                                v-model="formData.cryptoNumber"
-                                                :rules="[rules.required, validateCryptoWallet]">
-                                            </v-text-field>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="email"
-                                                placeholder="E-mail"
-                                                v-model="formData.email"
-                                                :rules="[rules.required]">
-                                            </v-text-field>
-                                            <div class="exchange-data__privacy">
-                                                <v-checkbox
-                                                    v-model="formData.privacy.value"
-                                                    :error="formData.privacy.error && !formData.privacy.value"
+                                            <template v-if="!changeForm">
+                                                <h3 class="exchange-data__title title title_h3">
+                                                    Меняем
+                                                </h3>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="1000"
+                                                    v-model="formData.give"
                                                     :rules="[rules.required]"
-                                                    class="exchange-data__checkbox">
-                                                    <template v-slot:label>
-                                                        <div>Даю согласие с <RouterLink to="/privacy/">условиями обмена</RouterLink>, <RouterLink
-                                                            to="/privacy/">соглашением</RouterLink> и <RouterLink to="/privacy/">политикой KYC/AML</RouterLink>
-                                                        </div>
-                                                    </template>
-                                                </v-checkbox>
-                                                <v-checkbox
+                                                    @input="validateGiveNumberInput"
+                                                    :suffix="giveCurrency.tikker">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="ФИО"
+                                                    v-model="formData.name"
+                                                    :rules="[rules.required]">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="Ваш номер карты"
+                                                    v-model="formData.cardNumber"
+                                                    :rules="[rules.required, rules.cardNumberRule]"
+                                                    @input="formatCardNumber">
+                                                </v-text-field>
+                                                <h3 class="exchange-data__title title title_h3">
+                                                    На
+                                                </h3>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    :placeholder="randomPlaceholderCrypto()"
+                                                    v-model="formData.get"
+                                                    :rules="[rules.required]"
+                                                    @input="validateGetNumberInput"
+                                                    :suffix="getCurrency.tikker">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    :placeholder="'Ваш ' + getCurrencyName + ' кошелек'"
+                                                    v-model="formData.cryptoNumber"
+                                                    :rules="[rules.required, validateCryptoWallet]">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="email"
+                                                    placeholder="E-mail"
+                                                    v-model="formData.email"
+                                                    :rules="rules.emailRules">
+                                                </v-text-field>
+                                                <div class="exchange-data__privacy">
+                                                    <v-checkbox
+                                                        v-model="formData.privacy.value"
+                                                        :error="formData.privacy.error && !formData.privacy.value"
+                                                        :rules="[rules.required]"
+                                                        class="exchange-data__checkbox">
+                                                        <template v-slot:label>
+                                                            <div>Даю согласие с <RouterLink to="/privacy/">условиями обмена</RouterLink>, <RouterLink
+                                                                to="/privacy/">соглашением</RouterLink> и <RouterLink to="/privacy/">политикой KYC/AML</RouterLink>
+                                                            </div>
+                                                        </template>
+                                                    </v-checkbox>
+                                                    <v-checkbox
                                                         v-model="formData.rules.value"
                                                         :error="formData.rules.error && !formData.rules.value"
                                                         :rules="[rules.required]"
                                                         class="exchange-data__checkbox">
-                                                    <template v-slot:label>
-                                                        <div>Согласен с тем, что сумму более ₽300'000 необходимо <RouterLink
-                                                            to="/privacy/">отправлять частями</RouterLink></div>
-                                                    </template>
-                                                </v-checkbox>
-                                            </div>
+                                                        <template v-slot:label>
+                                                            <div>Согласен с тем, что сумму более ₽300'000 необходимо <RouterLink
+                                                                to="/privacy/">отправлять частями</RouterLink></div>
+                                                        </template>
+                                                    </v-checkbox>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <h3 class="exchange-data__title title title_h3">
+                                                    Меняем
+                                                </h3>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    :placeholder="randomPlaceholderCrypto()"
+                                                    v-model="formData.give"
+                                                    :rules="[rules.required]"
+                                                    @input="validateGiveNumberInput"
+                                                    :suffix="giveCurrency ? (giveCurrency.type === 'fiat' ? 'RUB' : giveCurrency.tikker) : ''">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    :placeholder="'Ваш ' + giveCurrencyName + ' кошелек'"
+                                                    v-model="formData.cryptoNumber"
+                                                    :rules="[rules.required, validateCryptoWallet]">
+                                                </v-text-field>
+                                                <h3 class="exchange-data__title title title_h3">
+                                                    На
+                                                </h3>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="1000"
+                                                    v-model="formData.get"
+                                                    :rules="[rules.required]"
+                                                    @input="validateGetNumberInput"
+                                                    :suffix="getCurrency ? (getCurrency.type === 'fiat' ? 'RUB' : getCurrency.tikker) : ''">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="email"
+                                                    placeholder="E-mail"
+                                                    v-model="formData.email"
+                                                    :rules="rules.emailRules">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="Ваш номер карты"
+                                                    v-model="formData.cardNumber"
+                                                    :rules="[rules.required, rules.cardNumberRule]"
+                                                    @input="formatCardNumber">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="ФИО"
+                                                    v-model="formData.name"
+                                                    :rules="[rules.required]">
+                                                </v-text-field>
+                                                <div class="exchange-data__privacy">
+                                                    <v-checkbox
+                                                        hide-details
+                                                        v-model="formData.privacy.value"
+                                                        :error="formData.privacy.error && !formData.privacy.value"
+                                                        class="exchange-data__checkbox"
+                                                        :rules="[rules.required]">
+                                                        <template v-slot:label>
+                                                            <div>Даю согласие с <RouterLink to="/privacy/">условиями обмена</RouterLink>, <RouterLink
+                                                                to="/privacy/">соглашением</RouterLink> и <RouterLink to="/privacy/">политикой KYC/AML</RouterLink>
+                                                            </div>
+                                                        </template>
+                                                    </v-checkbox>
+                                                </div>
+                                            </template>
                                             <div class="exchange-data__submit">
                                                 <v-btn
                                                     type="submit"
@@ -389,84 +460,155 @@
                                     <v-col>
                                         <v-form
                                             validate-on="submit lazy" @submit.prevent="submit">
-                                            <h3 class="exchange-data__title title title_h3">
-                                                Меняем
-                                            </h3>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="text"
-                                                placeholder="1000"
-                                                v-model="formData.give"
-                                                :rules="[rules.required]"
-                                                @input="validateGiveNumberInput"
-                                                :suffix="giveCurrency ? (giveCurrency.type === 'fiat' ? 'RUB' : giveCurrency.tikker) : ''">
-                                            </v-text-field>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="text"
-                                                placeholder="ФИО"
-                                                v-model="formData.name"
-                                                :rules="[rules.required]">
-                                            </v-text-field>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="text"
-                                                placeholder="Номер карты"
-                                                v-model="formData.cardNumber"
-                                                :rules="[rules.required, rules.cardNumberRule]"
-                                                @input="formatCardNumber">
-                                            </v-text-field>
-                                            <h3 class="exchange-data__title title title_h3">
-                                                На
-                                            </h3>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="text"
-                                                :placeholder="randomPlaceholderCrypto()"
-                                                v-model="formData.get"
-                                                :rules="[rules.required]"
-                                                @input="validateGetNumberInput"
-                                                :suffix="getCurrency ? (getCurrency.type === 'fiat' ? 'RUB' : getCurrency.tikker) : ''">
-                                            </v-text-field>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="text"
-                                                placeholder="Крипто кошелек"
-                                                v-model="formData.cryptoNumber"
-                                                :rules="[rules.required, validateCryptoWallet]">
-                                            </v-text-field>
-                                            <v-text-field
-                                                class="exchange-data__text-field"
-                                                type="email"
-                                                placeholder="E-mail"
-                                                v-model="formData.email"
-                                                :rules="[rules.required]">
-                                            </v-text-field>
-                                            <div class="exchange-data__privacy">
-                                                <v-checkbox
-                                                    hide-details
-                                                    v-model="formData.privacy.value"
-                                                    :error="formData.privacy.error && !formData.privacy.value"
-                                                    class="exchange-data__checkbox"
-                                                    :rules="[rules.required]">
-                                                    <template v-slot:label>
-                                                        <div>Даю согласие с <RouterLink to="/privacy/">условиями обмена</RouterLink>, <RouterLink
-                                                            to="/privacy/">соглашением</RouterLink> и <RouterLink to="/privacy/">политикой KYC/AML</RouterLink>
-                                                        </div>
-                                                    </template>
-                                                </v-checkbox>
-                                                <v-checkbox
-                                                    hide-details
-                                                    v-model="formData.rules.value"
-                                                    :error="formData.rules.error && !formData.rules.value"
+                                            <template v-if="!changeForm">
+                                                <h3 class="exchange-data__title title title_h3">
+                                                    Меняем
+                                                </h3>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="1000"
+                                                    v-model="formData.give"
                                                     :rules="[rules.required]"
-                                                    class="exchange-data__checkbox">
-                                                    <template v-slot:label>
-                                                        <div>Согласен с тем, что сумму более ₽300'000 необходимо <RouterLink
-                                                            to="/privacy/">отправлять частями</RouterLink></div>
-                                                    </template>
-                                                </v-checkbox>
-                                            </div>
+                                                    @input="validateGiveNumberInput"
+                                                    :suffix="giveCurrency ? (giveCurrency.type === 'fiat' ? 'RUB' : giveCurrency.tikker) : ''">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="ФИО"
+                                                    v-model="formData.name"
+                                                    :rules="[rules.required]">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="Ваш номер карты"
+                                                    v-model="formData.cardNumber"
+                                                    :rules="[rules.required, rules.cardNumberRule]"
+                                                    @input="formatCardNumber">
+                                                </v-text-field>
+                                                <h3 class="exchange-data__title title title_h3">
+                                                    На
+                                                </h3>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    :placeholder="randomPlaceholderCrypto()"
+                                                    v-model="formData.get"
+                                                    :rules="[rules.required]"
+                                                    @input="validateGetNumberInput"
+                                                    :suffix="getCurrency ? (getCurrency.type === 'fiat' ? 'RUB' : getCurrency.tikker) : ''">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    :placeholder="'Ваш ' + getCurrencyName + ' кошелек'"
+                                                    v-model="formData.cryptoNumber"
+                                                    :rules="[rules.required, validateCryptoWallet]">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="email"
+                                                    placeholder="E-mail"
+                                                    v-model="formData.email"
+                                                    :rules="rules.emailRules">
+                                                </v-text-field>
+                                                <div class="exchange-data__privacy">
+                                                    <v-checkbox
+                                                        hide-details
+                                                        v-model="formData.privacy.value"
+                                                        :error="formData.privacy.error && !formData.privacy.value"
+                                                        class="exchange-data__checkbox"
+                                                        :rules="[rules.required]">
+                                                        <template v-slot:label>
+                                                            <div>Даю согласие с <RouterLink to="/privacy/">условиями обмена</RouterLink>, <RouterLink
+                                                                to="/privacy/">соглашением</RouterLink> и <RouterLink to="/privacy/">политикой KYC/AML</RouterLink>
+                                                            </div>
+                                                        </template>
+                                                    </v-checkbox>
+                                                    <v-checkbox
+                                                        hide-details
+                                                        v-model="formData.rules.value"
+                                                        :error="formData.rules.error && !formData.rules.value"
+                                                        :rules="[rules.required]"
+                                                        class="exchange-data__checkbox">
+                                                        <template v-slot:label>
+                                                            <div>Согласен с тем, что сумму более ₽300'000 необходимо <RouterLink
+                                                                to="/privacy/">отправлять частями</RouterLink></div>
+                                                        </template>
+                                                    </v-checkbox>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <h3 class="exchange-data__title title title_h3">
+                                                    Меняем
+                                                </h3>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    :placeholder="randomPlaceholderCrypto()"
+                                                    v-model="formData.give"
+                                                    :rules="[rules.required]"
+                                                    @input="validateGiveNumberInput"
+                                                    :suffix="giveCurrency ? (giveCurrency.type === 'fiat' ? 'RUB' : giveCurrency.tikker) : ''">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    :placeholder="'Ваш ' + giveCurrencyName + ' кошелек'"
+                                                    v-model="formData.cryptoNumber"
+                                                    :rules="[rules.required, validateCryptoWallet]">
+                                                </v-text-field>
+                                                <h3 class="exchange-data__title title title_h3">
+                                                    На
+                                                </h3>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="1000"
+                                                    v-model="formData.get"
+                                                    :rules="[rules.required]"
+                                                    @input="validateGetNumberInput"
+                                                    :suffix="getCurrency ? (getCurrency.type === 'fiat' ? 'RUB' : getCurrency.tikker) : ''">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="email"
+                                                    placeholder="E-mail"
+                                                    v-model="formData.email"
+                                                    :rules="rules.emailRules">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="Ваш номер карты"
+                                                    v-model="formData.cardNumber"
+                                                    :rules="[rules.required, rules.cardNumberRule]"
+                                                    @input="formatCardNumber">
+                                                </v-text-field>
+                                                <v-text-field
+                                                    class="exchange-data__text-field"
+                                                    type="text"
+                                                    placeholder="ФИО"
+                                                    v-model="formData.name"
+                                                    :rules="[rules.required]">
+                                                </v-text-field>
+                                                <div class="exchange-data__privacy">
+                                                    <v-checkbox
+                                                        hide-details
+                                                        v-model="formData.privacy.value"
+                                                        :error="formData.privacy.error && !formData.privacy.value"
+                                                        class="exchange-data__checkbox"
+                                                        :rules="[rules.required]">
+                                                        <template v-slot:label>
+                                                            <div>Даю согласие с <RouterLink to="/privacy/">условиями обмена</RouterLink>, <RouterLink
+                                                                to="/privacy/">соглашением</RouterLink> и <RouterLink to="/privacy/">политикой KYC/AML</RouterLink>
+                                                            </div>
+                                                        </template>
+                                                    </v-checkbox>
+                                                </div>
+                                            </template>
                                             <div class="exchange-data__submit">
                                                 <v-btn
                                                     type="submit"
@@ -490,7 +632,7 @@
 
 <script>
 import {defineComponent} from 'vue';
-import {mapMutations, mapGetters} from 'vuex';
+import {mapMutations, mapGetters, mapActions} from 'vuex';
 import {prepareData} from '@/helpers';
 
 export default defineComponent({
@@ -504,6 +646,7 @@ export default defineComponent({
             currencies: null,
             giveCurrency: null,
             getCurrency: null,
+            changeForm: false,
             formData: {
                 name: '',
                 email: '',
@@ -532,13 +675,29 @@ export default defineComponent({
             rules: {
                 required: value => !!value || 'Обязательно для заполнения',
                 cardNumberRule: v => (v && v.length === 19) || 'Номер карты должен содержать 16 цифр',
+                emailRules: [
+                    v => !!v || 'Email обязателен',
+                    v => /.+@.+\..+/.test(v) || 'Неверно указан E-mail',
+                ],
             }
         }
+    },
+    created() {
+        this.getApiCurriencies();
+    },
+    mounted() {
+        this.tabs = document.querySelectorAll('[data-tab-id]');
     },
     computed: {
         ...mapGetters([
            'getUuid'
         ]),
+        getCurrencyName() {
+            return this.getCurrency ? this.getCurrency.name : '';
+        },
+        giveCurrencyName() {
+            return this.giveCurrency ? this.giveCurrency.name : '';
+        }
     },
     watch: {
         getCurrency(newCur) {
@@ -550,15 +709,21 @@ export default defineComponent({
         giveCurrency(newCur) {
             if (newCur.type === 'crypto') {
                 this.getCurrency = this.currenciesApi['banks'][0];
+                this.changeForm = true;
             }
             if (newCur.type === 'fiat') {
                 this.getCurrency = this.currenciesApi['crypto'][0];
+                this.changeForm = false;
             }
         }
     },
     methods: {
         ...mapMutations([
             'setExchangeData',
+            'setCurExchangeStep',
+        ]),
+        ...mapActions([
+            'ttl',
         ]),
         recalculate() {
             let get = null;
@@ -587,6 +752,8 @@ export default defineComponent({
                 this.setExchangeData(this.formData);
                 let isDataSended = await this.sendData();
                 if (isDataSended) {
+                    await this.ttl()
+                    this.setCurExchangeStep(1);
                     this.$router.push({
                         name: 'ExchangeSteps',
                     });
@@ -595,7 +762,7 @@ export default defineComponent({
                 this.formData.rules.error = !this.formData.rules.value;
                 this.formData.privacy.error = !this.formData.privacy.value;
             }
-            // this.loading = false;
+            this.loading = false;
         },
         async sendData() {
             let details = {
@@ -636,7 +803,11 @@ export default defineComponent({
             let amount = null;
             if (this.formData.exchangeRate && this.formData.give) {
                 if (this.giveCurrency.type === 'crypto') {
-                    amount = (this.formData.give * this.formData.exchangeRate).toFixed(2);
+                    let calcValue = this.formData.give * this.formData.exchangeRate;
+                    amount = Math.round(calcValue);
+                    if (amount === 0) {
+                        amount = calcValue.toFixed(2);
+                    }
                 } else {
                     amount = (this.formData.give / this.formData.exchangeRate).toFixed(8);
                 }
@@ -652,9 +823,13 @@ export default defineComponent({
             let amount = null;
             if (this.formData.exchangeRate && this.formData.get) {
                 if (this.giveCurrency.type === 'fiat') {
-                    amount = (this.formData.get / this.formData.exchangeRate).toFixed(8);
+                    let calcValue = this.formData.get * this.formData.exchangeRate;
+                    amount = Math.round(calcValue);
+                    if (amount === 0) {
+                        amount = calcValue.toFixed(2);
+                    }
                 } else {
-                    amount = (this.formData.get * this.formData.exchangeRate).toFixed(2);
+                    amount = (this.formData.get / this.formData.exchangeRate).toFixed(8);
                 }
             }
             this.formData.give = amount;
@@ -709,9 +884,11 @@ export default defineComponent({
                 return false;
             }
             data.forEach(item => {
-                if (item.type === 'fiat') {
+                if (item.type === 'Фиатная валюта') {
+                    item.type = 'fiat';
                     this.currenciesApi.banks.push(item);
                 } else {
+                    item.type = 'crypto';
                     this.currenciesApi.crypto.push(item);
                 }
             });
@@ -725,12 +902,6 @@ export default defineComponent({
 
             return result['exchange_rate'] ?? null;
         },
-    },
-    created() {
-        this.getApiCurriencies();
-    },
-    mounted() {
-        this.tabs = document.querySelectorAll('[data-tab-id]');
     },
 });
 </script>

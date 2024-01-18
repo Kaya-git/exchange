@@ -16,8 +16,10 @@
                         <v-text-field
                             v-model="formData.password"
                             label="Пароль"
-                            type="password"
                             :rules="[rules.required]"
+                            :type="show ? 'text' : 'password'"
+                            :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                            @click:append-inner="show = !show"
                         ></v-text-field>
                     </v-row>
                     <v-row class="auth__form-row mt-0">
@@ -32,7 +34,13 @@
                         </div>
                     </v-row>
                     <v-row class="auth__form-row">
-                        <v-btn class="auth__btn" type="submit" size="x-large" color="primary">
+                        <v-btn
+                            class="auth__btn"
+                            type="submit"
+                            size="x-large"
+                            color="primary"
+                            :loading="loading"
+                            :disabled="loading">
                             Войти
                         </v-btn>
                     </v-row>
@@ -56,6 +64,7 @@ export default defineComponent({
 
     data: () => ({
         loading: false,
+        show: false,
         formData: {
             email: '',
             password: '',
@@ -75,8 +84,6 @@ export default defineComponent({
 
             const results = await event;
 
-            this.loading = false;
-
             if (results.valid) {
                 let isDataSended = await this.sendData();
                 if (isDataSended) {
@@ -84,6 +91,8 @@ export default defineComponent({
                         name: 'AccountView',
                     });
                 }
+            } else {
+                this.loading = false;
             }
         },
         async sendData() {
@@ -113,6 +122,8 @@ export default defineComponent({
                 this.$router.push({
                     name: 'AccountView',
                 });
+            } else {
+                this.loading = false;
             }
         }
     }

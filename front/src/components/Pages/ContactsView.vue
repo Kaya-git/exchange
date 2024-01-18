@@ -9,7 +9,7 @@
                         </v-card-title>
                     </v-card-item>
                     <v-card-text class="contacts-card__text">
-                        По финансовым и техническим вопросам: 
+                        По финансовым и техническим вопросам:
                         <a class="contacts-card__link" href="mailto:vvs.coin777@gmail.com">vvs.coin777@gmail.com</a>
                     </v-card-text>
                 </v-card>
@@ -30,20 +30,25 @@
                         </v-card-title>
                     </v-card-item>
                     <v-card-text class="contacts-card__text">
-                        На электронную почту info@gmail.com мы рассматриваем предложения о сотрудничестве исключительно от зарекомендовавших себя компаний, имеющих устоявшуюся многими годами репутацию, положительные, многочисленные, и реальные отзывы от клиентов.
+                        На электронную почту info@gmail.com мы рассматриваем предложения о сотрудничестве исключительно
+                        от зарекомендовавших себя компаний, имеющих устоявшуюся многими годами репутацию, положительные,
+                        многочисленные, и реальные отзывы от клиентов.
                     </v-card-text>
                 </v-card>
                 <v-card class="contacts__card contacts-card pa-4 mb-6">
                     <v-card-item class="contacts-card__item mb-3">
                         <v-card-title class="contacts-card__title">
-                            Мы на мониторингах 
+                            Мы на мониторингах
                         </v-card-title>
                     </v-card-item>
                     <v-card-text class="contacts-card__text">
                         <ul class="contacts-card__link-list">
-                            <li><a class="contacts-card__link" href="#"><span>BestChange</span></a><span class="contacts-card__divider">|</span></li>
-                            <li><a class="contacts-card__link" href="#"><span>kurs.expert</span></a><span class="contacts-card__divider">|</span></li>
-                            <li><a class="contacts-card__link" href="#"><span>bits.media</span></a><span class="contacts-card__divider">|</span></li>
+                            <li><a class="contacts-card__link" href="#"><span>BestChange</span></a><span
+                                class="contacts-card__divider">|</span></li>
+                            <li><a class="contacts-card__link" href="#"><span>kurs.expert</span></a><span
+                                class="contacts-card__divider">|</span></li>
+                            <li><a class="contacts-card__link" href="#"><span>bits.media</span></a><span
+                                class="contacts-card__divider">|</span></li>
                             <li><a class="contacts-card__link" href="#"><span>exnode.ru</span></a></li>
                         </ul>
                     </v-card-text>
@@ -55,12 +60,19 @@
 
 <script>
 import {defineComponent} from 'vue';
+import {mapActions} from 'vuex';
 
 export default defineComponent({
-name: 'ContactsView',
+    name: 'ContactsView',
 
-data: () => ({
-    
-}),
+    data: () => ({}),
+    mounted() {
+        this.resizeBg();
+    },
+    methods: {
+        ...mapActions([
+            'resizeBg',
+        ]),
+    }
 });
 </script>

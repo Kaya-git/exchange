@@ -23,16 +23,34 @@
 
     &__form-auth {
         margin: 20px auto 0 auto;
+        text-align: center;
         span {
             font-size: rem(16px);
+            line-height: 1.5;
         }
         a {
             color: $fourthColor;
         }
     }
     &__form-details {
+        margin-bottom: 20px;
+        span {
+            font-size: rem(12px);
+            line-height: 1.5;
+        }
         a {
             color: $fourthColor;
+        }
+    }
+}
+
+@media (min-width:$md2+px){
+    .register {
+        &__form-details {
+            margin-bottom: 0;
+            span {
+                font-size: rem(14px);
+            }
         }
     }
 }
