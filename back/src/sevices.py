@@ -372,8 +372,6 @@ class DB:
     ):
         # Запускаем цикл по оставшемуся времени заявки
         ttl = await services.redis_values.redis_conn.ttl(name=user_uuid)
-        print(f"заявка{order_id}")
-        print(f"Пользователь{user_id}")
 
         while ttl != -2:
             order = None
