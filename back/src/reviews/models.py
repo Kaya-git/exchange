@@ -34,7 +34,8 @@ class Review(Base):
     )
 
     pending_admin: Mapped["PendingAdmin"] = relationship(
-        back_populates="review"
+        back_populates="review",
+        passive_deletes=True
     )
 
     def __str__(self) -> str:

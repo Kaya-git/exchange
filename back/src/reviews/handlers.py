@@ -13,7 +13,7 @@ async def check_review_verif(
 
     while True:
         print('Ожидаю подтверждения')
-        check_review = None 
+        check_review = None
         check_review = await db.review.get(ident=review.id)
 
         if check_review.moderated is True or check_review is None:
