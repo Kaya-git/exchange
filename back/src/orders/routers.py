@@ -20,7 +20,7 @@ orders_router = APIRouter(
 )
 
 
-@orders_router.get("/decline_order")
+@orders_router.post("/decline_order")
 async def decline_order(
     user_uuid: str | None = Form(),
     async_session: AsyncSession = Depends(get_async_session)
