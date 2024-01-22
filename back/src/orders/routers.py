@@ -31,6 +31,7 @@ async def decline_order(
     await services.redis_values.check_existance(
         user_uuid=user_uuid
     )
+
     order_id = await services.redis_values.get_order_id(
         user_uuid=user_uuid
     )
