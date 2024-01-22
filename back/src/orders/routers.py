@@ -26,6 +26,8 @@ async def decline_order(
     async_session: AsyncSession = Depends(get_async_session)
 ):
     db = Database(session=async_session)
+
+    # Проверяем существование ключа в редисе
     await services.redis_values.check_existance(
         user_uuid=user_uuid
     )
