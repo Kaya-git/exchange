@@ -58,8 +58,15 @@
             </v-stepper-header>
             <v-stepper-window>
                 <v-stepper-window-item :value="1">
-                    <confirm-view v-if="!steps[curStep].error" @nextStep="curStep++" @complete="completeStep" @error="errorStep"></confirm-view>
-                    <error-view v-if="steps[curStep].error" :title="steps[curStep].message"
+                    <confirm-view
+                        v-if="!steps[curStep].error"
+                        @nextStep="curStep++"
+                        @complete="completeStep"
+                        @error="errorStep"
+                        @skip="skipStep"
+                        @cancel="cancelExchange"></confirm-view>
+                    <error-view v-if="steps[curStep].error"
+                                :title="steps[curStep].message"
                                 :subtitle="steps[curStep].subtitle"></error-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="2">
@@ -69,7 +76,11 @@
                                 :subtitle="steps[curStep].subtitle"></error-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="3">
-                    <request-view @nextStep="curStep++" @complete="completeStep" @error="errorStep"></request-view>
+                    <request-view
+                        @nextStep="curStep++"
+                        @complete="completeStep"
+                        @error="errorStep"
+                        @cancel="cancelExchange"></request-view>
                     <error-view v-if="steps[curStep].error" :title="steps[curStep].message"
                                 :subtitle="steps[curStep].subtitle"></error-view>
                 </v-stepper-window-item>
@@ -87,6 +98,7 @@
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
 import {mapGetters, mapMutations, mapActions} from 'vuex';
+import {prepareData} from '@/helpers';
 
 export default defineComponent({
     name: 'ExchangeSteps',
@@ -192,12 +204,40 @@ export default defineComponent({
             this.steps[this.curStep].complete = true;
             this.steps[this.curStep].color = 'success';
             this.steps[this.curStep].message = message;
-        }
+        },
+        skipStep() {
+            let skippedStep = this.curStep + 1;
+            this.completeStep();
+            this.steps[skippedStep].complete = true;
+            this.steps[skippedStep].color = 'success';
+            this.curStep = this.curStep + 2;
+        },
+        async cancelExchange() {
+            this.disabled = true;
+            let details = {
+                'user_uuid': this.getUuid,
+            }
+            let formBody = prepareData(details);
+            let response = await fetch('/api/orders/decline_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept': 'application/json',
+                },
+                body: formBody
+            });
+            if (response.ok) {
+                this.errorStep('Заявка отменена');
+                this.clearDataFromLocalStorage();
+            }
+            this.disabled = false;
+        },
     },
     computed: {
         ...mapGetters([
             'getExchangeData',
             'getCurExchangeStep',
+            'getUuid',
         ]),
     }
 });

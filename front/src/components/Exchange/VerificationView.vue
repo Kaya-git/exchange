@@ -58,7 +58,7 @@
 </template>
 <script>
 import {defineComponent} from 'vue';
-import {mapGetters, mapMutations} from 'vuex';
+import {mapGetters, mapMutations, mapActions} from 'vuex';
 import {prepareData} from '@/helpers';
 
 export default defineComponent({
@@ -66,18 +66,24 @@ export default defineComponent({
 
     data: () => ({
         exchangeData: null,
+        loading: false,
     }),
     created() {
         this.exchangeData = this.getExchangeData;
     },
     mounted() {
+        this.resizeBg();
         this.checkVerification();
     },
     methods: {
         ...mapMutations([
             'setExchangeData',
         ]),
+        ...mapActions([
+            'resizeBg',
+        ]),
         async checkVerification() {
+            this.loading = true;
             let details = {
                 'user_uuid': this.getUuid,
             }
@@ -99,6 +105,7 @@ export default defineComponent({
             } else {
                 await this.checkVerification();
             }
+            this.loading = false;
         },
     },
     computed: {

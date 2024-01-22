@@ -39,17 +39,16 @@ export default defineComponent({
     methods: {
         ...mapActions([
             'startCounter',
+            'clearDataFromLocalStorage',
         ]),
         startCountdown() {
             this.timer = setInterval(() => {
                 if (this.seconds > 0) {
                     this.seconds--;
                 } else {
+                    this.clearDataFromLocalStorage();
                     clearInterval(this.timer); // Остановить таймер, когда время истекло
-                    this.clearLocalStorageTime();
-                    if (this.requestFixedTime <= 0) {
-                        this.$emit('timeout');
-                    }
+                    this.$emit('timeout');
                 }
             }, 1000);
         },

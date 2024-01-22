@@ -58,7 +58,7 @@ name: 'ReviewView',
         this.getReviews();
     },
     mounted() {
-        // this.resizeBg();
+
     },
     components: {
         ReviewModal: defineAsyncComponent({

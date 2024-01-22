@@ -1,4 +1,5 @@
 import Vuex from 'vuex';
+import {reactive} from 'vue';
 import {getCookie, deleteCookie, prepareData} from '@/helpers';
 import NET from 'vanta/dist/vanta.net.min';
 
@@ -16,7 +17,7 @@ const Store = new Vuex.Store({
             data: {},
         },
         requestFixedTime: -2,
-        vantaEffect: null,
+        vantaEffect: reactive([]),
         timer: null,
     },
     mutations: {

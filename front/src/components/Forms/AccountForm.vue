@@ -132,13 +132,13 @@ export default defineComponent({
             if (response.ok) {
                 let result = await response.json();
                 console.log(result);
-                this.statusModal.modelValue = true;
                 this.formData.newPassword = '';
                 this.formData.confirmPassword = '';
             } else {
                 this.statusModal.status = 'reject';
                 this.statusModal.msg = 'Ошибка смены пароля';
             }
+            this.statusModal.modelValue = true;
             this.loading = false;
         }
     },

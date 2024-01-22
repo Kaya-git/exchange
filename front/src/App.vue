@@ -36,9 +36,6 @@ export default {
         WaitModal: defineAsyncComponent({
             loader: () => import("./components/Modal/WaitModal"),
         }),
-        // StatusModal: defineAsyncComponent({
-        //     loader: () => import("./components/Modal/StatusModal"),
-        // }),
     },
     data() {
         return {
@@ -49,19 +46,7 @@ export default {
         if (getCookie('user_email')) {
             this.setUserEmail(getCookie('user_email'));
         }
-        this.getApiUUID().then(() => {
-            this.ttl().then(() => {
-                if (this.getRequestFixedTime > 0) {
-                    this.whereAmI().then(() => {
-                        if (this.getCurExchangeStep ) {
-                            this.$router.push({
-                                name: 'ExchangeSteps',
-                            })
-                        }
-                    });
-                }
-            });
-        });
+        this.getApiUUID();
         this.loadDataFromLocalStorage();
         this.checkAuth();
     },

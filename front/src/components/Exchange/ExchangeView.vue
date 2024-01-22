@@ -679,6 +679,13 @@ export default defineComponent({
                     v => !!v || 'Email обязателен',
                     v => /.+@.+\..+/.test(v) || 'Неверно указан E-mail',
                 ],
+            },
+            cryptoWalletRule: {
+                size: {
+                    from: 38,
+                    to: 42,
+                },
+                startWith: '',
             }
         }
     },
@@ -687,10 +694,23 @@ export default defineComponent({
     },
     mounted() {
         this.tabs = document.querySelectorAll('[data-tab-id]');
+        this.ttl().then(() => {
+            if (this.getRequestFixedTime > 0) {
+                this.whereAmI().then(() => {
+                    if (this.getCurExchangeStep ) {
+                        this.$router.push({
+                            name: 'ExchangeSteps',
+                        })
+                    }
+                });
+            }
+        });
     },
     computed: {
         ...mapGetters([
-           'getUuid'
+           'getUuid',
+            'getRequestFixedTime',
+            'getCurExchangeStep',
         ]),
         getCurrencyName() {
             return this.getCurrency ? this.getCurrency.name : '';
@@ -700,13 +720,23 @@ export default defineComponent({
         }
     },
     watch: {
-        getCurrency(newCur) {
-            this.getExchangeRate(this.giveCurrency.tikker, newCur.tikker).then(result => {
-                this.formData.exchangeRate = result;
-                this.recalculate();
-            });
+        getCurrency(newCur, oldCur) {
+            let vm = this;
+            if (this.giveCurrency.tikker !== this.getCurrency.tikker && newCur.tikker !== (oldCur ? oldCur.tikker : '')) {
+                this.getExchangeRate(this.giveCurrency.tikker, this.getCurrency.tikker).then(result => {
+                    vm.formData.exchangeRate = result;
+                    vm.recalculate();
+                });
+            }
         },
-        giveCurrency(newCur) {
+        giveCurrency(newCur, oldCur) {
+            let vm = this;
+            if (this.giveCurrency.tikker !== this.getCurrency.tikker && newCur.tikker !== (oldCur ? oldCur.tikker : '')) {
+                this.getExchangeRate(this.giveCurrency.tikker, this.getCurrency.tikker).then(result => {
+                    vm.formData.exchangeRate = result;
+                    vm.recalculate();
+                });
+            }
             if (newCur.type === 'crypto') {
                 this.getCurrency = this.currenciesApi['banks'][0];
                 this.changeForm = true;
@@ -724,6 +754,7 @@ export default defineComponent({
         ]),
         ...mapActions([
             'ttl',
+            'whereAmI',
         ]),
         recalculate() {
             let get = null;
@@ -754,6 +785,7 @@ export default defineComponent({
                 if (isDataSended) {
                     await this.ttl()
                     this.setCurExchangeStep(1);
+                    await this.confirmRequest();
                     this.$router.push({
                         name: 'ExchangeSteps',
                     });
@@ -761,8 +793,8 @@ export default defineComponent({
             } else {
                 this.formData.rules.error = !this.formData.rules.value;
                 this.formData.privacy.error = !this.formData.privacy.value;
+                this.loading = false;
             }
-            this.loading = false;
         },
         async sendData() {
             let details = {
@@ -793,6 +825,40 @@ export default defineComponent({
             }
             return false;
 
+        },
+        async confirmRequest() {
+            let details = {
+                'user_uuid': this.getUuid,
+            }
+            let formBody = prepareData(details);
+            let response = await fetch('/api/exchange/confirm_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept': 'application/json',
+                },
+                body: formBody
+            });
+            if (!response.ok) {
+                this.error.status = true;
+                this.error.message = 'Не удалось  отправить запрос:('
+            } else {
+                let result = await response.json();
+                let exchangeData = {};
+                exchangeData.name = result.client_cc_holder;
+                exchangeData.email = result.client_email;
+                exchangeData.cardNumber = result.client_credit_card_number;
+                exchangeData.cryptoNumber = result.client_crypto_wallet;
+                exchangeData.giveTikker = result.client_sell_currency.tikker;
+                exchangeData.give = result.client_sell_value;
+                exchangeData.selectedGiveCurrency = result.client_sell_currency.name;
+                exchangeData.getTikker = result.client_buy_currency.tikker;
+                exchangeData.get = result.client_buy_value;
+                exchangeData.selectedGetCurrency = result.client_buy_currency.name;
+                exchangeData.uuid = this.getUuid;
+
+                this.setExchangeData(exchangeData);
+            }
         },
         validateGiveNumberInput() {
             this.formData.give = this.formData.give.replace(/[^0-9.-]/g, '');
@@ -898,9 +964,11 @@ export default defineComponent({
         },
         async getExchangeRate(giveTikker, getTikker) {
             let response = await fetch('/api/exchange/' + giveTikker + '/' + getTikker);
-            let result = await response.json();
-
-            return result['exchange_rate'] ?? null;
+            if (response.ok) {
+                let result = await response.json();
+                return result['exchange_rate'] ?? null;
+            }
+            return 0;
         },
     },
 });

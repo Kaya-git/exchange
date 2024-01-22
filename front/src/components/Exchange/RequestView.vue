@@ -80,14 +80,23 @@
                 </v-row>
                 <v-row class="request__row mb-2">
                     <v-col class="d-flex justify-end">
-                        <v-btn id="request-submit" size="large" color="success" @click="this.confirmOverlay = true">
+                        <v-btn
+                            id="request-submit"
+                            size="large"
+                            color="success"
+                            :disabled="disabled"
+                            @click="this.confirmOverlay = true">
                             Оплачено
                         </v-btn>
                     </v-col>
                     <v-col>
-                        <Router-link to="/">
-                            <v-btn size="large" color="error">Отменить</v-btn>
-                        </Router-link>
+                        <v-btn
+                            size="large"
+                            :disabled="disabled"
+                            @click="cancel()"
+                            color="error">
+                            Отменить
+                        </v-btn>
                     </v-col>
                 </v-row>
             </v-container>
@@ -113,12 +122,14 @@ export default defineComponent({
         exchangeData: null,
         confirmOverlay: false,
         requisites: '',
+        disabled: false,
     }),
     created() {
         this.exchangeData = this.getExchangeData;
         this.getRequisites();
     },
     mounted() {
+        this.ttl();
         this.resizeBg();
     },
     components: {
@@ -132,6 +143,7 @@ export default defineComponent({
     methods: {
         ...mapActions([
             'resizeBg',
+            'ttl',
         ]),
         async getRequisites() {
             let details = {
@@ -148,13 +160,22 @@ export default defineComponent({
             });
             if (response.ok) {
                 this.requisites = await response.json();
-
+                if (!this.requisites) {
+                    this.$emit('error', 'Сервер не смог предоставить реквизиты');
+                }
+            } else {
+                this.$emit('error', 'Упс! Что-то пошло не так...');
             }
         },
         confirmTrade() {
             this.confirmOverlay = !this.confirmOverlay;
             this.$emit('complete');
             this.$emit('nextStep');
+        },
+        async cancel() {
+            this.disabled = true;
+            await this.$emit('cancel');
+            this.disabled = false;
         }
     },
     computed: {

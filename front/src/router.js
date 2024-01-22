@@ -68,6 +68,14 @@ const router = new createRouter({
             },
         },
         {
+            name: 'ForgotPassword',
+            path: '/forgot/',
+            component: () => import("./components/User/ForgotPassword"),
+            meta: {
+                title: 'Восстановление пароля',
+            },
+        },
+        {
             name: 'ExchangeSteps',
             path: '/exchange/',
             component: () => import("./components/Exchange/ExchangeSteps"),

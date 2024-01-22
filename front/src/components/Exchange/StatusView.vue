@@ -57,7 +57,7 @@
 </template>
 <script>
 import {defineComponent} from 'vue';
-import {mapGetters, mapMutations} from 'vuex';
+import {mapGetters, mapMutations, mapActions} from 'vuex';
 import {prepareData} from '@/helpers';
 
 export default defineComponent({
@@ -65,16 +65,24 @@ export default defineComponent({
 
     data: () => ({
         exchangeData: null,
+        loading: false,
     }),
     created() {
         this.exchangeData = this.getExchangeData;
         this.payed();
     },
+    mounted() {
+        this.resizeBg();
+    },
     methods: {
         ...mapMutations([
             'setExchangeData',
         ]),
+        ...mapActions([
+            'resizeBg',
+        ]),
         async payed() {
+            this.loading = true;
             let details = {
                 'user_uuid': this.getUuid,
             }
@@ -99,6 +107,7 @@ export default defineComponent({
             } else {
                 await this.payed();
             }
+            this.loading = false;
         },
     },
     computed: {
