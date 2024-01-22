@@ -291,7 +291,7 @@ class DB:
                     # Выставляем таймер на время жизни заявки
                     await services.redis_values.set_ttl(
                         user_uuid=user_uuid,
-                        time_out=120
+                        time_out=600
                     )
 
                     return {

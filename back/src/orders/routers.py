@@ -30,8 +30,8 @@ async def decline_order(
         user_uuid=user_uuid
     )
     order_id = await services.redis_values.get_order_id()
-    if order_id != None:
-        await db.order.delete(Order.id==order_id)
+    if order_id is not None:
+        await db.order.delete(Order.id == order_id)
         await db.session.commit()
     await services.redis_values.redis_conn.delete(user_uuid)
 

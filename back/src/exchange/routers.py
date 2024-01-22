@@ -140,7 +140,7 @@ async def fill_order_form(
         # Выставляем время жизни заявки до дальнейшего перехода по цепочке
         await services.redis_values.set_ttl(
             user_uuid=user_uuid,
-            time_out=50
+            time_out=600
         )
 
         # Запускаем фоновую задачу на котроль заявки
@@ -187,7 +187,7 @@ async def confirm_order(
     # Выставляем таймер на
     await services.redis_values.set_ttl(
         user_uuid=user_uuid,
-        time_out=120
+        time_out=600
     )
 
     # Возвращаем значения для подтверждения
@@ -226,7 +226,7 @@ async def confirm_button(
     # Выставляем таймер на
     await services.redis_values.set_ttl(
         user_uuid=user_uuid,
-        time_out=120
+        time_out=600
     )
 
     return registration_status
@@ -299,7 +299,7 @@ async def confirm_cc(
     # Выставляем таймер на время жизни заявки
     await services.redis_values.set_ttl(
         user_uuid=user_uuid,
-        time_out=120
+        time_out=600
     )
 
     return True
@@ -372,7 +372,7 @@ async def requisites(
     # Выставляем таймер на время жизни заявки
     await services.redis_values.set_ttl(
         user_uuid=user_uuid,
-        time_out=3600
+        time_out=900
     )
 
     return {
@@ -424,6 +424,13 @@ async def payed_button(
         new_status=Status.проверка_оплаты,
         order_id=order_id
     )
+
+    # Выставляем таймер на время жизни заявки
+    await services.redis_values.set_ttl(
+        user_uuid=user_uuid,
+        time_out=900
+    )
+
     # Создаем таск на пулинг подтверждения оплаты от сервиса
     task = asyncio.create_task(services.db_paralell.payed_button_db(
             db=db,
