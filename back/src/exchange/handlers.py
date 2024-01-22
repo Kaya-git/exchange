@@ -457,7 +457,7 @@ async def check_user_registration(
     ):
 
         # Проверяем если кредитная карта принадлежит пользователю
-        if credit_card.user is user:
+        if credit_card.user_id is user.id:
 
             # Если пользователь покупает криптовалюту
             if (redis_dict["client_sell_currency"]["type"] ==
