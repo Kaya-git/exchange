@@ -157,10 +157,7 @@ class RedisValues:
         if order_id is not None:
             return int(order_id)
 
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Отсутствует номер заявки в редис"
-        )
+        return None
 
     async def get_router_num(
             self,
