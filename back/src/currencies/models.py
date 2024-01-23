@@ -74,7 +74,7 @@ class Currency(Base):
         nullable=True
     )
     wallet_starts: Mapped[str] = mapped_column(
-        sa.CHAR,
+        sa.Text,
         default=None,
         nullable=True
     )
