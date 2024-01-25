@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 from typing import Annotated, List
 
-from database.db import Database, get_async_session
-from enums import CurrencyType
 from fastapi import APIRouter, Depends, Path
 from fastapi_cache.decorator import cache
-from price_parser.parser import CoinGekkoParser, parse_the_price
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from database.db import Database, get_async_session
+from enums import CurrencyType
+from price_parser.parser import CoinGekkoParser, parse_the_price
+
 from .models import Currency
 from .schemas import CurrencyDTO, CurrencyTariffsDTO
 

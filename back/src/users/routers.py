@@ -1,10 +1,11 @@
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from auth.db import get_user_db
 from auth.manager import UserManager
 from auth.routers import current_active_user
 from database.db import Database, get_async_session
-from fastapi import APIRouter, Depends
 from payment_options.models import PaymentOption
-from sqlalchemy.ext.asyncio import AsyncSession
 from users.models import User
 
 from .scheemas import ChangePassDTO

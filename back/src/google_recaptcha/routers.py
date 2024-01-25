@@ -1,5 +1,6 @@
-from config import conf
 from fastapi import APIRouter
+
+from config import conf
 
 from .handlers import ver_recaptcha
 

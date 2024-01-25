@@ -1,5 +1,14 @@
 import uuid
 
+from fastapi import Depends, FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+from redis import asyncio as aioredis
+from sqladmin import Admin
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from admin import (ContactAdmin, CurrencyAdmin, FAQAdmin, OrderAdmin,
                    PaymentOptionAdmin, PendingAdminAdmin, ReviewAdmin,
                    ServicePaymentOptionAdmin, UserAdmin)
@@ -12,18 +21,10 @@ from currencies.routers import currency_router
 from database.db import engine, get_async_session
 from exchange.routers import exchange_router
 from faq.routers import faq_router
-from fastapi import Depends, FastAPI, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
 from mail_verif.routers import email_router
 from orders.routers import orders_router
-from redis import asyncio as aioredis
 from redis_ttl.routers import redis_router
 from reviews.routers import reviews_router
-from sqladmin import Admin
-from sqlalchemy.ext.asyncio import AsyncSession
 from users.routers import lk_router
 from where_am_i.routers import where_am_i_router
 

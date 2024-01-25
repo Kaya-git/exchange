@@ -1,11 +1,12 @@
 from datetime import datetime
 
+from fastapi import Depends, Request
+from jose import JWTError, jwt
+
 from config import conf
 from database.db import Database
 from exceptions import (IncorrectTokenException, TokenAbsentException,
                         TokenExpiredException, UserIsNotPresentException)
-from fastapi import Depends, Request
-from jose import JWTError, jwt
 from users.models import User
 
 
