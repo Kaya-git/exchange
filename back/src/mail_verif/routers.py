@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, Form, HTTPException, status
+from fastapi import APIRouter, Depends, Path, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from auth.routers import current_active_user
+from typing import Annotated
 from database.db import Database, get_async_session
 from users.models import User
+
 
 email_router = APIRouter(
     prefix="/api/email_verif",
@@ -13,19 +13,18 @@ email_router = APIRouter(
 
 @email_router.post('/verif')
 async def verify_email(
-    verif_token: str | None = Form(),
+    verif_token: str,
     session: AsyncSession = Depends(get_async_session),
-    user: "User" = Depends(current_active_user)
-):
-    db = Database(session=session)
+) -> bool | None:
+    user = await Database(session).user.get_by_where(
+        User.verification_token == verif_token
+    )
 
-    print(user.verification_token)
-    if verif_token == str(user.verification_token):
-        await db.user.update_verification(user.id)
-        return {
-            "verified": True
-        }
+    if user:
+        await Database(session).user.update_verification(user.id)
+        return True
+
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
-        detail="Такого ключа не существует"
+        detail="Пользователя нет в бд"
     )
