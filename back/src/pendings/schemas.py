@@ -1,5 +1,6 @@
-from enums.models import ReqAction
 from pydantic import BaseModel
+
+from enums.models import ReqAction
 
 
 class PendingAdminAddDTO(BaseModel):

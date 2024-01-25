@@ -1,5 +1,8 @@
 """  Order repository file """
 import sqlalchemy as sa
+from sqlalchemy import update
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from currencies.models import Currency
 from database.abstract_repo import Repository
 from database.engines import async_session_maker
@@ -7,8 +10,6 @@ from enums import Status, VerifDeclineReason
 from orders.models import Order
 from payment_options.models import PaymentOption
 from service_payment_options.models import ServicePaymentOption
-from sqlalchemy import update
-from sqlalchemy.ext.asyncio import AsyncSession
 from users.models import User
 
 

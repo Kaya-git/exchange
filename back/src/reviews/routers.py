@@ -1,11 +1,12 @@
 import asyncio
 from typing import Annotated, List
 
-from database.db import Database, get_async_session
-from enums.models import ReqAction
 from fastapi import APIRouter, Depends, Path
 from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from database.db import Database, get_async_session
+from enums.models import ReqAction
 
 from .handlers import check_review_verif
 from .models import Review

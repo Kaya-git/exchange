@@ -6,10 +6,11 @@ sys.path.append(os.path.join(sys.path[0], 'src'))
 import asyncio
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
+
+from alembic import context
 from src.config import conf
 from src.contacts.models import *
 from src.currencies.models import *

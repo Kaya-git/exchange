@@ -1,10 +1,11 @@
 """  User repository file """
 from decimal import Decimal
 
-from database.abstract_repo import Repository
-from database.engines import async_session_maker
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from database.abstract_repo import Repository
+from database.engines import async_session_maker
 
 from .models import User
 

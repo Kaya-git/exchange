@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
 from typing import Union
 
-from config import conf
-from database.db import Database
 from jose import jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
+
+from config import conf
+from database.db import Database
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
