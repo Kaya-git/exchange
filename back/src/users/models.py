@@ -3,15 +3,16 @@ from datetime import datetime
 from typing import TYPE_CHECKING, List
 
 import sqlalchemy as sa
-from database.base_model import Base
-from enums import Role
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from database.base_model import Base
+from enums import Role
+
 if TYPE_CHECKING:
-    from payment_options.models import PaymentOption
     from orders.models import Order
+    from payment_options.models import PaymentOption
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):

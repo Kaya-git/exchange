@@ -1,8 +1,9 @@
 from decimal import Decimal
 from typing import Optional
 
-from enums import CurrencyType
 from pydantic import BaseModel
+
+from enums import CurrencyType
 
 
 class CurrencyAddDTO(BaseModel):

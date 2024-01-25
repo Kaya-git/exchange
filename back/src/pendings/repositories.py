@@ -1,9 +1,10 @@
 """  PendingAdmin repository file """
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from database.abstract_repo import Repository
 from enums.models import ReqAction
 from orders.models import Order
 from reviews.models import Review
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from .models import PendingAdmin
 

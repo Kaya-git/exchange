@@ -6,14 +6,14 @@ from typing import TYPE_CHECKING
 
 import redis.asyncio as redis
 from aiosmtplib import SMTP
+from fastapi import HTTPException, status
+
 from config import conf
+from currencies.models import Currency
 from database.db import Database
 from enums import CurrencyType, Status
-from fastapi import HTTPException, status
 from payment_options.models import PaymentOption
 from pendings.models import PendingAdmin
-from currencies.models import Currency
-
 
 if TYPE_CHECKING:
     from where_am_i.schemas import UuidDTO

@@ -2,8 +2,9 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Optional
 
-from enums import Status, VerifDeclineReason
 from pydantic import BaseModel, EmailStr
+
+from enums import Status, VerifDeclineReason
 
 
 class OrderBase(BaseModel):
