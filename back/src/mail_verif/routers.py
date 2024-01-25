@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends, Path, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Annotated
 from database.db import Database, get_async_session
 from users.models import User
 
@@ -11,7 +10,7 @@ email_router = APIRouter(
 )
 
 
-@email_router.post('/verif')
+@email_router.get('/verif')
 async def verify_email(
     verif_token: str,
     session: AsyncSession = Depends(get_async_session),
