@@ -490,8 +490,8 @@ class Mail:
         message["Subject"] = "VSS COIN"
         message.attach(
             MIMEText(
-                f"""<html><body><h1>Ваш токен для подтверждения VVS-Coin: \n
-                {generated_token}<h1></body>""",
+                f"""<html><body><h1>Для подтверждения почты перейди по ссылке: \n
+                https://dev.vvscoin.com/api/email_verif/verif?verif_token={generated_token}<h1></body>""",
                 "html",
                 "utf-8"
             )
