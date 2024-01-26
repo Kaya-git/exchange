@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.db import Database, get_async_session
 from users.models import User
@@ -21,7 +22,7 @@ async def verify_email(
 
     if user:
         await Database(session).user.update_verification(user.id)
-        return True
+        return RedirectResponse("https://dev.vvscoin.com")
 
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
