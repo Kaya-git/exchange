@@ -13,7 +13,16 @@
                         :color="icons[status].color"></v-icon>
                 </v-row>
                 <v-row class="justify-center">
-                    <p class="status-modal__text">{{ msg }}</p>
+                    <p class="status-modal__text" v-html="msg"></p>
+                </v-row>
+                <v-row class="justify-end" v-if="btn">
+                    <v-btn
+                        class="status-modal__btn"
+                        :color="status"
+                        block
+                        @click="$emit('close')">
+                        {{btn}}
+                    </v-btn>
                 </v-row>
             </v-container>
         </v-sheet>
@@ -34,6 +43,10 @@ export default defineComponent({
             type: String,
             default: '',
         },
+        btn: {
+            type: String,
+            default: '',
+        }
     },
 
     data: () => ({
@@ -50,5 +63,6 @@ export default defineComponent({
             },
         }
     }),
+    emits: ['close']
 });
 </script>

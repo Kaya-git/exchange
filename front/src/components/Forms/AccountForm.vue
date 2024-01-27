@@ -1,5 +1,5 @@
 <template>
-    <v-form class="account-form">
+    <v-form class="account-form" validate-on="submit lazy" @submit.prevent="submit">
         <div class="account-form__cols">
             <div class="account-form__col">
                 <h2 class="account-form__title title title_h2 title_black mb-4">
@@ -51,9 +51,9 @@
                 class="account-form__submit"
                 color="success"
                 size="large"
+                type="submit"
                 :disabled="loading"
-                :loading="loading"
-                @click.prevent="changePassword">
+                :loading="loading">
                 Сохранить
             </v-btn>
             <v-btn
@@ -92,10 +92,10 @@ export default defineComponent({
         show2: false,
         show3: false,
         formData: {
-            email: '',
-            password: '',
-            newPassword: '',
-            confirmPassword: '',
+            email: null,
+            password: null,
+            newPassword: null,
+            confirmPassword: null,
         },
         rules: {
             required: value => !!value || 'Обязательно для заполнения',
@@ -115,8 +115,16 @@ export default defineComponent({
             'resizeBg',
             'logout',
         ]),
-        async changePassword() {
+        async submit(event) {
             this.loading = true;
+            this.statusModal.modelValue = false;
+            const results = await event;
+            if (results.valid) {
+                await this.changePassword();
+            }
+            this.loading = false;
+        },
+        async changePassword() {
             let body = {
                 'old_pass': this.formData.password,
                 'new_pass': this.formData.newPassword,
@@ -131,15 +139,16 @@ export default defineComponent({
             });
             if (response.ok) {
                 let result = await response.json();
-                console.log(result);
                 this.formData.newPassword = '';
                 this.formData.confirmPassword = '';
+                this.statusModal.modelValue = true;
+                return result;
             } else {
                 this.statusModal.status = 'reject';
                 this.statusModal.msg = 'Ошибка смены пароля';
             }
             this.statusModal.modelValue = true;
-            this.loading = false;
+            return false;
         }
     },
     computed: {

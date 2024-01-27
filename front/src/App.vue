@@ -83,7 +83,7 @@ export default {
             let body = document.querySelector('body');
             body.classList.add('loaded');
             this.setLoaded();
-        }
+        },
     },
     computed: {
         ...mapGetters([

@@ -53,11 +53,19 @@
         </v-form>
       </div>
     </div>
-  </template>
+    <verify-email
+    v-model="verifyModalShow"
+    @canceled="verifyModalShow = !verifyModalShow"
+    ></verify-email>
+    <status-modal
+        v-model="statusModal.modelValue"
+        :status="statusModal.status"
+        :msg="statusModal.msg"
+    ></status-modal>
+</template>
   
 <script>
-import {defineComponent} from 'vue';
-import {setCookie} from '@/helpers';
+import {defineComponent, defineAsyncComponent} from 'vue';
 import {mapMutations} from 'vuex';
 export default defineComponent({
     name: 'RegisterView',
@@ -65,14 +73,38 @@ export default defineComponent({
     data: () => ({
         loading: false,
         show: false,
+        verifyModalShow: false,
+        statusModal: {
+            modelValue: false,
+            status: 'success',
+            msg: "Вы успешно зарегистрировались!<br>Вам отправлено сообщение на почту для её подтверждения",
+        },
+        sended: false,
         formData: {
-        email: '',
-        password: ''
+            email: '',
+            password: '',
         },
         rules: {
             required: value => !!value || 'Обязательно для заполнения',
         }
     }),
+    components: {
+        VerifyEmail: defineAsyncComponent({
+            loader: () => import("@/components/Modal/VerifyEmail"),
+        }),
+        StatusModal: defineAsyncComponent({
+            loader: () => import("@/components/Modal/StatusModal"),
+        }),
+    },
+    watch: {
+        'statusModal.modelValue': function (newVal) {
+            if (!newVal && this.sended) {
+                this.$router.push({
+                    name: 'AuthView',
+                });
+            }
+        }
+    },
     methods: {
         ...mapMutations([
             'setUserEmail',
@@ -85,15 +117,11 @@ export default defineComponent({
             if (results.valid) {
                 let isDataSended = await this.sendData();
                 if (isDataSended) {
-                    this.setUserEmail(this.formData.email);
-                    setCookie('user_email', this.formData.email);
-                    this.$router.push({
-                        name: 'AccountView',
-                    });
+                    this.statusModal.modelValue = true;
+                    this.sended = true;
                 }
-            } else {
-                this.loading = false;
             }
+            this.loading = false;
         },
         async sendData() {
             let body = {
@@ -114,10 +142,10 @@ export default defineComponent({
             });
             if (response.ok) {
                 return await response.json();
-            }
 
+            }
             return false;
-        }
+        },
     }
 });
 </script>

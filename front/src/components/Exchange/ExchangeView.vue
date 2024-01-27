@@ -913,29 +913,19 @@ export default defineComponent({
             this.formData.cardNumber = formattedInput;
         },
         validateCryptoWallet() {
-            let regex = /^(1|3|bc1q|bc1p)[A-Za-z0-9]{22,40}$/;
-            if (regex.test(this.formData.cryptoNumber)) {
-                return true;
+            if (this.getCurrency.type === 'crypto') {
+                let startWith = this.getCurrency.wallet_starts;
+                let regex = new RegExp(`^(${startWith})[A-Za-z0-9]{${this.getCurrency.symbols_min},${this.getCurrency.symbols_max}}$`);
+                if (regex.test(this.formData.cryptoNumber)) {
+                    return true;
+                }
             }
-
-            regex = /^(L|3|M|ltc1)[A-Za-z0-9]{21,45}$/;
-            if (regex.test(this.formData.cryptoNumber)) {
-                return true;
-            }
-
-            regex = /^0x[A-Fa-f0-9]{38,42}$/;
-            if (regex.test(this.formData.cryptoNumber)) {
-                return true;
-            }
-
-            regex = /^T[A-Za-z0-9]{31,32}$/;
-            if (regex.test(this.formData.cryptoNumber)) {
-                return true;
-            }
-
-            regex = /^0x[A-Fa-f0-9]{39,40}$/;
-            if (regex.test(this.formData.cryptoNumber)) {
-                return true;
+            if (this.getCurrency.type === 'fiat') {
+                let startWith = this.giveCurrency.wallet_starts;
+                let regex = new RegExp(`^(${startWith})[A-Za-z0-9]{${this.giveCurrency.symbols_min},${this.giveCurrency.symbols_max}}$`);
+                if (regex.test(this.formData.cryptoNumber)) {
+                    return true;
+                }
             }
 
             return 'Невалидный номер кошелька';
@@ -966,6 +956,15 @@ export default defineComponent({
             let response = await fetch('/api/exchange/' + giveTikker + '/' + getTikker);
             if (response.ok) {
                 let result = await response.json();
+
+                this.getCurrency['symbols_min'] = result.get.symbols_min;
+                this.getCurrency['symbols_max'] = result.get.symbols_max;
+                this.getCurrency['wallet_starts'] = result.get.wallet_starts.replace(/\s/g, '').split('или').join('|');
+
+                this.giveCurrency['symbols_min'] = result.give.symbols_min;
+                this.giveCurrency['symbols_max'] = result.give.symbols_max;
+                this.giveCurrency['wallet_starts'] = result.give.wallet_starts.replace(/\s/g, '').split('или').join('|');
+
                 return result['exchange_rate'] ?? null;
             }
             return 0;

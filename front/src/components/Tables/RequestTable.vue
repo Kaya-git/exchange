@@ -18,7 +18,9 @@
                     #{{item.id}}
                 </td>
                 <td class="request-table__item">
-
+                    <span>{{item.user_sell_sum}}</span>
+                    <v-icon color="black" icon="mdi-sync"></v-icon>
+                    <span>{{item.user_buy_sum}}</span>
                 </td>
                 <td class="request-table__item">
                     {{item.status}}

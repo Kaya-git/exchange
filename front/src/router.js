@@ -14,13 +14,19 @@ const router = new createRouter({
             name: 'AuthView',
             path: '/auth/',
             component: () => import("./components/User/AuthView"),
-            meta: { title: 'Авторизация' }
+            meta: {
+                title: 'Авторизация',
+                redirectNeededAuth: true,
+            }
         },
         {
             name: 'RegisterView',
             path: '/register/',
             component: () => import("./components/User/RegisterView"),
-            meta: { title: 'Регистрация' }
+            meta: {
+                title: 'Регистрация',
+                redirectNeededAuth: true,
+            }
         },
         {
             name: 'ContactsView',
@@ -94,15 +100,13 @@ const router = new createRouter({
 // eslint-disable-next-line
 router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth) {
-        store.dispatch('checkAuth').then((data) => {
-            console.log(data);
-            console.log(store.state.isAuth);
+        store.dispatch('checkAuth').then(() => {
             if (!store.state.isAuth) {
                 next({
                     name: 'AuthView',
                 });
             } else {
-                next()
+                next();
             }
         })
     } else if (to.meta.needStep && !store.state.curExchangeStep) {

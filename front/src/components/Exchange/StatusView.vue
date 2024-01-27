@@ -109,6 +109,21 @@ export default defineComponent({
             }
             this.loading = false;
         },
+        async getStatus() {
+            let details = {
+                'user_uuid': this.getUuid,
+            }
+            let formBody = prepareData(details);
+
+            await fetch('/api/orders/get_order_status', {
+                method: 'ЗЩЫ',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept': 'application/json',
+                },
+                body: formBody
+            });
+        }
     },
     computed: {
         ...mapGetters([

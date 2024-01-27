@@ -130,14 +130,13 @@ export default defineComponent({
     },
     mounted() {
         this.ttl();
-        this.resizeBg();
     },
     components: {
         TimerView: defineAsyncComponent({
-            loader: () => import("../Utils/TimerView"),
+            loader: () => import("@/components/Utils/TimerView"),
         }),
         ConfirmTrade: defineAsyncComponent({
-            loader: () => import("../Modal/ConfirmTrade"),
+            loader: () => import("@/components/Modal/ConfirmTrade"),
         }),
     },
     methods: {
@@ -166,6 +165,8 @@ export default defineComponent({
             } else {
                 this.$emit('error', 'Упс! Что-то пошло не так...');
             }
+            await this.$nextTick();
+            this.resizeBg();
         },
         confirmTrade() {
             this.confirmOverlay = !this.confirmOverlay;

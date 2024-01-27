@@ -104,13 +104,13 @@ const Store = new Vuex.Store({
                     let result = await response.json();
                     await commit('auth');
                     await commit('setUserData', result);
-                    return state.isAuth;
                 } else {
                     if (getCookie('user_email')) {
                         deleteCookie('user_email');
                     }
                 }
             }
+            return state.isAuth;
         },
         async getApiUUID({commit}) {
             if (getCookie('user_uuid')) {
