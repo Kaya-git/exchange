@@ -62,7 +62,7 @@ async def order_list(
 
 @orders_router.get("/get_order_status")
 async def get_order_status(
-    user_uuid: str | None = Form(),
+    user_uuid: str,
     session: AsyncSession = Depends(get_async_session)
 ) -> str:
     db = Database(session=session)
