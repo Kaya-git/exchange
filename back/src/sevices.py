@@ -487,7 +487,7 @@ class Mail:
         message = MIMEMultipart()
         message["From"] = self.email
         message["To"] = recepient_email
-        message["Subject"] = "VSS COIN"
+        message["Subject"] = "VVS COIN"
         message.attach(
             MIMEText(
                 f"""<html><body><h1>Для подтверждения почты перейди по ссылке: \n
