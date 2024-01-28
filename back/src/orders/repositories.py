@@ -1,6 +1,7 @@
 """  Order repository file """
 import sqlalchemy as sa
-from sqlalchemy import update
+from sqlalchemy import update, select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from currencies.models import Currency
@@ -137,3 +138,19 @@ class OrderRepo(Repository[Order]):
             )
             await session.execute(statement)
             await session.commit()
+
+    async def select_orders_with_joined_currensies(
+        self,
+        whereclause
+    ):
+        async with async_session_maker() as session:
+            statement = (
+                select(
+                    Order
+                ).options(
+                    joinedload(Order.buy_currency)
+                ).options(
+                    joinedload(Order.sell_currency)
+                ).where(whereclause)
+            )
+            return (await session.scalars(statement)).all()

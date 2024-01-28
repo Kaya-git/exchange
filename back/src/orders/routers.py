@@ -47,9 +47,10 @@ async def order_list(
     async_session: AsyncSession = Depends(get_async_session),
     user: "User" = Depends(current_active_user)
 ):
-    db = Database(session=async_session)
 
-    completed_orders = await db.order.get_many(
+    completed_orders = await Database(
+        async_session
+        ).order.select_orders_with_joined_currensies(
         Order.user_email == user.email
     )
 
