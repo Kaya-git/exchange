@@ -28,7 +28,7 @@ from reviews.routers import reviews_router
 from users.routers import lk_router
 from where_am_i.routers import where_am_i_router
 
-# from google_recaptcha.routers import recaptcha_router
+from google_recaptcha.routers import recaptcha_router
 
 app = FastAPI(
     title="Exchange",
@@ -96,7 +96,7 @@ async def root(
     response.set_cookie(key="user_uuid", value=cookies_uuid)
     return cookies_uuid
 
-# app.include_router(recaptcha_router)
+app.include_router(recaptcha_router)
 app.include_router(email_router)
 app.include_router(redis_router)
 app.include_router(lk_router)

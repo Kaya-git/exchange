@@ -48,9 +48,11 @@ async def order_list(
     user: "User" = Depends(current_active_user)
 ):
     db = Database(session=async_session)
+
     completed_orders = await db.order.get_many(
         Order.user_email == user.email
     )
+
     return completed_orders
 
 
@@ -58,7 +60,7 @@ async def order_list(
 async def get_order_status(
     user_uuid: str,
     session: AsyncSession = Depends(get_async_session)
-) -> str:
+) -> dict | None:
     db = Database(session=session)
 
     order = await db.order.get_by_where(
