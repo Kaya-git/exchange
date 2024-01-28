@@ -236,7 +236,6 @@ async def add_or_get_po(
         fiat_po is not None and
         crypto_po is not None
     ):
-        print(f"fiat_po.user: {fiat_po.user_id}")
         if fiat_po.user_id != user_id:
             raise HTTPException(
                 status_code=status.HTTP_406_NOT_ACCEPTABLE,
