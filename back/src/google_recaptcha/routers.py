@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Form
 
 from config import conf
 
@@ -11,7 +11,7 @@ recaptcha_router = APIRouter(
 
 
 @recaptcha_router.post('/verify-recaptcha')
-async def verify_recaptcha(token: str):
+async def verify_recaptcha(token: str | None = Form()):
     if ver_recaptcha(
         token,
         conf.google_recaptcha.gsk,
