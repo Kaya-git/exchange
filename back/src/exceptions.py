@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 
 
-class BookingException(HTTPException):
+class ExchangeException(HTTPException):
     status_code = 500
     detail = ""
 
@@ -9,45 +9,45 @@ class BookingException(HTTPException):
         super().__init__(status_code=self.status_code, detail=self.detail)
 
 
-class UserAlreadyExistsException(BookingException):
+class UserAlreadyExistsException(ExchangeException):
     status_code = (status.HTTP_409_CONFLICT,)
     detail = ("Пользователь уже существует",)
 
 
-class IncorrectEmailOrPasswordException(BookingException):
+class IncorrectEmailOrPasswordException(ExchangeException):
     status_code = (status.HTTP_401_UNAUTHORIZED,)
     detail = ("Неверная почта или пароль",)
 
 
-class TokenExpiredException(BookingException):
+class TokenExpiredException(ExchangeException):
     status_code = (status.HTTP_401_UNAUTHORIZED,)
     detail = ("Токен истек",)
 
 
-class TokenAbsentException(BookingException):
+class TokenAbsentException(ExchangeException):
     status_code = (status.HTTP_401_UNAUTHORIZED,)
     detail = ("Токен отсутствует",)
 
 
-class IncorrectTokenException(BookingException):
+class IncorrectTokenException(ExchangeException):
     status_code = (status.HTTP_401_UNAUTHORIZED,)
     detail = ("Неверный формат токена",)
 
 
-class UserIsNotPresentException(BookingException):
+class UserIsNotPresentException(ExchangeException):
     status_code = status.HTTP_401_UNAUTHORIZED
 
 
-class UserIsNotAdminException(BookingException):
+class UserIsNotAdminException(ExchangeException):
     status_code = (status.HTTP_403_FORBIDDEN,)
     detail = ("Пользователь не является администратором",)
 
 
-class DateFromWrongFormatException(BookingException):
+class DateFromWrongFormatException(ExchangeException):
     status_code = (status.HTTP_409_CONFLICT,)
     detail = ("Неверный формат даты, date_from >= date_to",)
 
 
-class OutOfDateException(BookingException):
+class OutOfDateException(ExchangeException):
     status_code = (status.HTTP_409_CONFLICT,)
     detail = ("Неверные параметры даты",)

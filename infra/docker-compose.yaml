@@ -6,14 +6,12 @@ services:
     container_name: redis_app
     command: --port 5370
     expose:
-      # - 5370
       - 6379
 
   backend:
     build: 
       context: ../back/
     env_file:
-      # - ../back/.env-non-dev
       - .env
     container_name: backend_app
     command: bash -c "alembic upgrade head && gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000"
@@ -21,13 +19,3 @@ services:
       - 9999:8000
     depends_on:
       - redis
-
-  # frontend:
-  #   build:
-  #     context: ../front/
-  #   container_name: frontend_app
-  #   ports:
-  #     - 8080:8080
-  #   depends_on:
-  #     - db
-  #     - redis

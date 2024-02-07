@@ -3,10 +3,12 @@ from typing import TYPE_CHECKING, Protocol
 
 import httpx
 from fastapi import HTTPException, status
+import logging
 
 if TYPE_CHECKING:
     from currencies.routers import CoingekkoParamsDTO
 
+LOGGER = logging.getLogger(__name__)
 
 Price = Decimal
 
@@ -43,6 +45,13 @@ class CoinGekkoParser:
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.get(url=url, params=param)
+
+                if response.status_code != 200:
+                    while response.status_code != 200:
+                        response = await client.get(url=url, params=param)
+
+                LOGGER.info(f"Parser status: {response.status_code}")
+
                 price = round(
                     Decimal(
                         response.json()[param['ids']][param['vs_currencies']]
