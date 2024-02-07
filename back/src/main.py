@@ -27,7 +27,7 @@ from redis_ttl.routers import redis_router
 from reviews.routers import reviews_router
 from users.routers import lk_router
 from where_am_i.routers import where_am_i_router
-
+import logging
 from google_recaptcha.routers import recaptcha_router
 
 app = FastAPI(
@@ -35,6 +35,7 @@ app = FastAPI(
     debug=True,
 )
 
+LOGGER = logging.getLogger(__name__)
 
 origins = [
     "http://localhost",
@@ -136,6 +137,13 @@ async def startup():
         encoding="utf8", decode_responses=True
     )
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+
+    LOGGER.info("--- Start up App ---")
+
+
+@app.on_event
+async def shutdown():
+    LOGGER.info("--- Shudown App ---")
 
 
 if __name__ == "__main__":
