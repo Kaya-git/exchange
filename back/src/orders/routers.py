@@ -64,8 +64,8 @@ async def get_order_status(
 ) -> dict | None:
     db = Database(session=session)
 
-    order = await db.order.get_by_where(
-        Order.user_cookie == user_uuid
+    order = await db.order.get_last_order(
+        user_uuid=user_uuid
     )
     if order is not None:
         return {
