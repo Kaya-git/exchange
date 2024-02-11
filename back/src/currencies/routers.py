@@ -25,7 +25,7 @@ class CoingekkoParamsDTO:
 
 
 @currency_router.get("/list", response_model=List[CurrencyDTO])
-@cache(expire=300)
+@cache(expire=1800)
 async def currency_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):
@@ -34,7 +34,7 @@ async def currency_list(
 
 
 @currency_router.get("/currency/{id}", response_model=CurrencyDTO)
-@cache(expire=300)
+@cache(expire=1800)
 async def currency_id(
     id: Annotated[int, Path(title="The ID of the item to get")],
     async_session: AsyncSession = Depends(get_async_session)
@@ -44,7 +44,7 @@ async def currency_id(
 
 
 @currency_router.get("/tariffs", response_model=List[CurrencyTariffsDTO])
-@cache(expire=300)
+@cache(expire=1800)
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)
 ):
