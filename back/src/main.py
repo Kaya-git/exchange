@@ -31,8 +31,7 @@ import logging
 from google_recaptcha.routers import recaptcha_router
 
 app = FastAPI(
-    title="Exchange",
-    debug=True,
+    title="Exchange"
 )
 
 LOGGER = logging.getLogger(__name__)
