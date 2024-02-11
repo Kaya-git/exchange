@@ -67,11 +67,11 @@ async def get_order_status(
 ) -> dict | None:
     db = Database(session=session)
 
-    order = await db.order.get_last_order(
-        user_uuid=user_uuid
-    )
+    order_id = await services.redis_values.get_order_id(user_uuid)
 
-    LOGGER.info(f"Заявка:{order}")
+    order = await db.order.get(order_id)
+
+    LOGGER.info(f"Заявка: {order.id} Статус заявки: {order.status}")
 
     if order is not None:
         return {
