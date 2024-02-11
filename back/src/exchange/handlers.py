@@ -450,6 +450,8 @@ async def check_user_registration(
     crypto_wallet = await db.payment_option.get_by_where(
         PaymentOption.number == redis_dict["client_crypto_wallet"]
     )
+    if crypto_wallet is None:
+        crypto_wallet.id = None
 
     if (
         credit_card is not None and

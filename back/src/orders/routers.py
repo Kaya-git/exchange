@@ -10,10 +10,13 @@ from users.routers import lk_router
 
 from .models import Order
 from .shemas import OrderRead
+import logging
 
 if TYPE_CHECKING:
     from users.models import User
 
+
+LOGGER = logging.getLogger(__name__)
 
 orders_router = APIRouter(
     prefix="/api/orders",
@@ -67,6 +70,9 @@ async def get_order_status(
     order = await db.order.get_last_order(
         user_uuid=user_uuid
     )
+
+    LOGGER.info(f"Заявка:{order}")
+
     if order is not None:
         return {
             "status": order.status
