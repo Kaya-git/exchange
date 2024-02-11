@@ -1,6 +1,6 @@
 from decimal import Decimal
 from typing import TYPE_CHECKING, Protocol
-
+from asyncio import sleep as asyncsleep
 import httpx
 from fastapi import HTTPException, status
 import logging
@@ -46,11 +46,22 @@ class CoinGekkoParser:
             try:
                 response = await client.get(url=url, params=param)
 
+                LOGGER.info(f"Parser status: {response.status_code}")
+
+                if response.status_code == 429:
+                    LOGGER.error(
+                        "Слишком много запросов к серверу. Парсер перегружен"
+                    )
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Слишком много запросов к Коингекко"
+                    )
+
                 if response.status_code != 200:
                     while response.status_code != 200:
+                        LOGGER.info("Ждем 10 секунд и отправляем новый запрос")
+                        await asyncsleep(10)
                         response = await client.get(url=url, params=param)
-
-                LOGGER.info(f"Parser status: {response.status_code}")
 
                 price = round(
                     Decimal(
