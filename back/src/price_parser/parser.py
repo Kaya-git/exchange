@@ -52,15 +52,11 @@ class CoinGekkoParser:
                     LOGGER.error(
                         "Слишком много запросов к серверу. Парсер перегружен"
                     )
-                    raise HTTPException(
-                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        detail="Слишком много запросов к Коингекко"
-                    )
 
                 if response.status_code != 200:
                     while response.status_code != 200:
                         LOGGER.info("Ждем 10 секунд и отправляем новый запрос")
-                        await asyncsleep(10)
+                        await asyncsleep(5)
                         response = await client.get(url=url, params=param)
 
                 price = round(
