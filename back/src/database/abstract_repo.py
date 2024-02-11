@@ -40,7 +40,7 @@ class Repository(Generic[AbstractModel]):
         :return: Model if only one model was found, else None
         """
         statement = select(self.type_model).where(whereclause)
-        return (await self.session.execute(statement)).first()
+        return (await self.session.execute(statement)).scalar_one_or_none()
 
     async def get_all(
         self,

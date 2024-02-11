@@ -154,3 +154,17 @@ class OrderRepo(Repository[Order]):
                 ).where(whereclause)
             )
             return (await session.scalars(statement)).all()
+
+    async def get_last_order(
+        self,
+        user_uuid
+    ):
+        async with async_session_maker() as session:
+            statement = select(
+                Order
+            ).where(
+                Order.user_cookie == user_uuid
+            )
+            results = await session.execute(statement)
+
+            return results.first()
