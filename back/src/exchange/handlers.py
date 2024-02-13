@@ -380,6 +380,8 @@ async def check_user_registration(
     # Если пользователь не зарегестрирован
     if user is None:
 
+        LOGGER.info(" Пользователь не зарегестрирован")
+
         # Проверяем если кредитная карта уже зарегестрирована
         credit_card = await db.payment_option.get_by_where(
             PaymentOption.number == redis_dict["client_credit_card_number"]
@@ -446,7 +448,7 @@ async def check_user_registration(
             )
 
     # Пользователь есть в бд
-
+    LOGGER.info(f"Id User: {user.id}")
     # Проверяем способы оплаты пользователя
     credit_card = await db.payment_option.get_by_where(
         PaymentOption.number == redis_dict["client_credit_card_number"]
@@ -459,6 +461,7 @@ async def check_user_registration(
         credit_card is not None and
         credit_card.is_verified is True
     ):
+        LOGGER.info(f"Id credit card: {credit_card.id}")
 
         # Проверяем если кредитная карта принадлежит пользователю
         if credit_card.user_id is user.id:
@@ -477,6 +480,8 @@ async def check_user_registration(
                     )
                     db.session.add(crypto_wallet)
                     await db.session.flush()
+
+                LOGGER.info(f"Id crypto wallet: {crypto_wallet.id}")
 
                 # Добавляем заявку в бд
                 new_order = await db.order.new(
@@ -506,6 +511,8 @@ async def check_user_registration(
                     )
                     db.session.add(crypto_wallet)
                     await db.session.flush()
+
+                LOGGER.info(f"Id crypto wallet: {crypto_wallet.id}")
 
                 # Добавляем заявку в бд
                 new_order = await db.order.new(
