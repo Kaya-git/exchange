@@ -450,8 +450,6 @@ async def check_user_registration(
     crypto_wallet = await db.payment_option.get_by_where(
         PaymentOption.number == redis_dict["client_crypto_wallet"]
     )
-    if crypto_wallet is None:
-        crypto_wallet.id = None
 
     if (
         credit_card is not None and
@@ -465,6 +463,17 @@ async def check_user_registration(
             if (redis_dict["client_sell_currency"]["type"] ==
                     CurrencyType.Фиат):
 
+                if crypto_wallet is None:
+
+                    new_crypto_wallet = await db.payment_option.new(
+                        user_id=user.id,
+                        currency_id=redis_dict["client_buy_currency"]["id"],
+                        number=redis_dict["client_crypto_wallet"],
+                        holder=redis_dict["client_cc_holder"]
+                    )
+                    db.session.add(new_crypto_wallet)
+                    await db.session.flush()
+
                 # Добавляем заявку в бд
                 new_order = await db.order.new(
                     user_id=user.id,
@@ -472,7 +481,7 @@ async def check_user_registration(
                     user_cookie=user_uuid,
                     user_buy_sum=redis_dict["client_buy_value"],
                     buy_currency_id=redis_dict["client_buy_currency"]["id"],
-                    buy_payment_option_id=crypto_wallet.id,
+                    buy_payment_option_id=new_crypto_wallet.id,
                     user_sell_sum=redis_dict["client_sell_value"],
                     sell_currency_id=redis_dict["client_sell_currency"]["id"],
                     sell_payment_option_id=credit_card.id,
@@ -482,6 +491,17 @@ async def check_user_registration(
             # Если пользователь продает криптовалюту
             if (redis_dict["client_sell_currency"]["type"] ==
                     CurrencyType.Крипта):
+
+                if crypto_wallet is None:
+
+                    new_crypto_wallet = await db.payment_option.new(
+                        user_id=user.id,
+                        currency_id=redis_dict["client_sell_currency"]["id"],
+                        number=redis_dict["client_crypto_wallet"],
+                        holder=redis_dict["client_cc_holder"]
+                    )
+                    db.session.add(new_crypto_wallet)
+                    await db.session.flush()
 
                 # Добавляем заявку в бд
                 new_order = await db.order.new(
