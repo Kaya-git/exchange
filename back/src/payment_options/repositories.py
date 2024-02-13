@@ -22,7 +22,6 @@ class PaymentOptionRepo(Repository[PaymentOption]):
     async def new(
         self,
         user_id: User,
-        # banking_type: BankingType,
         currency_id: Currency,
         number: str,
         holder: str,
