@@ -51,6 +51,16 @@ class RedisValues:
     """Redis class"""
     redis_conn = redis.Redis(host=conf.redis.host, port=conf.redis.port)
 
+    async def add_rates(
+        self,
+        rates
+    ):
+        self.redis_conn.hmset(
+            name="rates",
+            mapping=rates
+        )
+        self.redis_conn.close()
+
     # Достаем данные из редиса и декодируем их
     async def decode_values(
         self,

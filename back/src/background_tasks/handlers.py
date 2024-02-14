@@ -5,6 +5,74 @@ from enums.models import Status
 from pendings.models import PendingAdmin
 from redis_ttl.routers import get_ttl
 from sevices import services
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from currencies.routers import CoingekkoParamsDTO
+from enums import CurrencyType
+import logging
+from price_parser import parse_the_price, CoinGekkoParser
+from fastapi import HTTPException, status
+import httpx
+
+
+LOGGER = logging.getLogger(__name__)
+
+
+async def cache_rates(
+    db: Database = Database
+):
+    while True:
+
+        LOGGER.info("Получаю актульные курсы")
+        try:
+            all_currencies = await db.currency.get_all()
+
+        except httpx.RequestError as exc:
+
+            LOGGER.error(f"Проблема с поиском монет в бд {exc.request.url!r}")
+
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Проблема с поиском монет в бд {exc.request.url!r}"
+            )
+
+        vs_currencies = []
+        ids = []
+
+        for currency in all_currencies:
+            if currency.type is CurrencyType.Крипта:
+                ids.append(currency)
+            if currency.type is CurrencyType.Фиат:
+                vs_currencies.append(ids)
+
+        coingekko_params = CoingekkoParamsDTO(
+            ids=ids,
+            vs_currencies=vs_currencies
+        )
+
+        rates = await parse_the_price(
+            parse_params=coingekko_params,
+            parser=CoinGekkoParser()
+        )
+
+        if rates is not None:
+            try:
+                await services.redis_values.redis_conn.delete("rates")
+
+            except httpx.RequestError as exc:
+                LOGGER.error(f"Проблема c удалением монет из редиса{exc.request.url!r}")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Проблема c удалением монет из редиса {exc.request.url!r}"
+                )
+
+            LOGGER.info(rates)
+
+            await services.redis_values.add_rates(
+                rates
+            )
+
+        await async_sleep(600)
 
 
 async def controll_order(

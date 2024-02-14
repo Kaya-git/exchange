@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import Depends, FastAPI, Response
+from fastapi import Depends, FastAPI, Response, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -29,6 +29,8 @@ from users.routers import lk_router
 from where_am_i.routers import where_am_i_router
 import logging
 from google_recaptcha.routers import recaptcha_router
+from background_tasks.handlers import cache_rates
+
 
 app = FastAPI(
     title="Exchange"
@@ -130,7 +132,9 @@ app.include_router(
 
 
 @app.on_event("startup")
-async def startup():
+async def startup(
+    background_tasks: BackgroundTasks,
+):
     redis = aioredis.from_url(
         f"redis://{conf.redis.host}:{conf.redis.port}",
         encoding="utf8", decode_responses=True
@@ -138,6 +142,9 @@ async def startup():
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
     LOGGER.info("--- Start up App ---")
+    background_tasks.add_task(
+        cache_rates
+    )
 
 
 @app.on_event
