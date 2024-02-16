@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 Price = Decimal
+Prices = dict
 
 
 class PriceParser(Protocol):
@@ -35,13 +36,14 @@ class CoinGekkoParser:
     async def find_price(
             self,
             parse_params: "CoingekkoParamsDTO"
-    ) -> Price:
+    ) -> Prices:
         url = self._base + self._path
 
         param = {
             'ids': f'{parse_params.ids}',
             'vs_currencies': f'{parse_params.vs_currencies}'
         }
+        count = 0
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.get(url=url, params=param)
@@ -54,11 +56,15 @@ class CoinGekkoParser:
                     )
 
                 if response.status_code != 200:
-                    while response.status_code != 200:
-                        LOGGER.info("Ждем 10 секунд и отправляем новый запрос")
+                    count = 5
+                    while response.status_code != 200 or count != 0:
+                        LOGGER.info("Ждем 5 секунд и отправляем новый запрос")
                         await asyncsleep(5)
                         response = await client.get(url=url, params=param)
+                        count -= 1
 
+                if count == 0:
+                    return None
                 price = round(
                     Decimal(
                         response.json()[param['ids']][param['vs_currencies']]
@@ -75,6 +81,6 @@ class CoinGekkoParser:
 async def parse_the_price(
         parse_params: "CoingekkoParamsDTO",
         parser: CoinGekkoParser
-) -> Price:
+) -> Price | Prices:
     """Parse the Price"""
     return await parser.find_price(parse_params=parse_params)

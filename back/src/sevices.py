@@ -34,13 +34,13 @@ class Count:
         get_value = (
             (send_value - Decimal(
                 (send_value * margin) / 100
-            ) - gas) / coin_price
+            ) - gas) / Decimal(coin_price)
         )
         return get_value
 
     async def count_send_value(get_value, coin_price, margin, gas):
         send_value = (
-            (coin_price + Decimal(
+            (Decimal(coin_price) + Decimal(
                 (get_value * margin) / 100
             ) * get_value) + gas
         )
