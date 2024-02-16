@@ -4,7 +4,6 @@ from fastapi import Depends, FastAPI, Response, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
 from redis import asyncio as aioredis
 from sqladmin import Admin
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -88,14 +87,17 @@ admin.add_view(FAQAdmin)
 
 
 @app.get("/api/uuid")
-@cache(expire=120)
 async def root(
     response: Response,
+    background_tasks: BackgroundTasks,
     async_session: AsyncSession = Depends(get_async_session),
+
 ):
     """Устанавливаем печеньки на пользователя"""
     cookies_uuid = uuid.uuid4()
     response.set_cookie(key="user_uuid", value=cookies_uuid)
+
+    background_tasks.add_task(cache_rates)
     return cookies_uuid
 
 app.include_router(recaptcha_router)
@@ -132,9 +134,8 @@ app.include_router(
 
 
 @app.on_event("startup")
-async def startup(
-    background_tasks: BackgroundTasks,
-):
+async def startup():
+
     redis = aioredis.from_url(
         f"redis://{conf.redis.host}:{conf.redis.port}",
         encoding="utf8", decode_responses=True
@@ -142,9 +143,6 @@ async def startup(
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
     LOGGER.info("--- Start up App ---")
-    background_tasks.add_task(
-        cache_rates
-    )
 
 
 @app.on_event

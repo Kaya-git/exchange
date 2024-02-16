@@ -1,0 +1,11 @@
+--- Start up App ---
+--- Start up App ---
+--- Start up App ---
+HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+Parser status: 200
+--- Start up App ---
+--- Start up App ---
+--- Start up App ---
+--- Start up App ---
+2024-02-07 17:43:28,486 - main - INFO - --- Start up App ---
+2024-02-07 17:43:55,116 - main - INFO - --- Start up App ---

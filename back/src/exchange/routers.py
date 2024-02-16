@@ -10,7 +10,7 @@ from currencies.models import Currency
 from database.db import Database, get_async_session
 from enums.models import ReqAction, Status
 from sevices import services
-
+from enums.models import CurrencyType
 from .handlers import (add_or_get_po, calculate_totals, check_form_fillment,
                        check_user_registration, find_exchange_rate, start_time,
                        ya_save_passport_photo)
@@ -44,8 +44,16 @@ async def get_exchange_rates(
         Currency.tikker == client_buy_tikker
     )
 
-    exchange_rate = await find_exchange_rate(
-            client_sell_coin, client_buy_coin
+    # exchange_rate = await find_exchange_rate(
+    #         client_sell_coin, client_buy_coin
+    #     )
+    if client_buy_coin.type is CurrencyType.Крипта:
+        exchange_rate = services.redis_values.redis_conn.get(
+            client_buy_coin.coingecko_tik
+        )
+    else:
+        exchange_rate = services.redis_values.redis_conn.get(
+            client_sell_coin.coingecko_tik
         )
 
     exchange_dict = {}

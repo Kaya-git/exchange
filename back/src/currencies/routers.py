@@ -7,10 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.db import Database, get_async_session
 from enums import CurrencyType
-from price_parser.parser import CoinGekkoParser, parse_the_price
 
 from .models import Currency
 from .schemas import CurrencyDTO, CurrencyTariffsDTO
+import json
+from sevices import services
+
 
 currency_router = APIRouter(
     prefix="/api/currency",
@@ -44,7 +46,6 @@ async def currency_id(
 
 
 @currency_router.get("/tariffs", response_model=List[CurrencyTariffsDTO])
-@cache(expire=1800)
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)
 ):
@@ -57,15 +58,12 @@ async def tariffs(
 
             show_currency = {}
 
-            coingekko_params = CoingekkoParamsDTO(
-                ids=currency.coingecko_tik,
-                vs_currencies='rub'
+            data = await services.redis_values.redis_conn.get(
+                currency.coingecko_tik
             )
 
-            coin_price = await parse_the_price(
-                parse_params=coingekko_params,
-                parser=CoinGekkoParser()
-            )
+            result = json.loads(data)
+            price = result["rub"]
 
             show_currency["id"] = currency.id
             show_currency["name"] = currency.name
@@ -74,7 +72,7 @@ async def tariffs(
             show_currency["reserve"] = currency.reserve
             show_currency["max"] = currency.max
             show_currency["min"] = currency.min
-            show_currency["coin_price"] = coin_price
+            show_currency["coin_price"] = price
             currency_list.append(show_currency)
         else:
             pass

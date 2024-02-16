@@ -5,27 +5,24 @@ from enums.models import Status
 from pendings.models import PendingAdmin
 from redis_ttl.routers import get_ttl
 from sevices import services
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from currencies.routers import CoingekkoParamsDTO
 from enums import CurrencyType
 import logging
-from price_parser import parse_the_price, CoinGekkoParser
+from price_parser.parser_v1 import get_prices
 from fastapi import HTTPException, status
 import httpx
+import json
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-async def cache_rates(
-    db: Database = Database
-):
+async def cache_rates():
+    first = True
     while True:
 
         LOGGER.info("Получаю актульные курсы")
         try:
-            all_currencies = await db.currency.get_all()
+            all_currencies = await Database().currency.get_all()
 
         except httpx.RequestError as exc:
 
@@ -41,22 +38,22 @@ async def cache_rates(
 
         for currency in all_currencies:
             if currency.type is CurrencyType.Крипта:
-                ids.append(currency)
+                LOGGER.info(f"Крипта:{currency}")
+                ids.append(currency.coingecko_tik)
             if currency.type is CurrencyType.Фиат:
-                vs_currencies.append(ids)
+                LOGGER.info(f"Фиат:{currency}")
+                vs_currencies.append(currency.coingecko_tik)
 
-        coingekko_params = CoingekkoParamsDTO(
-            ids=ids,
-            vs_currencies=vs_currencies
-        )
+        LOGGER.info(f"Фиат:{vs_currencies}")
+        LOGGER.info(f"Крипта:{ids}")
 
-        rates = await parse_the_price(
-            parse_params=coingekko_params,
-            parser=CoinGekkoParser()
-        )
+        rates = await get_prices(ids, vs_currencies)
 
-        if rates is not None:
+        LOGGER.info(rates)
+
+        if rates is not None and first is False:
             try:
+                LOGGER.info("Удаляем валюты из редиса")
                 await services.redis_values.redis_conn.delete("rates")
 
             except httpx.RequestError as exc:
@@ -66,13 +63,15 @@ async def cache_rates(
                     detail=f"Проблема c удалением монет из редиса {exc.request.url!r}"
                 )
 
-            LOGGER.info(rates)
+        LOGGER.info(f"Курсы: {rates}, тип: {type(rates)}")
 
-            await services.redis_values.add_rates(
-                rates
-            )
+        for crypto_values in rates.keys():
+            print(crypto_values)
+            rval = json.dumps(rates[crypto_values])
+            await services.redis_values.redis_conn.set(crypto_values, rval)
 
-        await async_sleep(600)
+        LOGGER.info("Парсинг спит 10 мин")
+        await async_sleep(60)
 
 
 async def controll_order(

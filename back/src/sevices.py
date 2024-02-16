@@ -34,13 +34,13 @@ class Count:
         get_value = (
             (send_value - Decimal(
                 (send_value * margin) / 100
-            ) - gas) / coin_price
+            ) - gas) / Decimal(coin_price)
         )
         return get_value
 
     async def count_send_value(get_value, coin_price, margin, gas):
         send_value = (
-            (coin_price + Decimal(
+            (Decimal(coin_price) + Decimal(
                 (get_value * margin) / 100
             ) * get_value) + gas
         )
@@ -50,16 +50,6 @@ class Count:
 class RedisValues:
     """Redis class"""
     redis_conn = redis.Redis(host=conf.redis.host, port=conf.redis.port)
-
-    async def add_rates(
-        self,
-        rates
-    ):
-        self.redis_conn.hmset(
-            name="rates",
-            mapping=rates
-        )
-        self.redis_conn.close()
 
     # Достаем данные из редиса и декодируем их
     async def decode_values(

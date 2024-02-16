@@ -43,6 +43,7 @@ class CoinGekkoParser:
             'ids': f'{parse_params.ids}',
             'vs_currencies': f'{parse_params.vs_currencies}'
         }
+        count = 0
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.get(url=url, params=param)
