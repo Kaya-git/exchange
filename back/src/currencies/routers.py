@@ -7,17 +7,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.db import Database, get_async_session
 from enums import CurrencyType
-
+import pprint
 from .models import Currency
 from .schemas import CurrencyDTO, CurrencyTariffsDTO
-import json
-from sevices import services
+import logging
+from exchange.handlers import find_exchange_rate
 
 
 currency_router = APIRouter(
     prefix="/api/currency",
     tags=["Роутер валют"]
 )
+
+LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
@@ -45,39 +47,52 @@ async def currency_id(
     return await db.currency.get(ident=id)
 
 
-@currency_router.get("/tariffs", response_model=List[CurrencyTariffsDTO])
+@currency_router.get("/tariffs")
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)
 ):
     db = Database(session=async_session)
 
-    all_currencies = await db.currency.get_all()
-    currency_list = []
-    for currency in all_currencies:
-        if currency.type is CurrencyType.Крипта:
+    crypto_currencies = await db.currency.get_many(
+        Currency.type == CurrencyType.Крипта
+    )
 
-            show_currency = {}
+    fiat_currencies = await db.currency.get_many(
+        Currency.type == CurrencyType.Фиат
+    )
 
-            data = await services.redis_values.redis_conn.get(
-                currency.coingecko_tik
+    tariffs_dict = {}
+
+    for fiat_currency in fiat_currencies:
+        pprint.pprint(fiat_currency)
+        crypto_dict = {}
+        for crypto_currency in crypto_currencies:
+
+            dct = {}
+
+            exchange_rate = await find_exchange_rate(
+                fiat_currency, crypto_currency
+            )
+            LOGGER.info(
+                f"десер.значение: {exchange_rate}, тип: {type(exchange_rate)}"
             )
 
-            result = json.loads(data)
-            price = result["rub"]
+            dct["id"] = crypto_currency.id
+            dct["name"] = crypto_currency.name
+            dct["tikker"] = crypto_currency.tikker
+            dct["icon"] = crypto_currency.icon
+            dct["reserve"] = crypto_currency.reserve
+            dct["max"] = crypto_currency.max
+            dct["min"] = crypto_currency.min
+            dct["coin_price"] = exchange_rate
 
-            show_currency["id"] = currency.id
-            show_currency["name"] = currency.name
-            show_currency["tikker"] = currency.tikker
-            show_currency["icon"] = currency.icon
-            show_currency["reserve"] = currency.reserve
-            show_currency["max"] = currency.max
-            show_currency["min"] = currency.min
-            show_currency["coin_price"] = price
-            currency_list.append(show_currency)
-        else:
-            pass
+            crypto_dict[f"{crypto_currency.tikker}"] = dct
+            pprint.pprint(crypto_dict)
 
-    return currency_list
+        tariffs_dict[f"{fiat_currency.tikker}"] = crypto_dict
+
+    pprint.pprint(tariffs_dict)
+    return tariffs_dict
 
 
 @currency_router.get("/wallet_val")

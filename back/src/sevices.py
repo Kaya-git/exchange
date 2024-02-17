@@ -14,6 +14,8 @@ from database.db import Database
 from enums import CurrencyType, Status
 from payment_options.models import PaymentOption
 from pendings.models import PendingAdmin
+from ast import literal_eval
+
 
 if TYPE_CHECKING:
     from where_am_i.schemas import UuidDTO
@@ -38,7 +40,7 @@ class Count:
         )
         return get_value
 
-    async def count_send_value(get_value, coin_price, margin, gas):
+    async def count_send_value(get_value, coin_price, margin, gas) -> Decimal:
         send_value = (
             (Decimal(coin_price) + Decimal(
                 (get_value * margin) / 100
@@ -50,6 +52,10 @@ class Count:
 class RedisValues:
     """Redis class"""
     redis_conn = redis.Redis(host=conf.redis.host, port=conf.redis.port)
+
+    async def decirialize_b_to_dict(self, tikker: str) -> dict:
+        b_data = await self.redis_conn.get(tikker)
+        return literal_eval(b_data.decode('utf-8'))
 
     # Достаем данные из редиса и декодируем их
     async def decode_values(
