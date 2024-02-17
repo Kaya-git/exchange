@@ -42,7 +42,7 @@ async def get_exchange_rates(
     client_buy_coin = await db.currency.get_by_where(
         Currency.tikker == client_buy_tikker
     )
-
+    
     exchange_rate = await find_exchange_rate(
             client_sell_coin, client_buy_coin
         )
