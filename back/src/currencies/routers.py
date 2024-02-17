@@ -64,7 +64,7 @@ async def tariffs(
     tariffs_dict = {}
 
     for fiat_currency in fiat_currencies:
-        pprint.pprint(fiat_currency)
+
         crypto_dict = {}
         for crypto_currency in crypto_currencies:
 
@@ -87,11 +87,9 @@ async def tariffs(
             dct["coin_price"] = exchange_rate
 
             crypto_dict[f"{crypto_currency.tikker}"] = dct
-            pprint.pprint(crypto_dict)
 
         tariffs_dict[f"{fiat_currency.tikker}"] = crypto_dict
 
-    pprint.pprint(tariffs_dict)
     return tariffs_dict
 
 
