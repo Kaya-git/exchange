@@ -1,0 +1,627 @@
+2024-02-15 12:38:06,500 - main - INFO - --- Start up App ---
+2024-02-15 12:38:08,252 - main - INFO - --- Start up App ---
+2024-02-15 12:38:14,082 - main - INFO - --- Start up App ---
+2024-02-15 12:38:16,918 - main - INFO - --- Start up App ---
+2024-02-15 12:39:30,765 - main - INFO - --- Start up App ---
+2024-02-15 12:39:33,734 - main - INFO - --- Start up App ---
+2024-02-15 12:39:50,463 - main - INFO - --- Start up App ---
+2024-02-15 12:39:52,669 - main - INFO - --- Start up App ---
+2024-02-15 12:39:57,667 - main - INFO - --- Start up App ---
+2024-02-15 12:40:04,582 - main - INFO - --- Start up App ---
+2024-02-15 12:40:31,340 - main - INFO - --- Start up App ---
+2024-02-15 12:40:47,091 - main - INFO - --- Start up App ---
+2024-02-15 12:42:37,082 - main - INFO - --- Start up App ---
+2024-02-15 12:42:39,366 - main - INFO - --- Start up App ---
+2024-02-15 12:42:47,525 - main - INFO - --- Start up App ---
+2024-02-15 12:42:51,838 - main - INFO - --- Start up App ---
+2024-02-15 12:42:58,978 - main - INFO - --- Start up App ---
+2024-02-15 13:00:30,422 - main - INFO - --- Start up App ---
+2024-02-15 13:00:35,571 - main - INFO - --- Start up App ---
+2024-02-15 13:00:42,967 - main - INFO - --- Start up App ---
+2024-02-15 13:00:46,811 - main - INFO - --- Start up App ---
+2024-02-15 13:01:03,103 - main - INFO - --- Start up App ---
+2024-02-15 13:01:04,892 - main - INFO - --- Start up App ---
+2024-02-15 13:02:00,161 - main - INFO - --- Start up App ---
+2024-02-15 13:02:08,797 - main - INFO - --- Start up App ---
+2024-02-15 13:02:23,421 - main - INFO - --- Start up App ---
+2024-02-15 13:02:28,724 - main - INFO - --- Start up App ---
+2024-02-15 13:03:37,151 - main - INFO - --- Start up App ---
+2024-02-15 13:05:17,509 - main - INFO - --- Start up App ---
+2024-02-15 13:06:40,855 - main - INFO - --- Start up App ---
+2024-02-15 13:06:42,674 - main - INFO - --- Start up App ---
+2024-02-15 13:08:53,259 - main - INFO - --- Start up App ---
+2024-02-15 13:09:09,574 - main - INFO - --- Start up App ---
+2024-02-15 13:09:29,234 - main - INFO - --- Start up App ---
+2024-02-15 13:09:42,975 - main - INFO - --- Start up App ---
+2024-02-15 13:09:51,366 - main - INFO - --- Start up App ---
+2024-02-15 13:10:05,645 - main - INFO - --- Start up App ---
+2024-02-15 13:10:32,161 - main - INFO - --- Start up App ---
+2024-02-15 13:10:45,735 - main - INFO - --- Start up App ---
+2024-02-15 13:11:00,884 - main - INFO - --- Start up App ---
+2024-02-15 13:26:54,523 - main - INFO - --- Start up App ---
+2024-02-15 13:26:57,841 - main - INFO - --- Start up App ---
+2024-02-15 13:27:05,957 - main - INFO - --- Start up App ---
+2024-02-15 13:27:20,095 - main - INFO - --- Start up App ---
+2024-02-15 13:27:22,581 - main - INFO - --- Start up App ---
+2024-02-15 13:28:26,126 - main - INFO - --- Start up App ---
+2024-02-15 13:30:27,395 - main - INFO - --- Start up App ---
+2024-02-15 13:31:13,145 - main - INFO - --- Start up App ---
+2024-02-15 13:31:40,547 - main - INFO - --- Start up App ---
+2024-02-15 13:31:52,200 - main - INFO - --- Start up App ---
+2024-02-15 13:31:56,169 - main - INFO - --- Start up App ---
+2024-02-15 13:31:58,654 - main - INFO - --- Start up App ---
+2024-02-15 13:32:00,770 - main - INFO - --- Start up App ---
+2024-02-15 13:32:08,546 - main - INFO - --- Start up App ---
+2024-02-15 13:32:13,502 - main - INFO - --- Start up App ---
+2024-02-15 13:32:15,467 - main - INFO - --- Start up App ---
+2024-02-15 13:33:12,818 - main - INFO - --- Start up App ---
+2024-02-15 13:33:47,707 - main - INFO - --- Start up App ---
+2024-02-15 13:33:56,942 - main - INFO - --- Start up App ---
+2024-02-15 13:34:07,473 - main - INFO - --- Start up App ---
+2024-02-15 13:34:15,651 - main - INFO - --- Start up App ---
+2024-02-15 13:34:20,880 - main - INFO - --- Start up App ---
+2024-02-15 13:34:45,774 - main - INFO - --- Start up App ---
+2024-02-15 13:35:38,267 - main - INFO - --- Start up App ---
+2024-02-15 13:36:01,945 - main - INFO - --- Start up App ---
+2024-02-15 13:36:54,906 - main - INFO - --- Start up App ---
+2024-02-15 13:36:58,631 - main - INFO - --- Start up App ---
+2024-02-15 13:37:03,564 - main - INFO - --- Start up App ---
+2024-02-15 13:37:05,666 - main - INFO - --- Start up App ---
+2024-02-15 13:37:20,663 - main - INFO - --- Start up App ---
+2024-02-15 13:39:36,598 - main - INFO - --- Start up App ---
+2024-02-15 13:39:42,955 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 13:41:30,976 - main - INFO - --- Start up App ---
+2024-02-15 13:41:36,618 - main - INFO - --- Start up App ---
+2024-02-15 13:41:42,371 - main - INFO - --- Start up App ---
+2024-02-15 13:42:00,320 - main - INFO - --- Start up App ---
+2024-02-15 13:42:11,247 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 13:42:11,869 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=%5BLTC%5D&vs_currencies=%5B%5BLTC%5D%5D "HTTP/1.1 200 OK"
+2024-02-15 13:42:11,869 - price_parser.parser - INFO - Parser status: 200
+2024-02-15 13:43:09,982 - main - INFO - --- Start up App ---
+2024-02-15 13:43:17,812 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 13:43:18,634 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=%5BLTC%5D&vs_currencies=%5B%5BLTC%5D%5D "HTTP/1.1 200 OK"
+2024-02-15 13:43:18,635 - price_parser.parser - INFO - Parser status: 200
+2024-02-15 13:45:20,567 - main - INFO - --- Start up App ---
+2024-02-15 13:45:37,960 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 13:45:38,410 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=%5BLTC%5D&vs_currencies=%5B%5BLTC%5D%5D "HTTP/1.1 200 OK"
+2024-02-15 13:45:38,411 - price_parser.parser - INFO - Parser status: 200
+2024-02-15 13:46:33,324 - main - INFO - --- Start up App ---
+2024-02-15 13:46:35,345 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 13:46:35,753 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=%5BLTC%5D&vs_currencies=%5B%5BLTC%5D%5D "HTTP/1.1 200 OK"
+2024-02-15 13:46:35,754 - price_parser.parser - INFO - Parser status: 200
+2024-02-15 13:49:03,106 - main - INFO - --- Start up App ---
+2024-02-15 13:49:04,088 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 13:49:04,642 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=%5BLTC%5D&vs_currencies=%5B%5BLTC%5D%5D "HTTP/1.1 200 OK"
+2024-02-15 13:49:04,642 - price_parser.parser - INFO - Parser status: 200
+2024-02-15 13:58:10,681 - main - INFO - --- Start up App ---
+2024-02-15 13:58:14,755 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 13:58:14,844 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 13:58:14,844 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 13:58:14,844 - background_tasks.handlers - INFO - Фиат:[[LTC]]
+2024-02-15 13:58:14,844 - background_tasks.handlers - INFO - Крипта:[LTC]
+2024-02-15 13:58:15,460 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=%5BLTC%5D&vs_currencies=%5B%5BLTC%5D%5D "HTTP/1.1 200 OK"
+2024-02-15 13:58:15,461 - price_parser.parser - INFO - Parser status: 200
+2024-02-15 13:58:15,461 - background_tasks.handlers - INFO - None
+2024-02-15 13:58:15,461 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 16:45:58,401 - main - INFO - --- Start up App ---
+2024-02-15 16:46:26,761 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 16:46:26,917 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 16:46:26,917 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 16:46:26,917 - background_tasks.handlers - INFO - Фиат:[[LTC]]
+2024-02-15 16:46:26,917 - background_tasks.handlers - INFO - Крипта:[LTC]
+2024-02-15 16:46:27,203 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=%5BLTC%5D&vs_currencies=%5B%5BLTC%5D%5D "HTTP/1.1 200 OK"
+2024-02-15 16:46:27,204 - price_parser.parser - INFO - Parser status: 200
+2024-02-15 16:46:27,204 - background_tasks.handlers - INFO - None
+2024-02-15 16:46:27,204 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 16:56:24,648 - main - INFO - --- Start up App ---
+2024-02-15 16:56:37,992 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 16:56:38,131 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 16:56:38,131 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 16:56:38,131 - background_tasks.handlers - INFO - Фиат:[[LTC]]
+2024-02-15 16:56:38,131 - background_tasks.handlers - INFO - Крипта:[LTC]
+2024-02-15 16:57:21,592 - main - INFO - --- Start up App ---
+2024-02-15 16:57:27,845 - main - INFO - --- Start up App ---
+2024-02-15 16:59:12,314 - main - INFO - --- Start up App ---
+2024-02-15 16:59:31,210 - main - INFO - --- Start up App ---
+2024-02-15 16:59:54,784 - main - INFO - --- Start up App ---
+2024-02-15 17:00:12,817 - main - INFO - --- Start up App ---
+2024-02-15 17:00:18,867 - main - INFO - --- Start up App ---
+2024-02-15 17:00:21,314 - main - INFO - --- Start up App ---
+2024-02-15 17:00:35,798 - main - INFO - --- Start up App ---
+2024-02-15 17:00:40,186 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 17:00:40,326 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 17:00:40,326 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 17:00:40,326 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 17:00:40,326 - background_tasks.handlers - INFO - Крипта:['litecoin']
+2024-02-15 17:00:40,866 - background_tasks.handlers - INFO - {'litecoin': {'rub': 6483.28, 'rub_market_cap': 481465923137.778, 'rub_24h_vol': 36150418364.20414, 'rub_24h_change': 0.8932960016124348, 'last_updated_at': 1708005609}}
+2024-02-15 17:00:40,866 - background_tasks.handlers - INFO - Удаляем валюты из редиса
+2024-02-15 17:00:40,868 - background_tasks.handlers - INFO - {'litecoin': {'rub': 6483.28, 'rub_market_cap': 481465923137.778, 'rub_24h_vol': 36150418364.20414, 'rub_24h_change': 0.8932960016124348, 'last_updated_at': 1708005609}}
+2024-02-15 17:00:40,869 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 17:02:45,565 - main - INFO - --- Start up App ---
+2024-02-15 17:03:39,001 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 17:03:39,135 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 17:03:39,135 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 17:03:39,135 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 17:03:39,135 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 17:03:39,136 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 17:03:39,720 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4808086}, 'litecoin': {'rub': 6477.81}}
+2024-02-15 17:03:39,720 - background_tasks.handlers - INFO - Удаляем валюты из редиса
+2024-02-15 17:03:39,722 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4808086}, 'litecoin': {'rub': 6477.81}}
+2024-02-15 17:13:20,718 - main - INFO - --- Start up App ---
+2024-02-15 17:13:21,827 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 17:13:21,975 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 17:13:21,975 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 17:13:21,975 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 17:13:21,975 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 17:13:21,975 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 17:13:22,505 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4810540}, 'litecoin': {'rub': 6487.59}}
+2024-02-15 17:13:22,505 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 17:13:56,410 - main - INFO - --- Start up App ---
+2024-02-15 17:14:15,254 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 17:14:15,389 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 17:14:15,389 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 17:14:15,389 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 17:14:15,390 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 17:14:15,390 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 17:14:15,539 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4810540}, 'litecoin': {'rub': 6487.59}}
+2024-02-15 17:14:15,539 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 17:24:15,540 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 17:24:15,543 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 17:24:15,543 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 17:24:15,544 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 17:24:15,544 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 17:24:15,544 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 17:24:15,934 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4822662}, 'litecoin': {'rub': 6507.84}}
+2024-02-15 17:24:15,934 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 17:33:02,928 - main - INFO - --- Start up App ---
+2024-02-15 17:33:09,720 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 17:33:09,855 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 17:33:09,855 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 17:33:09,855 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 17:33:09,855 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 17:33:09,855 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 17:33:10,319 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4847627}, 'litecoin': {'rub': 6531.14}}
+2024-02-15 17:33:10,319 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 17:34:08,054 - main - INFO - --- Start up App ---
+2024-02-15 17:34:08,450 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 17:34:08,585 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 17:34:08,586 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 17:34:08,586 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 17:34:08,586 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 17:34:08,586 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 17:34:08,890 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4847627}, 'litecoin': {'rub': 6531.14}}
+2024-02-15 17:34:08,890 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4847627}, 'litecoin': {'rub': 6531.14}}, тип: <class 'dict'>
+2024-02-15 17:35:26,079 - main - INFO - --- Start up App ---
+2024-02-15 17:35:30,079 - main - INFO - --- Start up App ---
+2024-02-15 17:35:38,196 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 17:35:38,331 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 17:35:38,331 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 17:35:38,331 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 17:35:38,332 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 17:35:38,332 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 17:35:38,691 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4847627}, 'litecoin': {'rub': 6531.14}}
+2024-02-15 17:35:38,691 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4847627}, 'litecoin': {'rub': 6531.14}}, тип: <class 'dict'>
+2024-02-15 17:35:38,693 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 17:45:38,694 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 17:45:38,698 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 17:45:38,698 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 17:45:38,698 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 17:45:38,698 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 17:45:38,698 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 17:45:39,185 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4859401}, 'litecoin': {'rub': 6528.68}}
+2024-02-15 17:45:39,185 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4859401}, 'litecoin': {'rub': 6528.68}}, тип: <class 'dict'>
+2024-02-15 17:45:39,187 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 17:55:39,187 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 17:55:39,190 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 17:55:39,190 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 17:55:39,190 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 17:55:39,190 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 17:55:39,190 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 17:55:39,770 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4862295}, 'litecoin': {'rub': 6528.22}}
+2024-02-15 17:55:39,771 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4862295}, 'litecoin': {'rub': 6528.22}}, тип: <class 'dict'>
+2024-02-15 17:55:39,771 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 18:05:39,772 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 18:05:39,776 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 18:05:39,776 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 18:05:39,776 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 18:05:39,776 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 18:05:39,776 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 18:05:40,353 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4848845}, 'litecoin': {'rub': 6523.82}}
+2024-02-15 18:05:40,354 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4848845}, 'litecoin': {'rub': 6523.82}}, тип: <class 'dict'>
+2024-02-15 18:05:40,354 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 18:15:40,355 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 18:15:40,359 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 18:15:40,359 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 18:15:40,359 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 18:15:40,359 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 18:15:40,359 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 18:15:40,930 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4839721}, 'litecoin': {'rub': 6520.07}}
+2024-02-15 18:15:40,930 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4839721}, 'litecoin': {'rub': 6520.07}}, тип: <class 'dict'>
+2024-02-15 18:15:40,931 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 18:22:09,560 - main - INFO - --- Start up App ---
+2024-02-15 18:22:17,450 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 18:22:17,588 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 18:22:17,589 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 18:22:17,589 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 18:22:17,589 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 18:22:17,589 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 18:22:18,037 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4832471}, 'litecoin': {'rub': 6510.58}}
+2024-02-15 18:22:18,037 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4832471}, 'litecoin': {'rub': 6510.58}}, тип: <class 'dict'>
+2024-02-15 18:22:18,039 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 18:24:55,092 - main - INFO - --- Start up App ---
+2024-02-15 18:25:30,826 - main - INFO - --- Start up App ---
+2024-02-15 18:25:36,881 - main - INFO - --- Start up App ---
+2024-02-15 18:26:12,143 - main - INFO - --- Start up App ---
+2024-02-15 18:26:50,709 - main - INFO - --- Start up App ---
+2024-02-15 18:26:55,219 - main - INFO - --- Start up App ---
+2024-02-15 18:27:06,225 - main - INFO - --- Start up App ---
+2024-02-15 18:27:10,290 - main - INFO - --- Start up App ---
+2024-02-15 18:27:32,386 - main - INFO - --- Start up App ---
+2024-02-15 18:27:56,629 - main - INFO - --- Start up App ---
+2024-02-15 18:28:31,585 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 18:28:31,738 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 18:28:31,738 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 18:28:31,738 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 18:28:31,738 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 18:28:31,738 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 18:28:32,307 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4826663}, 'litecoin': {'rub': 6513.53}}
+2024-02-15 18:28:32,308 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4826663}, 'litecoin': {'rub': 6513.53}}, тип: <class 'dict'>
+2024-02-15 18:28:32,310 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 18:33:31,861 - main - INFO - --- Start up App ---
+2024-02-15 18:38:12,763 - main - INFO - --- Start up App ---
+2024-02-15 18:38:18,922 - main - INFO - --- Start up App ---
+2024-02-15 18:38:32,328 - main - INFO - --- Start up App ---
+2024-02-15 18:38:36,515 - main - INFO - --- Start up App ---
+2024-02-15 18:38:43,952 - main - INFO - --- Start up App ---
+2024-02-15 18:43:03,027 - main - INFO - --- Start up App ---
+2024-02-15 18:44:20,758 - main - INFO - --- Start up App ---
+2024-02-15 18:44:42,102 - main - INFO - --- Start up App ---
+2024-02-15 18:45:54,365 - main - INFO - --- Start up App ---
+2024-02-15 22:55:28,666 - main - INFO - --- Start up App ---
+2024-02-15 22:56:05,422 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 22:56:05,549 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 22:56:05,550 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 22:56:05,550 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 22:56:05,550 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 22:56:05,550 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 22:56:06,030 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4803231}, 'litecoin': {'rub': 6459.35}}
+2024-02-15 22:56:06,030 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4803231}, 'litecoin': {'rub': 6459.35}}, тип: <class 'dict'>
+2024-02-15 22:56:06,032 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:00:48,177 - main - INFO - --- Start up App ---
+2024-02-15 23:00:51,411 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:00:51,499 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:00:51,499 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:00:51,499 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:00:51,499 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:00:51,499 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:00:52,133 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4803231}, 'litecoin': {'rub': 6459.35}}
+2024-02-15 23:00:52,133 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4803231}, 'litecoin': {'rub': 6459.35}}, тип: <class 'dict'>
+2024-02-15 23:00:52,135 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:02:31,762 - main - INFO - --- Start up App ---
+2024-02-15 23:02:38,545 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:02:38,637 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:02:38,637 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:02:38,637 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:02:38,637 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:02:38,637 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:02:38,962 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4803231}, 'litecoin': {'rub': 6459.35}}
+2024-02-15 23:02:38,962 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4803231}, 'litecoin': {'rub': 6459.35}}, тип: <class 'dict'>
+2024-02-15 23:02:38,964 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:04:06,989 - main - INFO - --- Start up App ---
+2024-02-15 23:04:09,914 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:04:10,009 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:04:10,009 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:04:10,009 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:04:10,009 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:04:10,009 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:04:10,395 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4803231}, 'litecoin': {'rub': 6459.35}}
+2024-02-15 23:04:10,395 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4803231}, 'litecoin': {'rub': 6459.35}}, тип: <class 'dict'>
+2024-02-15 23:04:10,397 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:11:59,319 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:11:59,321 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:11:59,321 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:11:59,321 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:11:59,321 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:11:59,321 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:11:59,778 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}
+2024-02-15 23:11:59,778 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}, тип: <class 'dict'>
+2024-02-15 23:11:59,779 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:12:47,636 - main - INFO - --- Start up App ---
+2024-02-15 23:12:51,981 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:12:52,077 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:12:52,077 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:12:52,077 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:12:52,077 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:12:52,077 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:12:52,404 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}
+2024-02-15 23:12:52,404 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}, тип: <class 'dict'>
+2024-02-15 23:12:52,406 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:13:52,407 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:13:52,410 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:13:52,410 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:13:52,410 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:13:52,410 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:13:52,410 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:13:52,610 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}
+2024-02-15 23:13:52,610 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}, тип: <class 'dict'>
+2024-02-15 23:13:52,611 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:14:52,613 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:14:52,616 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:14:52,616 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:14:52,616 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:14:52,616 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:14:52,616 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:14:52,729 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}
+2024-02-15 23:14:52,729 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}, тип: <class 'dict'>
+2024-02-15 23:14:52,730 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:15:52,731 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:15:52,733 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:15:52,733 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:15:52,733 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:15:52,733 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:15:52,733 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:15:52,863 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}
+2024-02-15 23:15:52,863 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}, тип: <class 'dict'>
+2024-02-15 23:15:52,864 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:16:52,864 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:16:52,866 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:16:52,866 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:16:52,866 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:16:52,866 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:16:52,866 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:16:52,962 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}
+2024-02-15 23:16:52,962 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4794262}, 'litecoin': {'rub': 6448.25}}, тип: <class 'dict'>
+2024-02-15 23:16:52,962 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:17:52,963 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:17:52,965 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:17:52,965 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:17:52,966 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:17:52,966 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:17:52,966 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:17:53,206 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4785386}, 'litecoin': {'rub': 6434.12}}
+2024-02-15 23:17:53,206 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4785386}, 'litecoin': {'rub': 6434.12}}, тип: <class 'dict'>
+2024-02-15 23:17:53,207 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:18:53,207 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:18:53,210 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:18:53,210 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:18:53,210 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:18:53,210 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:18:53,210 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:18:53,319 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4785386}, 'litecoin': {'rub': 6434.12}}
+2024-02-15 23:18:53,319 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4785386}, 'litecoin': {'rub': 6434.12}}, тип: <class 'dict'>
+2024-02-15 23:18:53,319 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:19:56,819 - main - INFO - --- Start up App ---
+2024-02-15 23:20:01,389 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:20:01,484 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:20:01,485 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:20:01,485 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:20:01,485 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:20:01,485 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:20:01,929 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4785386}, 'litecoin': {'rub': 6434.12}}
+2024-02-15 23:20:01,930 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4785386}, 'litecoin': {'rub': 6434.12}}, тип: <class 'dict'>
+2024-02-15 23:20:01,931 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:21:01,934 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:21:01,936 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:21:01,936 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:21:01,937 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:21:01,937 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:21:01,937 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:21:02,140 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4785386}, 'litecoin': {'rub': 6434.12}}
+2024-02-15 23:21:02,141 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4785386}, 'litecoin': {'rub': 6434.12}}, тип: <class 'dict'>
+2024-02-15 23:21:02,142 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:22:02,143 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:22:02,146 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:22:02,147 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:22:02,147 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:22:02,147 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:22:02,147 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:22:02,382 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4785386}, 'litecoin': {'rub': 6434.12}}
+2024-02-15 23:22:02,382 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4785386}, 'litecoin': {'rub': 6434.12}}, тип: <class 'dict'>
+2024-02-15 23:22:02,383 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:23:02,384 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:23:02,385 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:23:02,386 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:23:02,386 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:23:02,386 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:23:02,386 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:23:02,970 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4772724}, 'litecoin': {'rub': 6420.17}}
+2024-02-15 23:23:02,970 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4772724}, 'litecoin': {'rub': 6420.17}}, тип: <class 'dict'>
+2024-02-15 23:23:02,971 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:24:02,972 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:24:02,974 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:24:02,975 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:24:02,975 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:24:02,975 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:24:02,975 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:24:03,034 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4772724}, 'litecoin': {'rub': 6420.17}}
+2024-02-15 23:24:03,034 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4772724}, 'litecoin': {'rub': 6420.17}}, тип: <class 'dict'>
+2024-02-15 23:24:03,035 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:25:03,037 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:25:03,040 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:25:03,040 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:25:03,040 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:25:03,040 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:25:03,040 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:25:03,185 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4772724}, 'litecoin': {'rub': 6420.17}}
+2024-02-15 23:25:03,185 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4772724}, 'litecoin': {'rub': 6420.17}}, тип: <class 'dict'>
+2024-02-15 23:25:03,186 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:26:03,187 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:26:03,190 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:26:03,190 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:26:03,190 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:26:03,190 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:26:03,191 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:26:03,394 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4772724}, 'litecoin': {'rub': 6420.17}}
+2024-02-15 23:26:03,394 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4772724}, 'litecoin': {'rub': 6420.17}}, тип: <class 'dict'>
+2024-02-15 23:26:03,395 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:27:03,396 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:27:03,399 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:27:03,399 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:27:03,399 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:27:03,399 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:27:03,399 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:27:03,603 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4772724}, 'litecoin': {'rub': 6420.17}}
+2024-02-15 23:27:03,603 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4772724}, 'litecoin': {'rub': 6420.17}}, тип: <class 'dict'>
+2024-02-15 23:27:03,604 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:28:03,605 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:28:03,607 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:28:03,607 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:28:03,607 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:28:03,607 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:28:03,607 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:28:04,017 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4775676}, 'litecoin': {'rub': 6425.82}}
+2024-02-15 23:28:04,017 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4775676}, 'litecoin': {'rub': 6425.82}}, тип: <class 'dict'>
+2024-02-15 23:28:04,018 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:29:04,019 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:29:04,021 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:29:04,021 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:29:04,021 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:29:04,021 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:29:04,021 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:29:04,122 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4775676}, 'litecoin': {'rub': 6425.82}}
+2024-02-15 23:29:04,122 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4775676}, 'litecoin': {'rub': 6425.82}}, тип: <class 'dict'>
+2024-02-15 23:29:04,123 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:30:04,124 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:30:04,126 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:30:04,126 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:30:04,127 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:30:04,127 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:30:04,127 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:30:04,332 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4775676}, 'litecoin': {'rub': 6425.82}}
+2024-02-15 23:30:04,333 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4775676}, 'litecoin': {'rub': 6425.82}}, тип: <class 'dict'>
+2024-02-15 23:30:04,333 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:31:04,334 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:31:04,336 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:31:04,336 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:31:04,336 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:31:04,336 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:31:04,336 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:31:04,439 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4775676}, 'litecoin': {'rub': 6425.82}}
+2024-02-15 23:31:04,439 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4775676}, 'litecoin': {'rub': 6425.82}}, тип: <class 'dict'>
+2024-02-15 23:31:04,440 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:32:04,441 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:32:04,443 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:32:04,443 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:32:04,443 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:32:04,443 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:32:04,444 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:32:04,648 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4775676}, 'litecoin': {'rub': 6425.82}}
+2024-02-15 23:32:04,648 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4775676}, 'litecoin': {'rub': 6425.82}}, тип: <class 'dict'>
+2024-02-15 23:32:04,649 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:33:04,650 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:33:04,652 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:33:04,652 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:33:04,652 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:33:04,652 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:33:04,652 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:33:04,960 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4778837}, 'litecoin': {'rub': 6432.92}}
+2024-02-15 23:33:04,960 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4778837}, 'litecoin': {'rub': 6432.92}}, тип: <class 'dict'>
+2024-02-15 23:33:04,961 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:34:04,962 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:34:04,964 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:34:04,964 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:34:04,964 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:34:04,965 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:34:04,965 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:34:05,030 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4778837}, 'litecoin': {'rub': 6432.92}}
+2024-02-15 23:34:05,030 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4778837}, 'litecoin': {'rub': 6432.92}}, тип: <class 'dict'>
+2024-02-15 23:34:05,031 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:35:05,032 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:35:05,034 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:35:05,034 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:35:05,034 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:35:05,034 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:35:05,035 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:35:05,173 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4778837}, 'litecoin': {'rub': 6432.92}}
+2024-02-15 23:35:05,173 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4778837}, 'litecoin': {'rub': 6432.92}}, тип: <class 'dict'>
+2024-02-15 23:35:05,174 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:36:05,177 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:36:05,180 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:36:05,180 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:36:05,180 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:36:05,180 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:36:05,180 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:36:05,382 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4778837}, 'litecoin': {'rub': 6432.92}}
+2024-02-15 23:36:05,382 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4778837}, 'litecoin': {'rub': 6432.92}}, тип: <class 'dict'>
+2024-02-15 23:36:05,383 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:37:05,386 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:37:05,389 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:37:05,389 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:37:05,389 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:37:05,389 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:37:05,389 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:37:05,591 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4778837}, 'litecoin': {'rub': 6432.92}}
+2024-02-15 23:37:05,591 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4778837}, 'litecoin': {'rub': 6432.92}}, тип: <class 'dict'>
+2024-02-15 23:37:05,592 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:38:05,593 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:38:05,595 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:38:05,595 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:38:05,596 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:38:05,596 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:38:05,596 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:38:06,004 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4781089}, 'litecoin': {'rub': 6432.79}}
+2024-02-15 23:38:06,004 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4781089}, 'litecoin': {'rub': 6432.79}}, тип: <class 'dict'>
+2024-02-15 23:38:06,005 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:39:06,005 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:39:06,007 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:39:06,007 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:39:06,008 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:39:06,008 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:39:06,008 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:39:06,213 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4781089}, 'litecoin': {'rub': 6432.79}}
+2024-02-15 23:39:06,214 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4781089}, 'litecoin': {'rub': 6432.79}}, тип: <class 'dict'>
+2024-02-15 23:39:06,214 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:40:06,216 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:40:06,218 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:40:06,218 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:40:06,218 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:40:06,218 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:40:06,218 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:40:06,320 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4781089}, 'litecoin': {'rub': 6432.79}}
+2024-02-15 23:40:06,320 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4781089}, 'litecoin': {'rub': 6432.79}}, тип: <class 'dict'>
+2024-02-15 23:40:06,321 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:41:06,323 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:41:06,326 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:41:06,326 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:41:06,326 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:41:06,326 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:41:06,326 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:41:06,529 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4781089}, 'litecoin': {'rub': 6432.79}}
+2024-02-15 23:41:06,529 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4781089}, 'litecoin': {'rub': 6432.79}}, тип: <class 'dict'>
+2024-02-15 23:41:06,530 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:42:06,531 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:42:06,534 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:42:06,534 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:42:06,534 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:42:06,534 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:42:06,534 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:42:06,738 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4781089}, 'litecoin': {'rub': 6432.79}}
+2024-02-15 23:42:06,739 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4781089}, 'litecoin': {'rub': 6432.79}}, тип: <class 'dict'>
+2024-02-15 23:42:06,740 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:43:06,741 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:43:06,743 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:43:06,743 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:43:06,744 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:43:06,744 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:43:06,744 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:43:07,050 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4789762}, 'litecoin': {'rub': 6443.76}}
+2024-02-15 23:43:07,050 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4789762}, 'litecoin': {'rub': 6443.76}}, тип: <class 'dict'>
+2024-02-15 23:43:07,051 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:44:07,052 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:44:07,054 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:44:07,054 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:44:07,054 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:44:07,054 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:44:07,054 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:44:07,259 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4789762}, 'litecoin': {'rub': 6443.76}}
+2024-02-15 23:44:07,259 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4789762}, 'litecoin': {'rub': 6443.76}}, тип: <class 'dict'>
+2024-02-15 23:44:07,260 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-15 23:45:07,261 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-15 23:45:07,264 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-15 23:45:07,264 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-15 23:45:07,264 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-15 23:45:07,264 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-02-15 23:45:07,264 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-15 23:45:07,467 - background_tasks.handlers - INFO - {'bitcoin': {'rub': 4789762}, 'litecoin': {'rub': 6443.76}}
+2024-02-15 23:45:07,467 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4789762}, 'litecoin': {'rub': 6443.76}}, тип: <class 'dict'>
+2024-02-15 23:45:07,469 - background_tasks.handlers - INFO - Парсинг спит 10 мин
