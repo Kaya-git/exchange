@@ -12,16 +12,10 @@ from pendings.models import PendingAdmin
 from price_parser.parser import parse_the_price
 from redis_ttl.routers import get_ttl
 from sevices import services
-from celery import Celery
-from config import conf
-
 
 LOGGER = logging.getLogger(__name__)
 
-celery = Celery('tasks', broker=conf.celery.broker)
 
-
-@celery.task
 async def cache_rates():
     first = True
     while True:
