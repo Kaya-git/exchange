@@ -1,6 +1,9 @@
 import datetime
+import logging
 import secrets
 from decimal import Decimal
+from typing import TYPE_CHECKING
+
 import aiofiles
 import aiofiles.os
 from fastapi import HTTPException, status
@@ -12,11 +15,6 @@ from enums import CurrencyType, Status
 from payment_options.models import PaymentOption
 from sevices import Count, services
 from users.models import User
-import logging
-import json
-from typing import TYPE_CHECKING
-from ast import literal_eval
-
 
 if TYPE_CHECKING:
     from currencies.models import Currency
@@ -341,34 +339,20 @@ async def find_exchange_rate(
     client_sell_coin: "Currency",
     client_buy_coin: "Currency"
 ) -> Decimal:
+    rates = await services.redis_values.decirialize_b_to_dict()
 
-    if client_sell_coin.coingecko_tik == "rub":
-
-        result = await services.redis_values.decirialize_b_to_dict(
-            client_buy_coin.coingecko_tik
-        )
-
-        coin_price = result["rub"]
-    if client_buy_coin.coingecko_tik == "rub":
-
-        result = await services.redis_values.decirialize_b_to_dict(
-            client_sell_coin.coingecko_tik
-        )
-
-        coin_price = result["rub"]
-
-    if client_sell_coin.coingecko_tik == "usd":
-
-        result = await services.redis_values.decirialize_b_to_dict(
-            client_buy_coin.coingecko_tik
-        )
-        coin_price = result["usd"]
-
-    if client_buy_coin.coingecko_tik == "usd":
-        result = await services.redis_values.decirialize_b_to_dict(
-            client_sell_coin.coingecko_tik
-        )
-        coin_price = result["usd"]
+    if client_sell_coin.type == CurrencyType.Фиат:
+        coin_price = rates[
+                f"{client_buy_coin.coingecko_tik}"
+            ][
+                f"{client_sell_coin.coingecko_tik}"
+            ]
+    else:
+        coin_price = rates[
+                f"{client_sell_coin.coingecko_tik}"
+            ][
+                f"{client_buy_coin.coingecko_tik}"
+            ]
 
     exchange_rate = await Count.count_send_value(
         get_value=1,

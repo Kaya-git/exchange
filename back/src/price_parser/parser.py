@@ -1,9 +1,10 @@
-from decimal import Decimal
-from typing import TYPE_CHECKING, Protocol
+import logging
 from asyncio import sleep as asyncsleep
+from decimal import Decimal
+from typing import TYPE_CHECKING, List, Protocol
+
 import httpx
 from fastapi import HTTPException, status
-import logging
 
 if TYPE_CHECKING:
     from currencies.routers import CoingekkoParamsDTO
@@ -35,13 +36,17 @@ class CoinGekkoParser:
 
     async def find_price(
             self,
-            parse_params: "CoingekkoParamsDTO"
+            ids,
+            vs_currencies
     ) -> Prices:
         url = self._base + self._path
 
+        ids_str = ','.join(ids)
+        vs_currencies_str = ','.join(vs_currencies)
+
         param = {
-            'ids': f'{parse_params.ids}',
-            'vs_currencies': f'{parse_params.vs_currencies}'
+            'ids': ids_str,
+            'vs_currencies': vs_currencies_str
         }
         count = 0
         async with httpx.AsyncClient() as client:
@@ -49,6 +54,7 @@ class CoinGekkoParser:
                 response = await client.get(url=url, params=param)
 
                 LOGGER.info(f"Parser status: {response.status_code}")
+                LOGGER.info(f"response: {response.json()}")
 
                 if response.status_code == 429:
                     LOGGER.error(
@@ -64,13 +70,8 @@ class CoinGekkoParser:
                         count -= 1
 
                 if count == 0:
-                    return None
-                price = round(
-                    Decimal(
-                        response.json()[param['ids']][param['vs_currencies']]
-                    ), 2
-                )
-                return price
+                    return response.json()
+
             except httpx.RequestError as exc:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -79,8 +80,8 @@ class CoinGekkoParser:
 
 
 async def parse_the_price(
-        parse_params: "CoingekkoParamsDTO",
-        parser: CoinGekkoParser
+        ids:  List | str,
+        vs_currencies: List | str
 ) -> Price | Prices:
     """Parse the Price"""
-    return await parser.find_price(parse_params=parse_params)
+    return await CoinGekkoParser().find_price(ids, vs_currencies)

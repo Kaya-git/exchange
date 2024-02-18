@@ -10,6 +10,7 @@ from currencies.models import Currency
 from database.db import Database, get_async_session
 from enums.models import ReqAction, Status
 from sevices import services
+
 from .handlers import (add_or_get_po, calculate_totals, check_form_fillment,
                        check_user_registration, find_exchange_rate, start_time,
                        ya_save_passport_photo)
@@ -42,7 +43,7 @@ async def get_exchange_rates(
     client_buy_coin = await db.currency.get_by_where(
         Currency.tikker == client_buy_tikker
     )
-    
+
     exchange_rate = await find_exchange_rate(
             client_sell_coin, client_buy_coin
         )

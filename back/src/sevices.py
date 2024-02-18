@@ -1,4 +1,5 @@
 import asyncio
+import json
 from decimal import Decimal
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -14,8 +15,6 @@ from database.db import Database
 from enums import CurrencyType, Status
 from payment_options.models import PaymentOption
 from pendings.models import PendingAdmin
-from ast import literal_eval
-
 
 if TYPE_CHECKING:
     from where_am_i.schemas import UuidDTO
@@ -38,6 +37,7 @@ class Count:
                 (send_value * margin) / 100
             ) - gas) / Decimal(coin_price)
         )
+        print(type(get_value))
         return get_value
 
     async def count_send_value(get_value, coin_price, margin, gas) -> Decimal:
@@ -46,16 +46,22 @@ class Count:
                 (get_value * margin) / 100
             ) * get_value) + gas
         )
+        print(type(get_value))
         return send_value
 
 
 class RedisValues:
     """Redis class"""
-    redis_conn = redis.Redis(host=conf.redis.host, port=conf.redis.port)
+    redis_conn = redis.Redis(
+        host=conf.redis.host,
+        port=conf.redis.port,
+        decode_responses=True
+    )
 
-    async def decirialize_b_to_dict(self, tikker: str) -> dict:
-        b_data = await self.redis_conn.get(tikker)
-        return literal_eval(b_data.decode('utf-8'))
+    async def decirialize_b_to_dict(self) -> dict:
+        b_data = await self.redis_conn.get("rates")
+
+        return json.loads(b_data)
 
     # Достаем данные из редиса и декодируем их
     async def decode_values(
@@ -496,8 +502,12 @@ class Mail:
         message["Subject"] = "VVS COIN"
         message.attach(
             MIMEText(
-                f"""<html><body><h1>Для подтверждения почты перейди по ссылке: \n
-                https://dev.vvscoin.com/api/email_verif/verif?verif_token={generated_token}<h1></body>""",
+                f"""
+                <html><body><h1>Для подтверждения почты перейди по ссылке: \n
+                https://dev.vvscoin.com/api/email_verif/verif?verif_token={
+                    generated_token
+                }<h1></body>
+                """,
                 "html",
                 "utf-8"
             )

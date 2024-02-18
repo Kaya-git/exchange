@@ -1,8 +1,8 @@
 """  Order repository file """
 import sqlalchemy as sa
-from sqlalchemy import update, select
-from sqlalchemy.orm import joinedload
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from currencies.models import Currency
 from database.abstract_repo import Repository

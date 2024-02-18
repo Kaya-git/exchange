@@ -1,3 +1,5 @@
+import logging
+import pprint
 from dataclasses import dataclass
 from typing import Annotated, List
 
@@ -7,12 +9,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.db import Database, get_async_session
 from enums import CurrencyType
-import pprint
-from .models import Currency
-from .schemas import CurrencyDTO, CurrencyTariffsDTO
-import logging
 from exchange.handlers import find_exchange_rate
 
+from .models import Currency
+from .schemas import CurrencyDTO, CurrencyTariffsDTO
 
 currency_router = APIRouter(
     prefix="/api/currency",

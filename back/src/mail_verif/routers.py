@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from database.db import Database, get_async_session
 from users.models import User
-
 
 email_router = APIRouter(
     prefix="/api/email_verif",
