@@ -1,3 +1,5 @@
+import logging
+import logging.handlers
 import os
 from dataclasses import dataclass
 
@@ -5,9 +7,6 @@ import yadisk_async
 from dotenv import load_dotenv
 from fastapi_storages import FileSystemStorage
 from sqlalchemy.engine import URL
-
-import logging
-import logging.handlers
 
 load_dotenv()
 

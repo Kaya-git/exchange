@@ -1,3 +1,4 @@
+import logging
 from typing import TYPE_CHECKING, List
 
 from fastapi import APIRouter, Depends, Form, HTTPException, status
@@ -10,7 +11,6 @@ from users.routers import lk_router
 
 from .models import Order
 from .shemas import OrderRead
-import logging
 
 if TYPE_CHECKING:
     from users.models import User

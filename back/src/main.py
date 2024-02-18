@@ -1,6 +1,7 @@
+import logging
 import uuid
 
-from fastapi import Depends, FastAPI, Response, BackgroundTasks
+from fastapi import BackgroundTasks, Depends, FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -14,22 +15,20 @@ from admin import (ContactAdmin, CurrencyAdmin, FAQAdmin, OrderAdmin,
 from auth.auth import auth_backend
 from auth.routers import fastapi_users
 from auth.shemas import UserCreate, UserRead
+from background_tasks.handlers import cache_rates
 from config import conf
 from contacts.routers import contact_router
 from currencies.routers import currency_router
 from database.db import engine, get_async_session
 from exchange.routers import exchange_router
 from faq.routers import faq_router
+from google_recaptcha.routers import recaptcha_router
 from mail_verif.routers import email_router
 from orders.routers import orders_router
 from redis_ttl.routers import redis_router
 from reviews.routers import reviews_router
 from users.routers import lk_router
 from where_am_i.routers import where_am_i_router
-import logging
-from google_recaptcha.routers import recaptcha_router
-from background_tasks.handlers import cache_rates
-
 
 app = FastAPI(
     title="Exchange"
@@ -96,7 +95,6 @@ async def root(
     """Устанавливаем печеньки на пользователя"""
     cookies_uuid = uuid.uuid4()
     response.set_cookie(key="user_uuid", value=cookies_uuid)
-    print("adsds")
     background_tasks.add_task(cache_rates)
     return cookies_uuid
 

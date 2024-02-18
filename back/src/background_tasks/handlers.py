@@ -1,17 +1,17 @@
+import json
+import logging
 from asyncio import sleep as async_sleep
 
+import httpx
+from fastapi import HTTPException, status
+
 from database.db import Database
+from enums import CurrencyType
 from enums.models import Status
 from pendings.models import PendingAdmin
+from price_parser.parser import parse_the_price
 from redis_ttl.routers import get_ttl
 from sevices import services
-from enums import CurrencyType
-import logging
-from price_parser.parser_v1 import get_prices
-from fastapi import HTTPException, status
-import httpx
-import json
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -47,9 +47,9 @@ async def cache_rates():
         LOGGER.info(f"Фиат:{vs_currencies}")
         LOGGER.info(f"Крипта:{ids}")
 
-        rates = await get_prices(ids, vs_currencies)
+        rates = await parse_the_price(ids, vs_currencies,)
 
-        LOGGER.info(rates)
+        LOGGER.info(f"ответ:{rates}")
 
         if rates is not None and first is False:
             try:
@@ -65,10 +65,8 @@ async def cache_rates():
 
         LOGGER.info(f"Курсы: {rates}, тип: {type(rates)}")
 
-        for crypto_values in rates.keys():
-            print(crypto_values)
-            rval = json.dumps(rates[crypto_values])
-            await services.redis_values.redis_conn.set(crypto_values, rval)
+        rval = json.dumps(rates)
+        await services.redis_values.redis_conn.set("rates", rval)
 
         LOGGER.info("Парсинг спит 10 мин")
         await async_sleep(60)
