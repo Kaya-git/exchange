@@ -119,15 +119,15 @@ class RedisValues:
         )
         # Декодируем из бит в пайтоновские значения
         # client_sell_tikker = str(client_sell_tikker, 'UTF-8')
-        client_sell_value = str(client_sell_value, 'UTF-8')
-        client_credit_card_number = str(client_credit_card_number, 'UTF-8')
-        client_cc_holder = str(client_cc_holder, 'UTF-8')
+        # client_sell_value = str(client_sell_value, 'UTF-8')
+        # client_credit_card_number = str(client_credit_card_number, 'UTF-8')
+        # client_cc_holder = str(client_cc_holder, 'UTF-8')
 
-        client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
-        client_buy_tikker = str(client_buy_tikker, 'UTF-8')
-        client_buy_value = str(client_buy_value, 'UTF-8')
+        # client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
+        # client_buy_tikker = str(client_buy_tikker, 'UTF-8')
+        # client_buy_value = str(client_buy_value, 'UTF-8')
 
-        client_email = str(client_email, 'UTF-8')
+        # client_email = str(client_email, 'UTF-8')
 
         router_number = int(router_number)
 
