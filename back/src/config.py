@@ -47,6 +47,12 @@ class RedisConfig:
 
 
 @dataclass
+class CeleryConfig:
+    """ Celery connection variables """
+    broker: str = f'redis://{RedisConfig.host}:{RedisConfig.port}'
+
+
+@dataclass
 class ParserConfiguration:
     """ Parser URL's """
     api_key = os.environ.get("BINANCE_API_KEY")
@@ -132,6 +138,7 @@ class Configuration:
     redis = RedisConfig()
     db = DataBaseConfig()
     auth = Auth()
+    celery = CeleryConfig()
 
 
 conf = Configuration()

@@ -29,6 +29,8 @@ from redis_ttl.routers import redis_router
 from reviews.routers import reviews_router
 from users.routers import lk_router
 from where_am_i.routers import where_am_i_router
+import asyncio
+
 
 app = FastAPI(
     title="Exchange"
@@ -95,7 +97,7 @@ async def root(
     """Устанавливаем печеньки на пользователя"""
     cookies_uuid = uuid.uuid4()
     response.set_cookie(key="user_uuid", value=cookies_uuid)
-    background_tasks.add_task(cache_rates)
+    # background_tasks.add_task(cache_rates)
     return cookies_uuid
 
 app.include_router(recaptcha_router)
@@ -131,6 +133,17 @@ app.include_router(
 )
 
 
+class BackgroundTask:
+    def __init__(self):
+        pass
+
+    async def my_task(self):
+        await cache_rates()
+
+
+bgtask = BackgroundTask()
+
+
 @app.on_event("startup")
 async def startup():
 
@@ -138,6 +151,7 @@ async def startup():
         f"redis://{conf.redis.host}:{conf.redis.port}",
         encoding="utf8", decode_responses=True
     )
+    asyncio.create_task(bgtask.my_task())
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
     LOGGER.info("--- Start up App ---")
