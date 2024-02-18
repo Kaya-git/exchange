@@ -15,6 +15,11 @@ from database.db import Database
 from enums import CurrencyType, Status
 from payment_options.models import PaymentOption
 from pendings.models import PendingAdmin
+import logging
+
+
+LOGGER = logging.getLogger(__name__)
+
 
 if TYPE_CHECKING:
     from where_am_i.schemas import UuidDTO
@@ -98,8 +103,22 @@ class RedisValues:
                 router_number
             ) = await self.redis_conn.lrange(user_uuid, 0, -1)
 
+        LOGGER.info(
+            f"""
+                Типы до десериализации:
+                    client_crypto_wallet:{client_crypto_wallet} тип:{type(client_crypto_wallet)},
+                    client_cc_holder:{client_cc_holder} тип:{type(client_cc_holder)},
+                    client_credit_card_number:{client_credit_card_number} тип:{type(client_credit_card_number)},
+                    client_buy_tikker:{client_buy_tikker} тип:{type(client_buy_tikker)},
+                    client_buy_value:{client_buy_value} тип:{type(client_buy_value)},
+                    client_sell_tikker:{client_sell_tikker} тип:{type(client_sell_tikker)},
+                    client_sell_value:{client_sell_value} тип:{type(client_sell_value)},
+                    client_email:{client_email} тип:{type(client_email)},
+                    router_number:{router_number} тип:{type(router_number)}
+            """
+        )
         # Декодируем из бит в пайтоновские значения
-        client_sell_tikker = str(client_sell_tikker, 'UTF-8')
+        # client_sell_tikker = str(client_sell_tikker, 'UTF-8')
         client_sell_value = str(client_sell_value, 'UTF-8')
         client_credit_card_number = str(client_credit_card_number, 'UTF-8')
         client_cc_holder = str(client_cc_holder, 'UTF-8')
@@ -122,6 +141,20 @@ class RedisValues:
             Currency.tikker == client_buy_tikker
         )
 
+        LOGGER.info(
+            f"""
+                Типы после десериализации:
+                    client_crypto_wallet:{client_crypto_wallet} тип:{type(client_crypto_wallet)},
+                    client_cc_holder:{client_cc_holder} тип:{type(client_cc_holder)},
+                    client_credit_card_number:{client_credit_card_number} тип:{type(client_credit_card_number)},
+                    client_buy_tikker:{client_buy_tikker} тип:{type(client_buy_tikker)},
+                    client_buy_value:{client_buy_value} тип:{type(client_buy_value)},
+                    client_sell_tikker:{client_sell_tikker} тип:{type(client_sell_tikker)},
+                    client_sell_value:{client_sell_value} тип:{type(client_sell_value)},
+                    client_email:{client_email} тип:{type(client_email)},
+                    router_number:{router_number} тип:{type(router_number)}
+            """
+        )
         return {
             "end_point_number": router_number,
             "client_email": client_email,
