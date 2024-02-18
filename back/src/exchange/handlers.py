@@ -339,6 +339,7 @@ async def find_exchange_rate(
     client_sell_coin: "Currency",
     client_buy_coin: "Currency"
 ) -> Decimal:
+
     rates = await services.redis_values.decirialize_b_to_dict()
 
     if client_sell_coin.type == CurrencyType.Фиат:
