@@ -13,6 +13,8 @@ from exchange.handlers import find_exchange_rate
 
 from .models import Currency
 from .schemas import CurrencyDTO, CurrencyTariffsDTO
+from decimal import Decimal
+
 
 currency_router = APIRouter(
     prefix="/api/currency",
@@ -81,9 +83,9 @@ async def tariffs(
             dct["name"] = crypto_currency.name
             dct["tikker"] = crypto_currency.tikker
             dct["icon"] = crypto_currency.icon
-            dct["reserve"] = crypto_currency.reserve
-            dct["max"] = crypto_currency.max
-            dct["min"] = crypto_currency.min
+            dct["reserve"] = format(Decimal(crypto_currency.reserve), "f")
+            dct["max"] = format(Decimal(crypto_currency.max), "f")
+            dct["min"] = format(Decimal(crypto_currency.min), "f")
             dct["coin_price"] = exchange_rate
 
             crypto_dict[f"{crypto_currency.tikker}"] = dct
