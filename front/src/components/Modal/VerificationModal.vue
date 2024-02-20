@@ -91,6 +91,7 @@ export default defineComponent({
                 this.setVerificationFile(this.file[0]);
                 this.$emit('confirmed');
             }
+            this.loading = false;
         },
     }
 });

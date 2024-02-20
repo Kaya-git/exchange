@@ -103,7 +103,6 @@ export default defineComponent({
     }),
     mounted() {
         this.formData.email = this.user.email;
-        this.resizeBg();
     },
     components: {
         StatusModal: defineAsyncComponent({
@@ -112,7 +111,6 @@ export default defineComponent({
     },
     methods: {
         ...mapActions([
-            'resizeBg',
             'logout',
         ]),
         async submit(event) {

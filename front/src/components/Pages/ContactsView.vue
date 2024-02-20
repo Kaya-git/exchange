@@ -60,19 +60,14 @@
 
 <script>
 import {defineComponent} from 'vue';
-import {mapActions} from 'vuex';
 
 export default defineComponent({
     name: 'ContactsView',
 
     data: () => ({}),
     mounted() {
-        this.resizeBg();
     },
     methods: {
-        ...mapActions([
-            'resizeBg',
-        ]),
     }
 });
 </script>

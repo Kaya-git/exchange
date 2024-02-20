@@ -54,7 +54,6 @@
 
 <script>
 import {defineComponent, reactive} from 'vue';
-import {mapActions} from 'vuex';
 
 export default defineComponent({
     name: 'TariffView',
@@ -85,9 +84,6 @@ export default defineComponent({
     mounted() {
     },
     methods: {
-        ...mapActions([
-            'resizeBg',
-        ]),
         async getTariffs() {
             let response = await fetch('/api/currency/tariffs');
             if (response.ok && response.status === 200) {
@@ -103,8 +99,6 @@ export default defineComponent({
                 });
                 this.tariffs.tbody = tariffs;
             }
-            await this.$nextTick();
-            this.resizeBg();
         }
     }
 });

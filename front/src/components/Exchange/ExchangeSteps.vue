@@ -65,15 +65,20 @@
                         @error="errorStep"
                         @skip="skipStep"
                         @cancel="cancelExchange"></confirm-view>
-                    <error-view v-if="steps[curStep].error"
+                    <status-view v-if="steps[curStep].error"
                                 :title="steps[curStep].message"
-                                :subtitle="steps[curStep].subtitle"></error-view>
+                                :subtitle="steps[curStep].subtitle"
+                                status="reject"
+                    ></status-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="2">
                     <verification-view @nextStep="curStep++" @complete="completeStep"
                                        @error="errorStep"></verification-view>
-                    <error-view v-if="steps[curStep].error" :title="steps[curStep].message"
-                                :subtitle="steps[curStep].subtitle"></error-view>
+                    <status-view v-if="steps[curStep].error"
+                                 :title="steps[curStep].message"
+                                 :subtitle="steps[curStep].subtitle"
+                                 status="reject"
+                    ></status-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="3">
                     <request-view
@@ -81,15 +86,24 @@
                         @complete="completeStep"
                         @error="errorStep"
                         @cancel="cancelExchange"></request-view>
-                    <error-view v-if="steps[curStep].error" :title="steps[curStep].message"
-                                :subtitle="steps[curStep].subtitle"></error-view>
+                    <status-view v-if="steps[curStep].error"
+                                 :title="steps[curStep].message"
+                                 :subtitle="steps[curStep].subtitle"
+                                 status="reject"
+                    ></status-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="4">
-                    <status-view v-if="!steps[curStep].complete && !steps[curStep].error" @complete="completeStep" @error="errorStep"></status-view>
-                    <error-view v-if="steps[curStep].error" :title="steps[curStep].message"
-                                :subtitle="steps[curStep].subtitle"></error-view>
-                    <success-view v-if="!steps[curStep].error && steps[curStep].message" :title="steps[curStep].message"
-                                :subtitle="steps[curStep].subtitle"></success-view>
+                    <payed-view v-if="!steps[curStep].complete && !steps[curStep].error" @complete="completeStep" @error="errorStep"></payed-view>
+                    <status-view v-if="steps[curStep].error"
+                                 :title="steps[curStep].message"
+                                 :subtitle="steps[curStep].subtitle"
+                                 status="reject"
+                    ></status-view>
+                    <status-view v-else-if="steps[curStep].message"
+                                 :title="steps[curStep].message"
+                                 :subtitle="steps[curStep].subtitle"
+                                 status="success"
+                    ></status-view>
                 </v-stepper-window-item>
             </v-stepper-window>
         </v-stepper>
@@ -97,14 +111,13 @@
 </template>
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
-import {mapGetters, mapMutations, mapActions} from 'vuex';
-import {prepareData} from '@/helpers';
+import {mapGetters, mapActions} from 'vuex';
+import {prepareData, deleteCookie} from '@/helpers';
 
 export default defineComponent({
     name: 'ExchangeSteps',
 
     data: () => ({
-        exchangeData: null,
         error: {
             'status': false,
             'message': '',
@@ -145,9 +158,6 @@ export default defineComponent({
             },
         }
     }),
-    created() {
-        this.exchangeData = this.getExchangeData;
-    },
     mounted() {
         if (this.getCurExchangeStep) {
             if ([1, 2, 3].includes(Number(this.getCurExchangeStep))) {
@@ -168,28 +178,22 @@ export default defineComponent({
     },
     components: {
         ConfirmView: defineAsyncComponent({
-            loader: () => import("../Exchange/ConfirmView"),
+            loader: () => import("@/components/Exchange/ConfirmView"),
         }),
         VerificationView: defineAsyncComponent({
-            loader: () => import("../Exchange/VerificationView"),
+            loader: () => import("@/components/Exchange/VerificationView"),
         }),
         RequestView: defineAsyncComponent({
-            loader: () => import("../Exchange/RequestView"),
+            loader: () => import("@/components/Exchange/RequestView"),
+        }),
+        PayedView: defineAsyncComponent({
+            loader: () => import("@/components/Exchange/PayedView"),
         }),
         StatusView: defineAsyncComponent({
-            loader: () => import("../Exchange/StatusView"),
-        }),
-        ErrorView: defineAsyncComponent({
-            loader: () => import("../Exchange/ErrorView"),
-        }),
-        SuccessView: defineAsyncComponent({
-            loader: () => import("../Exchange/SuccessView"),
+            loader: () => import("@/components/Exchange/StatusView"),
         }),
     },
     methods: {
-        ...mapMutations([
-            'auth',
-        ]),
         ...mapActions([
             'clearDataFromLocalStorage'
         ]),
@@ -199,6 +203,7 @@ export default defineComponent({
             this.steps[this.curStep].message = message;
             this.steps[this.curStep].subtitle = subtitle;
             this.clearDataFromLocalStorage();
+            deleteCookie('user_uuid');
         },
         completeStep(message = '',) {
             this.steps[this.curStep].complete = true;
@@ -235,7 +240,6 @@ export default defineComponent({
     },
     computed: {
         ...mapGetters([
-            'getExchangeData',
             'getCurExchangeStep',
             'getUuid',
         ]),

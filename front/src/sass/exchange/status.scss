@@ -1,4 +1,4 @@
-.status {
+.status-page {
   &__title {
     text-align: center;
   }
@@ -15,7 +15,7 @@
 }
 
 @media (min-width:$md4+px){
-  .status {
+  .status-page {
     &__text {
       font-size: rem(16px);
     }

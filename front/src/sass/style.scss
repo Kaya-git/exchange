@@ -27,6 +27,18 @@ body {
 	background: $mainColor !important;
 }
 
+.parallax {
+	position: fixed;
+	inset: 0;
+	z-index: $base;
+	perspective: 1px;
+	height: 100vh;
+}
+
+.vanta-canvas {
+	position: absolute;
+	inset: 0;
+}
 
 .page {
 	flex: 1 1 auto;
@@ -52,6 +64,8 @@ body {
 	flex-direction: column;
 }
 
+
+
 //<HEADER>====================================================================================================
 @import 'header/header.scss';
 //</HEADER>====================================================================================================
@@ -60,8 +74,8 @@ body {
 @import 'exchange/exchange.scss';
 @import 'exchange/confirm.scss';
 @import 'exchange/request.scss';
+@import 'exchange/payed.scss';
 @import 'exchange/status.scss';
-@import 'exchange/error-page.scss';
 @import 'user/auth.scss';
 @import 'user/register.scss';
 @import 'user/account.scss';
@@ -96,6 +110,6 @@ body {
 		margin: 0;
 	}
 	.v-container {
-		max-width: 1200px;
+		max-width: $maxWidtn;
 	}
 }

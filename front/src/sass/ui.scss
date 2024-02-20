@@ -52,6 +52,8 @@
 }
 
 .title {
+	z-index: $above;
+	position: relative;
 	font-size: 20px;
 	font-weight: 700;
 	letter-spacing: 1px;
@@ -95,6 +97,11 @@
 		color: $secondColor !important;
 	}
 	&__img {
+		//display: flex;
+		//justify-content: center;
+		//align-items: center;
+		//border-radius: 50%;
+		//background-color: $secondColor;
 		width: 40px;
 		height: 40px;
 		img {
@@ -138,6 +145,14 @@
 			align-items: center;
 			font-size: rem(16px);
 		}
+	}
+
+	&__item-sum {
+		padding: 0 10px;
+	}
+
+	&__item-icon {
+		font-size: rem(22px) !important;
 	}
 }
 

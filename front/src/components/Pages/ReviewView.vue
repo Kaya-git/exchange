@@ -45,7 +45,6 @@
 
 <script>
 import {defineComponent, defineAsyncComponent, reactive} from 'vue';
-import {mapActions} from 'vuex';
 
 export default defineComponent({
 name: 'ReviewView',
@@ -66,16 +65,11 @@ name: 'ReviewView',
         }),
     },
     methods: {
-        ...mapActions([
-            'resizeBg',
-        ]),
         async getReviews() {
             let response = await fetch('/api/reviews/list');
             if (response.ok && response.status === 200) {
                 this.reviews = await response.json();
             }
-            await this.$nextTick();
-            this.resizeBg();
         }
     },
     computed: {

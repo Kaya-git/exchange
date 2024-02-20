@@ -1,4 +1,6 @@
 .tariff {
+    position: relative;
+    z-index: $above;
     padding-top: 40px;
     &__sheet {
         background-color: $fourthColor !important;

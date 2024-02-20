@@ -6,7 +6,7 @@
       </v-row>
       <v-row class="footer__row justify-center">
         <div class="footer__rights">
-          VVS Coin - Мультивалютный обменный сервис,<br>
+          VVS COIN - Мультивалютный обменный сервис,<br>
           All rights reserved © 2023-2024
         </div>
       </v-row>

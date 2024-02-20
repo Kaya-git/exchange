@@ -7,6 +7,7 @@ const Store = new Vuex.Store({
     state: {
         exchangeData: null,
         curExchangeStep: null,
+        curExchangeStatus: null,
         isAuth: false,
         isLoaded: false,
         verificationFile: null,
@@ -18,7 +19,7 @@ const Store = new Vuex.Store({
         },
         requestFixedTime: -2,
         vantaEffect: reactive([]),
-        timer: null,
+        recaptchaPublicKey: null,
     },
     mutations: {
         setExchangeData(state, data) {
@@ -66,6 +67,12 @@ const Store = new Vuex.Store({
         },
         setLoaded(state) {
             state.isLoaded = true;
+        },
+        setCurExchangeStatus(state, data) {
+            state.curExchangeStatus = data;
+        },
+        setRecaptchaPublicKey(state, key) {
+            state.recaptchaPublicKey = key;
         }
     },
     actions: {
@@ -74,22 +81,6 @@ const Store = new Vuex.Store({
             if (data) {
                 commit('setExchangeData', data);  // Вызов мутации setExchangeData для обновления состояния
             }
-        },
-        async startCounter({ state }) {
-            // state.timer = true;
-            state.timer = setInterval(() => {
-                if (state.seconds > 0) {
-                    state.seconds--;
-                } else {
-                    clearInterval(state.timer); // Остановить таймер, когда время истекло
-                }
-            }, 1000);
-            // while (state.requestFixedTime > 0 && state.timer) {
-            //     await new Promise(resolve => setTimeout(resolve, 1000));
-            //     if (state.timer)
-            //         state.requestFixedTime--;
-            // }
-            // state.timer = false;
         },
         clearDataFromLocalStorage() {
             localStorage.removeItem('exchangeData');
@@ -168,8 +159,42 @@ const Store = new Vuex.Store({
                 commit('setRequestFixedTime', result);
             }
         },
-        resizeBg({state}) {
-            state.vantaEffect.resize();
+        async getStatus({commit, state}) {
+            let response = await fetch('/api/orders/get_order_status?user_uuid=' + state.uuid);
+            if (response.ok) {
+                let result = await response.json();
+                if (result.status) {
+                    commit('setCurExchangeStatus', result.status);
+                }
+            }
+        },
+        async requestRecaptchaPublicKey({commit}){
+            let response = await fetch('/api/recaptcha/pbc');
+            if (response.ok) {
+                let result = await response.json();
+                commit('setRecaptchaPublicKey', result);
+            }
+        },
+        async checkToken({state}) {
+            let details = {
+                'token': state.recaptchaPublicKey,
+            }
+            let formBody = prepareData(details);
+            let response = await fetch('/api/recaptcha/verify-recaptcha', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept':  'application/json',
+                },
+                body: formBody
+            });
+            if (response.ok) {
+                let result = await response.json();
+                if (result.success) {
+                    return true;
+                }
+            }
+            return false;
         },
     },
     getters: {
@@ -181,6 +206,7 @@ const Store = new Vuex.Store({
         getUserOrders: state => state.user.orders,
         getUserData: state => state.user.data,
         getRequestFixedTime: state => state.requestFixedTime,
+        getCurExchangeStatus: state => state.curExchangeStatus,
     }
 });
 

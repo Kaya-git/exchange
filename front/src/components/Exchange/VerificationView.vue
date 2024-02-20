@@ -3,53 +3,23 @@
         <v-sheet rounded class="confirm__sheet pa-3 rounded-t-0">
             <v-container fluid class="confirm__container">
                 <v-row class="confirm__row">
-                    <h2 class="confirm__title title title_h2 title_black mb-4 text-center">Ожидание верификации
-                        карты</h2>
+                    <v-progress-circular
+                        class="confirm__progress"
+                        indeterminate
+                        color="primary"
+                        :width="5"
+                        :size="30"
+                    ></v-progress-circular>
+                    <h2 class="confirm__title title title_h2 title_black mb-4 text-center ml-2">
+                        {{getCurExchangeStatus ?? 'Верификация карты'}}
+                    </h2>
                 </v-row>
                 <v-row class="confirm__row">
                     <p class="confirm__text text-center">Внимательно пока проверьте правильность заполненных данных!</p>
                 </v-row>
                 <v-row class="confirm__row">
                     <v-sheet class="confirm__table-sheet" rounded>
-                        <v-table class="confirm__table request-table mb-3">
-                            <tbody>
-                            <tr>
-                                <td class="request-table__item text-right">Направление обмена</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.selectedGiveCurrency }} {{ exchangeData.giveTikker }} /
-                                    {{ exchangeData.selectedGetCurrency }} {{ exchangeData.getTikker }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Обмен по курсу</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.give }} {{ exchangeData.giveTikker }} = {{ exchangeData.get }}
-                                    {{ exchangeData.getTikker }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Отправляете</td>
-                                <td class="request-table__item">{{ exchangeData.give }} {{ exchangeData.giveTikker }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Получаете</td>
-                                <td class="request-table__item">{{ exchangeData.get }} {{ exchangeData.getTikker }}</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Номер вашей карты</td>
-                                <td class="request-table__item">{{ exchangeData.cardNumber }}</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Ваш крипто кошелек</td>
-                                <td class="request-table__item">{{ exchangeData.cryptoNumber }}</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Ваш email</td>
-                                <td class="request-table__item">{{ exchangeData.email }}</td>
-                            </tr>
-                            </tbody>
-                        </v-table>
+                        <CurExchangeTable class="confirm__table"></CurExchangeTable>
                     </v-sheet>
                 </v-row>
             </v-container>
@@ -57,30 +27,28 @@
     </div>
 </template>
 <script>
-import {defineComponent} from 'vue';
-import {mapGetters, mapMutations, mapActions} from 'vuex';
+import {defineComponent, defineAsyncComponent} from 'vue';
+import {mapGetters, mapActions} from 'vuex';
 import {prepareData} from '@/helpers';
 
 export default defineComponent({
     name: 'VerificationView',
 
     data: () => ({
-        exchangeData: null,
         loading: false,
     }),
-    created() {
-        this.exchangeData = this.getExchangeData;
-    },
     mounted() {
-        this.resizeBg();
         this.checkVerification();
+        this.getStatus();
+    },
+    components: {
+        CurExchangeTable: defineAsyncComponent({
+            loader: () => import("@/components/Tables/CurExchangeTable"),
+        }),
     },
     methods: {
-        ...mapMutations([
-            'setExchangeData',
-        ]),
         ...mapActions([
-            'resizeBg',
+            'getStatus',
         ]),
         async checkVerification() {
             this.loading = true;
@@ -110,9 +78,9 @@ export default defineComponent({
     },
     computed: {
         ...mapGetters([
-            'getExchangeData',
             'getVerificationFile',
             'getUuid',
+            'getCurExchangeStatus',
         ]),
     }
 });

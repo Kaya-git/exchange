@@ -593,19 +593,12 @@
 
 <script>
 import {defineComponent} from 'vue';
-import {mapActions} from 'vuex';
 
 export default defineComponent({
     name: 'PrivacyView',
 
     data: () => ({}),
     mounted() {
-        this.resizeBg();
     },
-    methods: {
-        ...mapActions([
-            'resizeBg',
-        ]),
-    }
 });
 </script>

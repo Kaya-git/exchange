@@ -1,4 +1,6 @@
 .account {
+    position: relative;
+    z-index: $above;
     padding-top: 20px;
     &__tabs {
         overflow-x: auto;

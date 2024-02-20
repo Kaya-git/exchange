@@ -1,13 +1,12 @@
 <template>
-        <v-app id="app-wrapper"  class="app-wrapper">
+        <v-app class="app-wrapper">
+            <div id="app-wrapper" class="parallax"></div>
             <v-container class="app-container">
                 <header-view></header-view>
                 <main class="page">
                     <div class="page__wrapper">
                         <div class="page__content">
-                            <router-view
-                                @toggle-wait-modal="toggleWaitModal"
-                            ></router-view>
+                            <router-view></router-view>
                         </div>
                     </div>
                 </main>
@@ -28,18 +27,18 @@ export default {
     name: 'App',
     components: {
         HeaderView: defineAsyncComponent({
-            loader: () => import("./components/Header/HeaderView"),
+            loader: () => import("@/components/Header/HeaderView"),
         }),
         FooterView: defineAsyncComponent({
-            loader: () => import("./components/Footer/FooterView"),
+            loader: () => import("@/components/Footer/FooterView"),
         }),
         WaitModal: defineAsyncComponent({
-            loader: () => import("./components/Modal/WaitModal"),
+            loader: () => import("@/components/Modal/WaitModal"),
         }),
     },
     data() {
         return {
-            wait: false,
+            wait: true,
         }
     },
     created() {
@@ -49,16 +48,14 @@ export default {
         this.getApiUUID();
         this.loadDataFromLocalStorage();
         this.checkAuth();
+        this.requestRecaptchaPublicKey();
     },
     mounted() {
         this.setVantaEffect();
         let vm = this;
         window.addEventListener('load',() => {
             vm.loaded();
-            vm.resizeBg();
-        });
-        window.addEventListener('resize', () => {
-            vm.resizeBg();
+            vm.wait = false;
         });
     },
     methods: {
@@ -67,9 +64,10 @@ export default {
             'loadDataFromLocalStorage',
             'checkAuth',
             'whereAmI',
-            'resizeBg',
+            'requestRecaptchaPublicKey',
             'startCounter',
             'ttl',
+            'getStatus',
         ]),
         ...mapMutations([
             'setUserEmail',

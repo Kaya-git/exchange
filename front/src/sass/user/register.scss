@@ -1,5 +1,7 @@
 .register {
     padding: 50px;
+    position: relative;
+    z-index: $above;
     &__wrapper {
         padding: 30px;
         border-radius: 5px;

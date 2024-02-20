@@ -29,7 +29,6 @@
 
 <script>
 import {defineComponent} from 'vue';
-import {mapActions} from 'vuex';
 
 export default defineComponent({
     name: 'ReservesView',
@@ -41,12 +40,8 @@ export default defineComponent({
         this.getReserves();
     },
     mounted() {
-        this.resizeBg();
     },
     methods: {
-        ...mapActions([
-            'resizeBg',
-        ]),
         async getReserves() {
             let response = await fetch('/api/currency/list');
             if (response.ok && response.status === 200) {

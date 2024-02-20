@@ -13,46 +13,7 @@
                 </v-row>
                 <v-row class="confirm__row">
                     <v-sheet class="confirm__table-sheet" rounded>
-                        <v-table class="confirm__table request-table mb-3">
-                            <tbody>
-                            <tr>
-                                <td class="request-table__item text-right">Направление обмена</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.selectedGiveCurrency }} {{ exchangeData.giveTikker }} /
-                                    {{ exchangeData.selectedGetCurrency }} {{ exchangeData.getTikker }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Обмен по курсу</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.give }} {{ exchangeData.giveTikker }} = {{ exchangeData.get }}
-                                    {{ exchangeData.getTikker }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Отправляете</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.give }} {{ exchangeData.giveTikker }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Получаете</td>
-                                <td class="request-table__item">{{ exchangeData.get }} {{ exchangeData.getTikker }}</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Номер вашей карты</td>
-                                <td class="request-table__item">{{ exchangeData.cardNumber }}</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Ваш крипто кошелек</td>
-                                <td class="request-table__item">{{ exchangeData.cryptoNumber }}</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Ваш email</td>
-                                <td class="request-table__item">{{ exchangeData.email }}</td>
-                            </tr>
-                            </tbody>
-                        </v-table>
+                        <CurExchangeTable class="confirm__table"></CurExchangeTable>
                     </v-sheet>
                 </v-row>
                 <v-row class="confirm__row mb-8 flex-column align-center">
@@ -92,6 +53,7 @@
     <confirm-modal
         :model-value="isModalVisible"
         :msg="'Подтвердите, что введенные данные верны'"
+        :loading="loading"
         @confirmed="confirm"
         @canceled="isModalVisible = !isModalVisible">
     </confirm-modal>
@@ -105,14 +67,13 @@
 </template>
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
-import {mapGetters, mapMutations, mapActions} from 'vuex';
+import {mapGetters} from 'vuex';
 import {prepareData} from '@/helpers';
 
 export default defineComponent({
     name: 'ConfirmView',
 
     data: () => ({
-        exchangeData: null,
         error: {
             'status': false,
             'message': '',
@@ -122,32 +83,21 @@ export default defineComponent({
         loading: false,
         disabled: false,
     }),
-    created() {
-        this.exchangeData = this.getExchangeData;
-    },
-    mounted() {
-        setTimeout(() => {
-            this.resizeBg();
-        }, 100);
-    },
     components: {
         TimerView: defineAsyncComponent({
-            loader: () => import("../Utils/TimerView"),
+            loader: () => import("@/components/Utils/TimerView"),
         }),
         ConfirmModal: defineAsyncComponent({
-            loader: () => import("../Modal/ConfirmModal"),
+            loader: () => import("@/components/Modal/ConfirmModal"),
         }),
         VerificationModal: defineAsyncComponent({
-            loader: () => import("../Modal/VerificationModal"),
+            loader: () => import("@/components/Modal/VerificationModal"),
+        }),
+        CurExchangeTable: defineAsyncComponent({
+            loader: () => import("@/components/Tables/CurExchangeTable"),
         }),
     },
     methods: {
-        ...mapMutations([
-            'setExchangeData',
-        ]),
-        ...mapActions([
-            'resizeBg',
-        ]),
         async confirm() {
             this.loading = true;
             let details = {
@@ -201,7 +151,6 @@ export default defineComponent({
     },
     computed: {
         ...mapGetters([
-            'getExchangeData',
             'getVerificationFile',
             'getUuid',
             'getRequestFixedTime',

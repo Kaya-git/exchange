@@ -1,7 +1,7 @@
-.error-page {
-  background: #000;
+.payed {
   &__title {
     text-align: center;
+    margin-left: 10px;
   }
   &__row {
     justify-content: center;
@@ -16,7 +16,7 @@
 }
 
 @media (min-width:$md4+px){
-  .error-page {
+  .payed {
     &__text {
       font-size: rem(16px);
     }

@@ -1,4 +1,6 @@
 .auth {
+    position: relative;
+    z-index: $above;
     padding: 50px;
     &__wrapper {
         padding: 30px;

@@ -123,9 +123,6 @@ const PREFIX = 'VVS Coin - '
 router.afterEach((to) => {
     nextTick(() => {
         document.title = PREFIX + (to.meta.title || DEFAULT_TITLE);
-        if (store.state.vantaEffect) {
-            store.dispatch('resizeBg');
-        }
     });
 });
 export default router;

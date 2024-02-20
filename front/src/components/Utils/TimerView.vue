@@ -38,7 +38,6 @@ export default defineComponent({
     },
     methods: {
         ...mapActions([
-            'startCounter',
             'clearDataFromLocalStorage',
         ]),
         startCountdown() {
@@ -52,15 +51,6 @@ export default defineComponent({
                 }
             }, 1000);
         },
-        getLocalStorageTime() {
-            return JSON.parse(localStorage.getItem('startTime'));
-        },
-        clearLocalStorageTime() {
-            localStorage.removeItem('startTime');
-        },
-        setLocalStorageTime(time = this.startTime) {
-            localStorage.setItem('startTime', JSON.stringify(time));
-        }
     },
     computed: {
         ...mapState([
