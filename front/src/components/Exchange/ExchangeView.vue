@@ -363,7 +363,7 @@
             </v-container>
             <v-container class='exchange-desktop'>
                 <v-row class="exchange-desktop__content">
-                    <v-col class="exchange-desktop__col v-col-4">
+                    <v-col class="exchange-desktop__col v-col-3">
                         <h3 class="exchange-desktop__title title title_h3">Отдаете</h3>
                         <v-item-group
                             v-model="giveCurrency"
@@ -409,7 +409,7 @@
                             </v-item>
                         </v-item-group>
                     </v-col>
-                    <v-col class="exchange-desktop__col v-col-4">
+                    <v-col class="exchange-desktop__col v-col-3">
                         <h3 class="exchange-desktop__title title title_h3">Получаете</h3>
                         <v-item-group
                             v-model="getCurrency"
@@ -462,7 +462,7 @@
                             </v-item>
                         </v-item-group>
                     </v-col>
-                    <v-col class="exchange-desktop__col v-col-4">
+                    <v-col class="exchange-desktop__col v-col-6">
                         <h3 class="exchange-desktop__title title title_h3">Обмен</h3>
                         <div class="exchange-desktop__trade exchange-data">
                             <v-container class="exchange-data__wrapper">

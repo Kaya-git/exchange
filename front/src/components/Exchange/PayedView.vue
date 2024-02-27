@@ -12,7 +12,7 @@
                     ></v-progress-circular>
                     <h2 class="payed__title title title_h2 title_black mb-4 text-center">
                         {{getCurExchangeStatus ?? 'Проверка оплаты'}}
-                    </h2>https://midis.ru/bitrix/admin/iblock_element_edit.php?IBLOCK_ID=14&type=blocks&lang=ru&ID=780&find_section_section=24&WF=Y
+                    </h2>
                 </v-row>
                 <v-row class="payed__row">
                     <p class="payed__text text-center">Внимательно проверьте правильность заполненных данных!</p>

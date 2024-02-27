@@ -12,6 +12,19 @@
   &__table-sheet {
     width: 100%;
   }
+  &__card {
+    margin-top: 15px;
+    &-title {
+      text-align: center;
+    }
+    &-text {
+      text-align: center;
+      font-size: rem(14px) !important;
+    }
+    &-actions {
+      justify-content: center;
+    }
+  }
 }
 
 @media (min-width:$md4+px){

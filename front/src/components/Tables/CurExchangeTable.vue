@@ -4,8 +4,9 @@
         <tr>
             <td class="request-table__item text-right">Направление обмена</td>
             <td class="request-table__item">
-                {{ exchangeData.selectedGiveCurrency }} {{ exchangeData.giveTikker }} /
-                {{ exchangeData.selectedGetCurrency }} {{ exchangeData.getTikker }}
+                {{ exchangeData.selectedGiveCurrency }} ({{ exchangeData.giveTikker }})
+                <v-icon class="request-table__item-icon" color="black" icon="mdi-sync"></v-icon>
+                {{ exchangeData.selectedGetCurrency }} ({{ exchangeData.getTikker }})
             </td>
         </tr>
         <tr>
@@ -17,7 +18,8 @@
         </tr>
         <tr>
             <td class="request-table__item text-right">Отправляете</td>
-            <td class="request-table__item">{{ exchangeData.give }} {{ exchangeData.giveTikker }}
+            <td class="request-table__item">
+                {{ exchangeData.give }} {{ exchangeData.giveTikker }}
             </td>
         </tr>
         <tr>

@@ -2,18 +2,18 @@
         <v-app class="app-wrapper">
             <div id="app-wrapper" class="parallax"></div>
             <v-container class="app-container">
-                <header-view></header-view>
+                <HeaderView></HeaderView>
                 <main class="page">
                     <div class="page__wrapper">
                         <div class="page__content">
-                            <router-view></router-view>
+                            <RouterView></RouterView>
                         </div>
                     </div>
                 </main>
-                <footer-view></footer-view>
-                <wait-modal
+                <FooterView></FooterView>
+                <WaitModal
                     :model-value="wait"
-                ></wait-modal>
+                ></WaitModal>
             </v-container>
         </v-app>
 </template>

@@ -20,6 +20,7 @@ const Store = new Vuex.Store({
         requestFixedTime: -2,
         vantaEffect: reactive([]),
         recaptchaPublicKey: null,
+        currencies: reactive([]),
     },
     mutations: {
         setExchangeData(state, data) {
@@ -56,7 +57,8 @@ const Store = new Vuex.Store({
                 minHeight: window.innerHeight,
                 minWidth: 200.00,
                 scale: 1.00,
-                scaleMobile: 1.00
+                scaleMobile: 1.00,
+                backgroundColor: 0x9,
             });
         },
         setUserOrders(state, data) {
@@ -73,6 +75,9 @@ const Store = new Vuex.Store({
         },
         setRecaptchaPublicKey(state, key) {
             state.recaptchaPublicKey = key;
+        },
+        setCurrencies(state, currencies) {
+            state.currencies = currencies;
         }
     },
     actions: {
@@ -84,9 +89,6 @@ const Store = new Vuex.Store({
         },
         clearDataFromLocalStorage() {
             localStorage.removeItem('exchangeData');
-            if (localStorage.getItem('startTime')) {
-                localStorage.removeItem('startTime');
-            }
         },
         async checkAuth({commit, state}) {
             if (state.user.email) {
@@ -196,6 +198,29 @@ const Store = new Vuex.Store({
             }
             return false;
         },
+        async getCurrencies({commit}) {
+            let response = await fetch('/api/currency/list');
+            if (!response.ok) {
+                return false;
+            }
+            let data = await response.json();
+            let currencies = [];
+            if (!data) {
+                return false;
+            }
+            if (!Array.isArray(data)) {
+                return false;
+            }
+            data.forEach(item => {
+                if (item.type === 'Фиатная валюта') {
+                    item.type = 'fiat';
+                } else {
+                    item.type = 'crypto';
+                }
+                currencies.push(item);
+            });
+            commit('setCurrencies', currencies);
+        }
     },
     getters: {
         getExchangeData: state => state.exchangeData,

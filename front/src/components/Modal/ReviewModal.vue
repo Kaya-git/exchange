@@ -2,6 +2,7 @@
     <v-btn 
         class="reviews__btn" 
         size="large"
+        :color="btnColor"
         @click="overlay = !overlay">
             Оставить отзыв
     </v-btn>
@@ -65,7 +66,13 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-name: 'ReviewModal',
+    name: 'ReviewModal',
+    props: {
+      btnColor: {
+        type: String,
+        default: '',
+      }
+    },
     data: () => ({
         overlay: false,
         loading: false,
