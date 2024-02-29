@@ -26,7 +26,7 @@
                         @timeout="$emit('error', 'Время подтверждения заявки вышло')"></timer-view>
                 </v-row>
                 <v-row class="confirm__row">
-                    <v-col class="d-flex justify-end">
+                    <v-col class="d-flex justify-sm-end justify-center">
                         <v-btn
                             @click="isModalVisible = true"
                             color="success"
@@ -36,7 +36,7 @@
                             Создать заявку
                         </v-btn>
                     </v-col>
-                    <v-col>
+                    <v-col class="d-flex justify-sm-start justify-center">
                         <v-btn
                             class="confirm__reject-btn"
                             size="large"

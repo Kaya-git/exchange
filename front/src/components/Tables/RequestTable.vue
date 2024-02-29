@@ -34,7 +34,7 @@
 
 <script>
 import {defineComponent} from 'vue';
-import {mapMutations, mapActions, mapState} from 'vuex'
+import {mapMutations, mapActions, mapState} from 'vuex';
 
 export default defineComponent({
     name: 'RequestTable',

@@ -229,7 +229,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
-                                                    :placeholder="randomPlaceholderCrypto()"
+                                                    :placeholder="cryptoWalletRule.randomPlaceholder"
                                                     v-model="formData.get"
                                                     :rules="[rules.required]"
                                                     @input="validateGetNumberInput"
@@ -504,7 +504,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
-                                                    :placeholder="randomPlaceholderCrypto()"
+                                                    :placeholder="cryptoWalletRule.randomPlaceholder"
                                                     v-model="formData.get"
                                                     :rules="[rules.required]"
                                                     @input="validateGetNumberInput"
@@ -557,7 +557,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
-                                                    :placeholder="randomPlaceholderCrypto()"
+                                                    :placeholder="cryptoWalletRule.randomPlaceholder"
                                                     v-model="formData.give"
                                                     :rules="[rules.required]"
                                                     @input="validateGiveNumberInput"
@@ -705,6 +705,7 @@ export default defineComponent({
                     to: 42,
                 },
                 startWith: '',
+                randomPlaceholder: '',
             },
             statusModal: {
                 modelValue: false,
@@ -715,6 +716,7 @@ export default defineComponent({
     },
     created() {
         this.getApiCurriencies();
+        this.cryptoWalletRule.randomPlaceholder = this.randomPlaceholderCrypto();
     },
     mounted() {
         this.tabs = document.querySelectorAll('[data-tab-id]');

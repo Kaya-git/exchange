@@ -11,37 +11,33 @@
                     </thead>
                     <tbody class="tariff__table-body">
                     <template
-                        v-for="(tariff, i) in tariffs.tbody"
+                        v-for="(bank, i) in tariffs.tbody"
                         :key="i">
-                        <template v-if="typeof tariff === 'object'">
-                            <tr
-                                v-for="bank in banks"
-                                :key="bank.name"
-                                class="tariff__table-body-row">
-                                <td>
-                                    <div class="tariff__table-cell">
-                                        <img :src="bank.icon" :alt="bank.name">
-                                        <span>{{tariff.coin_price}} {{bank.name}} RUB</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tariff__table-cell">
-                                        <img :src="'/' + tariff.icon" alt="">
-                                        <span>1 {{tariff.name}} {{tariff.tikker}}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tariff__table-cell">
-                                        <span>{{tariff.reserve}} {{tariff.name}} {{tariff.tikker}}</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        </template>
-                        <tr
-                            v-else
-                            class="tariff__table-body-row">
+                        <tr class="tariff__table-body-row">
                             <td colspan="3">
-                                {{tariff}}
+                              {{bank.name}}
+                            </td>
+                        </tr>
+                        <tr
+                            v-for="crypto in bank.items"
+                            :key="crypto.tikker"
+                            class="tariff__table-body-row">
+                            <td>
+                                <div class="tariff__table-cell">
+                                    <img :src="'/' + bank.icon" :alt="bank.name">
+                                    <span>{{ crypto.coin_price }} {{ bank.name }} RUB</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tariff__table-cell">
+                                    <img :src="'/' + crypto.icon" :alt="crypto.name">
+                                    <span>1 {{ crypto.name }} {{ crypto.tikker }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tariff__table-cell">
+                                    <span>{{ crypto.reserve }} {{ crypto.name }} {{ crypto.tikker }}</span>
+                                </div>
                             </td>
                         </tr>
                     </template>
@@ -54,6 +50,7 @@
 
 <script>
 import {defineComponent, reactive} from 'vue';
+import {mapActions, mapState} from 'vuex';
 
 export default defineComponent({
     name: 'TariffView',
@@ -67,39 +64,42 @@ export default defineComponent({
             ],
             tbody: [],
         }),
-        banks: [
-            {
-                name: 'Тинькофф',
-                icon: '/icons/banks/tinkoff.svg'
-            },
-            {
-                name: 'Сбербанк',
-                icon: '/icons/banks/sber.svg'
-            }
-        ]
     }),
     created() {
-        this.getTariffs();
-    },
-    mounted() {
+        this.getCurrencies().then(() => {
+            this.getTariffs();
+        });
     },
     methods: {
+        ...mapActions([
+          'getCurrencies'
+        ]),
         async getTariffs() {
             let response = await fetch('/api/currency/tariffs');
             if (response.ok && response.status === 200) {
                 let result = await response.json();
-                let cryptos = [];
-                let tariffs = [];
-                result.forEach(item => {
-                    if (!cryptos.includes(item.name)) {
-                        cryptos.push(item.name);
-                        tariffs.push(item.name);
+                this.findBanks(result);
+                this.tariffs.tbody.forEach((bank, i) => {
+                    if (result[bank.tikker]) {
+                      this.tariffs.tbody[i]['items'] = result[bank.tikker];
                     }
-                    tariffs.push(item);
                 });
-                this.tariffs.tbody = tariffs;
+            }
+        },
+        findBanks(data) {
+            for (let tikker in data) {
+                let bankCur = this.currencies.find(currency => {
+                  return currency.tikker === tikker;
+                });
+                bankCur['items'] = {};
+                this.tariffs.tbody.push(bankCur);
             }
         }
-    }
+    },
+  computed: {
+      ...mapState([
+        'currencies',
+      ]),
+  }
 });
 </script>
