@@ -1,5 +1,4 @@
 import logging
-import pprint
 from dataclasses import dataclass
 from typing import Annotated, List
 
@@ -12,7 +11,7 @@ from enums import CurrencyType
 from exchange.handlers import find_exchange_rate
 
 from .models import Currency
-from .schemas import CurrencyDTO, CurrencyTariffsDTO
+from .schemas import CurrencyDTO
 from decimal import Decimal
 
 
@@ -36,7 +35,12 @@ async def currency_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):
     db = Database(async_session)
-    return await db.currency.get_all()
+    curs = await db.currency.get_all()
+
+    for cur in curs:
+        print(type(cur))
+        print(format(Decimal(cur.reserve), "f"))
+    return curs
 
 
 @currency_router.get("/currency/{id}", response_model=CurrencyDTO)

@@ -97,7 +97,6 @@ async def root(
     """Устанавливаем печеньки на пользователя"""
     cookies_uuid = uuid.uuid4()
     response.set_cookie(key="user_uuid", value=cookies_uuid)
-    # background_tasks.add_task(cache_rates)
     return cookies_uuid
 
 app.include_router(recaptcha_router)
