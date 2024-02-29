@@ -18,6 +18,7 @@ class PendingAdminAdmin(ModelView, model=PendingAdmin):
     name = "Актуальная заявка"
     name_plural = "Актуальные заявки"
     column_list = [
+        PendingAdmin.id,
         PendingAdmin.req_act,
         PendingAdmin.order,
         PendingAdmin.review
@@ -109,6 +110,7 @@ class OrderAdmin(ModelView, model=Order):
     name = "История заказов"
     name_plural = "История заказов"
     column_list = [
+        Order.id,
         Order.user,
         Order.user_buy_sum,
         Order.buy_currency,
