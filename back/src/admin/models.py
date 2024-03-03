@@ -35,8 +35,7 @@ class PendingAdminAdmin(ModelView, model=PendingAdmin):
         PendingAdmin.id
     }
     column_sortable_list = [
-        PendingAdmin.id,
-        PendingAdmin.status
+        PendingAdmin.id
     ]
     # list_template = "custom_list.html"
     can_create = False
