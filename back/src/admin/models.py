@@ -37,6 +37,9 @@ class PendingAdminAdmin(ModelView, model=PendingAdmin):
     column_sortable_list = [
         PendingAdmin.id
     ]
+    column_default_sort = [
+        (PendingAdmin.id, True)
+    ]
     # list_template = "custom_list.html"
     can_create = False
     can_delete = True
@@ -188,13 +191,7 @@ class OrderAdmin(ModelView, model=Order):
         Order.sell_payment_option
     }
     column_default_sort = [
-        (Order.id, False),
-        (Order.status, Status.верификация_карты),
-        (Order.status, Status.ожидание_оплаты),
-        (Order.status, Status.проверка_оплаты),
-        (Order.status, Status.в_процессе_выплаты),
-        (Order.status, Status.исполнена),
-        (Order.status, Status.отклонена)
+        (Order.id, True)
     ]
     column_sortable_list = [
         Order.id,
