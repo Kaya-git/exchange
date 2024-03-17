@@ -1,0 +1,50 @@
+2024-02-19 20:37:49,511 - main - INFO - --- Start up App ---
+2024-02-19 20:37:49,512 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-19 20:37:49,667 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-19 20:37:49,667 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-19 20:37:49,667 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-19 20:37:49,667 - background_tasks.handlers - INFO - Фиат:USD
+2024-02-19 20:37:49,667 - background_tasks.handlers - INFO - Фиат:['rub', 'usd']
+2024-02-19 20:37:49,667 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-19 20:37:50,603 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=litecoin%2Cbitcoin&vs_currencies=rub%2Cusd "HTTP/1.1 200 OK"
+2024-02-19 20:37:50,605 - price_parser.parser - INFO - Parser status: 200
+2024-02-19 20:37:50,605 - price_parser.parser - INFO - response: {'bitcoin': {'rub': 4818150, 'usd': 52084}, 'litecoin': {'rub': 6578.15, 'usd': 71.11}}
+2024-02-19 20:37:50,605 - background_tasks.handlers - INFO - ответ:{'bitcoin': {'rub': 4818150, 'usd': 52084}, 'litecoin': {'rub': 6578.15, 'usd': 71.11}}
+2024-02-19 20:37:50,605 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4818150, 'usd': 52084}, 'litecoin': {'rub': 6578.15, 'usd': 71.11}}, тип: <class 'dict'>
+2024-02-19 20:37:50,607 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-19 20:38:26,039 - main - INFO - --- Start up App ---
+2024-02-19 20:38:26,040 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-19 20:38:26,173 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-19 20:38:26,174 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-19 20:38:26,174 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-19 20:38:26,174 - background_tasks.handlers - INFO - Фиат:USD
+2024-02-19 20:38:26,174 - background_tasks.handlers - INFO - Фиат:['rub', 'usd']
+2024-02-19 20:38:26,174 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-19 20:38:29,629 - main - INFO - --- Start up App ---
+2024-02-19 20:38:29,630 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-19 20:38:29,762 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-19 20:38:29,762 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-19 20:38:29,763 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-19 20:38:29,763 - background_tasks.handlers - INFO - Фиат:USD
+2024-02-19 20:38:29,763 - background_tasks.handlers - INFO - Фиат:['rub', 'usd']
+2024-02-19 20:38:29,763 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-19 20:38:30,436 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=litecoin%2Cbitcoin&vs_currencies=rub%2Cusd "HTTP/1.1 200 OK"
+2024-02-19 20:38:30,437 - price_parser.parser - INFO - Parser status: 200
+2024-02-19 20:38:30,438 - price_parser.parser - INFO - response: {'bitcoin': {'rub': 4818150, 'usd': 52084}, 'litecoin': {'rub': 6578.15, 'usd': 71.11}}
+2024-02-19 20:38:30,438 - background_tasks.handlers - INFO - ответ:{'bitcoin': {'rub': 4818150, 'usd': 52084}, 'litecoin': {'rub': 6578.15, 'usd': 71.11}}
+2024-02-19 20:38:30,438 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4818150, 'usd': 52084}, 'litecoin': {'rub': 6578.15, 'usd': 71.11}}, тип: <class 'dict'>
+2024-02-19 20:38:30,440 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-02-19 20:39:03,046 - main - INFO - --- Start up App ---
+2024-02-19 20:39:03,046 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-02-19 20:39:03,179 - background_tasks.handlers - INFO - Фиат:RUB
+2024-02-19 20:39:03,179 - background_tasks.handlers - INFO - Крипта:LTC
+2024-02-19 20:39:03,180 - background_tasks.handlers - INFO - Крипта:BTC
+2024-02-19 20:39:03,180 - background_tasks.handlers - INFO - Фиат:USD
+2024-02-19 20:39:03,180 - background_tasks.handlers - INFO - Фиат:['rub', 'usd']
+2024-02-19 20:39:03,180 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-02-19 20:39:03,412 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=litecoin%2Cbitcoin&vs_currencies=rub%2Cusd "HTTP/1.1 200 OK"
+2024-02-19 20:39:03,413 - price_parser.parser - INFO - Parser status: 200
+2024-02-19 20:39:03,413 - price_parser.parser - INFO - response: {'bitcoin': {'rub': 4818150, 'usd': 52084}, 'litecoin': {'rub': 6578.15, 'usd': 71.11}}
+2024-02-19 20:39:03,413 - background_tasks.handlers - INFO - ответ:{'bitcoin': {'rub': 4818150, 'usd': 52084}, 'litecoin': {'rub': 6578.15, 'usd': 71.11}}
+2024-02-19 20:39:03,413 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 4818150, 'usd': 52084}, 'litecoin': {'rub': 6578.15, 'usd': 71.11}}, тип: <class 'dict'>
+2024-02-19 20:39:03,415 - background_tasks.handlers - INFO - Парсинг спит 10 мин
