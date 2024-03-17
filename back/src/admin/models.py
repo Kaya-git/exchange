@@ -300,7 +300,6 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
         PaymentOption.user: "Пользователь"
     }
     form_excluded_columns = {
-        PaymentOption.id,
         PaymentOption.user,
         PaymentOption.currency,
         PaymentOption.number,
@@ -310,6 +309,9 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
     column_details_exclude_list = [
         PaymentOption.user_id,
         PaymentOption.currency_id
+    ]
+    column_default_sort = [
+        (PaymentOption.id, True)
     ]
     column_searchable_list = [
         PaymentOption.user,
