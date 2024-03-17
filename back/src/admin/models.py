@@ -4,7 +4,6 @@ from sqladmin import ModelView
 
 from contacts.models import Contact
 from currencies.models import Currency
-from enums import Status
 from faq.models import FAQ
 from orders.models import Order
 from payment_options.models import PaymentOption
@@ -196,6 +195,9 @@ class OrderAdmin(ModelView, model=Order):
     column_sortable_list = [
         Order.id,
         Order.date,
+        Order.status
+    ]
+    column_searchable_list = [
         Order.status
     ]
     # list_template = "custom_list.html"

@@ -36,10 +36,6 @@ async def currency_list(
 ):
     db = Database(async_session)
     curs = await db.currency.get_all()
-
-    for cur in curs:
-        print(type(cur))
-        print(format(Decimal(cur.reserve), "f"))
     return curs
 
 
