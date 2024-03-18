@@ -10,10 +10,15 @@ from currencies.models import Currency
 from database.db import Database, get_async_session
 from enums.models import ReqAction, Status
 from sevices import services
-
+from pendings.models import PendingAdmin
 from .handlers import (add_or_get_po, calculate_totals, check_form_fillment,
                        check_user_registration, find_exchange_rate, start_time,
                        ya_save_passport_photo)
+import logging
+
+
+LOGGING = logging.getLogger(__name__)
+
 
 exchange_router = APIRouter(
     prefix="/api/exchange",
@@ -379,11 +384,14 @@ async def requisites(
 
 @exchange_router.post("/payed")
 async def payed_button(
+    background_tasks: BackgroundTasks,
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Form(),
 ):
     """ Кнопка подтверждения оплаты пользователя
     запускает паралельно задачу на отслеживание изменения стасу ордера """
+
+    logging.info("Клиент произвел оплату")
 
     # Номер ендпоинта в цепочке заявки
     END_POINT_NUMBER = 7
@@ -404,15 +412,19 @@ async def payed_button(
         user_uuid
     )
     # Достаем из редиса номер пользователя
-    user_id = await services.redis_values.get_user_id(
-        user_uuid
+    # user_id = await services.redis_values.get_user_id(
+    #     user_uuid
+    # )
+    pending = await db.pending_admin.get_by_where(
+        PendingAdmin.order_id == order_id
     )
-    # Добавляем актуальную заявку
-    await db.pending_admin.new(
-        order_id=order_id,
-        req_act=ReqAction.верифицировать_транзакцию
-    )
-    await db.session.commit()
+    if pending is None:
+        # Добавляем актуальную заявку
+        await db.pending_admin.new(
+            order_id=order_id,
+            req_act=ReqAction.верифицировать_транзакцию
+        )
+        await db.session.commit()
 
     # Обновляем статус заявки
     await db.order.order_status_update(
@@ -426,13 +438,20 @@ async def payed_button(
         time_out=900
     )
 
-    # Создаем таск на пулинг подтверждения оплаты от сервиса
-    task = asyncio.create_task(services.db_paralell.payed_button_db(
-            db=db,
-            user_uuid=user_uuid,
-            order_id=order_id,
-            user_id=user_id
-        )
-    )
+    # # Запускаем фоновую задачу на котроль заявки
+    # background_tasks.add_task(
+    #     controll_order,
+    #     user_uuid,
+    #     db
+    # )
 
-    return await task
+    # Создаем таск на пулинг подтверждения оплаты от сервиса
+    # task = asyncio.create_task(services.db_paralell.payed_button_db(
+    #         db=db,
+    #         user_uuid=user_uuid,
+    #         order_id=order_id,
+    #         user_id=user_id
+    #     )
+    # )
+
+    # return await task

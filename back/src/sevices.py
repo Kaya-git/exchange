@@ -411,75 +411,71 @@ class DB:
         user_uuid: str,
         order_id: int,
         user_id: int
-    ):
+    ) -> None | dict:
         # Запускаем цикл по оставшемуся времени заявки
-        ttl = await services.redis_values.redis_conn.ttl(name=user_uuid)
+        order = None
+        order = await db.order.get(order_id)
+        user = await db.user.get(user_id)
 
-        while ttl != -2:
-            order = None
-            order = await db.order.get(order_id)
-            user = await db.user.get(user_id)
+        # Проверяем что у заявки сменился статус на исполнена
+        # И если заявка на приобретение криптовалюты,
+        # То заполнено поле с сылкой на транзакцию
 
-            # Проверяем что у заявки сменился статус на исполнена
-            # И если заявка на приобретение криптовалюты,
-            # То заполнено поле с сылкой на транзакцию
+        if (
+            order.status is Status.исполнена and
+            order.transaction_link is not None
+        ):
 
-            if (
-                order.status is Status.исполнена and
-                order.transaction_link is not None
-            ):
+            buy_currency = await db.currency.get(order.buy_currency_id)
 
-                buy_currency = await db.currency.get(order.buy_currency_id)
+            # Проверяем валюту к приобретению
+            if buy_currency.type is CurrencyType.Крипта:
+                user_volume = user.buy_volume
+                user_volume += order.user_sell_sum
 
-                # Проверяем валюту к приобретению
-                if buy_currency.type is CurrencyType.Крипта:
-                    user_volume = user.buy_volume
-                    user_volume += order.user_sell_sum
-
-                    # Обновляем обьем
-                    await db.user.update_buy_volume(
-                        ident=user_id,
-                        user_volume=user_volume
-                    )
-
-                if buy_currency.type is CurrencyType.Фиат:
-                    user_volume = user.buy_volume
-                    user_volume += order.user_buy_sum
-
-                    # Обновляем обьем
-                    await db.user.update_sell_volume(
-                        ident=user_id,
-                        user_volume=user_volume
-                    )
-                # Удаляем заявки из акутальных и ключ в редисе
-                await services.redis_values.redis_conn.delete(user_uuid)
-                await db.pending_admin.delete(
-                    PendingAdmin.order_id == order_id
+                # Обновляем обьем
+                await db.user.update_buy_volume(
+                    ident=user_id,
+                    user_volume=user_volume
                 )
-                await db.session.commit()
 
-                if buy_currency.type is CurrencyType.Крипта:
+            if buy_currency.type is CurrencyType.Фиат:
+                user_volume = user.buy_volume
+                user_volume += order.user_buy_sum
 
-                    return {
-                        "link": order.transaction_link
-                    }
-                return None
-
-            # Если админ отклонил заявку
-            if order.status is Status.отклонена:
-
-                # Удаляем заявки из акутальных и ключ в редисе
-                await db.pending_admin.delete(
-                    PendingAdmin.order_id == order_id
+                # Обновляем обьем
+                await db.user.update_sell_volume(
+                    ident=user_id,
+                    user_volume=user_volume
                 )
-                await db.session.commit()
-                await services.redis_values.redis_conn.delete(user_uuid)
+            # Удаляем заявки из акутальных и ключ в редисе
+            await services.redis_values.redis_conn.delete(user_uuid)
+            await db.pending_admin.delete(
+                PendingAdmin.order_id == order_id
+            )
+            await db.session.commit()
 
-                # Возращаем причину отказа
-                return {
-                    "reason": order.decline_reason
-                }
-            await asyncio.sleep(5)
+            # if buy_currency.type is CurrencyType.Крипта:
+
+            #     return {
+            #         "link": order.transaction_link
+            #     }
+            # return None
+
+        # Если админ отклонил заявку
+        if order.status is Status.отклонена:
+
+            # Удаляем заявки из акутальных и ключ в редисе
+            await db.pending_admin.delete(
+                PendingAdmin.order_id == order_id
+            )
+            await db.session.commit()
+            await services.redis_values.redis_conn.delete(user_uuid)
+
+            # Возращаем причину отказа
+            # return {
+            #     "reason": order.decline_reason
+            # }
 
 
 class Mail:

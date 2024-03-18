@@ -13,6 +13,7 @@ from price_parser.parser import parse_the_price
 from redis_ttl.routers import get_ttl
 from sevices import services
 
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -57,10 +58,14 @@ async def cache_rates():
                 await services.redis_values.redis_conn.delete("rates")
 
             except httpx.RequestError as exc:
-                LOGGER.error(f"Проблема c удалением монет из редиса{exc.request.url!r}")
+                LOGGER.error(
+                    f"Проблема c удалением монет из редиса{exc.request.url!r}"
+                )
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Проблема c удалением монет из редиса {exc.request.url!r}"
+                    detail=f"""Проблема c удалением монет из редиса
+                    {exc.request.url!r}
+                    """
                 )
 
         LOGGER.info(f"Курсы: {rates}, тип: {type(rates)}")
@@ -99,7 +104,16 @@ async def controll_order(
             order_id = await services.redis_values.get_order_id(
                 user_uuid=user_uuid
             )
-
+            user_id = await services.redis_values.get_user_id(
+                user_uuid
+            )
+            if order_id:
+                await services.db_paralell.payed_button_db(
+                    db=db,
+                    user_uuid=user_uuid,
+                    order_id=order_id,
+                    user_id=user_id
+                )
         # Отдаем контроль на 10 сек
         await async_sleep(10)
 

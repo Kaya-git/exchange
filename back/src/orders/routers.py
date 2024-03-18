@@ -8,9 +8,11 @@ from auth.routers import current_active_user
 from database.db import Database, get_async_session
 from sevices import services
 from users.routers import lk_router
+from enums.models import Status, CurrencyType
 
 from .models import Order
 from .shemas import OrderRead
+
 
 if TYPE_CHECKING:
     from users.models import User
@@ -74,9 +76,28 @@ async def get_order_status(
     LOGGER.info(f"Заявка: {order.id} Статус заявки: {order.status}")
 
     if order is not None:
+
+        if (
+            order.status is Status.исполнена and
+            order.transaction_link is not None
+        ):
+            buy_currency = await db.currency.get(order.buy_currency_id)
+
+            if buy_currency.type is CurrencyType.Крипта:
+                return {
+                    "link": order.transaction_link
+                }
+            return None
+
+        if order.status is Status.отклонена:
+            return {
+                "reason": order.decline_reason
+            }
+
         return {
             "status": order.status
         }
+
     raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Ордера нет в базе"

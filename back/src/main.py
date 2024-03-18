@@ -1,7 +1,7 @@
 import logging
 import uuid
 
-from fastapi import BackgroundTasks, Depends, FastAPI, Response
+from fastapi import Depends, FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -90,7 +90,6 @@ admin.add_view(FAQAdmin)
 @app.get("/api/uuid")
 async def root(
     response: Response,
-    background_tasks: BackgroundTasks,
     async_session: AsyncSession = Depends(get_async_session),
 
 ):
