@@ -448,8 +448,8 @@ class DB:
                     ident=user_id,
                     user_volume=user_volume
                 )
-            # Удаляем заявки из акутальных и ключ в редисе
-            await services.redis_values.redis_conn.delete(user_uuid)
+            # # Удаляем заявки из акутальных и ключ в редисе
+            # await services.redis_values.redis_conn.delete(user_uuid)
             await db.pending_admin.delete(
                 PendingAdmin.order_id == order_id
             )
@@ -470,7 +470,7 @@ class DB:
                 PendingAdmin.order_id == order_id
             )
             await db.session.commit()
-            await services.redis_values.redis_conn.delete(user_uuid)
+            # await services.redis_values.redis_conn.delete(user_uuid)
 
             # Возращаем причину отказа
             # return {

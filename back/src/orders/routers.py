@@ -81,6 +81,9 @@ async def get_order_status(
             order.status is Status.исполнена and
             order.transaction_link is not None
         ):
+            # Удаляем заявки из акутальных и ключ в редисе
+            await services.redis_values.redis_conn.delete(user_uuid)
+
             buy_currency = await db.currency.get(order.buy_currency_id)
 
             if buy_currency.type is CurrencyType.Крипта:
@@ -90,6 +93,9 @@ async def get_order_status(
             return None
 
         if order.status is Status.отклонена:
+            # Удаляем заявки из акутальных и ключ в редисе
+            await services.redis_values.redis_conn.delete(user_uuid)
+
             return {
                 "reason": order.decline_reason
             }
