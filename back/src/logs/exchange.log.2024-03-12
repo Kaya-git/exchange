@@ -1,0 +1,41 @@
+2024-03-12 13:28:04,400 - main - INFO - --- Start up App ---
+2024-03-12 13:28:04,400 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-03-12 13:28:04,530 - background_tasks.handlers - INFO - Фиат:RUB
+2024-03-12 13:28:04,530 - background_tasks.handlers - INFO - Крипта:LTC
+2024-03-12 13:28:04,530 - background_tasks.handlers - INFO - Крипта:BTC
+2024-03-12 13:28:04,530 - background_tasks.handlers - INFO - Фиат:USD
+2024-03-12 13:28:04,530 - background_tasks.handlers - INFO - Фиат:['rub', 'usd']
+2024-03-12 13:28:04,530 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-03-12 13:28:05,026 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=litecoin%2Cbitcoin&vs_currencies=rub%2Cusd "HTTP/1.1 200 OK"
+2024-03-12 13:28:05,027 - price_parser.parser - INFO - Parser status: 200
+2024-03-12 13:28:05,027 - price_parser.parser - INFO - response: {'bitcoin': {'rub': 6526085, 'usd': 71656}, 'litecoin': {'rub': 8851.98, 'usd': 97.19}}
+2024-03-12 13:28:05,027 - background_tasks.handlers - INFO - ответ:{'bitcoin': {'rub': 6526085, 'usd': 71656}, 'litecoin': {'rub': 8851.98, 'usd': 97.19}}
+2024-03-12 13:28:05,027 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 6526085, 'usd': 71656}, 'litecoin': {'rub': 8851.98, 'usd': 97.19}}, тип: <class 'dict'>
+2024-03-12 13:28:05,029 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-03-12 13:29:05,029 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-03-12 13:29:05,031 - background_tasks.handlers - INFO - Фиат:RUB
+2024-03-12 13:29:05,033 - background_tasks.handlers - INFO - Крипта:LTC
+2024-03-12 13:29:05,033 - background_tasks.handlers - INFO - Крипта:BTC
+2024-03-12 13:29:05,034 - background_tasks.handlers - INFO - Фиат:USD
+2024-03-12 13:29:05,034 - background_tasks.handlers - INFO - Фиат:['rub', 'usd']
+2024-03-12 13:29:05,034 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-03-12 13:29:05,236 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=litecoin%2Cbitcoin&vs_currencies=rub%2Cusd "HTTP/1.1 200 OK"
+2024-03-12 13:29:05,236 - price_parser.parser - INFO - Parser status: 200
+2024-03-12 13:29:05,236 - price_parser.parser - INFO - response: {'bitcoin': {'rub': 6526085, 'usd': 71656}, 'litecoin': {'rub': 8851.98, 'usd': 97.19}}
+2024-03-12 13:29:05,237 - background_tasks.handlers - INFO - ответ:{'bitcoin': {'rub': 6526085, 'usd': 71656}, 'litecoin': {'rub': 8851.98, 'usd': 97.19}}
+2024-03-12 13:29:05,237 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 6526085, 'usd': 71656}, 'litecoin': {'rub': 8851.98, 'usd': 97.19}}, тип: <class 'dict'>
+2024-03-12 13:29:05,237 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-03-12 13:43:45,540 - main - INFO - --- Start up App ---
+2024-03-12 13:43:45,540 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-03-12 13:43:45,633 - background_tasks.handlers - INFO - Фиат:RUB
+2024-03-12 13:43:45,633 - background_tasks.handlers - INFO - Крипта:LTC
+2024-03-12 13:43:45,633 - background_tasks.handlers - INFO - Крипта:BTC
+2024-03-12 13:43:45,633 - background_tasks.handlers - INFO - Фиат:USD
+2024-03-12 13:43:45,633 - background_tasks.handlers - INFO - Фиат:['rub', 'usd']
+2024-03-12 13:43:45,633 - background_tasks.handlers - INFO - Крипта:['litecoin', 'bitcoin']
+2024-03-12 13:43:46,089 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=litecoin%2Cbitcoin&vs_currencies=rub%2Cusd "HTTP/1.1 200 OK"
+2024-03-12 13:43:46,090 - price_parser.parser - INFO - Parser status: 200
+2024-03-12 13:43:46,090 - price_parser.parser - INFO - response: {'bitcoin': {'rub': 6541754, 'usd': 71894}, 'litecoin': {'rub': 8858.21, 'usd': 97.35}}
+2024-03-12 13:43:46,091 - background_tasks.handlers - INFO - ответ:{'bitcoin': {'rub': 6541754, 'usd': 71894}, 'litecoin': {'rub': 8858.21, 'usd': 97.35}}
+2024-03-12 13:43:46,091 - background_tasks.handlers - INFO - Курсы: {'bitcoin': {'rub': 6541754, 'usd': 71894}, 'litecoin': {'rub': 8858.21, 'usd': 97.35}}, тип: <class 'dict'>
+2024-03-12 13:43:46,092 - background_tasks.handlers - INFO - Парсинг спит 10 мин

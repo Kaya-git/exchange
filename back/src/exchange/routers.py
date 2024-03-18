@@ -412,11 +412,12 @@ async def payed_button(
         user_uuid
     )
     # Достаем из редиса номер пользователя
-    user_id = await services.redis_values.get_user_id(
-        user_uuid
+    # user_id = await services.redis_values.get_user_id(
+    #     user_uuid
+    # )
+    pending = await db.pending_admin.get_by_where(
+        PendingAdmin.order_id == order_id
     )
-    pending = db.pending_admin.get_by_where(PendingAdmin.order_id == order_id)
-
     if pending is None:
         # Добавляем актуальную заявку
         await db.pending_admin.new(
@@ -445,12 +446,12 @@ async def payed_button(
     # )
 
     # Создаем таск на пулинг подтверждения оплаты от сервиса
-    task = asyncio.create_task(services.db_paralell.payed_button_db(
-            db=db,
-            user_uuid=user_uuid,
-            order_id=order_id,
-            user_id=user_id
-        )
-    )
+    # task = asyncio.create_task(services.db_paralell.payed_button_db(
+    #         db=db,
+    #         user_uuid=user_uuid,
+    #         order_id=order_id,
+    #         user_id=user_id
+    #     )
+    # )
 
-    return await task
+    # return await task
