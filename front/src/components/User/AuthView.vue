@@ -38,7 +38,6 @@
                             class="auth__btn"
                             type="submit"
                             size="x-large"
-                            color="primary"
                             :loading="loading"
                             :disabled="loading">
                             Войти

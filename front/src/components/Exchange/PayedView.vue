@@ -11,7 +11,7 @@
                         :size="30"
                     ></v-progress-circular>
                     <h2 class="payed__title title title_h2 title_black mb-4 text-center">
-                        {{getCurExchangeStatus ?? 'Проверка оплаты'}}
+                        {{status ?? 'Проверка оплаты'}}
                     </h2>
                 </v-row>
                 <v-row class="payed__row">
@@ -35,8 +35,8 @@ export default defineComponent({
     name: 'PayedView',
 
     data: () => ({
-        loading: false,
         timerId: null,
+        status: "",
     }),
     components: {
         CurExchangeTable: defineAsyncComponent({
@@ -45,10 +45,11 @@ export default defineComponent({
     },
     created() {
         this.payed();
+        this.checkStatus();
     },
     mounted() {
         this.timerId = setInterval(() => {
-            this.getStatus();
+            this.checkStatus();
         }, 5000);
     },
     beforeUnmount() {
@@ -61,7 +62,6 @@ export default defineComponent({
             'getStatus',
         ]),
         async payed() {
-            this.loading = true;
             let details = {
                 'user_uuid': this.getUuid,
             }
@@ -75,23 +75,28 @@ export default defineComponent({
                 },
                 body: formBody
             });
+            if (!response.ok) {
+                this.$emit('error', 'Не удалось отправить запрос');
+            }
+        },
+        async checkStatus() {
+            let response = await fetch('/api/orders/get_order_status?user_uuid=' + this.getUuid);
             if (response.ok) {
                 let result = await response.json();
-                this.confirmOverlay = false;
-                if (result.reason) {
-                    this.$emit('error', 'Отказано. ' + result.reason);
-                } else {
+                if (result.status) {
+                    this.status = result.status;
+                }
+                if (result.link) {
                     this.$emit('complete', 'Одобрено');
                 }
-            } else {
-                await this.payed();
+                if (result.reason) {
+                    this.$emit('error', 'Отказано. ' + result.reason);
+                }
             }
-            this.loading = false;
-        },
+        }
     },
     computed: {
         ...mapGetters([
-            'getVerificationFile',
             'getUuid',
             'getCurExchangeStatus',
         ]),

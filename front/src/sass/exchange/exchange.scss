@@ -66,21 +66,33 @@
 .exchange-data {
     width: 100%;
     z-index: $above;
-    background-color: $secondColor;
+    background-color: rgba(48,193,255,0.55);
     border-radius: 5px;
     &__wrapper {
         padding: 24px;
     }
     &__title {
-        color: $thirdColor;
+        color: $secondColor;
         margin-bottom: 15px;
     }
     &__text-field {
         margin-bottom: 10px;
+        //color: $secondColor;
+        //.v-text-field__suffix__text {
+        //    color: $secondColor;
+        //}
     }
     &__checkbox {
         label {
             font-size: 12px !important;
+            color: $secondColor;
+        }
+        a {
+            color: $secondColor;
+            text-decoration: underline;
+        }
+        i {
+            color: $secondColor;
         }
     }
     &__submit {

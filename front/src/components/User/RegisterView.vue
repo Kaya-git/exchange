@@ -38,7 +38,6 @@
                         class="register__btn"
                         type="submit"
                         size="large"
-                        color="primary"
                         :loading="loading"
                         :disabled="loading">
                         Зарегистрироваться

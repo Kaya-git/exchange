@@ -6,10 +6,14 @@
                     <div class="header-main__logo header-logo">
                         <Router-link to="/">
                             <h1 class="header-logo__container">
-                                <span class="header-logo__letter text-anim text-anim-1">V</span>
-                                <span class="header-logo__letter text-anim text-anim-2">V</span>
-                                <span class="header-logo__letter text-anim text-anim-3">S</span>
-                                Coin
+                                <div class="header-logo__wrapper">
+                                    <span class="header-logo__span-wrapper">
+                                        <span class="header-logo__letter text-anim text-anim-1">V</span>
+                                        <span class="header-logo__letter text-anim text-anim-2">V</span>
+                                        <span class="header-logo__letter text-anim text-anim-3">S</span>
+                                    </span>
+                                    <span class="header-logo__span-wrapper">Coin</span>
+                                </div>
                             </h1>
                         </Router-link>
                     </div>
@@ -17,7 +21,7 @@
                 <v-col class="header-main__col v-col-8">
                     <nav-menu></nav-menu>
                 </v-col>
-                <v-col v-if="!isExcludeRoute" class="header-main__col v-col-2 d-flex justify-center pt-4">
+                <v-col v-if="!isExcludeRoute" class="header-main__col v-col-2 d-flex align-center justify-center pt-4">
                     <template v-if="!getAuthState">
                         <RouterLink to="/auth/">
                             <v-btn
@@ -69,15 +73,20 @@
                     <div class="header-mobile__logo header-logo">
                         <Router-link to="/">
                             <h1 class="header-logo__container">
-                                <span class="header-logo__letter text-anim text-anim-1">V</span>
-                                <span class="header-logo__letter text-anim text-anim-2">V</span>
-                                <span class="header-logo__letter text-anim text-anim-3">S</span>
-                                Coin
+                                <div class="header-logo__wrapper">
+                                    <span class="header-logo__span-wrapper">
+                                        <span class="header-logo__letter text-anim text-anim-1">V</span>
+                                        <span class="header-logo__letter text-anim text-anim-2">V</span>
+                                        <span class="header-logo__letter text-anim text-anim-3">S</span>
+                                    </span>
+                                    <span class="header-logo__span-wrapper">Coin</span>
+                                </div>
                             </h1>
                         </Router-link>
                     </div>
                 </v-col>
             </v-row>
+            <div class="header__divider"></div>
         </v-container>
     </header>
     <nav-mobile></nav-mobile>

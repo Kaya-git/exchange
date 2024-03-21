@@ -93,9 +93,10 @@
 	justify-content: flex-start !important;
 	position: relative;
 	&_active {
-		background-color: $fourthColor !important;
+		background-color: rgba(48,193,255, 0.6) !important;
 		color: $secondColor !important;
 	}
+
 	&__img {
 		//display: flex;
 		//justify-content: center;
@@ -148,7 +149,7 @@
 	}
 
 	&__item-sum {
-		padding: 0 10px;
+		padding: 0 10px 0 0;
 	}
 
 	&__item-icon {
@@ -181,16 +182,24 @@
 	}
 }
 
+@media (min-width:$md4+px){
+	.account-table {
+		td {
+			font-size: rem(16px);
+		}
+	}
+}
+
+.flashing {
+	opacity: 0.7;
+	&::before {
+		color: red;
+	}
+}
 
 //Animation
 $textDur: 500ms;
 
-.header-logo {
-	position: relative;
-	&__container {
-		position: relative;
-	}
-}
 
 .text-anim {
 	display: inline-block;

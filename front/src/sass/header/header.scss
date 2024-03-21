@@ -1,14 +1,30 @@
 .header {
     position: absolute;
     width: 100%;
+    height: 115px;
+    padding-top: 15px;
     top: 0;
     left: 0;
     z-index: $zLayoutNavigation;
     &__container {
         height: 90px;
+        position: relative;
     }
     .header-mobile {
         margin-top: -12px;
+    }
+
+    &__divider {
+        overflow: hidden;
+        display: none;
+        width: calc(100% - 54px);
+        height: 1px;
+        background-color: #fff;
+        position: absolute;
+        bottom: -26px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: $zLayoutNavigation;
     }
 }
 .header-mobile {
@@ -30,6 +46,9 @@
     }
     &__col {
         min-height: 72px;
+    }
+    &__auth {
+        border: 2px solid #4FE8FD !important;
     }
 }
 
@@ -53,6 +72,16 @@
     width: 100%;
     height: 100%;
     justify-content: center;
+    &__container {
+        position: relative;
+        width: 150px;
+    }
+    &__wrapper {
+        padding: 10px 0;
+        border-radius: 20px;
+        border: 2px solid #4FE8FD;
+        position: relative;
+    }
     a {
         position: absolute;
         display: block;
@@ -63,6 +92,21 @@
         font-weight: 700;
         letter-spacing: 5.25px;
         text-align: center;
+    }
+    &__letter {
+        color: #4FE8FD;
+        text-shadow:
+                0 0 7px #4FE8FD,
+                0 0 10px #4FE8FD,
+                0 0 21px #4FE8FD,
+                0 0 42px #4FE8FD,
+                0 0 82px #4FE8FD,
+                0 0 92px #4FE8FD,
+                0 0 102px #4FE8FD,
+                0 0 151px #0fa;
+    }
+    &__span-wrapper {
+        padding-left: 8px;
     }
 }
 
@@ -124,6 +168,9 @@
         height: inherit;
     }
     &__list {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         overflow-y: scroll;
         position: absolute;
         top: 50%;
@@ -174,7 +221,7 @@
         &__container {
             max-width: 750px;
             padding-top: 30px;
-            padding-left: 30px;
+            padding-left: 15px;
         }
     }
     .mobile-menu {
@@ -211,7 +258,8 @@
     .header {
         &__container.v-container {
             max-width: $maxWidtn;
-            padding-top: 16px;
+            padding-top: 0;
+            padding-bottom: 0;
         }
     }
     .header-logo {
@@ -234,5 +282,10 @@
     }
     .header-mobile {
         display: none;
+    }
+    .header {
+        &__divider {
+            display: block;
+        }
     }
 }

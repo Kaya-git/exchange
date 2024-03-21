@@ -21,6 +21,8 @@
 
     &__btn {
         margin: 0 auto;
+        background-color: $fourthColor !important;
+        color: $secondColor !important;
     }
 
     &__form-auth {

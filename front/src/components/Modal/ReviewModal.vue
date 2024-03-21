@@ -3,8 +3,12 @@
         class="reviews__btn" 
         size="large"
         :color="btnColor"
-        @click="overlay = !overlay">
+        @click="overlay = !overlay"
+        append-icon="mdi-check-circle-outline">
             Оставить отзыв
+        <template v-slot:append>
+            <v-icon class="reviews__btn-icon flashing-icon" color="success"></v-icon>
+        </template>
     </v-btn>
     <v-overlay 
         v-model="overlay"
@@ -87,6 +91,9 @@ export default defineComponent({
             required: value => !!value || 'Обязательно для заполнения',
         }
     }),
+    mounted() {
+        this.startFlashing();
+    },
     methods: {
         async submit(event) {
             this.loading = true;
@@ -112,7 +119,18 @@ export default defineComponent({
                 }
             }
             this.loading = false;
-        }
+        },
+        toggleIcon() {
+            const icon = document.querySelector('.flashing-icon');
+            if (icon) {
+                icon.classList.toggle('flashing');
+            }
+        },
+        startFlashing() {
+            setInterval(() => {
+                this.toggleIcon();
+            }, 500);
+        },
     }
 });
 </script>

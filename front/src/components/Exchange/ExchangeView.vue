@@ -53,7 +53,7 @@
                             <v-container class="exchange-tab__currency-list currency-list">
                                 <v-item-group
                                     v-model="giveCurrency"
-                                    selected-class="bg-primary"
+                                    selected-class="currency-btn_active"
                                     class="currency-list__group">
                                     <v-item
                                         v-for="(currency, i) in filteredGiveBanks"
@@ -64,6 +64,8 @@
                                             class="currency-list__btn currency-btn"
                                             @click="select"
                                             :class="selectedClass"
+                                            variant="tonal"
+                                            color="white"
                                             size="x-large">
                                             <template v-slot:prepend>
                                         <span class="currency-btn__img">
@@ -82,6 +84,8 @@
                                             class="currency-list__btn currency-btn"
                                             @click="select"
                                             :class="selectedClass"
+                                            variant="tonal"
+                                            color="white"
                                             size="x-large">
                                             <template v-slot:prepend>
                                         <span class="currency-btn__img">
@@ -131,7 +135,7 @@
                                     v-model="getCurrency"
                                     v-if="giveCurrency && giveCurrency.type === 'fiat'"
                                     class="currency-list__group"
-                                    selected-class="bg-primary">
+                                    selected-class="currency-btn_active">
                                     <v-item
                                         v-for="(currency, i) in filteredGetCryptos"
                                         :key="i"
@@ -140,6 +144,8 @@
                                         <v-btn
                                             class="currency-list__btn currency-btn"
                                             :class="selectedClass"
+                                            variant="tonal"
+                                            color="white"
                                             size="x-large"
                                             @click="select">
                                             <template v-slot:prepend>
@@ -165,6 +171,8 @@
                                             class="currency-list__btn currency-btn"
                                             :class="selectedClass"
                                             size="x-large"
+                                            variant="tonal"
+                                            color="white"
                                             @click="select">
                                             <template v-slot:prepend>
                                         <span class="currency-btn__img">
@@ -262,17 +270,6 @@
                                                             </div>
                                                         </template>
                                                     </v-checkbox>
-                                                    <v-checkbox
-                                                        hide-details
-                                                        v-model="formData.rules.value"
-                                                        :error="formData.rules.error && !formData.rules.value"
-                                                        :rules="[rules.required]"
-                                                        class="exchange-data__checkbox">
-                                                        <template v-slot:label>
-                                                            <div>Согласен с тем, что сумму более ₽300'000 необходимо <RouterLink
-                                                                to="/privacy/">отправлять частями</RouterLink></div>
-                                                        </template>
-                                                    </v-checkbox>
                                                 </div>
                                             </template>
                                             <template v-else>
@@ -367,7 +364,7 @@
                         <h3 class="exchange-desktop__title title title_h3">Отдаете</h3>
                         <v-item-group
                             v-model="giveCurrency"
-                            selected-class="bg-primary"
+                            selected-class="currency-btn_active"
                             class="exchange-desktop__list currency-list">
                             <h3 class="currency-list__title title title_h4">Интернет-банкинг</h3>
                             <v-item
@@ -379,6 +376,8 @@
                                     class="currency-list__btn currency-btn"
                                     @click="select"
                                     :class="selectedClass"
+                                    variant="tonal"
+                                    color="white"
                                     size="x-large">
                                     <template v-slot:prepend>
                                         <span class="currency-btn__img">
@@ -398,6 +397,8 @@
                                     class="currency-list__btn currency-btn"
                                     @click="select"
                                     :class="selectedClass"
+                                    variant="tonal"
+                                    color="white"
                                     size="x-large">
                                     <template v-slot:prepend>
                                         <span class="currency-btn__img">
@@ -415,7 +416,7 @@
                             v-model="getCurrency"
                             v-if="giveCurrency && giveCurrency.type === 'fiat'"
                             class="exchange-desktop__list currency-list"
-                            selected-class="bg-primary">
+                            selected-class="currency-btn_active">
                             <h3 class="currency-list__title title title_h4">Криптовалюта</h3>
                             <v-item
                                 v-for="(currency, i) in currenciesApi.crypto"
@@ -425,6 +426,8 @@
                                 <v-btn
                                     class="currency-list__btn currency-btn"
                                     :class="selectedClass"
+                                    variant="tonal"
+                                    color="white"
                                     size="x-large"
                                     @click="select">
                                     <template v-slot:prepend>
@@ -440,7 +443,7 @@
                             v-model="getCurrency"
                             v-if="giveCurrency && giveCurrency.type === 'crypto'"
                             class="exchange-desktop__list currency-list"
-                            selected-class="bg-primary">
+                            selected-class="currency-btn_active">
                             <h3 class="currency-list__title title title_h4">Интернет-банкинг</h3>
                             <v-item
                                 v-for="(currency, i) in currenciesApi.banks"
@@ -451,6 +454,8 @@
                                     class="currency-list__btn currency-btn"
                                     :class="selectedClass"
                                     size="x-large"
+                                    variant="tonal"
+                                    color="white"
                                     @click="select">
                                     <template v-slot:prepend>
                                         <span class="currency-btn__img">
@@ -477,6 +482,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     placeholder="1000"
                                                     v-model="formData.give"
                                                     :rules="[rules.required]"
@@ -486,14 +492,17 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
-                                                    placeholder="ФИО"
+                                                    color="black"
+                                                    label="ФИО"
+                                                    variant="solo"
                                                     v-model="formData.name"
                                                     :rules="[rules.required]">
                                                 </v-text-field>
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
-                                                    placeholder="Ваш номер карты"
+                                                    variant="solo"
+                                                    label="Ваш номер карты"
                                                     v-model="formData.cardNumber"
                                                     :rules="[rules.required, rules.cardNumberRule]"
                                                     @input="formatCardNumber">
@@ -504,6 +513,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     :placeholder="cryptoWalletRule.randomPlaceholder"
                                                     v-model="formData.get"
                                                     :rules="[rules.required]"
@@ -513,14 +523,16 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
-                                                    :placeholder="'Ваш ' + getCurrencyName + ' кошелек'"
+                                                    variant="solo"
+                                                    :label="'Ваш ' + getCurrencyName + ' кошелек'"
                                                     v-model="formData.cryptoNumber"
                                                     :rules="[rules.required, validateCryptoWallet]">
                                                 </v-text-field>
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="email"
-                                                    placeholder="E-mail"
+                                                    variant="solo"
+                                                    label="E-mail"
                                                     v-model="formData.email"
                                                     :rules="rules.emailRules">
                                                 </v-text-field>
@@ -537,17 +549,6 @@
                                                             </div>
                                                         </template>
                                                     </v-checkbox>
-                                                    <v-checkbox
-                                                        hide-details
-                                                        v-model="formData.rules.value"
-                                                        :error="formData.rules.error && !formData.rules.value"
-                                                        :rules="[rules.required]"
-                                                        class="exchange-data__checkbox">
-                                                        <template v-slot:label>
-                                                            <div>Согласен с тем, что сумму более ₽300'000 необходимо <RouterLink
-                                                                to="/privacy/">отправлять частями</RouterLink></div>
-                                                        </template>
-                                                    </v-checkbox>
                                                 </div>
                                             </template>
                                             <template v-else>
@@ -557,6 +558,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     :placeholder="cryptoWalletRule.randomPlaceholder"
                                                     v-model="formData.give"
                                                     :rules="[rules.required]"
@@ -566,7 +568,8 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
-                                                    :placeholder="'Ваш ' + giveCurrencyName + ' кошелек'"
+                                                    variant="solo"
+                                                    :label="'Ваш ' + giveCurrencyName + ' кошелек'"
                                                     v-model="formData.cryptoNumber"
                                                     :rules="[rules.required, validateCryptoWallet]">
                                                 </v-text-field>
@@ -576,6 +579,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     placeholder="1000"
                                                     v-model="formData.get"
                                                     :rules="[rules.required]"
@@ -585,22 +589,25 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="email"
-                                                    placeholder="E-mail"
+                                                    variant="solo"
+                                                    label="E-mail"
                                                     v-model="formData.email"
                                                     :rules="rules.emailRules">
                                                 </v-text-field>
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
-                                                    placeholder="Ваш номер карты"
+                                                    variant="solo"
+                                                    label="Ваш номер карты"
                                                     v-model="formData.cardNumber"
                                                     :rules="[rules.required, rules.cardNumberRule]"
                                                     @input="formatCardNumber">
                                                 </v-text-field>
                                                 <v-text-field
+                                                    variant="solo"
                                                     class="exchange-data__text-field"
                                                     type="text"
-                                                    placeholder="ФИО"
+                                                    label="ФИО"
                                                     v-model="formData.name"
                                                     :rules="[rules.required]">
                                                 </v-text-field>
@@ -610,6 +617,7 @@
                                                         v-model="formData.privacy.value"
                                                         :error="formData.privacy.error && !formData.privacy.value"
                                                         class="exchange-data__checkbox"
+                                                        color="white"
                                                         :rules="[rules.required]">
                                                         <template v-slot:label>
                                                             <div>Даю согласие с <RouterLink to="/privacy/">условиями обмена</RouterLink>, <RouterLink
@@ -623,6 +631,7 @@
                                                 <v-btn
                                                     type="submit"
                                                     size="large"
+                                                    color="white"
                                                     :loading="loading"
                                                     :disabled="loading">
                                                     Перейти к оплате

@@ -49,7 +49,6 @@
         <div class="account-form__btns">
             <v-btn
                 class="account-form__submit"
-                color="success"
                 size="large"
                 type="submit"
                 :disabled="loading"
