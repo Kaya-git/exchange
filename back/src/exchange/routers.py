@@ -17,7 +17,7 @@ from .handlers import (add_or_get_po, calculate_totals, check_form_fillment,
 import logging
 
 
-LOGGING = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 exchange_router = APIRouter(
@@ -241,7 +241,7 @@ async def confirm_cc(
 ):
     """ Форма для отправки фотографии с картой"""
 
-    LOGGING.info(f"UUID пользователя {user_uuid}")
+    LOGGER.info(f"UUID пользователя {user_uuid}")
 
     # Номер ендпоинта в цепочке заявки
     END_POINT_NUMBER = 4
@@ -275,6 +275,8 @@ async def confirm_cc(
 
     # Получаем номер
     order_id = await services.redis_values.get_order_id(user_uuid=user_uuid)
+
+    LOGGER.info(f"Номер заявки: {order_id}")
 
     await db.order.update_pos(
         order_id=order_id,
