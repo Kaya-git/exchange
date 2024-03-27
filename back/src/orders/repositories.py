@@ -12,6 +12,10 @@ from orders.models import Order
 from payment_options.models import PaymentOption
 from service_payment_options.models import ServicePaymentOption
 from users.models import User
+import logging
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class OrderRepo(Repository[Order]):
@@ -79,6 +83,9 @@ class OrderRepo(Repository[Order]):
                     sell_payment_option_id=po_sell
                 )
             )
+
+            LOGGER.info(f"Апнут селл пеймент {update_sell_po}")
+
             update_buy_po = (
                 update(
                     Order
@@ -88,6 +95,8 @@ class OrderRepo(Repository[Order]):
                     buy_payment_option_id=po_buy
                 )
             )
+
+            LOGGER.info(f"Апнут бай пеймент {update_buy_po}")            
             await session.execute(update_sell_po)
             await session.execute(update_buy_po)
             await session.commit()
