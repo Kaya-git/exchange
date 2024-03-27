@@ -224,7 +224,7 @@ class RedisValues:
         does_exist = await self.redis_conn.exists(
             user_uuid
         )
-        logging.info(f"Статус пользователя: {does_exist}")
+        LOGGER.info(f"Статус пользователя: {does_exist}")
 
         if does_exist != 1:
             raise HTTPException(
