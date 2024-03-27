@@ -241,6 +241,8 @@ async def confirm_cc(
 ):
     """ Форма для отправки фотографии с картой"""
 
+    logging.info(f"UUID пользователя {user_uuid}")
+    
     # Номер ендпоинта в цепочке заявки
     END_POINT_NUMBER = 4
 
