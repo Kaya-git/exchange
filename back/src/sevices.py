@@ -200,8 +200,9 @@ class RedisValues:
             9
         )
         if order_id is not None:
+            LOGGER.info(f"Нашел заказ: {order_id}")
             return int(order_id)
-
+        LOGGER.info("Не нашел заказ")
         return None
 
     async def get_router_num(
