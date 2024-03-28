@@ -307,6 +307,23 @@ class DB:
             # Получаем кортеж с заявкой из бд
             order = await db.order.get(ident=order_id)
 
+            # Если статус заявки отклонен
+            if order.status is Status.отклонена:
+
+                # Удаляем заявку из текущих
+                await db.pending_admin.delete(
+                    PendingAdmin.order_id == order_id
+                )
+                await db.session.commit()
+
+                # Удаляем ключ из редиса
+                await services.redis_values.redis_conn.delete(user_uuid)
+
+                return {
+                    "verified": False,
+                    "reason": order.decline_reason
+                }
+
             # Получаем кортеж со способом покупки из бд
             buy_po = await db.payment_option.get_by_where(
                 whereclause=(PaymentOption.id == order.buy_payment_option_id)
@@ -372,23 +389,7 @@ class DB:
                     return {
                         "verified": True
                     }
-            # Если статус заявки отклонен
-            if order.status is Status.отклонена:
 
-                # Удаляем заявку из текущих
-                await db.pending_admin.delete(
-                    PendingAdmin.order_id == order_id
-                )
-                await db.session.commit()
-
-                # Удаляем ключ из редиса
-                await services.redis_values.redis_conn.delete(user_uuid)
-
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail=f"""Не удалось верифицировать карту:
-                    {order.decline_reason}"""
-                )
 
             await asyncio.sleep(5)
             end_timer = await services.redis_values.redis_conn.ttl(
@@ -472,12 +473,12 @@ class DB:
                 PendingAdmin.order_id == order_id
             )
             await db.session.commit()
-            # await services.redis_values.redis_conn.delete(user_uuid)
+            await services.redis_values.redis_conn.delete(user_uuid)
 
             # Возращаем причину отказа
-            # return {
-            #     "reason": order.decline_reason
-            # }
+            return {
+                "reason": order.decline_reason
+            }
 
 
 class Mail:
