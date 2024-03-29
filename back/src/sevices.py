@@ -469,16 +469,22 @@ class DB:
         if order.status is Status.отклонена:
 
             # Удаляем заявки из акутальных и ключ в редисе
-            await db.pending_admin.delete(
-                PendingAdmin.order_id == order_id
-            )
-            await db.session.commit()
-            await services.redis_values.redis_conn.delete(user_uuid)
+            try:
+                await db.pending_admin.delete(
+                    PendingAdmin.order_id == order_id
+                )
+                await db.session.commit()
+            except Exception as exc:
+                LOGGER.info(
+                    f"Ошибка на удалении пендинга при статусе отмена: {exc}"
+                )
+                pass
+            # await services.redis_values.redis_conn.delete(user_uuid)
 
-            # Возращаем причину отказа
-            return {
-                "reason": order.decline_reason
-            }
+            # # Возращаем причину отказа
+            # return {
+            #     "reason": order.decline_reason
+            # }
 
 
 class Mail:

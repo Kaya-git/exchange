@@ -441,21 +441,3 @@ async def payed_button(
         user_uuid=user_uuid,
         time_out=900
     )
-
-    # # Запускаем фоновую задачу на котроль заявки
-    # background_tasks.add_task(
-    #     controll_order,
-    #     user_uuid,
-    #     db
-    # )
-
-    # Создаем таск на пулинг подтверждения оплаты от сервиса
-    # task = asyncio.create_task(services.db_paralell.payed_button_db(
-    #         db=db,
-    #         user_uuid=user_uuid,
-    #         order_id=order_id,
-    #         user_id=user_id
-    #     )
-    # )
-
-    # return await task
