@@ -103,7 +103,7 @@ export default defineComponent({
             let details = {
                 'user_uuid': this.getUuid,
             }
-            if (localStorage.getItem('confirmed')) {
+            if (this.getCurExchangeStep === 3) {
                 this.isVerificationModalVisible = true;
             } else {
                 let formBody = prepareData(details);
@@ -117,7 +117,6 @@ export default defineComponent({
                 });
                 if (response.ok) {
                     let result = await response.json();
-                    localStorage.setItem('confirmed', 'y');
                     if (result.verified) {
                         this.$emit('skip');
                     } else {
@@ -159,6 +158,7 @@ export default defineComponent({
             'getVerificationFile',
             'getUuid',
             'getRequestFixedTime',
+            'getCurExchangeStep',
         ]),
     },
 });

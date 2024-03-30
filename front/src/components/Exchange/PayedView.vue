@@ -36,7 +36,7 @@ export default defineComponent({
 
     data: () => ({
         timerId: null,
-        status: "",
+        status: "Проверка оплаты",
     }),
     components: {
         CurExchangeTable: defineAsyncComponent({
