@@ -210,6 +210,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     placeholder="1000"
                                                     v-model="formData.give"
                                                     :rules="[rules.required]"
@@ -219,6 +220,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     placeholder="ФИО"
                                                     v-model="formData.name"
                                                     :rules="[rules.required]">
@@ -226,6 +228,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     placeholder="Ваш номер карты"
                                                     v-model="formData.cardNumber"
                                                     :rules="[rules.required, rules.cardNumberRule]"
@@ -237,6 +240,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     :placeholder="cryptoWalletRule.randomPlaceholder"
                                                     v-model="formData.get"
                                                     :rules="[rules.required]"
@@ -246,6 +250,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     :placeholder="'Ваш ' + getCurrencyName + ' кошелек'"
                                                     v-model="formData.cryptoNumber"
                                                     :rules="[rules.required, validateCryptoWallet]">
@@ -253,6 +258,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="email"
+                                                    variant="solo"
                                                     placeholder="E-mail"
                                                     v-model="formData.email"
                                                     :rules="rules.emailRules">
@@ -279,6 +285,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     :placeholder="randomPlaceholderCrypto()"
                                                     v-model="formData.give"
                                                     :rules="[rules.required]"
@@ -288,6 +295,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     :placeholder="'Ваш ' + giveCurrencyName + ' кошелек'"
                                                     v-model="formData.cryptoNumber"
                                                     :rules="[rules.required, validateCryptoWallet]">
@@ -298,6 +306,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     placeholder="1000"
                                                     v-model="formData.get"
                                                     :rules="[rules.required]"
@@ -307,6 +316,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="email"
+                                                    variant="solo"
                                                     placeholder="E-mail"
                                                     v-model="formData.email"
                                                     :rules="rules.emailRules">
@@ -314,6 +324,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     placeholder="Ваш номер карты"
                                                     v-model="formData.cardNumber"
                                                     :rules="[rules.required, rules.cardNumberRule]"
@@ -322,6 +333,7 @@
                                                 <v-text-field
                                                     class="exchange-data__text-field"
                                                     type="text"
+                                                    variant="solo"
                                                     placeholder="ФИО"
                                                     v-model="formData.name"
                                                     :rules="[rules.required]">

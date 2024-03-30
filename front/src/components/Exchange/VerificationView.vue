@@ -71,6 +71,7 @@ export default defineComponent({
                     this.$emit('nextStep');
                 }
             } else {
+                console.log(response);
                 await this.checkVerification();
             }
             this.loading = false;

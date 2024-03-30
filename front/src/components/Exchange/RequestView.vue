@@ -17,12 +17,21 @@
                     <timer-view :custom-class="'request__timer'" :init="getRequestFixedTime" @timeout="$emit('error', 'Время заявки вышло')"></timer-view>
                 </v-row>
                 <v-row class="request__row mb-2">
-                    <v-expansion-panels>
+                    <v-expansion-panels
+                        v-model="panels"
+                        multiple>
                         <v-expansion-panel>
                             <v-expansion-panel-title>
                                 Шаг 1. Переведите {{ exchangeData.give ?? '' }} {{ exchangeData.giveTikker ?? '' }} c
-                                указанной карты
+                                указанной карты на:
                             </v-expansion-panel-title>
+                            <v-expansion-panel-text>
+                                <div class="confirm-modal__cardnumber">
+                                    <div class="confirm-modal__cardnumber-wrapper">
+                                        <span>{{requisite}}</span>
+                                    </div>
+                                </div>
+                            </v-expansion-panel-text>
                         </v-expansion-panel>
                         <v-expansion-panel>
                             <v-expansion-panel-title>
@@ -76,6 +85,7 @@ export default defineComponent({
         confirmOverlay: false,
         requisites: '',
         disabled: false,
+        panels: [0]
     }),
     created() {
         this.exchangeData = this.getExchangeData;

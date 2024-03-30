@@ -27,25 +27,18 @@
                         v-model="name"
                         :rules="[rules.required]"
                         label="Имя"></v-text-field>
-                    <v-radio-group 
-                    v-model="radios" 
-                    class="ma-0">
-                        <template
-                        v-slot:label>
-                            <div 
-                            class="review-modal__radio-label">
-                                Оцените работу нашего сервиса
-                            </div>
-                        </template>
-                        <v-radio
-                        label="Довольны"
-                        color="green"
-                        value="good"></v-radio>
-                        <v-radio
-                        label="Недовольны"
-                        color="red"
-                        value="bad"></v-radio>
-                    </v-radio-group>
+                    <div class="d-flex flex-column mb-4">
+                        <v-label
+                            class="review-modal__radio-label ml-4">
+                            Оцените работу нашего сервиса
+                        </v-label>
+                        <v-rating
+                            v-model="rating"
+                            active-color="blue-lighten-2"
+                            color="orange-lighten-1"
+                        >
+                        </v-rating>
+                    </div>
                     <v-textarea
                     class="review-modal__input"
                     v-model="comment"
@@ -82,7 +75,7 @@ export default defineComponent({
         loading: false,
         name: '',
         comment: '',
-        radios: 'good',
+        rating: 0,
         commentRules: {
             required: v => !!v || 'Обязательное поле',
             lengthRule: v => (v && v.length <= 200) || 'Комментарий должен быть не более 200 символов',
@@ -104,7 +97,7 @@ export default defineComponent({
                 let body = {
                     'name': this.name,
                     'text': this.comment,
-                    'rating': this.radios === 'good' ? 5 : 1,
+                    'rating': this.rating,
                 }
                 let response = await fetch('/api/reviews/review_form', {
                     method: 'POST',
@@ -116,6 +109,9 @@ export default defineComponent({
                 });
                 if (response.ok) {
                     this.overlay = false;
+                    this.rating = 0;
+                    this.name = '';
+                    this.comment = '';
                 }
             }
             this.loading = false;

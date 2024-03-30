@@ -103,24 +103,29 @@ export default defineComponent({
             let details = {
                 'user_uuid': this.getUuid,
             }
-            let formBody = prepareData(details);
-            let response = await fetch('/api/exchange/confirm_button', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'accept': 'application/json',
-                },
-                body: formBody
-            });
-            if (response.ok) {
-                let result = await response.json();
-                if (result.verified) {
-                    this.$emit('skip');
-                } else {
-                    this.isVerificationModalVisible = true;
-                }
+            if (localStorage.getItem('confirmed')) {
+                this.isVerificationModalVisible = true;
             } else {
-                this.$emit('error', 'Не удалось отправить запрос');
+                let formBody = prepareData(details);
+                let response = await fetch('/api/exchange/confirm_button', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'accept': 'application/json',
+                    },
+                    body: formBody
+                });
+                if (response.ok) {
+                    let result = await response.json();
+                    localStorage.setItem('confirmed', 'y');
+                    if (result.verified) {
+                        this.$emit('skip');
+                    } else {
+                        this.isVerificationModalVisible = true;
+                    }
+                } else {
+                    this.$emit('error', 'Не удалось отправить запрос');
+                }
             }
             this.isModalVisible = false;
             this.loading = false;

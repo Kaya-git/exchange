@@ -234,6 +234,7 @@ export default defineComponent({
             if (response.ok) {
                 this.errorStep('Заявка отменена');
                 this.clearDataFromLocalStorage();
+                if (localStorage.getItem('confirmed')) localStorage.removeItem('confirmed');
             }
             this.disabled = false;
         },
