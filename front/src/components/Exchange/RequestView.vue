@@ -28,7 +28,7 @@
                             <v-expansion-panel-text>
                                 <div class="confirm-modal__cardnumber">
                                     <div class="confirm-modal__cardnumber-wrapper">
-                                        <span>{{requisite}}</span>
+                                        <span v-html="requisite"></span>
                                     </div>
                                 </div>
                             </v-expansion-panel-text>
@@ -37,6 +37,13 @@
                             <v-expansion-panel-title>
                                 Шаг 2. После перевода нажмите на кнопку "Оплачено"
                             </v-expansion-panel-title>
+                            <v-expansion-panel-text>
+                                <div class="request__expansion-text">
+                                    <div class="request__expansion-text-wrapper">
+                                        <span>После проверки оплаты, вы получите ссылку на транзакцию в течение 5-15 мин</span>
+                                    </div>
+                                </div>
+                            </v-expansion-panel-text>
                         </v-expansion-panel>
                     </v-expansion-panels>
                 </v-row>
@@ -149,7 +156,7 @@ export default defineComponent({
             'getRequestFixedTime',
         ]),
         requisite() {
-            return  this.requisites.requisites_num + " " + this.requisites.holder;
+            return this.requisites.requisites_num + "" + this.requisites.holder;
         }
     }
 });

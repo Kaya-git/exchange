@@ -1,10 +1,10 @@
 <template>
     <v-btn 
         class="reviews__btn" 
-        size="large"
+        size="x-large"
         :color="btnColor"
         @click="overlay = !overlay"
-        append-icon="mdi-check-circle-outline">
+        append-icon="mdi-checkbox-marked">
             Оставить отзыв
         <template v-slot:append>
             <v-icon class="reviews__btn-icon flashing-icon" color="success"></v-icon>

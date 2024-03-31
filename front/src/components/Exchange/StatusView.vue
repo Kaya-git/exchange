@@ -2,8 +2,11 @@
     <div class="status-page" style="position: relative;">
         <v-sheet rounded class="status-page__sheet pa-3 rounded-t-0">
             <v-container fluid class="status-page__container">
-                <v-row class="status-page__row">
-                    <h2 class="status-page__title title title_h2 title_black mb-4 text-center">{{title}}</h2>
+                <v-row class="status-page__row mb-4">
+                    <h2 class="status-page__title title title_h2 title_black text-center">{{title}}</h2>
+                    <v-icon class="status-page__title-icon ml-1" :color="statuses[status].color">
+                        {{statuses[status].icon}}
+                    </v-icon>
                 </v-row>
                 <v-row class="status-page__row">
                     <p class="status-page__text text-center">{{subtitle}}</p>
@@ -57,9 +60,11 @@ export default defineComponent({
         statuses: {
             success: {
                 color: 'success',
+                icon: 'mdi-checkbox-marked',
             },
             reject: {
                 color: 'error',
+                icon: 'mdi-alert-box',
             }
         }
     }),

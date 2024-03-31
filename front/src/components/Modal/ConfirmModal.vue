@@ -9,6 +9,9 @@
             <v-container fluid class="confirm-modal__container">
                 <v-row class="justify-center">
                     <p class="confirm-modal__text">{{ msg }}</p>
+                    <v-icon class="reviews__btn-icon ml-1" color="success">
+                        mdi-checkbox-marked
+                    </v-icon>
                 </v-row>
                 <v-row>
                     <v-col class="d-flex justify-center">

@@ -87,7 +87,7 @@ export default defineComponent({
                     this.status = result.status;
                 }
                 if (result.link) {
-                    this.$emit('complete', 'Одобрено');
+                    this.$emit('complete', 'Отлично, обмен прошел УСПЕШНО', 'Ваша ссылка на транзакцию:');
                 }
                 if (result.reason) {
                     this.$emit('error', 'Отказано. ' + result.reason);

@@ -2,8 +2,12 @@
   &__title {
     text-align: center;
   }
+  &__title-icon {
+    font-size: rem(30px);
+  }
   &__row {
     justify-content: center;
+    align-items: center;
   }
   &__text {
     text-align: center;

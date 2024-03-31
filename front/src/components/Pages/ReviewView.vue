@@ -34,7 +34,7 @@
                         >
                         </v-pagination>
                         <div class="reviews__bottom">
-                            <review-modal ></review-modal>
+                            <review-modal></review-modal>
                         </div>
                     </v-col>
                 </v-row>

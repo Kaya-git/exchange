@@ -205,10 +205,11 @@ export default defineComponent({
             this.clearDataFromLocalStorage();
             deleteCookie('user_uuid');
         },
-        completeStep(message = '',) {
+        completeStep(message = '', subtitle = '') {
             this.steps[this.curStep].complete = true;
             this.steps[this.curStep].color = 'success';
             this.steps[this.curStep].message = message;
+            this.steps[this.curStep].subtitle = subtitle;
         },
         skipStep() {
             let skippedStep = this.curStep + 1;
@@ -234,7 +235,6 @@ export default defineComponent({
             if (response.ok) {
                 this.errorStep('Заявка отменена');
                 this.clearDataFromLocalStorage();
-                if (localStorage.getItem('confirmed')) localStorage.removeItem('confirmed');
             }
             this.disabled = false;
         },
