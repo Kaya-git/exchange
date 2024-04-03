@@ -35,7 +35,7 @@ async def reviews_list(
 ):
     db = Database(session=async_session)
     reviews = await db.review.get_many(
-        Review.moderated is True
+        Review.moderated == True
     )
     for review in reviews:
 
