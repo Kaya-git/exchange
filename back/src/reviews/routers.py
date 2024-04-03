@@ -11,6 +11,10 @@ from enums.models import ReqAction
 from .handlers import check_review_verif
 from .models import Review
 from .schemas import ReviewCreateDTO, ReviewDTO
+import logging
+
+LOGGER = logging.getLogger(__name__)
+
 
 reviews_router = APIRouter(
     prefix="/api/reviews",
@@ -31,6 +35,13 @@ async def reviews_list(
     reviews = await db.review.get_many(
         Review.moderated is True
     )
+    for review in reviews:
+
+        LOGGER.info(
+            f"""Получен отзыв от: {review.name}
+            текс: {review.text}
+            """
+            )
     return reviews
 
 
