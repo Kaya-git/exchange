@@ -1,4 +1,6 @@
 .not-found {
+  position: relative;
+  z-index: $above;
   height: 100%;
   display: flex;
   align-items: center;

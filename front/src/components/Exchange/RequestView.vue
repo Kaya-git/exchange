@@ -7,87 +7,65 @@
                 </v-row>
                 <v-row class="request__row mb-2">
                     <v-sheet class="request__table-sheet" rounded>
-                        <v-table class="request__table request-table ">
-                            <tbody>
-                            <tr>
-                                <td class="request-table__item text-right">Направление обмена</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.selectedGiveCurrency ?? '' }} {{ exchangeData.giveTikker ?? '' }} /
-                                    {{ exchangeData.selectedGetCurrency ?? '' }} {{ exchangeData.getTikker ?? '' }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Обмен по курсу</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.give ?? '' }} {{ exchangeData.giveTikker ?? '' }} =
-                                    {{ exchangeData.get ?? '' }} {{ exchangeData.getTikker ?? '' }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Отправляете</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.give ?? '' }} {{ exchangeData.giveTikker ?? '' }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Получаете</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.get ?? '' }} {{ exchangeData.getTikker ?? '' }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Номер вашей карты</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.cardNumber ?? '' }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Ваш крипто кошелек</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.cryptoNumber ?? '' }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Ваш email</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.email ?? '' }}
-                                </td>
-                            </tr>
-                            </tbody>
-                        </v-table>
+                        <CurExchangeTable class="request__table"></CurExchangeTable>
                     </v-sheet>
                 </v-row>
                 <v-row class="request__row mb-2">
                     <p class="request__text">Курс зафиксирован на 15 минут. Заявка отменится через:</p>
                 </v-row>
                 <v-row class="request__row mb-8">
-                    <timer-view :custom-class="'request__timer'" :init="900" @timeout="$emit('error', 'Время заявки вышло')"></timer-view>
+                    <timer-view :custom-class="'request__timer'" :init="getRequestFixedTime" @timeout="$emit('error', 'Время заявки вышло')"></timer-view>
                 </v-row>
                 <v-row class="request__row mb-2">
-                    <v-expansion-panels>
+                    <v-expansion-panels
+                        v-model="panels"
+                        multiple>
                         <v-expansion-panel>
                             <v-expansion-panel-title>
                                 Шаг 1. Переведите {{ exchangeData.give ?? '' }} {{ exchangeData.giveTikker ?? '' }} c
-                                указанной карты
+                                указанной карты на:
                             </v-expansion-panel-title>
+                            <v-expansion-panel-text>
+                                <div class="confirm-modal__cardnumber">
+                                    <div class="confirm-modal__cardnumber-wrapper">
+                                        <span v-html="requisite"></span>
+                                    </div>
+                                </div>
+                            </v-expansion-panel-text>
                         </v-expansion-panel>
                         <v-expansion-panel>
                             <v-expansion-panel-title>
                                 Шаг 2. После перевода нажмите на кнопку "Оплачено"
                             </v-expansion-panel-title>
+                            <v-expansion-panel-text>
+                                <div class="request__expansion-text">
+                                    <div class="request__expansion-text-wrapper">
+                                        <span>После проверки оплаты, вы получите ссылку на транзакцию в течение 5-15 мин</span>
+                                    </div>
+                                </div>
+                            </v-expansion-panel-text>
                         </v-expansion-panel>
                     </v-expansion-panels>
                 </v-row>
                 <v-row class="request__row mb-2">
                     <v-col class="d-flex justify-end">
-                        <v-btn id="request-submit" size="large" color="success" @click="this.confirmOverlay = true">
+                        <v-btn
+                            id="request-submit"
+                            size="large"
+                            color="success"
+                            :disabled="disabled"
+                            @click="this.confirmOverlay = true">
                             Оплачено
                         </v-btn>
                     </v-col>
                     <v-col>
-                        <Router-link to="/">
-                            <v-btn size="large" color="error">Отменить</v-btn>
-                        </Router-link>
+                        <v-btn
+                            size="large"
+                            :disabled="disabled"
+                            @click="cancel()"
+                            color="error">
+                            Отменить
+                        </v-btn>
                     </v-col>
                 </v-row>
             </v-container>
@@ -103,7 +81,7 @@
 
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
-import {mapGetters} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
 import {prepareData} from '@/helpers';
 
 export default defineComponent({
@@ -113,20 +91,31 @@ export default defineComponent({
         exchangeData: null,
         confirmOverlay: false,
         requisites: '',
+        disabled: false,
+        panels: [0]
     }),
     created() {
         this.exchangeData = this.getExchangeData;
         this.getRequisites();
     },
+    mounted() {
+        this.ttl();
+    },
     components: {
         TimerView: defineAsyncComponent({
-            loader: () => import("../Utils/TimerView"),
+            loader: () => import("@/components/Utils/TimerView"),
         }),
         ConfirmTrade: defineAsyncComponent({
-            loader: () => import("../Modal/ConfirmTrade"),
+            loader: () => import("@/components/Modal/ConfirmTrade"),
+        }),
+        CurExchangeTable: defineAsyncComponent({
+            loader: () => import("@/components/Tables/CurExchangeTable"),
         }),
     },
     methods: {
+        ...mapActions([
+            'ttl',
+        ]),
         async getRequisites() {
             let details = {
                 'user_uuid': this.getUuid,
@@ -142,22 +131,32 @@ export default defineComponent({
             });
             if (response.ok) {
                 this.requisites = await response.json();
-
+                if (!this.requisites) {
+                    this.$emit('error', 'Сервер не смог предоставить реквизиты');
+                }
+            } else {
+                this.$emit('error', 'Упс! Что-то пошло не так...');
             }
         },
         confirmTrade() {
             this.confirmOverlay = !this.confirmOverlay;
             this.$emit('complete');
             this.$emit('nextStep');
+        },
+        async cancel() {
+            this.disabled = true;
+            await this.$emit('cancel');
+            this.disabled = false;
         }
     },
     computed: {
         ...mapGetters([
             'getExchangeData',
             'getUuid',
+            'getRequestFixedTime',
         ]),
         requisite() {
-            return  this.requisites.requisites_num + " " + this.requisites.holder;
+            return this.requisites.requisites_num + "" + this.requisites.holder;
         }
     }
 });

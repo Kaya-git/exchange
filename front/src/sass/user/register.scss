@@ -1,5 +1,7 @@
 .register {
     padding: 50px;
+    position: relative;
+    z-index: $above;
     &__wrapper {
         padding: 30px;
         border-radius: 5px;
@@ -19,20 +21,40 @@
 
     &__btn {
         margin: 0 auto;
+        background-color: $fourthColor !important;
+        color: $secondColor !important;
     }
 
     &__form-auth {
         margin: 20px auto 0 auto;
+        text-align: center;
         span {
             font-size: rem(16px);
+            line-height: 1.5;
         }
         a {
             color: $fourthColor;
         }
     }
     &__form-details {
+        margin-bottom: 20px;
+        span {
+            font-size: rem(12px);
+            line-height: 1.5;
+        }
         a {
             color: $fourthColor;
+        }
+    }
+}
+
+@media (min-width:$md2+px){
+    .register {
+        &__form-details {
+            margin-bottom: 0;
+            span {
+                font-size: rem(14px);
+            }
         }
     }
 }

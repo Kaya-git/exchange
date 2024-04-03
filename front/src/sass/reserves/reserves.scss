@@ -15,6 +15,11 @@
 .reserve-card {
     padding: 20px 50px 30px 50px !important;
     width: 280px;
+    cursor: pointer;
+    &:hover {
+        transition: transform .2s linear;
+        transform: scale(1.1);
+    }
     &__img {
         margin: 0 auto;
         width: 100px;

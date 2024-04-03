@@ -58,27 +58,52 @@
             </v-stepper-header>
             <v-stepper-window>
                 <v-stepper-window-item :value="1">
-                    <confirm-view v-if="!steps[curStep].error" @nextStep="curStep++" @complete="completeStep" @error="errorStep"></confirm-view>
-                    <error-view v-if="steps[curStep].error" :title="steps[curStep].message"
-                                :subtitle="steps[curStep].subtitle"></error-view>
+                    <confirm-view
+                        v-if="!steps[curStep].error"
+                        @nextStep="curStep++"
+                        @complete="completeStep"
+                        @error="errorStep"
+                        @skip="skipStep"
+                        @cancel="cancelExchange"></confirm-view>
+                    <status-view v-if="steps[curStep].error"
+                                :title="steps[curStep].message"
+                                :subtitle="steps[curStep].subtitle"
+                                status="reject"
+                    ></status-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="2">
                     <verification-view @nextStep="curStep++" @complete="completeStep"
                                        @error="errorStep"></verification-view>
-                    <error-view v-if="steps[curStep].error" :title="steps[curStep].message"
-                                :subtitle="steps[curStep].subtitle"></error-view>
+                    <status-view v-if="steps[curStep].error"
+                                 :title="steps[curStep].message"
+                                 :subtitle="steps[curStep].subtitle"
+                                 status="reject"
+                    ></status-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="3">
-                    <request-view @nextStep="curStep++" @complete="completeStep" @error="errorStep"></request-view>
-                    <error-view v-if="steps[curStep].error" :title="steps[curStep].message"
-                                :subtitle="steps[curStep].subtitle"></error-view>
+                    <request-view
+                        @nextStep="curStep++"
+                        @complete="completeStep"
+                        @error="errorStep"
+                        @cancel="cancelExchange"></request-view>
+                    <status-view v-if="steps[curStep].error"
+                                 :title="steps[curStep].message"
+                                 :subtitle="steps[curStep].subtitle"
+                                 status="reject"
+                    ></status-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="4">
-                    <status-view v-if="!steps[curStep].complete && !steps[curStep].error" @complete="completeStep" @error="errorStep"></status-view>
-                    <error-view v-if="steps[curStep].error" :title="steps[curStep].message"
-                                :subtitle="steps[curStep].subtitle"></error-view>
-                    <success-view v-if="!steps[curStep].error && steps[curStep].message" :title="steps[curStep].message"
-                                :subtitle="steps[curStep].subtitle"></success-view>
+                    <payed-view v-if="!steps[curStep].complete && !steps[curStep].error" @complete="completeStep" @error="errorStep"></payed-view>
+                    <status-view v-if="steps[curStep].error"
+                                 :title="steps[curStep].message"
+                                 :subtitle="steps[curStep].subtitle"
+                                 status="reject"
+                    ></status-view>
+                    <status-view v-else-if="steps[curStep].message"
+                                 :title="steps[curStep].message"
+                                 :subtitle="steps[curStep].subtitle"
+                                 status="success"
+                    ></status-view>
                 </v-stepper-window-item>
             </v-stepper-window>
         </v-stepper>
@@ -86,13 +111,13 @@
 </template>
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
-import {mapGetters, mapMutations, mapActions} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
+import {prepareData, deleteCookie} from '@/helpers';
 
 export default defineComponent({
     name: 'ExchangeSteps',
 
     data: () => ({
-        exchangeData: null,
         error: {
             'status': false,
             'message': '',
@@ -133,17 +158,16 @@ export default defineComponent({
             },
         }
     }),
-    created() {
-        this.exchangeData = this.getExchangeData;
-    },
     mounted() {
         if (this.getCurExchangeStep) {
             if ([1, 2, 3].includes(Number(this.getCurExchangeStep))) {
                 this.curStep = 1;
             } else if ([4, 5].includes(Number(this.getCurExchangeStep))) {
                 this.curStep = 2;
-            } else if ([6, 7].includes(Number(this.getCurExchangeStep))) {
+            } else if ([6].includes(Number(this.getCurExchangeStep))) {
                 this.curStep = 3;
+            } else if ([7].includes(Number(this.getCurExchangeStep))) {
+                this.curStep = 4;
             }
         }
     },
@@ -154,28 +178,22 @@ export default defineComponent({
     },
     components: {
         ConfirmView: defineAsyncComponent({
-            loader: () => import("../Exchange/ConfirmView"),
+            loader: () => import("@/components/Exchange/ConfirmView"),
         }),
         VerificationView: defineAsyncComponent({
-            loader: () => import("../Exchange/VerificationView"),
+            loader: () => import("@/components/Exchange/VerificationView"),
         }),
         RequestView: defineAsyncComponent({
-            loader: () => import("../Exchange/RequestView"),
+            loader: () => import("@/components/Exchange/RequestView"),
+        }),
+        PayedView: defineAsyncComponent({
+            loader: () => import("@/components/Exchange/PayedView"),
         }),
         StatusView: defineAsyncComponent({
-            loader: () => import("../Exchange/StatusView"),
-        }),
-        ErrorView: defineAsyncComponent({
-            loader: () => import("../Exchange/ErrorView"),
-        }),
-        SuccessView: defineAsyncComponent({
-            loader: () => import("../Exchange/SuccessView"),
+            loader: () => import("@/components/Exchange/StatusView"),
         }),
     },
     methods: {
-        ...mapMutations([
-            'auth',
-        ]),
         ...mapActions([
             'clearDataFromLocalStorage'
         ]),
@@ -185,17 +203,46 @@ export default defineComponent({
             this.steps[this.curStep].message = message;
             this.steps[this.curStep].subtitle = subtitle;
             this.clearDataFromLocalStorage();
+            deleteCookie('user_uuid');
         },
-        completeStep(message = '',) {
+        completeStep(message = '', subtitle = '') {
             this.steps[this.curStep].complete = true;
             this.steps[this.curStep].color = 'success';
             this.steps[this.curStep].message = message;
-        }
+            this.steps[this.curStep].subtitle = subtitle;
+        },
+        skipStep() {
+            let skippedStep = this.curStep + 1;
+            this.completeStep();
+            this.steps[skippedStep].complete = true;
+            this.steps[skippedStep].color = 'success';
+            this.curStep = this.curStep + 2;
+        },
+        async cancelExchange() {
+            this.disabled = true;
+            let details = {
+                'user_uuid': this.getUuid,
+            }
+            let formBody = prepareData(details);
+            let response = await fetch('/api/orders/decline_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept': 'application/json',
+                },
+                body: formBody
+            });
+            if (response.ok) {
+                this.errorStep('Заявка отменена');
+                this.clearDataFromLocalStorage();
+            }
+            this.disabled = false;
+        },
     },
     computed: {
         ...mapGetters([
-            'getExchangeData',
             'getCurExchangeStep',
+            'getUuid',
         ]),
     }
 });

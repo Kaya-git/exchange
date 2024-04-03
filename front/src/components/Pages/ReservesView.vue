@@ -39,6 +39,8 @@ export default defineComponent({
     created() {
         this.getReserves();
     },
+    mounted() {
+    },
     methods: {
         async getReserves() {
             let response = await fetch('/api/currency/list');
@@ -46,7 +48,7 @@ export default defineComponent({
                 this.reserves = await response.json();
                 if (this.reserves.length) {
                     this.reserves = this.reserves.filter(function (item) {
-                        if (item.type == 'crypto') {
+                        if (item.type == 'Крипто-валюта') {
                             return true;
                         }
                         return false;

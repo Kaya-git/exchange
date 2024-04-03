@@ -34,7 +34,7 @@
                         >
                         </v-pagination>
                         <div class="reviews__bottom">
-                            <review-modal ></review-modal>
+                            <review-modal></review-modal>
                         </div>
                     </v-col>
                 </v-row>
@@ -44,13 +44,12 @@
 </template>
 
 <script>
-import {defineComponent, defineAsyncComponent} from 'vue';
-import {mapActions} from 'vuex';
+import {defineComponent, defineAsyncComponent, reactive} from 'vue';
 
 export default defineComponent({
 name: 'ReviewView',
     data: () => ({
-        reviews: [],
+        reviews: reactive([]),
         page: 1,
         reviewsPerPage: 5,
     }),
@@ -58,9 +57,7 @@ name: 'ReviewView',
         this.getReviews();
     },
     mounted() {
-        setTimeout(() => {
-            this.resizeBg();
-        }, 100);
+
     },
     components: {
         ReviewModal: defineAsyncComponent({
@@ -68,9 +65,6 @@ name: 'ReviewView',
         }),
     },
     methods: {
-        ...mapActions([
-            'resizeBg',
-        ]),
         async getReviews() {
             let response = await fetch('/api/reviews/list');
             if (response.ok && response.status === 200) {

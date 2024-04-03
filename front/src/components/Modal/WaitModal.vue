@@ -9,7 +9,7 @@
             <v-container fluid class="wait-modal__container">
                 <v-row class="justify-center">
                     <h2 class="wait-modal__title title title_h2 title_black">
-                        {{msg}}
+                        {{curMsg}}
                     </h2>
                 </v-row>
                 <v-row class="justify-center">
@@ -27,17 +27,39 @@
 
 <script>
 import {defineComponent} from 'vue';
+import {randomInteger} from '@/helpers';
 
 export default defineComponent({
     name: 'WaitModal',
     props: {
         msg: {
             type: String,
-            default: 'Придется немного подождать',
+            default: '',
         },
     },
     data: () => ({
-
+        defaultMessages: [
+            'Придется немного подождать',
+            'Проверка безопасности',
+        ],
+        curMsg: null,
+        timer: null,
     }),
+    created() {
+        this.newMessage();
+        this.timer = setInterval(() => {
+            this.newMessage();
+        }, 5000);
+    },
+    beforeUnmount() {
+        if (this.timer) {
+            clearInterval(this.timer);
+        }
+    },
+    methods: {
+        newMessage() {
+            this.curMsg = this.defaultMessages[randomInteger(0,this.defaultMessages.length - 1)];
+        }
+    }
 });
 </script>

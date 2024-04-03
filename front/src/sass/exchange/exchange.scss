@@ -13,8 +13,15 @@
     &__tab-btn {
         box-shadow: none;
         z-index: $base;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
     }
-    &__tab {
+    &__tab-title {
+        font-size: rem(20px);
+    }
+    &__tab-col {
+        z-index: $above;
+        padding-bottom: 16px;
     }
 }
 
@@ -28,6 +35,11 @@
     &__content-row {
         justify-content: center;
     }
+}
+
+.exchange-steps {
+    position: relative;
+    z-index: $above;
 }
 
 .currency-list {
@@ -44,25 +56,46 @@
     &__group {
         width: 100%;
     }
+    &__title {
+        flex: 1 1 auto;
+        margin-bottom: rem(10px);
+    }
+    &__title-mobile {
+        margin-bottom: rem(10px);
+        text-align: center;
+    }
 }
 
 .exchange-data {
     width: 100%;
-    background-color: $secondColor;
+    z-index: $above;
+    background-color: rgba(48,193,255,0.55);
     border-radius: 5px;
     &__wrapper {
         padding: 24px;
     }
     &__title {
-        color: $thirdColor;
+        color: $secondColor;
         margin-bottom: 15px;
     }
     &__text-field {
         margin-bottom: 10px;
+        //color: $secondColor;
+        //.v-text-field__suffix__text {
+        //    color: $secondColor;
+        //}
     }
     &__checkbox {
         label {
             font-size: 12px !important;
+            color: $secondColor;
+        }
+        a {
+            color: $secondColor;
+            text-decoration: underline;
+        }
+        i {
+            color: $secondColor;
         }
     }
     &__submit {
@@ -81,8 +114,8 @@
         margin-bottom: 30px;
     }
 
-    &__trade {
-
+    &__col {
+        z-index: $above;
     }
 }
 

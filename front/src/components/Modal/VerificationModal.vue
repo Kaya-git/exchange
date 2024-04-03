@@ -75,7 +75,7 @@ export default defineComponent({
         rules: [
             v => !!v || 'Обязательное поле',
             v => !!v.length || 'Пустой файл!',
-            v => v[0].size < 2000000 || 'Размер фото должен быть меньше 2 MB!',
+            v => v[0].size < 4000000 || 'Размер фото должен быть меньше 4 MB!',
         ],
         loading: false,
     }),
@@ -91,6 +91,7 @@ export default defineComponent({
                 this.setVerificationFile(this.file[0]);
                 this.$emit('confirmed');
             }
+            this.loading = false;
         },
     }
 });
