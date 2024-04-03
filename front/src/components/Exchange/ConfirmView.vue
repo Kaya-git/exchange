@@ -13,58 +13,39 @@
                 </v-row>
                 <v-row class="confirm__row">
                     <v-sheet class="confirm__table-sheet" rounded>
-                        <v-table class="confirm__table request-table mb-3">
-                            <tbody>
-                            <tr>
-                                <td class="request-table__item text-right">Направление обмена</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.selectedGiveCurrency }} {{ exchangeData.giveTikker }} /
-                                    {{ exchangeData.selectedGetCurrency }} {{ exchangeData.getTikker }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Обмен по курсу</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.give }} {{ exchangeData.giveTikker }} = {{ exchangeData.get }}
-                                    {{ exchangeData.getTikker }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Отправляете</td>
-                                <td class="request-table__item">
-                                    {{ exchangeData.give }} {{ exchangeData.giveTikker }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Получаете</td>
-                                <td class="request-table__item">{{ exchangeData.get }} {{ exchangeData.getTikker }}</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Номер вашей карты</td>
-                                <td class="request-table__item">{{ exchangeData.cardNumber }}</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Ваш крипто кошелек</td>
-                                <td class="request-table__item">{{ exchangeData.cryptoNumber }}</td>
-                            </tr>
-                            <tr>
-                                <td class="request-table__item text-right">Ваш email</td>
-                                <td class="request-table__item">{{ exchangeData.email }}</td>
-                            </tr>
-                            </tbody>
-                        </v-table>
+                        <CurExchangeTable class="confirm__table"></CurExchangeTable>
                     </v-sheet>
                 </v-row>
                 <v-row class="confirm__row mb-8 flex-column align-center">
                     <p class="confirm__text text-center mb-4">
                         Курс зафиксирован на 10 минут, до отмены подтверждения заявки:
                     </p>
-                    <timer-view :custom-class="'confirm__timer'" :init="600" @timeout="$emit('error', 'Время подтверждения заявки вышло');"></timer-view>
+                    <timer-view
+                        :custom-class="'confirm__timer'"
+                        :init="getRequestFixedTime"
+                        @timeout="$emit('error', 'Время подтверждения заявки вышло')"></timer-view>
                 </v-row>
                 <v-row class="confirm__row">
-                    <v-btn @click="isModalVisible = true" color="success" class="confirm__btn" size="large">Создать
-                        заявку
-                    </v-btn>
+                    <v-col class="d-flex justify-sm-end justify-center">
+                        <v-btn
+                            @click="isModalVisible = true"
+                            color="success"
+                            class="confirm__btn"
+                            :disabled="disabled"
+                            size="large">
+                            Создать заявку
+                        </v-btn>
+                    </v-col>
+                    <v-col class="d-flex justify-sm-start justify-center">
+                        <v-btn
+                            class="confirm__reject-btn"
+                            size="large"
+                            :disabled="disabled"
+                            @click="cancel()"
+                            color="error">
+                            Отменить
+                        </v-btn>
+                    </v-col>
                 </v-row>
             </v-container>
         </v-sheet>
@@ -72,6 +53,7 @@
     <confirm-modal
         :model-value="isModalVisible"
         :msg="'Подтвердите, что введенные данные верны'"
+        :loading="loading"
         @confirmed="confirm"
         @canceled="isModalVisible = !isModalVisible">
     </confirm-modal>
@@ -85,14 +67,13 @@
 </template>
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
-import {mapGetters, mapMutations, mapActions} from 'vuex';
+import {mapGetters} from 'vuex';
 import {prepareData} from '@/helpers';
 
 export default defineComponent({
     name: 'ConfirmView',
 
     data: () => ({
-        exchangeData: null,
         error: {
             'status': false,
             'message': '',
@@ -100,91 +81,53 @@ export default defineComponent({
         isModalVisible: false,
         isVerificationModalVisible: false,
         loading: false,
+        disabled: false,
     }),
-    created() {
-        this.exchangeData = this.getExchangeData;
-        // if (this.exchangeData && !localStorage.getItem('startTime')) {
-        //     this.$emit('error', 'Упс! Что-то пошло не так...');
-        // }
-    },
-    mounted() {
-        setTimeout(() => {
-            this.resizeBg();
-        }, 100);
-    },
     components: {
         TimerView: defineAsyncComponent({
-            loader: () => import("../Utils/TimerView"),
+            loader: () => import("@/components/Utils/TimerView"),
         }),
         ConfirmModal: defineAsyncComponent({
-            loader: () => import("../Modal/ConfirmModal"),
+            loader: () => import("@/components/Modal/ConfirmModal"),
         }),
         VerificationModal: defineAsyncComponent({
-            loader: () => import("../Modal/VerificationModal"),
+            loader: () => import("@/components/Modal/VerificationModal"),
+        }),
+        CurExchangeTable: defineAsyncComponent({
+            loader: () => import("@/components/Tables/CurExchangeTable"),
         }),
     },
     methods: {
-        ...mapMutations([
-            'setExchangeData',
-        ]),
-        ...mapActions([
-            'resizeBg',
-        ]),
-        async confirmRequest() {
-            let details = {
-                'user_uuid': this.getUuid,
-            }
-
-            let formBody = prepareData(details);
-            let response = await fetch('/api/exchange/confirm_order/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'accept': 'application/json',
-                },
-                body: formBody
-            });
-
-            if (!response.ok) {
-                this.error.status = true;
-                this.error.message = 'Не удалось  отправить запрос:('
-            } else {
-                let result = await response.json();
-                let exchangeData = {};
-                exchangeData.name = result.client_cc_holder;
-                exchangeData.email = result.client_email;
-                exchangeData.cardNumber = result.client_credit_card_number;
-                exchangeData.cryptoNumber = result.client_crypto_wallet;
-                exchangeData.giveTikker = result.client_sell_currency.tikker;
-                exchangeData.give = result.client_sell_value;
-                exchangeData.selectedGiveCurrency = result.client_sell_currency.name;
-                exchangeData.getTikker = result.client_buy_currency.tikker;
-                exchangeData.get = result.client_buy_value;
-                exchangeData.selectedGetCurrency = result.client_buy_currency.name;
-                exchangeData.uuid = this.getUuid;
-
-                this.setExchangeData(exchangeData);
-            }
-        },
         async confirm() {
+            this.loading = true;
             let details = {
                 'user_uuid': this.getUuid,
             }
-            let formBody = prepareData(details);
-            let response = await fetch('/api/exchange/confirm_button', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'accept': 'application/json',
-                },
-                body: formBody
-            });
-            if (response.ok) {
+            if (this.getCurExchangeStep === 3) {
                 this.isVerificationModalVisible = true;
             } else {
-                this.$emit('error', 'Не удалось отправить запрос');
+                let formBody = prepareData(details);
+                let response = await fetch('/api/exchange/confirm_button', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'accept': 'application/json',
+                    },
+                    body: formBody
+                });
+                if (response.ok) {
+                    let result = await response.json();
+                    if (result.verified) {
+                        this.$emit('skip');
+                    } else {
+                        this.isVerificationModalVisible = true;
+                    }
+                } else {
+                    this.$emit('error', 'Не удалось отправить запрос');
+                }
             }
             this.isModalVisible = false;
+            this.loading = false;
         },
         async verification() {
             this.loading = true;
@@ -203,13 +146,19 @@ export default defineComponent({
                 this.$emit('error', 'Не удалось отправить запрос');
             }
             this.loading = false;
+        },
+        async cancel() {
+            this.disabled = true;
+            await this.$emit('cancel');
+            this.disabled = false;
         }
     },
     computed: {
         ...mapGetters([
-            'getExchangeData',
             'getVerificationFile',
-            'getUuid'
+            'getUuid',
+            'getRequestFixedTime',
+            'getCurExchangeStep',
         ]),
     },
 });

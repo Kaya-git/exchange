@@ -21,7 +21,7 @@
                     {{item.number}}
                 </td>
                 <td class="account-table__item">
-
+                    {{item.is_verified ? 'Верифицировано' : 'Не верифицировано'}}
                 </td>
             </tr>
         </template>
@@ -41,7 +41,7 @@ export default defineComponent({
             thead: [
                 'Наименование',
                 'Номер счета',
-                'Действия',
+                'Статус',
             ],
             tbody: []
         })

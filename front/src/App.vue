@@ -1,20 +1,19 @@
 <template>
-        <v-app id="app-wrapper"  class="app-wrapper">
+        <v-app class="app-wrapper">
+            <div id="app-wrapper" class="parallax"></div>
             <v-container class="app-container">
-                <header-view></header-view>
+                <HeaderView></HeaderView>
                 <main class="page">
                     <div class="page__wrapper">
                         <div class="page__content">
-                            <router-view
-                                @toggle-wait-modal="toggleWaitModal"
-                            ></router-view>
+                            <RouterView></RouterView>
                         </div>
                     </div>
                 </main>
-                <footer-view></footer-view>
-                <wait-modal
+                <FooterView></FooterView>
+                <WaitModal
                     :model-value="wait"
-                ></wait-modal>
+                ></WaitModal>
             </v-container>
         </v-app>
 </template>
@@ -28,18 +27,18 @@ export default {
     name: 'App',
     components: {
         HeaderView: defineAsyncComponent({
-            loader: () => import("./components/Header/HeaderView"),
+            loader: () => import("@/components/Header/HeaderView"),
         }),
         FooterView: defineAsyncComponent({
-            loader: () => import("./components/Footer/FooterView"),
+            loader: () => import("@/components/Footer/FooterView"),
         }),
         WaitModal: defineAsyncComponent({
-            loader: () => import("./components/Modal/WaitModal"),
+            loader: () => import("@/components/Modal/WaitModal"),
         }),
     },
     data() {
         return {
-            wait: false,
+            wait: true,
         }
     },
     created() {
@@ -49,20 +48,15 @@ export default {
         this.getApiUUID();
         this.loadDataFromLocalStorage();
         this.checkAuth();
+        this.requestRecaptchaPublicKey();
     },
     mounted() {
         this.setVantaEffect();
-        this.whereAmI().then(() => {
-            if (this.getCurExchangeStep && localStorage.getItem('startTime')) {
-                // router.push({
-                //     name: 'ExchangeSteps',
-                // })
-            }
+        let vm = this;
+        window.addEventListener('load',() => {
+            vm.loaded();
+            vm.wait = false;
         });
-
-        fetch('/api/redis/ttl' + '?user_uuid=' + this.getUuid);
-
-        this.startCounter();
     },
     methods: {
         ...mapActions([
@@ -70,20 +64,30 @@ export default {
             'loadDataFromLocalStorage',
             'checkAuth',
             'whereAmI',
+            'requestRecaptchaPublicKey',
             'startCounter',
+            'ttl',
+            'getStatus',
         ]),
         ...mapMutations([
             'setUserEmail',
-            'setVantaEffect'
+            'setVantaEffect',
+            'setLoaded',
         ]),
         toggleWaitModal() {
             this.wait = !this.wait;
+        },
+        loaded() {
+            let body = document.querySelector('body');
+            body.classList.add('loaded');
+            this.setLoaded();
         },
     },
     computed: {
         ...mapGetters([
             'getUuid',
             'getCurExchangeStep',
+            'getRequestFixedTime',
         ]),
     },
 }

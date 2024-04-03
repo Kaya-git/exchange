@@ -1,8 +1,12 @@
 .account {
+    position: relative;
+    z-index: $above;
     padding-top: 20px;
     &__tabs {
         overflow-x: auto;
         background-color: $fourthColor !important;
+        border-top-left-radius: 4px !important;
+        border-top-right-radius: 4px !important;
     }
 
     &__window-title {
@@ -11,6 +15,8 @@
 
     &__window-sheet {
         min-height: 300px;
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
     }
     &__tab {
         color: $secondColor !important;
@@ -20,9 +26,6 @@
 @media (min-width:$md2+px){
     .account {
         padding-top: 40px;
-        &__tabs {
-            margin: 0 -100%;
-        }
         &__window-sheet {
             min-height: 400px;
         }

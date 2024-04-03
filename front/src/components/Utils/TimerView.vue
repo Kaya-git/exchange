@@ -6,6 +6,7 @@
 
 <script>
 import {defineComponent} from 'vue';
+import { mapActions, mapState} from 'vuex';
 
 export default defineComponent({
     name: 'TimerView',
@@ -30,44 +31,31 @@ export default defineComponent({
         }
     },
     mounted() {
-        const startTime = this.getLocalStorageTime();
-        if (startTime) {
-            this.startTime = +startTime;
-            let diff = Math.round(new Date().getTime() / 1000 - this.startTime);
-            this.seconds = this.seconds - diff;
-        } else {
-            this.setLocalStorageTime();
-        }
-
         this.startCountdown();
     },
     beforeUnmount() {
         clearInterval(this.timer);
-        this.clearLocalStorageTime();
     },
     methods: {
+        ...mapActions([
+            'clearDataFromLocalStorage',
+        ]),
         startCountdown() {
             this.timer = setInterval(() => {
                 if (this.seconds > 0) {
                     this.seconds--;
                 } else {
+                    this.clearDataFromLocalStorage();
                     clearInterval(this.timer); // Остановить таймер, когда время истекло
-                    this.clearLocalStorageTime();
                     this.$emit('timeout');
                 }
             }, 1000);
         },
-        getLocalStorageTime() {
-            return JSON.parse(localStorage.getItem('startTime'));
-        },
-        clearLocalStorageTime() {
-            localStorage.removeItem('startTime');
-        },
-        setLocalStorageTime(time = this.startTime) {
-            localStorage.setItem('startTime', JSON.stringify(time));
-        }
     },
     computed: {
+        ...mapState([
+           'requestFixedTime',
+        ]),
         formattedTime() {
             const minutes = Math.floor(this.seconds / 60);
             const sec = this.seconds % 60;

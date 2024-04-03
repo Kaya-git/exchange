@@ -52,6 +52,8 @@
 }
 
 .title {
+	z-index: $above;
+	position: relative;
 	font-size: 20px;
 	font-weight: 700;
 	letter-spacing: 1px;
@@ -91,10 +93,16 @@
 	justify-content: flex-start !important;
 	position: relative;
 	&_active {
-		background-color: $fourthColor !important;
+		background-color: rgba(48,193,255, 0.6) !important;
 		color: $secondColor !important;
 	}
+
 	&__img {
+		//display: flex;
+		//justify-content: center;
+		//align-items: center;
+		//border-radius: 50%;
+		//background-color: $secondColor;
 		width: 40px;
 		height: 40px;
 		img {
@@ -139,6 +147,14 @@
 			font-size: rem(16px);
 		}
 	}
+
+	&__item-sum {
+		padding: 0 10px 0 0;
+	}
+
+	&__item-icon {
+		font-size: rem(22px) !important;
+	}
 }
 
 .account-table {
@@ -166,16 +182,24 @@
 	}
 }
 
+@media (min-width:$md4+px){
+	.account-table {
+		td {
+			font-size: rem(16px);
+		}
+	}
+}
+
+.flashing {
+	opacity: 0.7;
+	&::before {
+		color: red;
+	}
+}
 
 //Animation
 $textDur: 500ms;
 
-.header-logo {
-	position: relative;
-	&__container {
-		position: relative;
-	}
-}
 
 .text-anim {
 	display: inline-block;

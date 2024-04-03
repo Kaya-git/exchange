@@ -5,6 +5,8 @@
     &__submit {
         display: block !important;
         margin: 20px 20px 20px 0;
+        background-color: $fourthColor !important;
+        color: $secondColor !important;
     }
     &__btns {
         display: flex;

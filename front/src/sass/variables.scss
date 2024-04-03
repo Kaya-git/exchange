@@ -1,6 +1,12 @@
 //screen
 $minWidth: 320px; // минимальная ширина видимой области
-$maxWidtn: 1200px; // максимальная ширина видимой области
+$maxWidtn: 1320px; // максимальная ширина видимой области
+$x-large: 1140px;
+$large: 960px;
+$medium: 720px;
+$small: 540px;
+$x-small: 100%;
+
 
 //fonts
 $fontFamily: "Exo 2", sans-serif;
@@ -10,7 +16,7 @@ $baseFontSize: 14px;
 $mainColor: #1D114F;
 $secondColor: #FFFFFF;
 $thirdColor: #000000;
-$fourthColor: #5568D4;
+$fourthColor: rgba(48,193,255, 0.6);
 $fifthColor: #FFCD50;
 
 //position
@@ -21,9 +27,16 @@ $zLayoutNavigation: $above + $base;
 
 //media
 $md1: 320;
-$md2: 600;
-$md3: 960;
-$md4: 1280;
-$md5: 1920;
+$md2: 576;
+$md3: 768;
+$md4: 992;
+$md5: 1200;
+$md6: 1400;
 
+
+//$md1: 320;
+//$md2: 600;
+//$md3: 992;
+//$md4: 1200;
+//$md5: 1400;
 //margin

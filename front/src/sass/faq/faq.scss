@@ -1,4 +1,6 @@
 .faq {
+    position: relative;
+    z-index: $above;
     padding: 20px;
     &__sheet {
         background-color: $fourthColor !important;

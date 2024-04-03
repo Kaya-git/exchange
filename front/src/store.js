@@ -1,4 +1,5 @@
 import Vuex from 'vuex';
+import {reactive} from 'vue';
 import {getCookie, deleteCookie, prepareData} from '@/helpers';
 import NET from 'vanta/dist/vanta.net.min';
 
@@ -6,7 +7,9 @@ const Store = new Vuex.Store({
     state: {
         exchangeData: null,
         curExchangeStep: null,
+        curExchangeStatus: null,
         isAuth: false,
+        isLoaded: false,
         verificationFile: null,
         uuid: null,
         user: {
@@ -14,9 +17,10 @@ const Store = new Vuex.Store({
             orders: [],
             data: {},
         },
-        requestFixedTime: 600,
-        vantaEffect: null,
-        timer: null,
+        requestFixedTime: -2,
+        vantaEffect: reactive([]),
+        recaptchaPublicKey: null,
+        currencies: reactive([]),
     },
     mutations: {
         setExchangeData(state, data) {
@@ -53,7 +57,8 @@ const Store = new Vuex.Store({
                 minHeight: window.innerHeight,
                 minWidth: 200.00,
                 scale: 1.00,
-                scaleMobile: 1.00
+                scaleMobile: 1.00,
+                backgroundColor: 0x9,
             });
         },
         setUserOrders(state, data) {
@@ -62,6 +67,18 @@ const Store = new Vuex.Store({
         setUserData(state, data) {
             state.user.data = data;
         },
+        setLoaded(state) {
+            state.isLoaded = true;
+        },
+        setCurExchangeStatus(state, data) {
+            state.curExchangeStatus = data;
+        },
+        setRecaptchaPublicKey(state, key) {
+            state.recaptchaPublicKey = key;
+        },
+        setCurrencies(state, currencies) {
+            state.currencies = currencies;
+        }
     },
     actions: {
         loadDataFromLocalStorage({ commit }) {
@@ -70,24 +87,8 @@ const Store = new Vuex.Store({
                 commit('setExchangeData', data);  // Вызов мутации setExchangeData для обновления состояния
             }
         },
-        async startCounter({ state }) {
-            state.timer = true;
-            while (state.requestFixedTime > 0 && state.timer) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                if (state.timer)
-                    state.requestFixedTime--;
-            }
-            state.timer = false;
-        },
-        resetRequestTime({ state }) {
-            state.requestFixedTime = 600;
-            state.timer = false;
-        },
         clearDataFromLocalStorage() {
             localStorage.removeItem('exchangeData');
-            if (localStorage.getItem('startTime')) {
-                localStorage.removeItem('startTime');
-            }
         },
         async checkAuth({commit, state}) {
             if (state.user.email) {
@@ -96,13 +97,13 @@ const Store = new Vuex.Store({
                     let result = await response.json();
                     await commit('auth');
                     await commit('setUserData', result);
-                    return state.isAuth;
                 } else {
                     if (getCookie('user_email')) {
                         deleteCookie('user_email');
                     }
                 }
             }
+            return state.isAuth;
         },
         async getApiUUID({commit}) {
             if (getCookie('user_uuid')) {
@@ -136,6 +137,7 @@ const Store = new Vuex.Store({
             if (response.ok) {
                 commit('setCurExchangeStep', await response.json());
             }
+            return state.curExchangeStep;
         },
         async logout() {
             let response = await fetch('/api/auth/jwt/logout', {
@@ -152,11 +154,73 @@ const Store = new Vuex.Store({
                 location.reload();
             }
         },
-        resizeBg({state}) {
-            setTimeout(() => {
-                state.vantaEffect.resize();
-            }, 100);
+        async ttl({commit, state}) {
+            let response = await fetch('/api/redis/ttl' + '?user_uuid=' + state.uuid);
+            if (response.ok) {
+                let result = await response.json();
+                commit('setRequestFixedTime', result);
+            }
         },
+        async getStatus({commit, state}) {
+            let response = await fetch('/api/orders/get_order_status?user_uuid=' + state.uuid);
+            if (response.ok) {
+                let result = await response.json();
+                if (result.status) {
+                    commit('setCurExchangeStatus', result.status);
+                }
+            }
+        },
+        async requestRecaptchaPublicKey({commit}){
+            let response = await fetch('/api/recaptcha/pbc');
+            if (response.ok) {
+                let result = await response.json();
+                commit('setRecaptchaPublicKey', result);
+            }
+        },
+        async checkToken({state}) {
+            let details = {
+                'token': state.recaptchaPublicKey,
+            }
+            let formBody = prepareData(details);
+            let response = await fetch('/api/recaptcha/verify-recaptcha', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept':  'application/json',
+                },
+                body: formBody
+            });
+            if (response.ok) {
+                let result = await response.json();
+                if (result.success) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        async getCurrencies({commit}) {
+            let response = await fetch('/api/currency/list');
+            if (!response.ok) {
+                return false;
+            }
+            let data = await response.json();
+            let currencies = [];
+            if (!data) {
+                return false;
+            }
+            if (!Array.isArray(data)) {
+                return false;
+            }
+            data.forEach(item => {
+                if (item.type === 'Фиатная валюта') {
+                    item.type = 'fiat';
+                } else {
+                    item.type = 'crypto';
+                }
+                currencies.push(item);
+            });
+            commit('setCurrencies', currencies);
+        }
     },
     getters: {
         getExchangeData: state => state.exchangeData,
@@ -166,6 +230,8 @@ const Store = new Vuex.Store({
         getCurExchangeStep: state => state.curExchangeStep,
         getUserOrders: state => state.user.orders,
         getUserData: state => state.user.data,
+        getRequestFixedTime: state => state.requestFixedTime,
+        getCurExchangeStatus: state => state.curExchangeStatus,
     }
 });
 

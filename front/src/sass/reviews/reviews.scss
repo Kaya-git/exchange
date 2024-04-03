@@ -1,4 +1,6 @@
 .reviews {
+    position: relative;
+    z-index: $above;
     padding: 20px 10px;
     &__sheet {
         padding: 10px;
@@ -23,7 +25,11 @@
     &__bottom {
         margin: 20px auto 0 auto;
     }
+    &__btn {
+        &-icon {
 
+        }
+    }
 }
 
 .reviews-list {

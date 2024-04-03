@@ -14,13 +14,19 @@ const router = new createRouter({
             name: 'AuthView',
             path: '/auth/',
             component: () => import("./components/User/AuthView"),
-            meta: { title: 'Авторизация' }
+            meta: {
+                title: 'Авторизация',
+                redirectNeededAuth: true,
+            }
         },
         {
             name: 'RegisterView',
             path: '/register/',
             component: () => import("./components/User/RegisterView"),
-            meta: { title: 'Регистрация' }
+            meta: {
+                title: 'Регистрация',
+                redirectNeededAuth: true,
+            }
         },
         {
             name: 'ContactsView',
@@ -68,6 +74,14 @@ const router = new createRouter({
             },
         },
         {
+            name: 'ForgotPassword',
+            path: '/forgot/',
+            component: () => import("./components/User/ForgotPassword"),
+            meta: {
+                title: 'Восстановление пароля',
+            },
+        },
+        {
             name: 'ExchangeSteps',
             path: '/exchange/',
             component: () => import("./components/Exchange/ExchangeSteps"),
@@ -92,7 +106,7 @@ router.beforeEach((to, from, next) => {
                     name: 'AuthView',
                 });
             } else {
-                next()
+                next();
             }
         })
     } else if (to.meta.needStep && !store.state.curExchangeStep) {
@@ -109,9 +123,6 @@ const PREFIX = 'VVS Coin - '
 router.afterEach((to) => {
     nextTick(() => {
         document.title = PREFIX + (to.meta.title || DEFAULT_TITLE);
-        if (store.state.vantaEffect) {
-            store.dispatch('resizeBg');
-        }
     });
 });
 export default router;

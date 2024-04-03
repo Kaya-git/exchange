@@ -18,7 +18,9 @@
                     #{{item.id}}
                 </td>
                 <td class="request-table__item">
-
+                    <span class="request-table__item-sum">{{item.user_sell_sum}} {{item.sell_currency_tikker}}</span>
+                    <v-icon class="request-table__item-icon" color="black" icon="mdi-sync"></v-icon>
+                    <span class="request-table__item-sum">{{item.user_buy_sum}} {{item.buy_currency_tikker}}</span>
                 </td>
                 <td class="request-table__item">
                     {{item.status}}
@@ -32,7 +34,7 @@
 
 <script>
 import {defineComponent} from 'vue';
-import {mapMutations } from 'vuex'
+import {mapMutations, mapActions, mapState} from 'vuex';
 
 export default defineComponent({
     name: 'RequestTable',
@@ -48,19 +50,39 @@ export default defineComponent({
         }
     }),
     created() {
-      this.getOrders();
+      this.getCurrencies().then(() => {
+        this.getOrders();
+      });
     },
     methods: {
         ...mapMutations([
             'setUserOrders',
         ]),
+        ...mapActions([
+           'getCurrencies'
+        ]),
         async getOrders() {
             let response = await fetch('/api/lk/orders');
             if (response.ok && response.status === 200) {
                 this.table.tbody = await response.json();
+                this.table.tbody.forEach(order => {
+                  let neededBuyCur = this.currencies.find(currency => {
+                    return currency.id === order.buy_currency_id;
+                  });
+                  let neededSellCur = this.currencies.find(currency => {
+                    return currency.id === order.sell_currency_id;
+                  });
+                  order['buy_currency_tikker'] = neededBuyCur.tikker ?? '';
+                  order['sell_currency_tikker'] = neededSellCur.tikker ?? '';
+                });
                 this.setUserOrders(this.table.tbody);
             }
         }
+    },
+    computed: {
+        ...mapState([
+           'currencies',
+        ]),
     }
 });
 </script>
