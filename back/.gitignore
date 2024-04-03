@@ -162,6 +162,3 @@ cython_debug/
 
 # Alembic stuff
 alembic/
-
-# Logs
-src/logs/
