@@ -18,5 +18,17 @@
     text-align: center;
     line-height: 1.2;
     font-size: rem(16px);
+    margin-bottom: 10px;
   }
+  &__btn-icon {
+    font-size: rem(18px) !important;
+  }
+}
+
+@media (min-width:$md2+px){
+    .confirm-modal {
+        &__text {
+          margin-bottom: 0;
+        }
+    }
 }
