@@ -3,8 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.abstract_repo import Repository
 from enums.models import ReqAction
-from orders.models import Order
-from reviews.models import Review
+# from orders.models import Order
+# from reviews.models import Review
+# from payment_options.models import PaymentOption
+
 
 from .models import PendingAdmin
 
@@ -24,15 +26,17 @@ class PendingAdminRepo(Repository[PendingAdmin]):
     async def new(
         self,
         req_act: ReqAction,
-        order_id: Order = None,
-        review_id: Review = None
+        order_id: int = None,
+        review_id: int = None,
+        payment_option_id: int = None
     ) -> None:
 
         new_pending = await self.session.merge(
             PendingAdmin(
                 req_act=req_act,
                 order_id=order_id,
-                review_id=review_id
+                review_id=review_id,
+                payment_option_id=payment_option_id
             )
         )
         return new_pending

@@ -5,12 +5,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.base_model import Base
 
-# from typing import List
+from typing import List
+
 if TYPE_CHECKING:
     from currencies.models import Currency
     from users.models import User
-
-    # from orders.models import Order
+    from pendings.models import PendingAdmin
 
 
 class PaymentOption(Base):
@@ -56,9 +56,13 @@ class PaymentOption(Base):
     user: Mapped["User"] = relationship(
         back_populates="payment_options"
     )
+    pending_admin: Mapped["PendingAdmin"] = relationship(
+        back_populates="payment_option",
+        passive_deletes=True
+    )
 
     def __str__(self) -> str:
-        return f"{self.currency_id}"
+        return f"{self.id}"
 
     def __repr__(self) -> str:
-        return f"{self.currency_id}"
+        return f"{self.id}"

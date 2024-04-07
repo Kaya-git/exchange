@@ -19,18 +19,21 @@ class PendingAdminAdmin(ModelView, model=PendingAdmin):
     column_list = [
         PendingAdmin.id,
         PendingAdmin.req_act,
+        PendingAdmin.payment_option,
         PendingAdmin.order,
         PendingAdmin.review
     ]
     column_labels = {
         PendingAdmin.id: "ID",
         PendingAdmin.req_act: "Статус",
+        PendingAdmin.payment_option: "ID карты",
         PendingAdmin.order: "ID ордера",
         PendingAdmin.review: "ID отзыва"
     }
     column_details_exclude_list = {
         PendingAdmin.order_id,
         PendingAdmin.review_id,
+        PendingAdmin.payment_option_id,
         PendingAdmin.id
     }
     column_sortable_list = [
@@ -283,6 +286,7 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
     name = "Верификация"
     name_plural = "Верификация"
     column_list = [
+        PaymentOption.id,
         PaymentOption.user,
         PaymentOption.currency,
         PaymentOption.number,
@@ -304,9 +308,11 @@ class PaymentOptionAdmin(ModelView, model=PaymentOption):
         PaymentOption.currency,
         PaymentOption.number,
         PaymentOption.holder,
+        PaymentOption.pending_admin,
         PaymentOption.image
     }
     column_details_exclude_list = [
+        PaymentOption.pending_admin,
         PaymentOption.user_id,
         PaymentOption.currency_id
     ]

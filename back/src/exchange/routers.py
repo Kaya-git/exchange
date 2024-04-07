@@ -15,6 +15,7 @@ from .handlers import (add_or_get_po, calculate_totals, check_form_fillment,
                        check_user_registration, find_exchange_rate, start_time,
                        ya_save_passport_photo)
 import logging
+from enums.models import CurrencyType
 
 
 LOGGER = logging.getLogger(__name__)
@@ -276,7 +277,7 @@ async def confirm_cc(
     # Получаем номер
     order_id = await services.redis_values.get_order_id(user_uuid=user_uuid)
 
-    LOGGER.info(f"Номер заявки: {order_id}")
+    LOGGER.info(f"Номер заявки: {order_id}, тип {type(order_id)}")
 
     await db.order.update_pos(
         order_id=order_id,
@@ -284,10 +285,18 @@ async def confirm_cc(
         po_sell=p_o_dict["client_sell_payment_option"]["id"]
     )
 
+    if redis_dict["client_sell_currency"]["type"] == CurrencyType.Фиат:
+        fiat_id = p_o_dict["client_sell_payment_option"]["id"]
+    if redis_dict["client_buy_currency"]["type"] == CurrencyType.Фиат:
+        fiat_id = p_o_dict["client_buy_payment_option"]["id"]
+
+    LOGGER.info(f"ID записи для верифкации: {fiat_id}, тип {type(fiat_id)}")
+
     # Добавляем ордер в оповещение администратору
     new_pending = await db.pending_admin.new(
         order_id=order_id,
-        req_act=ReqAction.верифицировать_клиента
+        req_act=ReqAction.верифицировать_клиента,
+        payment_option_id=fiat_id
     )
 
     # Выставляем следующий номер эндпоинта в роутере
