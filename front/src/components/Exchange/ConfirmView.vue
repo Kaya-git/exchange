@@ -1,6 +1,6 @@
 <template>
     <div class="confirm">
-        <v-sheet rounded class="confirm__sheet pa-3 rounded-t-0">
+        <v-sheet rounded class="confirm__sheet pa-0 pa-sm-3 rounded-t-0">
             <v-container fluid class="confirm__container">
                 <v-row class="confirm__row">
                     <h2 class="confirm__title title title_h2 title_black mb-4 text-center">

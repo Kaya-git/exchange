@@ -156,7 +156,7 @@ export default defineComponent({
             'getRequestFixedTime',
         ]),
         requisite() {
-            return this.requisites.requisites_num + "" + this.requisites.holder;
+            return this.requisites.requisites_num + "<br>" + this.requisites.holder;
         }
     }
 });

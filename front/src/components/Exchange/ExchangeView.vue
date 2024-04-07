@@ -1,4 +1,4 @@
-
+/* eslint-disable */
 <template>
     <div class="exchange">
         <div class="exchange__wrapper">
@@ -738,6 +738,16 @@ export default defineComponent({
     created() {
         this.getApiCurriencies();
         this.cryptoWalletRule.randomPlaceholder = this.randomPlaceholderCrypto();
+
+        if (this.$route.query.dev === 'y') {
+            this.formData.name = 'Олегов Олег Олегович';
+            this.formData.email = 'test@oleg.ru';
+            this.formData.give = 1000;
+            this.formData.get = 0.0023;
+            this.formData.cryptoNumber = 'bc1qk3hmakt3ku9jmnnrs0exllr07qgen8hz2nwswh';
+            this.formData.cardNumber = '5445 6546 9455 4544';
+            this.formData.privacy.value = true;
+        }
     },
     mounted() {
         this.tabs = document.querySelectorAll('[data-tab-id]');

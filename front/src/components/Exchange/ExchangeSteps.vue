@@ -174,6 +174,11 @@ export default defineComponent({
     watch: {
         curStep(newStep, oldStep) {
             this.steps[oldStep].complete = true;
+            if (!this.steps[oldStep].error) {
+                this.steps[oldStep].color = 'success';
+            } else {
+                this.steps[oldStep].color = 'error';
+            }
         }
     },
     components: {
