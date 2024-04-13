@@ -87,11 +87,13 @@ export default defineComponent({
                     this.status = result.status;
                 }
                 if (result.link) {
-                    this.$emit('complete', 'Отлично, обмен прошел УСПЕШНО', 'Ваша ссылка на транзакцию:');
+                    this.$emit('complete', 'Исполнено', '', 'Отлично, обмен прошел УСПЕШНО', 'Ваша ссылка на транзакцию: ' + result.link);
                 }
                 if (result.reason) {
-                    this.$emit('error', 'Отказано. ' + result.reason);
+                    this.$emit('error',  'Отказано', '', 'Отказано',  result.reason);
                 }
+            } else {
+                this.$emit('error', 'Не удалось отправить запрос');
             }
         }
     },

@@ -39,7 +39,11 @@ export default defineComponent({
     }),
     mounted() {
         this.checkVerification();
-        this.getStatus();
+        this.getStatus().then(result => {
+            if (!result) {
+                this.$emit('error', 'Ошибка!', '', 'Не удалось отправить запрос');
+            }
+        });
     },
     components: {
         CurExchangeTable: defineAsyncComponent({
@@ -67,11 +71,17 @@ export default defineComponent({
             });
             if (response.ok) {
                 if (response.status === 200) {
-                    this.$emit('complete');
-                    this.$emit('nextStep');
+                    let result = await response.json();
+                    if (result.verified) {
+                        this.$emit('complete');
+                        this.$emit('nextStep');
+                    } else {
+                        this.$emit('error', 'Ваша заявка была отклонена', '', 'Ваша заявка была отклонена', 'Вы не прошли верификацию. ' + (result.reason ?? ''));
+                    }
+                } else {
+                    this.$emit('error', 'Ошибка!', '', 'Не удалось отправить запрос');
                 }
             } else {
-                console.log(response);
                 await this.checkVerification();
             }
             this.loading = false;

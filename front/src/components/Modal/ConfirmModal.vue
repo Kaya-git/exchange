@@ -11,7 +11,7 @@
                     <p class="confirm-modal__text">
                         {{ msg }}
                         <v-icon class="confirm-modal__btn-icon ml-1" color="success">
-                            mdi-checkbox-marked
+                            mdi-check-circle-outline
                         </v-icon>
                     </p>
                 </v-row>

@@ -7,6 +7,7 @@
                     <div class="page__wrapper">
                         <div class="page__content">
                             <RouterView></RouterView>
+<!--                            <StatusView v-if="this.$route.query.dev === 'y'"></StatusView>-->
                         </div>
                     </div>
                 </main>
@@ -35,6 +36,9 @@ export default {
         WaitModal: defineAsyncComponent({
             loader: () => import("@/components/Modal/WaitModal"),
         }),
+        // StatusView: defineAsyncComponent({
+        //     loader: () => import("@/components/Exchange/StatusView"),
+        // }),
     },
     data() {
         return {

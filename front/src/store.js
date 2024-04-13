@@ -87,8 +87,41 @@ const Store = new Vuex.Store({
                 commit('setExchangeData', data);  // Вызов мутации setExchangeData для обновления состояния
             }
         },
+        async loadExchangeData({commit, state}) {
+            let details = {
+                'user_uuid': state.uuid,
+            }
+
+            let formBody = prepareData(details);
+
+            let response = await fetch('/api/exchange/confirm_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'accept':  'application/json',
+                },
+                body: formBody
+            });
+            if (response.ok) {
+                let result = await response.json()
+                let exchangeData = {
+                    cardNumber: result.client_credit_card_number,
+                    cryptoNumber: result.client_crypto_wallet,
+                    email: result.client_email,
+                    get: result.client_buy_value,
+                    getTikker: result.client_buy_currency.tikker,
+                    give: result.client_sell_value,
+                    giveTikker: result.client_sell_currency.tikker,
+                    name: result.client_cc_holder,
+                    selectedGetCurrency: result.client_buy_currency.name,
+                    selectedGiveCurrency: result.client_sell_currency.name,
+                    uuid: state.uuid
+                };
+                commit('setExchangeData', exchangeData);
+            }
+        },
         clearDataFromLocalStorage() {
-            localStorage.removeItem('exchangeData');
+            if (localStorage.getItem('exchangeData')) localStorage.removeItem('exchangeData');
         },
         async checkAuth({commit, state}) {
             if (state.user.email) {
@@ -167,7 +200,12 @@ const Store = new Vuex.Store({
                 let result = await response.json();
                 if (result.status) {
                     commit('setCurExchangeStatus', result.status);
+                    return true;
+                } else {
+                    return false;
                 }
+            } else {
+                return false;
             }
         },
         async requestRecaptchaPublicKey({commit}){
