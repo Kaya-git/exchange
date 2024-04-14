@@ -72,21 +72,24 @@
                     ></status-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="2">
-                    <verification-view @nextStep="curStep++" @complete="completeStep"
+                    <verification-view v-if="!steps[curStep].error"
+                                       @nextStep="curStep++"
+                                       @complete="completeStep"
                                        @error="errorStep"></verification-view>
-                    <status-view v-if="steps[curStep].error"
-                                 :title="steps[curStep].message"
-                                 :subtitle="steps[curStep].subtitle"
+                    <status-view v-else
+                                 :title="steps[curStep].statusTitle"
+                                 :subtitle="steps[curStep].statusSubtitle"
                                  status="reject"
                     ></status-view>
                 </v-stepper-window-item>
                 <v-stepper-window-item :value="3">
                     <request-view
+                        v-if="!steps[curStep].error"
                         @nextStep="curStep++"
                         @complete="completeStep"
                         @error="errorStep"
                         @cancel="cancelExchange"></request-view>
-                    <status-view v-if="steps[curStep].error"
+                    <status-view v-else
                                  :title="steps[curStep].message"
                                  :subtitle="steps[curStep].subtitle"
                                  status="reject"
@@ -95,13 +98,13 @@
                 <v-stepper-window-item :value="4">
                     <payed-view v-if="!steps[curStep].complete && !steps[curStep].error" @complete="completeStep" @error="errorStep"></payed-view>
                     <status-view v-if="steps[curStep].error"
-                                 :title="steps[curStep].message"
-                                 :subtitle="steps[curStep].subtitle"
+                                 :title="steps[curStep].statusTitle"
+                                 :subtitle="steps[curStep].statusSubtitle"
                                  status="reject"
                     ></status-view>
                     <status-view v-else-if="steps[curStep].message"
-                                 :title="steps[curStep].message"
-                                 :subtitle="steps[curStep].subtitle"
+                                 :title="steps[curStep].statusTitle"
+                                 :subtitle="steps[curStep].statusSubtitle"
                                  status="success"
                     ></status-view>
                 </v-stepper-window-item>
@@ -131,6 +134,8 @@ export default defineComponent({
                 message: '',
                 color: '',
                 subtitle: '',
+                statusTitle: "",
+                statusSubtitle: "",
             },
             2: {
                 title: 'Верификация',
@@ -139,6 +144,8 @@ export default defineComponent({
                 message: '',
                 color: '',
                 subtitle: '',
+                statusTitle: "",
+                statusSubtitle: "",
             },
             3: {
                 title: 'Заявка создана',
@@ -147,6 +154,8 @@ export default defineComponent({
                 message: '',
                 color: '',
                 subtitle: '',
+                statusTitle: "",
+                statusSubtitle: "",
             },
             4: {
                 title: 'Решение по заявке',
@@ -155,6 +164,8 @@ export default defineComponent({
                 message: '',
                 color: '',
                 subtitle: '',
+                statusTitle: "",
+                statusSubtitle: "",
             },
         }
     }),
@@ -168,6 +179,10 @@ export default defineComponent({
                 this.curStep = 3;
             } else if ([7].includes(Number(this.getCurExchangeStep))) {
                 this.curStep = 4;
+            }
+            for (let i = 1; i < this.curStep; i++) {
+                this.steps[i].color = 'success';
+                this.steps[i].complete = true;
             }
         }
     },
@@ -202,19 +217,23 @@ export default defineComponent({
         ...mapActions([
             'clearDataFromLocalStorage'
         ]),
-        errorStep(message = '', subtitle = '') {
+        errorStep(message = '', subtitle = '', statusTitle = '', statusSubtitle = '') {
             this.steps[this.curStep].error = true;
             this.steps[this.curStep].color = 'error';
             this.steps[this.curStep].message = message;
             this.steps[this.curStep].subtitle = subtitle;
+            this.steps[this.curStep].statusTitle = statusTitle;
+            this.steps[this.curStep].statusSubtitle = statusSubtitle;
             this.clearDataFromLocalStorage();
             deleteCookie('user_uuid');
         },
-        completeStep(message = '', subtitle = '') {
+        completeStep(message = '', subtitle = '', statusTitle = '', statusSubtitle = '') {
             this.steps[this.curStep].complete = true;
             this.steps[this.curStep].color = 'success';
             this.steps[this.curStep].message = message;
             this.steps[this.curStep].subtitle = subtitle;
+            this.steps[this.curStep].statusTitle = statusTitle;
+            this.steps[this.curStep].statusSubtitle = statusSubtitle;
         },
         skipStep() {
             let skippedStep = this.curStep + 1;

@@ -1,13 +1,28 @@
 <template>
-    <v-btn 
-        class="reviews__btn" 
-        size="x-large"
+
+    <v-sheet v-if="btnBorder" rounded class="pa-3" :class="btnBorder">
+        <v-btn
+            class="reviews__btn"
+            size="large"
+            :color="btnColor"
+            @click="overlay = !overlay"
+            append-icon="mdi-check-circle-outline">
+            Оставить отзыв
+            <template v-slot:append>
+                <v-icon class="reviews__btn-icon " color="success"></v-icon>
+            </template>
+        </v-btn>
+    </v-sheet>
+    <v-btn
+        v-else
+        class="reviews__btn"
+        size="large"
         :color="btnColor"
         @click="overlay = !overlay"
-        append-icon="mdi-checkbox-marked">
-            Оставить отзыв
+        append-icon="mdi-check-circle-outline">
+        Оставить отзыв
         <template v-slot:append>
-            <v-icon class="reviews__btn-icon flashing-icon" color="success"></v-icon>
+            <v-icon class="reviews__btn-icon " color="success"></v-icon>
         </template>
     </v-btn>
     <v-overlay 
@@ -65,10 +80,14 @@ import {defineComponent} from 'vue';
 export default defineComponent({
     name: 'ReviewModal',
     props: {
-      btnColor: {
-        type: String,
-        default: '',
-      }
+        btnColor: {
+            type: String,
+            default: '',
+        },
+        btnBorder: {
+            type: String,
+            default: '',
+        },
     },
     data: () => ({
         overlay: false,

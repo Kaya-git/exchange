@@ -197,6 +197,15 @@
 	}
 }
 
+.btn-border-gragient {
+	background: linear-gradient(-45deg, #ffa63d, #ff3d77, #338aff, #3cf0c5) !important;
+	background-size: 300% !important;
+	animation: anime-gradient 5s linear infinite;
+	button {
+		background: #ffffff !important;
+	}
+}
+
 //Animation
 $textDur: 500ms;
 
@@ -241,5 +250,17 @@ $textDur: 500ms;
 	}
 	100% {
 		transform: translate3d(0, 0, 0);
+	}
+}
+
+@keyframes anime-gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
 	}
 }

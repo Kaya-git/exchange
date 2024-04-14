@@ -14,14 +14,14 @@
                 <v-row class="status-page__row">
                     <v-sheet class="status-page__table-sheet" rounded>
                         <CurExchangeTable class="status-page__table"></CurExchangeTable>
-                        <v-card class="status-page__card">
+                        <v-card class="status-page__card pa-4">
                             <v-card-title class="status-page__card-title">Помогите нам и оставьте краткий отзыв!</v-card-title>
                             <v-card-text class="status-page__card-text">
                                 Спасибо, что воспользовались нашим сервисом. <br>
                                 Просим вас оставить отзыв о работе с нами.
                             </v-card-text>
                             <v-card-actions class="status-page__card-actions">
-                                <ReviewModal btnColor="success"></ReviewModal>
+                                <ReviewModal btnColor="success" btnBorder="btn-border-gragient"></ReviewModal>
                             </v-card-actions>
                         </v-card>
                     </v-sheet>
@@ -39,6 +39,7 @@
 </template>
 <script>
 import {defineComponent, defineAsyncComponent} from 'vue';
+import {mapActions} from 'vuex';
 
 export default defineComponent({
     name: 'StatusView',
@@ -68,6 +69,9 @@ export default defineComponent({
             }
         }
     }),
+    mounted() {
+      this.clearDataFromLocalStorage();
+    },
     components: {
         CurExchangeTable: defineAsyncComponent({
             loader: () => import("@/components/Tables/CurExchangeTable"),
@@ -76,5 +80,10 @@ export default defineComponent({
             loader: () => import("@/components/Modal/ReviewModal"),
         }),
     },
+    methods: {
+        ...mapActions([
+            'clearDataFromLocalStorage'
+        ]),
+    }
 });
 </script>

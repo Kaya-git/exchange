@@ -752,9 +752,10 @@ export default defineComponent({
     mounted() {
         this.tabs = document.querySelectorAll('[data-tab-id]');
         this.ttl().then(() => {
-            this.formData.selectedGiveCurrency = this.getExchangeData.selectedGiveCurrency ?? '';
-            this.formData.selectedGetCurrency = this.getExchangeData.selectedGetCurrency ?? '';
+            this.formData.selectedGiveCurrency = this.getExchangeData ? this.getExchangeData.selectedGiveCurrency : '';
+            this.formData.selectedGetCurrency = this.getExchangeData ? this.getExchangeData.selectedGetCurrency : '';
             if (this.getRequestFixedTime > 0 && this.formData.selectedGiveCurrency && this.formData.selectedGetCurrency) {
+                // this.loadExchangeData();
                 this.whereAmI().then(() => {
                     if (this.getCurExchangeStep ) {
                         this.$router.push({
@@ -841,6 +842,7 @@ export default defineComponent({
             'ttl',
             'whereAmI',
             'checkToken',
+            'loadExchangeData',
         ]),
         recalculate() {
             let get = null;
@@ -1052,11 +1054,19 @@ export default defineComponent({
 
                 this.getCurrency['symbols_min'] = result.get.symbols_min;
                 this.getCurrency['symbols_max'] = result.get.symbols_max;
-                this.getCurrency['wallet_starts'] = result.get.wallet_starts.replace(/\s/g, '').split('или').join('|');
+                if (result.get.wallet_starts) {
+                    this.getCurrency['wallet_starts'] = result.get.wallet_starts.replace(/\s/g, '').split('или').join('|');
+                } else {
+                    this.getCurrency['wallet_starts'] = '';
+                }
 
                 this.giveCurrency['symbols_min'] = result.give.symbols_min;
                 this.giveCurrency['symbols_max'] = result.give.symbols_max;
-                this.giveCurrency['wallet_starts'] = result.give.wallet_starts.replace(/\s/g, '').split('или').join('|');
+                if (result.give.wallet_starts) {
+                    this.giveCurrency['wallet_starts'] = result.give.wallet_starts.replace(/\s/g, '').split('или').join('|');
+                } else {
+                    this.giveCurrency['wallet_starts'] = '';
+                }
 
                 return result['exchange_rate'] ?? null;
             } else {
