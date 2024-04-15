@@ -1,0 +1,109 @@
+2024-04-10 16:53:03,428 - main - INFO - --- Start up App ---
+2024-04-10 16:53:03,429 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-10 16:53:03,572 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-10 16:53:03,572 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-10 16:53:03,572 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-10 16:53:03,572 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-10 16:53:03,573 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-10 16:53:04,041 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-10 16:53:04,042 - price_parser.parser - INFO - Parser status: 200
+2024-04-10 16:53:04,042 - price_parser.parser - INFO - response: {'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}
+2024-04-10 16:53:04,042 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}
+2024-04-10 16:53:04,042 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}, тип: <class 'dict'>
+2024-04-10 16:53:04,043 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-10 16:54:04,044 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-10 16:54:04,046 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-10 16:54:04,046 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-10 16:54:04,046 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-10 16:54:04,046 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-10 16:54:04,046 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-10 16:54:04,297 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-10 16:54:04,298 - price_parser.parser - INFO - Parser status: 200
+2024-04-10 16:54:04,298 - price_parser.parser - INFO - response: {'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}
+2024-04-10 16:54:04,298 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}
+2024-04-10 16:54:04,298 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}, тип: <class 'dict'>
+2024-04-10 16:54:04,299 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-10 16:55:04,300 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-10 16:55:04,301 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-10 16:55:04,301 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-10 16:55:04,301 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-10 16:55:04,301 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-10 16:55:04,302 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-10 16:55:05,049 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-10 16:55:05,050 - price_parser.parser - INFO - Parser status: 200
+2024-04-10 16:55:05,050 - price_parser.parser - INFO - response: {'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}
+2024-04-10 16:55:05,050 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}
+2024-04-10 16:55:05,050 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}, тип: <class 'dict'>
+2024-04-10 16:55:05,051 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-10 16:56:05,051 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-10 16:56:05,053 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-10 16:56:05,053 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-10 16:56:05,053 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-10 16:56:05,053 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-10 16:56:05,054 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-10 16:56:05,364 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-10 16:56:05,364 - price_parser.parser - INFO - Parser status: 200
+2024-04-10 16:56:05,364 - price_parser.parser - INFO - response: {'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}
+2024-04-10 16:56:05,365 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}
+2024-04-10 16:56:05,365 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}, тип: <class 'dict'>
+2024-04-10 16:56:05,365 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-10 16:57:05,366 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-10 16:57:05,367 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-10 16:57:05,367 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-10 16:57:05,368 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-10 16:57:05,368 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-10 16:57:05,368 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-10 16:57:05,504 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-10 16:57:05,504 - price_parser.parser - INFO - Parser status: 200
+2024-04-10 16:57:05,505 - price_parser.parser - INFO - response: {'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}
+2024-04-10 16:57:05,505 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}
+2024-04-10 16:57:05,505 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 8821.12}, 'tether': {'rub': 93.17}}, тип: <class 'dict'>
+2024-04-10 16:57:05,505 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-10 16:58:05,506 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-10 16:58:05,509 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-10 16:58:05,509 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-10 16:58:05,509 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-10 16:58:05,509 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-10 16:58:05,509 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-10 16:58:06,095 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-10 16:58:06,096 - price_parser.parser - INFO - Parser status: 200
+2024-04-10 16:58:06,099 - price_parser.parser - INFO - response: {'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}
+2024-04-10 16:58:06,099 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}
+2024-04-10 16:58:06,100 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}, тип: <class 'dict'>
+2024-04-10 16:58:06,100 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-10 16:59:06,101 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-10 16:59:06,105 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-10 16:59:06,105 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-10 16:59:06,105 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-10 16:59:06,105 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-10 16:59:06,105 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-10 16:59:06,739 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-10 16:59:06,740 - price_parser.parser - INFO - Parser status: 200
+2024-04-10 16:59:06,740 - price_parser.parser - INFO - response: {'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}
+2024-04-10 16:59:06,740 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}
+2024-04-10 16:59:06,740 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}, тип: <class 'dict'>
+2024-04-10 16:59:06,741 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-10 17:00:06,742 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-10 17:00:06,744 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-10 17:00:06,745 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-10 17:00:06,745 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-10 17:00:06,745 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-10 17:00:06,745 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-10 17:00:07,135 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-10 17:00:07,136 - price_parser.parser - INFO - Parser status: 200
+2024-04-10 17:00:07,136 - price_parser.parser - INFO - response: {'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}
+2024-04-10 17:00:07,136 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}
+2024-04-10 17:00:07,136 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}, тип: <class 'dict'>
+2024-04-10 17:00:07,137 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-10 17:01:07,137 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-10 17:01:07,140 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-10 17:01:07,140 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-10 17:01:07,140 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-10 17:01:07,140 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-10 17:01:07,140 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-10 17:01:07,554 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-10 17:01:07,554 - price_parser.parser - INFO - Parser status: 200
+2024-04-10 17:01:07,554 - price_parser.parser - INFO - response: {'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}
+2024-04-10 17:01:07,555 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}
+2024-04-10 17:01:07,555 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 8876.32}, 'tether': {'rub': 93.42}}, тип: <class 'dict'>
+2024-04-10 17:01:07,555 - background_tasks.handlers - INFO - Парсинг спит 10 мин

@@ -4,7 +4,7 @@ from decimal import Decimal
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import TYPE_CHECKING
-
+from pydantic import ValidationError
 import redis.asyncio as redis
 from aiosmtplib import SMTP
 from fastapi import HTTPException, status
@@ -155,6 +155,7 @@ class RedisValues:
                     router_number:{router_number} тип:{type(router_number)}
             """
         )
+
         return {
             "end_point_number": router_number,
             "client_email": client_email,
@@ -165,6 +166,105 @@ class RedisValues:
             "client_sell_currency": client_sell_currency.__dict__,
             "client_buy_value": client_buy_value,
             "client_buy_currency": client_buy_currency.__dict__,
+        }
+
+    async def decode_values_for_order_info(
+        self,
+        user_uuid: str,
+        db: Database,
+        end_point_number: int = None
+    ):
+        if end_point_number == 4:
+            (
+                client_crypto_wallet,
+                client_cc_holder,
+                client_credit_card_number,
+                client_buy_tikker,
+                client_buy_value,
+                client_sell_tikker,
+                client_sell_value,
+                client_email,
+                router_number,
+                order_id,
+                user_id
+            ) = await self.redis_conn.lrange(user_uuid, 0, -1)
+        else:
+            # Достаем из редиса список с данными ордера.
+            (
+                client_crypto_wallet,
+                client_cc_holder,
+                client_credit_card_number,
+                client_buy_tikker,
+                client_buy_value,
+                client_sell_tikker,
+                client_sell_value,
+                client_email,
+                router_number
+            ) = await self.redis_conn.lrange(user_uuid, 0, -1)
+
+        LOGGER.info(
+            f"""
+                Типы до десериализации:
+                    client_crypto_wallet:{client_crypto_wallet} тип:{type(client_crypto_wallet)},
+                    client_cc_holder:{client_cc_holder} тип:{type(client_cc_holder)},
+                    client_credit_card_number:{client_credit_card_number} тип:{type(client_credit_card_number)},
+                    client_buy_tikker:{client_buy_tikker} тип:{type(client_buy_tikker)},
+                    client_buy_value:{client_buy_value} тип:{type(client_buy_value)},
+                    client_sell_tikker:{client_sell_tikker} тип:{type(client_sell_tikker)},
+                    client_sell_value:{client_sell_value} тип:{type(client_sell_value)},
+                    client_email:{client_email} тип:{type(client_email)},
+                    router_number:{router_number} тип:{type(router_number)}
+            """
+        )
+        # Декодируем из бит в пайтоновские значения
+        # client_sell_tikker = str(client_sell_tikker, 'UTF-8')
+        # client_sell_value = str(client_sell_value, 'UTF-8')
+        # client_credit_card_number = str(client_credit_card_number, 'UTF-8')
+        # client_cc_holder = str(client_cc_holder, 'UTF-8')
+
+        # client_crypto_wallet = str(client_crypto_wallet, 'UTF-8')
+        # client_buy_tikker = str(client_buy_tikker, 'UTF-8')
+        # client_buy_value = str(client_buy_value, 'UTF-8')
+
+        # client_email = str(client_email, 'UTF-8')
+
+        router_number = int(router_number)
+
+        client_sell_value = Decimal(client_sell_value)
+        client_buy_value = Decimal(client_buy_value)
+
+        client_sell_currency = await db.currency.get_by_where(
+            Currency.tikker == client_sell_tikker
+        )
+        client_buy_currency = await db.currency.get_by_where(
+            Currency.tikker == client_buy_tikker
+        )
+
+        LOGGER.info(
+            f"""
+                Типы после десериализации:
+                    client_crypto_wallet:{client_crypto_wallet} тип:{type(client_crypto_wallet)},
+                    client_cc_holder:{client_cc_holder} тип:{type(client_cc_holder)},
+                    client_credit_card_number:{client_credit_card_number} тип:{type(client_credit_card_number)},
+                    client_buy_tikker:{client_buy_tikker} тип:{type(client_buy_tikker)},
+                    client_buy_value:{client_buy_value} тип:{type(client_buy_value)},
+                    client_sell_tikker:{client_sell_tikker} тип:{type(client_sell_tikker)},
+                    client_sell_value:{client_sell_value} тип:{type(client_sell_value)},
+                    client_email:{client_email} тип:{type(client_email)},
+                    router_number:{router_number} тип:{type(router_number)}
+            """
+        )
+
+        return {
+            "end_point_number": router_number,
+            "client_email": client_email,
+            "client_credit_card_number": client_credit_card_number,
+            "client_cc_holder": client_cc_holder,
+            "client_crypto_wallet": client_crypto_wallet,
+            "client_sell_value": client_sell_value,
+            "client_sell_currency": client_sell_currency.tikker,
+            "client_buy_value": client_buy_value,
+            "client_buy_currency": client_buy_currency.tikker,
         }
 
     async def set_ttl(

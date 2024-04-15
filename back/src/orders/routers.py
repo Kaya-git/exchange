@@ -120,4 +120,9 @@ async def get_order_info(
     session: AsyncSession = Depends(get_async_session)
 ) -> dict | None:
     db = Database(session=session)
-    return await services.redis_values.decode_values(user_uuid=uuid, db=db)
+    if services.redis_values.check_existance(user_uuid=uuid):
+        return await services.redis_values.decode_values_for_order_info(
+            user_uuid=uuid, db=db
+        )
+    else:
+        return False
