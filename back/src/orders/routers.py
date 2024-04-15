@@ -12,6 +12,10 @@ from enums.models import Status, CurrencyType
 
 from .models import Order
 from .shemas import OrderRead
+from payment_options.models import PaymentOption
+from currencies.models import Currency
+from enums.models import CurrencyType
+from sevices import services
 
 
 if TYPE_CHECKING:
@@ -108,3 +112,11 @@ async def get_order_status(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Ордера нет в базе"
             )
+
+
+@orders_router.post("/get_order_info")
+async def get_order_info(
+    uuid: str
+) -> dict | None:
+
+    return await services.redis_values.decode_values(user_uuid=uuid)

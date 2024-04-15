@@ -390,7 +390,6 @@ class DB:
                         "verified": True
                     }
 
-
             await asyncio.sleep(5)
             end_timer = await services.redis_values.redis_conn.ttl(
                 name=user_uuid
