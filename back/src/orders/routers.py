@@ -118,5 +118,4 @@ async def get_order_status(
 async def get_order_info(
     uuid: str
 ) -> dict | None:
-
     return await services.redis_values.decode_values(user_uuid=uuid)
