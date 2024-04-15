@@ -116,6 +116,8 @@ async def get_order_status(
 
 @orders_router.post("/get_order_info")
 async def get_order_info(
-    uuid: str
+    uuid: str,
+    session: AsyncSession = Depends(get_async_session)
 ) -> dict | None:
-    return await services.redis_values.decode_values(user_uuid=uuid)
+    db = Database(session=session)
+    return await services.redis_values.decode_values(user_uuid=uuid, db=db)
