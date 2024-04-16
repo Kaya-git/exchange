@@ -143,6 +143,10 @@ async def fill_order_form(
             user_uuid=user_uuid,
             time_out=600
         )
+        await services.redis_values.set_ttl(
+            user_uuid=f"{user_uuid}_data",
+            time_out=600
+        )
 
         # Запускаем фоновую задачу на котроль заявки
         background_tasks.add_task(
@@ -191,6 +195,10 @@ async def confirm_order(
         time_out=600
     )
 
+    await services.redis_values.set_ttl(
+            user_uuid=f"{user_uuid}_data",
+            time_out=600
+    )
     # Возвращаем значения для подтверждения
     return redis_dict
 
@@ -228,6 +236,10 @@ async def confirm_button(
     await services.redis_values.set_ttl(
         user_uuid=user_uuid,
         time_out=600
+    )
+    await services.redis_values.set_ttl(
+            user_uuid=f"{user_uuid}_data",
+            time_out=600
     )
 
     return registration_status
@@ -314,6 +326,10 @@ async def confirm_cc(
         user_uuid=user_uuid,
         time_out=600
     )
+    await services.redis_values.set_ttl(
+            user_uuid=f"{user_uuid}_data",
+            time_out=600
+    )
 
     return True
 
@@ -387,6 +403,10 @@ async def requisites(
         user_uuid=user_uuid,
         time_out=900
     )
+    await services.redis_values.set_ttl(
+            user_uuid=f"{user_uuid}_data",
+            time_out=900
+    )
 
     return {
             "order_id": order_id,
@@ -449,4 +469,8 @@ async def payed_button(
     await services.redis_values.set_ttl(
         user_uuid=user_uuid,
         time_out=900
+    )
+    await services.redis_values.set_ttl(
+            user_uuid=f"{user_uuid}_data",
+            time_out=900
     )

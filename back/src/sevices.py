@@ -170,7 +170,7 @@ class RedisValues:
 
     async def decode_values_for_order_info(
         self,
-        user_uuid: str,
+        user_uuid_data: str,
         db: Database,
         end_point_number: int = None
     ):
@@ -187,7 +187,7 @@ class RedisValues:
                 router_number,
                 order_id,
                 user_id
-            ) = await self.redis_conn.lrange(user_uuid, 0, -1)
+            ) = await self.redis_conn.lrange(user_uuid_data, 0, -1)
         else:
             # Достаем из редиса список с данными ордера.
             (
@@ -200,7 +200,7 @@ class RedisValues:
                 client_sell_value,
                 client_email,
                 router_number
-            ) = await self.redis_conn.lrange(user_uuid, 0, -1)
+            ) = await self.redis_conn.lrange(user_uuid_data, 0, -1)
 
         LOGGER.info(
             f"""
@@ -360,6 +360,18 @@ class RedisValues:
             f"{client_cc_holder}",  # 1
             f"{client_crypto_wallet}"  # 0
         )
+        await self.redis_conn.lpush(
+            f"{user_uuid}_data",  # 0
+            f"{end_point_number}",  # 8
+            f"{client_email}",  # 7
+            f"{client_sell_value}",  # 6
+            f"{client_sell_tikker}",  # 5
+            f"{client_buy_value}",  # 4
+            f"{client_buy_tikker}",  # 3
+            f"{client_credit_card_number}",  # 2
+            f"{client_cc_holder}",  # 1
+            f"{client_crypto_wallet}"  # 0
+        )
 
         self.redis_conn.close
 
@@ -418,6 +430,9 @@ class DB:
 
                 # Удаляем ключ из редиса
                 await services.redis_values.redis_conn.delete(user_uuid)
+                await services.redis_values.redis_conn.delete(
+                    f"{user_uuid}_data"
+                )
 
                 return {
                     "verified": False,
