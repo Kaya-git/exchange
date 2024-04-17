@@ -365,12 +365,14 @@ class ReviewAdmin(ModelView, model=Review):
         Review.name,
         Review.text,
         Review.rating,
+        Review.date,
         Review.moderated
     ]
     column_labels = {
         Review.id: "ID",
         Review.name: "Пользователь",
         Review.text: "Отзыв",
+        Review.date: "Дата",
         Review.rating: "Оценка",
         Review.moderated: "Статус модерации"
     }
@@ -381,7 +383,8 @@ class ReviewAdmin(ModelView, model=Review):
         Review.name,
         Review.text,
         Review.rating,
-        Review.pending_admin
+        Review.pending_admin,
+        Review.date
     }
     # list_template = "custom_list.html"
     can_create = False
