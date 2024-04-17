@@ -1,0 +1,458 @@
+2024-04-16 23:26:33,782 - __main__ - INFO - --- Start up App ---
+2024-04-16 23:26:33,783 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-16 23:26:33,894 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-16 23:26:33,894 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-16 23:26:33,894 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-16 23:26:33,894 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-16 23:26:33,894 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-16 23:26:35,070 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-16 23:26:35,071 - price_parser.parser - INFO - Parser status: 200
+2024-04-16 23:26:35,071 - price_parser.parser - INFO - response: {'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}
+2024-04-16 23:26:35,072 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}
+2024-04-16 23:26:35,072 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}, тип: <class 'dict'>
+2024-04-16 23:26:35,073 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-16 23:27:35,074 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-16 23:27:35,077 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-16 23:27:35,077 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-16 23:27:35,077 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-16 23:27:35,077 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-16 23:27:35,077 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-16 23:27:35,565 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-16 23:27:35,566 - price_parser.parser - INFO - Parser status: 200
+2024-04-16 23:27:35,566 - price_parser.parser - INFO - response: {'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}
+2024-04-16 23:27:35,567 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}
+2024-04-16 23:27:35,567 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}, тип: <class 'dict'>
+2024-04-16 23:27:35,567 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-16 23:28:13,748 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzue тип:<class 'str'>,
+                    router_number:1 тип:<class 'str'>
+            
+2024-04-16 23:28:13,750 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzue тип:<class 'str'>,
+                    router_number:1 тип:<class 'int'>
+            
+2024-04-16 23:28:23,977 - sevices - INFO - Статус пользователя: 1
+2024-04-16 23:28:23,978 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzue тип:<class 'str'>,
+                    router_number:2 тип:<class 'str'>
+            
+2024-04-16 23:28:23,979 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzue тип:<class 'str'>,
+                    router_number:2 тип:<class 'int'>
+            
+2024-04-16 23:28:32,080 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzue тип:<class 'str'>,
+                    router_number:1 тип:<class 'str'>
+            
+2024-04-16 23:28:32,081 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzue тип:<class 'str'>,
+                    router_number:1 тип:<class 'int'>
+            
+2024-04-16 23:28:35,569 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-16 23:28:35,571 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-16 23:28:35,571 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-16 23:28:35,571 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-16 23:28:35,571 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-16 23:28:35,571 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-16 23:28:36,090 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-16 23:28:36,091 - price_parser.parser - INFO - Parser status: 200
+2024-04-16 23:28:36,091 - price_parser.parser - INFO - response: {'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}
+2024-04-16 23:28:36,092 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}
+2024-04-16 23:28:36,092 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}, тип: <class 'dict'>
+2024-04-16 23:28:36,092 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-16 23:28:42,756 - sevices - INFO - Статус пользователя: 1
+2024-04-16 23:28:42,756 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzue тип:<class 'str'>,
+                    router_number:2 тип:<class 'str'>
+            
+2024-04-16 23:28:42,758 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzue тип:<class 'str'>,
+                    router_number:2 тип:<class 'int'>
+            
+2024-04-16 23:28:42,838 - exchange.handlers - INFO -  Пользователь не зарегестрирован
+2024-04-16 23:29:14,628 - sevices - INFO - Статус пользователя: 1
+2024-04-16 23:29:14,628 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzue тип:<class 'str'>,
+                    router_number:2 тип:<class 'str'>
+            
+2024-04-16 23:29:14,629 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzue тип:<class 'str'>,
+                    router_number:2 тип:<class 'int'>
+            
+2024-04-16 23:29:14,630 - exchange.handlers - INFO -  Пользователь не зарегестрирован
+2024-04-16 23:29:25,435 - exchange.routers - INFO - UUID пользователя 1
+2024-04-16 23:29:25,436 - sevices - INFO - Статус пользователя: 1
+2024-04-16 23:29:36,092 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-16 23:29:36,095 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-16 23:29:36,095 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-16 23:29:36,095 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-16 23:29:36,095 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-16 23:29:36,095 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-16 23:29:36,510 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-16 23:29:36,511 - price_parser.parser - INFO - Parser status: 200
+2024-04-16 23:29:36,511 - price_parser.parser - INFO - response: {'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}
+2024-04-16 23:29:36,511 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}
+2024-04-16 23:29:36,511 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}, тип: <class 'dict'>
+2024-04-16 23:29:36,512 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-16 23:30:06,242 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'str'>
+            
+2024-04-16 23:30:06,244 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'int'>
+            
+2024-04-16 23:30:11,826 - sevices - INFO - Статус пользователя: 1
+2024-04-16 23:30:11,827 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'str'>
+            
+2024-04-16 23:30:11,829 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'int'>
+            
+2024-04-16 23:30:11,899 - exchange.handlers - INFO - Id User: 1
+2024-04-16 23:30:21,411 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:30:21,706 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'str'>
+            
+2024-04-16 23:30:21,707 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'int'>
+            
+2024-04-16 23:30:29,299 - exchange.routers - INFO - UUID пользователя 2
+2024-04-16 23:30:29,299 - sevices - INFO - Статус пользователя: 1
+2024-04-16 23:30:30,580 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:3 тип:<class 'str'>
+            
+2024-04-16 23:30:30,582 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:3 тип:<class 'int'>
+            
+2024-04-16 23:30:30,586 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:30:30,587 - exchange.routers - INFO - Номер заявки: 7, тип <class 'int'>
+2024-04-16 23:30:30,587 - orders.repositories - INFO - Апнут селл пеймент UPDATE "order" SET sell_payment_option_id=:sell_payment_option_id WHERE "order".id = :id_1
+2024-04-16 23:30:30,587 - orders.repositories - INFO - Апнут бай пеймент UPDATE "order" SET buy_payment_option_id=:buy_payment_option_id WHERE "order".id = :id_1
+2024-04-16 23:30:30,592 - exchange.routers - INFO - ID записи для верифкации: 6, тип <class 'int'>
+2024-04-16 23:30:32,295 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:30:35,859 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'str'>
+            
+2024-04-16 23:30:35,860 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'int'>
+            
+2024-04-16 23:30:36,512 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-16 23:30:36,515 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-16 23:30:36,515 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-16 23:30:36,515 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-16 23:30:36,515 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-16 23:30:36,515 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-16 23:30:37,237 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-16 23:30:37,238 - price_parser.parser - INFO - Parser status: 200
+2024-04-16 23:30:37,238 - price_parser.parser - INFO - response: {'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}
+2024-04-16 23:30:37,239 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}
+2024-04-16 23:30:37,239 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 7443.25}, 'tether': {'rub': 94.2}}, тип: <class 'dict'>
+2024-04-16 23:30:37,239 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-16 23:30:42,299 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:30:45,461 - sevices - INFO - Статус пользователя: 1
+2024-04-16 23:30:45,462 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:30:52,303 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:31:02,306 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:31:05,262 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'str'>
+            
+2024-04-16 23:31:05,263 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'int'>
+            
+2024-04-16 23:31:12,310 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:31:22,313 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:31:32,316 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:31:37,240 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-16 23:31:37,241 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-16 23:31:37,242 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-16 23:31:37,242 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-16 23:31:37,242 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-16 23:31:37,242 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-16 23:31:38,457 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-16 23:31:38,458 - price_parser.parser - INFO - Parser status: 200
+2024-04-16 23:31:38,458 - price_parser.parser - INFO - response: {'litecoin': {'rub': 7445.85}, 'tether': {'rub': 94.22}}
+2024-04-16 23:31:38,458 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 7445.85}, 'tether': {'rub': 94.22}}
+2024-04-16 23:31:38,458 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 7445.85}, 'tether': {'rub': 94.22}}, тип: <class 'dict'>
+2024-04-16 23:31:38,459 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-16 23:31:39,423 - sevices - INFO - Статус пользователя: 1
+2024-04-16 23:31:39,423 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:31:42,319 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:31:52,321 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:31:52,651 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'str'>
+            
+2024-04-16 23:31:52,653 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'int'>
+            
+2024-04-16 23:31:58,357 - root - INFO - Клиент произвел оплату
+2024-04-16 23:31:58,357 - sevices - INFO - Статус пользователя: 1
+2024-04-16 23:31:58,357 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:32:02,325 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:32:02,374 - sevices - INFO - 
+                Типы до десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'str'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'str'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'str'>
+            
+2024-04-16 23:32:02,376 - sevices - INFO - 
+                Типы после десериализации:
+                    client_crypto_wallet:ioqwieoqwe тип:<class 'str'>,
+                    client_cc_holder:evgvgef тип:<class 'str'>,
+                    client_credit_card_number:381298319283 тип:<class 'str'>,
+                    client_buy_tikker:LTC тип:<class 'str'>,
+                    client_buy_value:0.1056 тип:<class 'decimal.Decimal'>,
+                    client_sell_tikker:TINKRUB тип:<class 'str'>,
+                    client_sell_value:1000 тип:<class 'decimal.Decimal'>,
+                    client_email:ebuzuev@gmail.com тип:<class 'str'>,
+                    router_number:1 тип:<class 'int'>
+            
+2024-04-16 23:32:12,329 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:32:22,333 - sevices - INFO - Нашел заказ: 7
+2024-04-16 23:38:59,234 - __main__ - INFO - --- Start up App ---
+2024-04-16 23:38:59,234 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-16 23:38:59,326 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-16 23:38:59,326 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-16 23:38:59,326 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-16 23:38:59,327 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-16 23:38:59,327 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-16 23:39:00,067 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-16 23:39:00,068 - price_parser.parser - INFO - Parser status: 200
+2024-04-16 23:39:00,068 - price_parser.parser - INFO - response: {'litecoin': {'rub': 7436.43}, 'tether': {'rub': 94.23}}
+2024-04-16 23:39:00,068 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 7436.43}, 'tether': {'rub': 94.23}}
+2024-04-16 23:39:00,068 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 7436.43}, 'tether': {'rub': 94.23}}, тип: <class 'dict'>
+2024-04-16 23:39:00,070 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-16 23:40:00,071 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-16 23:40:00,074 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-16 23:40:00,074 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-16 23:40:00,074 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-16 23:40:00,074 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-16 23:40:00,074 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-16 23:40:00,376 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-16 23:40:00,377 - price_parser.parser - INFO - Parser status: 200
+2024-04-16 23:40:00,377 - price_parser.parser - INFO - response: {'litecoin': {'rub': 7436.43}, 'tether': {'rub': 94.23}}
+2024-04-16 23:40:00,377 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 7436.43}, 'tether': {'rub': 94.23}}
+2024-04-16 23:40:00,377 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 7436.43}, 'tether': {'rub': 94.23}}, тип: <class 'dict'>
+2024-04-16 23:40:00,378 - background_tasks.handlers - INFO - Парсинг спит 10 мин
+2024-04-16 23:41:00,378 - background_tasks.handlers - INFO - Получаю актульные курсы
+2024-04-16 23:41:00,381 - background_tasks.handlers - INFO - Крипта:USDTTRC20
+2024-04-16 23:41:00,381 - background_tasks.handlers - INFO - Фиат:TINKRUB
+2024-04-16 23:41:00,381 - background_tasks.handlers - INFO - Крипта:LTC
+2024-04-16 23:41:00,381 - background_tasks.handlers - INFO - Фиат:['rub']
+2024-04-16 23:41:00,381 - background_tasks.handlers - INFO - Крипта:['tether', 'litecoin']
+2024-04-16 23:41:00,773 - httpx - INFO - HTTP Request: GET https://api.coingecko.com/api/v3/simple/price?ids=tether%2Clitecoin&vs_currencies=rub "HTTP/1.1 200 OK"
+2024-04-16 23:41:00,774 - price_parser.parser - INFO - Parser status: 200
+2024-04-16 23:41:00,774 - price_parser.parser - INFO - response: {'litecoin': {'rub': 7436.43}, 'tether': {'rub': 94.23}}
+2024-04-16 23:41:00,774 - background_tasks.handlers - INFO - ответ:{'litecoin': {'rub': 7436.43}, 'tether': {'rub': 94.23}}
+2024-04-16 23:41:00,774 - background_tasks.handlers - INFO - Курсы: {'litecoin': {'rub': 7436.43}, 'tether': {'rub': 94.23}}, тип: <class 'dict'>
+2024-04-16 23:41:00,775 - background_tasks.handlers - INFO - Парсинг спит 10 мин

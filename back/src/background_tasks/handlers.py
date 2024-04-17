@@ -24,7 +24,7 @@ async def cache_rates():
         LOGGER.info("Получаю актульные курсы")
         try:
             all_currencies = await Database().currency.get_all()
-
+            print(all_currencies)
         except httpx.RequestError as exc:
 
             LOGGER.error(f"Проблема с поиском монет в бд {exc.request.url!r}")

@@ -269,9 +269,9 @@ async def calculate_totals(
         client_sell_coin,
         client_buy_coin,
         coin_price,
-        client_sell_value,
-        client_buy_value
-):
+        client_sell_value: Decimal,
+        client_buy_value: Decimal
+) -> dict:
     if client_sell_value != 0:
 
         if client_sell_coin.type == CurrencyType.Крипта:
@@ -289,17 +289,21 @@ async def calculate_totals(
                 )
         if client_sell_coin.type == CurrencyType.Фиат:
 
-            client_buy_value = round(await Count.count_get_value(
+            client_buy_value = await Count.count_get_value(
                 send_value=client_sell_value,
                 coin_price=coin_price,
                 margin=client_buy_coin.buy_margin,
                 gas=client_buy_coin.buy_gas,
-            ), 4)
+            )
             if client_buy_value is None:
                 raise HTTPException(
                     status_code=status.HTTP_406_NOT_ACCEPTABLE,
                     detail="Клиент указал ноль на покупке"
                 )
+            if client_buy_coin.coingecko_tik == "tether":
+                client_buy_value = round(client_buy_value, 2)
+            else:
+                client_buy_value = round(client_buy_value, 8)
 
     if client_sell_value == 0:
 
@@ -318,17 +322,24 @@ async def calculate_totals(
                 )
         if client_buy_coin.type == CurrencyType.Фиат:
 
-            client_sell_value = round(await Count.count_get_value(
-                send_value=client_buy_value,
-                coin_price=coin_price,
-                margin=client_buy_coin.buy_margin,
-                gas=client_buy_coin.buy_gas,
-            ), 4)
             if client_sell_value is None:
                 raise HTTPException(
                     status_code=status.HTTP_406_NOT_ACCEPTABLE,
                     detail="Клиент указал ноль на продаже"
                 )
+
+            client_sell_value = await Count.count_get_value(
+                send_value=client_buy_value,
+                coin_price=coin_price,
+                margin=client_buy_coin.buy_margin,
+                gas=client_buy_coin.buy_gas,
+            )
+            if client_sell_value.coingecko_tik == "tether":
+                client_sell_value = round(client_sell_value, 2)
+            else:
+                client_sell_value = round(client_sell_value, 8)
+
+    print(client_sell_value, client_buy_value)
     return {
         "client_sell_value": client_sell_value,
         "client_buy_value": client_buy_value
