@@ -1,10 +1,12 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class ReviewAddDTO(BaseModel):
     text: str
     rating: int
     name: str
+    date: datetime
 
 
 class ReviewDTO(ReviewAddDTO):

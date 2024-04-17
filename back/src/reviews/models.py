@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-
+from datetime import datetime
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -27,6 +27,11 @@ class Review(Base):
     )
     rating: Mapped[int] = mapped_column(
         sa.SmallInteger,
+        nullable=False
+    )
+    date: Mapped[int] = mapped_column(
+        sa.TIMESTAMP,
+        default=datetime.utcnow,
         nullable=False
     )
     moderated: Mapped[bool] = mapped_column(

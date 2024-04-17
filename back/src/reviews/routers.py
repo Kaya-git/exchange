@@ -27,9 +27,7 @@ reviews_router = APIRouter(
         response_model=List[ReviewDTO],
         response_model_exclude_none=True
 )
-
-
-# @cache(expire=300)
+@cache(expire=300)
 async def reviews_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):
