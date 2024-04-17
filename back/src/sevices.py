@@ -656,7 +656,7 @@ class Mail:
             MIMEText(
                 f"""
                 <html><body><h1>Для подтверждения почты перейди по ссылке: \n
-                https://dev.vvscoin.com/api/email_verif/verif?verif_token={
+                https://vvscoin.com/api/email_verif/verif?verif_token={
                     generated_token
                 }<h1></body>
                 """,
