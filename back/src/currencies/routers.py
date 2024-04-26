@@ -39,7 +39,7 @@ async def currency_list(
     for spo in spos:
         curs_list.append(spo.currency)
     curs = await db.currency.get_all()
-    return curs
+    return spos
 
 
 @currency_router.get("/currency/{id}", response_model=CurrencyDTO)
