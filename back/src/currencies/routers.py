@@ -29,12 +29,15 @@ class CoingekkoParamsDTO:
     vs_currencies: str
 
 
-@currency_router.get("/list", response_model=List[CurrencyDTO])
-@cache(expire=1800)
+@currency_router.get("/list")
 async def currency_list(
     async_session: AsyncSession = Depends(get_async_session)
 ):
     db = Database(async_session)
+    spos = await db.service_payment_option.get_all()
+    curs_list = []
+    for spo in spos:
+        curs_list.append(spo.currency)
     curs = await db.currency.get_all()
     return curs
 

@@ -4,7 +4,6 @@ from decimal import Decimal
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import TYPE_CHECKING
-from pydantic import ValidationError
 import redis.asyncio as redis
 from aiosmtplib import SMTP
 from fastapi import HTTPException, status
