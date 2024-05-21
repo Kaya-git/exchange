@@ -54,7 +54,7 @@ async def currency_id(
 @currency_router.get("/tariffs")
 async def tariffs(
     async_session: AsyncSession = Depends(get_async_session)
-):
+) -> dict:
     db = Database(session=async_session)
 
     crypto_currencies = await db.currency.get_many(
