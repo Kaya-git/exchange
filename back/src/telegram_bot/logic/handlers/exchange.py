@@ -1,7 +1,7 @@
 from aiogram.types import Message
 from aiogram import F
 from aiogram.filters import Text
-from telegram_bot.logic.keyboards.inline import inline
+from telegram_bot.logic.keyboards.inline import inline_kb
 from ..fsm.finite_st_buyback import ExchangeStates
 from aiogram import Router
 from ..keyboards.reply import kb_main_menu, cancel_button
@@ -10,7 +10,11 @@ import logging
 from database import Database
 from src.middlewares import DatabaseMiddleware
 from aiogram.types import CallbackQuery
-from src.telegram_bot.utils.callbackdata import OperationInfo
+from src.telegram_bot.utils.callbackdata import (
+    OperationType,
+    TikkerName,
+    DisplayPrice,
+)
 
 
 buyback_router = Router(name="buyback")
@@ -23,56 +27,72 @@ async def start_buy_back(message: Message, state: FSMContext) -> None:
     await state.update_data(user_uuid=message.from_user.id)
     await message.answer(
         text="Выберите, какую операцию хотите совершить",
-        reply_markup=await inline.operation_type_kb()
+        reply_markup=await inline_kb.operation_type()
     )
 
 
-@buyback_router.callback_query(F.action == "buy")
-async def buy_crypto(query: CallbackQuery):
-    await query.answer(
-        reply_markup=await inline.get_buy_crypto()
-    )
-
-
-@buyback_router.callback_query(F.action == "sell")
-async def sell_crypto(query: CallbackQuery):
-    await query.answer(
-        reply_markup=await inline.get_sell_crypto()
-    )
-
-
-@buyback_router.callback_query(F.operation == "buy")
-async def payment_buy_currency(
+@buyback_router.callback_query(OperationType.filter(F.prefix == "operation"))
+async def get_crypto_tikkers(
     query: CallbackQuery,
     state: FSMContext,
-    callback: OperationInfo
+    callback: OperationType
 ):
-    await state.set_state(ExchangeStates.client_buy_tikker)
-    await state.update_data(client_buy_tikker=callback.tikker)
-    await state.set_state(ExchangeStates.client_buy_currency)
+    await state.set_state(ExchangeStates.operation_type)
+    await state.update_data(operation_type=callback.operation_type)
     await query.answer(
-        text="Вы желаете ввести сумму",
-        reply_markup=await inline.choose_curr_payment_type()
+        reply_markup=await inline_kb.get_crypto_tikker()
     )
 
 
-@buyback_router.callback_query(F.operation == "sell")
+@buyback_router.callback_query(TikkerName.filter(F.prefix == "tikker"))
+async def sell_crypto(
+    query: CallbackQuery,
+    state: FSMContext,
+    callback: TikkerName
+):
+    await state.set_state(ExchangeStates.client_sell_tikker)
+
+    if state.operation_type == "sell":
+        await state.update_data(client_sell_tikker=callback.tikker)
+
+    if state.operation_type == "buy":
+        await state.update_data(client_sell_tikker=callback.tikker)
+
+    await query.answer(
+        text="Вы желаете ввести сумму",
+        reply_markup=await inline_kb.display_price(currency_name=callback.tikker)
+    )
+
+
+@buyback_router.callback_query(DisplayPrice.filter(F.prefix == "display"))
 async def payment_sell_currency(
     query: CallbackQuery,
     state: FSMContext,
-    callback: OperationInfo
+    callback: DisplayPrice
 ):
-    await state.set_state(ExchangeStates.client_sell_tikker)
-    await state.update_data(client_sell_tikker=callback.tikker)
-    await state.set_state(ExchangeStates.client_sell_currency)
+    await state.set_state(ExchangeStates.display_price)
+    await state.update_data(display_price=callback.tikker)
+
+    if state.operation_type == "buy":
+        await state.set_state(ExchangeStates.client_buy_value)
+
+    if state.operation_type == "sell":
+        await state.set_state(ExchangeStates.client_sell_value)
+
     await query.answer(
-        text="Вы желаете ввести сумму",
-        reply_markup=await inline.choose_curr_payment_type()
+        text=f"Введите нужную сумму в {callback.tikker}",
     )
 
 
-@buyback_router.callback_query(F.operation == "sell")
 
+
+@buyback_router.callback_query(F.currency == "RUB")
+async def defin_price_in_rub(
+    query: CallbackQuery,
+    state: FSMContext,
+    callback: ValueIn
+):
+    await state.update_data()
 
 
 
