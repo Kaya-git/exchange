@@ -23,3 +23,15 @@ class DisplayPrice(CallbackData, prefix="display"):
 
 class Verification(CallbackData, prefix="verif"):
     verif: bool
+
+
+class CreditCard(CallbackData, prefix="ccnum"):
+    cc_num: int
+
+
+class CryptoWallet(CallbackData, prefix="cw_num"):
+    cw_num: str
+
+
+class CreditCardOwner(CallbackData, prefix="ccowner"):
+    cc_owner: str

@@ -8,12 +8,16 @@ from ..keyboards.reply import kb_main_menu, cancel_button
 from aiogram.fsm.context import FSMContext
 import logging
 from database import Database
+from src.exchange.routers import fill_order_form
 from src.middlewares import DatabaseMiddleware
 from aiogram.types import CallbackQuery
 from src.telegram_bot.utils.callbackdata import (
     OperationType,
     TikkerName,
     DisplayPrice,
+    Verification,
+    CreditCard,
+    CryptoWallet
 )
 
 
@@ -23,8 +27,19 @@ buyback_router.message.middleware(DatabaseMiddleware())
 
 @buyback_router.message(F.text == 'Обмен', ignore_case=True)
 async def start_buy_back(message: Message, state: FSMContext) -> None:
+
     await state.set_state(ExchangeStates.user_uuid)
     await state.update_data(user_uuid=message.from_user.id)
+
+    await state.set_state(ExchangeStates.client_email)
+    await state.update_data(client_email=None)
+
+    await state.set_state(ExchangeStates.client_buy_value)
+    await state.update_data(client_buy_value=0)
+
+    await state.set_state(ExchangeStates.client_sell_value)
+    await state.update_data(client_sell_value=0)
+
     await message.answer(
         text="Выберите, какую операцию хотите совершить",
         reply_markup=await inline_kb.operation_type()
@@ -40,6 +55,7 @@ async def get_crypto_tikkers(
     await state.set_state(ExchangeStates.operation_type)
     await state.update_data(operation_type=callback.operation_type)
     await query.answer(
+        text="Выберите валюту",
         reply_markup=await inline_kb.get_crypto_tikker()
     )
 
@@ -50,17 +66,27 @@ async def sell_crypto(
     state: FSMContext,
     callback: TikkerName
 ):
-    await state.set_state(ExchangeStates.client_sell_tikker)
-
     if state.operation_type == "sell":
+
+        await state.set_state(ExchangeStates.client_sell_tikker)
         await state.update_data(client_sell_tikker=callback.tikker)
+
+        await state.set_state(ExchangeStates.client_buy_tikker)
+        await state.update_data(client_buy_tikker="RUB")
 
     if state.operation_type == "buy":
-        await state.update_data(client_sell_tikker=callback.tikker)
+
+        await state.set_state(ExchangeStates.client_buy_tikker)
+        await state.update_data(client_buy_tikker=callback.tikker)
+
+        await state.set_state(ExchangeStates.client_sell_tikker)
+        await state.update_data(client_sell_tikker="RUB")
 
     await query.answer(
         text="Вы желаете ввести сумму",
-        reply_markup=await inline_kb.display_price(currency_name=callback.tikker)
+        reply_markup=await inline_kb.display_price(
+            currency_name=callback.tikker
+        )
     )
 
 
@@ -73,34 +99,94 @@ async def payment_sell_currency(
     await state.set_state(ExchangeStates.display_price)
     await state.update_data(display_price=callback.tikker)
 
-    if state.operation_type == "buy":
-        await state.set_state(ExchangeStates.client_buy_value)
-
-    if state.operation_type == "sell":
-        await state.set_state(ExchangeStates.client_sell_value)
+    await state.set_state(ExchangeStates.money_amount)
 
     await query.answer(
         text=f"Введите нужную сумму в {callback.tikker}",
     )
 
 
-
-
-@buyback_router.callback_query(F.currency == "RUB")
-async def defin_price_in_rub(
-    query: CallbackQuery,
+@buyback_router.message(ExchangeStates.money_amount)
+async def credit_card_num(
+    message: Message,
     state: FSMContext,
-    callback: ValueIn
 ):
-    await state.update_data()
+
+    await state.update_data(money_amount=message.text)
+
+    if state.operation_type == "buy":
+
+        if state.display_price == "RUB":
+            await state.set_data(ExchangeStates.client_sell_value)
+            await state.update_data(client_sell_value=state.money_amount)
+
+        if state.display_price != "RUB":
+            await state.set_data(ExchangeStates.client_sell_value)
+            await state.update_data(client_sell_value=state.money_amount)
+
+    if state.operation_type == "sell":
+
+        if state.display_price == "RUB":
+            await state.set_data(ExchangeStates.client_buy_value)
+            await state.update_data(client_buy_value=state.money_amount)
+
+        if state.display_price != "RUB":
+            await state.set_data(ExchangeStates.client_sell_value)
+            await state.update_data(client_sell_value=state.money_amount)
+
+    await state.set_data(ExchangeStates.client_credit_card_number)
+    await message.reply(
+        text="Введите реквизиты вашей банковской карты"
+    )
 
 
+@buyback_router.message(ExchangeStates.client_credit_card_number)
+async def credit_card_owner(
+    message: Message,
+    state: FSMContext,
+):
+    await state.update_data(client_credit_card_number=message.text)
+    await state.set_state(ExchangeStates.client_cc_holder)
+    await message.reply(
+        text="Введите владельца как указано на карте"
+    )
 
 
+@buyback_router.message(ExchangeStates.client_cc_holder)
+async def crypto_wallet(
+    message: Message,
+    state: FSMContext,
+):
+    await state.update_data(client_cc_holder=message.text)
+    await state.set_state(ExchangeStates.client_crypto_wallet)
+    await message.reply(
+        text="Введите криптовалютный кошелек"
+    )
 
 
+@buyback_router.message(ExchangeStates.client_crypto_wallet)
+async def create_order(
+    message: Message,
+    state: FSMContext,
+):
+    await state.update_data(client_crypto_wallet=message.text)
+    await state.set_state(ExchangeStates.client_crypto_wallet)
+    await fill_order_form(
+        client_sell_value=state.client_sell_value,
+        client_sell_tikker=state.client_sell_tikker,
+        client_buy_value=state.client_buy_value,
+        client_buy_tikker=state.client_buy_tikker,
+        client_email=state.client_email,
+        client_crypto_wallet=state.client_crypto_wallet,
+        client_credit_card_number=state.client_credit_card_number,
+        client_cc_holder=state.client_cc_holder,
+        user_uuid=state.user_uuid
+    )
+    await state.clear()
 
-
+    await message.reply(
+        text="Создали заявку"
+    )
 
 
 

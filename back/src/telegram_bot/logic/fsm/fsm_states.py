@@ -9,10 +9,9 @@ class ExchangeStates(StatesGroup):
     client_sell_value = State()
     client_buy_tikker = State()
     client_buy_value = State()
-
-
-    end_point_number = State()
     client_email = State()
+    money_amount = State()
     client_credit_card_number = State()
     client_cc_holder = State()
+
     client_crypto_wallet = State()
