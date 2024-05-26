@@ -380,7 +380,7 @@ async def check_user_registration(
         db,
         user_uuid,
         end_point_number
-):
+) -> dict:
 
     # Берем значения пользователя в бд
     user = await db.user.get_by_where(

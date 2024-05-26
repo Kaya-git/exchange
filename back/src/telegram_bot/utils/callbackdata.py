@@ -35,3 +35,15 @@ class CryptoWallet(CallbackData, prefix="cw_num"):
 
 class CreditCardOwner(CallbackData, prefix="ccowner"):
     cc_owner: str
+
+
+class CorrectOrder(CallbackData, prefix="correct"):
+    reply: bool
+
+
+class MoneyTransfered(CallbackData, prefix="money"):
+    transfered: str
+
+
+class Payed(CallbackData, prefix="payed"):
+    payed: bool

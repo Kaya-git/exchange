@@ -13,5 +13,4 @@ class ExchangeStates(StatesGroup):
     money_amount = State()
     client_credit_card_number = State()
     client_cc_holder = State()
-
     client_crypto_wallet = State()

@@ -8,7 +8,15 @@ from ..keyboards.reply import kb_main_menu, cancel_button
 from aiogram.fsm.context import FSMContext
 import logging
 from database import Database
-from src.exchange.routers import fill_order_form
+from src.exchange.routers import (
+    fill_order_form,
+    confirm_order,
+    confirm_button,
+    confirm_cc,
+    conformation_await,
+    requisites,
+    payed_button
+)
 from src.middlewares import DatabaseMiddleware
 from aiogram.types import CallbackQuery
 from src.telegram_bot.utils.callbackdata import (
@@ -17,8 +25,11 @@ from src.telegram_bot.utils.callbackdata import (
     DisplayPrice,
     Verification,
     CreditCard,
-    CryptoWallet
+    CryptoWallet,
+    CorrectOrder,
+    Payed
 )
+from src.orders.routers import get_order_status
 
 
 buyback_router = Router(name="buyback")
@@ -171,6 +182,7 @@ async def create_order(
 ):
     await state.update_data(client_crypto_wallet=message.text)
     await state.set_state(ExchangeStates.client_crypto_wallet)
+    # Получаем пересчитаный словарь с данными ордера
     await fill_order_form(
         client_sell_value=state.client_sell_value,
         client_sell_tikker=state.client_sell_tikker,
@@ -182,15 +194,51 @@ async def create_order(
         client_cc_holder=state.client_cc_holder,
         user_uuid=state.user_uuid
     )
-    await state.clear()
-
+    redis_dict = await confirm_order(user_uuid=state.user_uuid)
     await message.reply(
-        text="Создали заявку"
+        text=f"""
+            Подтвердите корректность заявки
+            Номер кредитной карты: {redis_dict.client_credit_card_number},
+            Владелец кредитной карты: {redis_dict.client_cc_holder},
+            Номер кошелька: {redis_dict.crypto_wallet},
+            Обмениваем: {redis_dict.client_sell_value}{redis_dict.client_sell_currency}
+            На: {redis_dict.client_buy_value}{redis_dict}{redis_dict.client_buy_currency}
+        """,
+        reply_markup=await inline_kb.correct_order()
     )
 
 
+@buyback_router.callback_query(CorrectOrder.filter(F.reply == True))
+async def order_approval(
+    query: CallbackQuery,
+    state: FSMContext,
+    callback: CorrectOrder
+):
+    true_false_json = await confirm_button(user_uuid=state.user_uuid)
+    if true_false_json["verified"] is True:
+        requiseites_json = await requisites(user_uuid=state.user_uuid)
+        await query.answer(
+            text=f"""
+            Переведите средства по указаным реквезитам: {requiseites_json.requisites_num},
+            После перевода, нажмите кнопку я оплатил.
+            Дождитесь, когда бот вернет вам положительный статус.
+        """,
+            reply_markup=await inline_kb.payed()
+        )
+    if true_false_json["verified"] is False:
+        ...
 
 
+@buyback_router.callback_query(Payed.filter(F.payed is True))
+async def await_order_complete(
+    query: CallbackQuery,
+    state: FSMContext,
+    callback: Payed
+):
+    await payed_button(user_uuid=state.user_uuid)
+
+    order_status = await get_order_status(user_uuid=state.user_uuid)
+    while order_status["status"]
 
 
 

@@ -5,6 +5,8 @@ from utils.callbackdata import (
     OperationType,
     TikkerName,
     DisplayPrice,
+    CorrectOrder,
+    Payed
 )
 from handlers import get_crypto
 from aiogram.fsm.context import FSMContext
@@ -97,5 +99,30 @@ class InlineKeyboards:
                 )
             )
         return self.inline_keyboard_builder.as_markup()
+
+    async def correct_order(self):
+        self.inline_keyboard_builder.button(
+            text="Да",
+            callback_data=CorrectOrder(
+                reply=True
+            )
+        )
+        self.inline_keyboard_builder.button(
+            text="Нет",
+            callback_data=CorrectOrder(
+                reply=False
+            )
+        )
+        return self.inline_keyboard_builder.as_markup()
+
+    async def payed(self):
+        self.inline_keyboard_builder.button(
+            text="Оплатил",
+            callback_data=Payed(
+                payed=True
+            )
+        )
+        return self.inline_keyboard_builder.as_markup()
+
 
 inline_kb = InlineKeyboards()

@@ -370,7 +370,7 @@ async def conformation_await(
 async def requisites(
     async_session: AsyncSession = Depends(get_async_session),
     user_uuid: str | None = Form(),
-):
+) -> dict:
     """ Отдает данные для перевода средств """
 
     # Номер ендпоинта в цепочке заявки
