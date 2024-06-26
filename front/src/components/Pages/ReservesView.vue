@@ -53,6 +53,10 @@ export default defineComponent({
                         }
                         return false;
                     });
+                    this.reserves = this.reserves.map(function (item) {
+                        item.reserve = Number(item.reserve);
+                        return item;
+                    });
                 }
             }
         }

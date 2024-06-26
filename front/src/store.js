@@ -5,7 +5,18 @@ import NET from 'vanta/dist/vanta.net.min';
 
 const Store = new Vuex.Store({
     state: {
-        exchangeData: null,
+        exchangeData: {
+            cardNumber: '',
+            cryptoNumber: '',
+            email: '',
+            get: '',
+            getTikker: '',
+            give: '',
+            giveTikker: '',
+            name: '',
+            selectedGetCurrency: '',
+            selectedGiveCurrency: '',
+        },
         curExchangeStep: null,
         curExchangeStatus: null,
         isAuth: false,
@@ -84,44 +95,41 @@ const Store = new Vuex.Store({
         loadDataFromLocalStorage({ commit }) {
             const data = JSON.parse(localStorage.getItem('exchangeData'));
             if (data) {
-                commit('setExchangeData', data);  // Вызов мутации setExchangeData для обновления состояния
+                commit('setExchangeData', data);
             }
         },
-        async loadExchangeData({commit, state}) {
-            let details = {
-                'user_uuid': state.uuid,
-            }
-
-            let formBody = prepareData(details);
-
-            let response = await fetch('/api/exchange/confirm_order', {
+        async loadExchangeData({state, commit}) {
+            if (!state.uuid || !state.curExchangeStep) return false;
+            let response = await fetch('/api/orders/get_order_info?uuid=' + state.uuid, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'accept':  'application/json',
                 },
-                body: formBody
             });
             if (response.ok) {
-                let result = await response.json()
-                let exchangeData = {
-                    cardNumber: result.client_credit_card_number,
-                    cryptoNumber: result.client_crypto_wallet,
-                    email: result.client_email,
-                    get: result.client_buy_value,
-                    getTikker: result.client_buy_currency.tikker,
-                    give: result.client_sell_value,
-                    giveTikker: result.client_sell_currency.tikker,
-                    name: result.client_cc_holder,
-                    selectedGetCurrency: result.client_buy_currency.name,
-                    selectedGiveCurrency: result.client_sell_currency.name,
-                    uuid: state.uuid
-                };
-                commit('setExchangeData', exchangeData);
+                let result = await response.json();
+                if (result) {
+                    let exchangeData = {
+                        cardNumber: result.client_credit_card_number,
+                        cryptoNumber: result.client_crypto_wallet,
+                        email: result.client_email,
+                        get: result.client_buy_value,
+                        getTikker: result.client_buy_currency,
+                        give: result.client_sell_value,
+                        giveTikker: result.client_sell_currency,
+                        name: result.client_cc_holder,
+                        selectedGetCurrency: localStorage.getItem('selectedGetCurrency'),
+                        selectedGiveCurrency: localStorage.getItem('selectedGiveCurrency')
+                    };
+                    commit('setExchangeData', exchangeData);
+                }
             }
+            return true;
         },
         clearDataFromLocalStorage() {
-            if (localStorage.getItem('exchangeData')) localStorage.removeItem('exchangeData');
+            if (localStorage.getItem('selectedGiveCurrency')) localStorage.removeItem('selectedGiveCurrency');
+            if (localStorage.getItem('selectedGetCurrency')) localStorage.removeItem('selectedGetCurrency');
         },
         async checkAuth({commit, state}) {
             if (state.user.email) {
@@ -274,11 +282,11 @@ const Store = new Vuex.Store({
 });
 
 
-Store.watch(
-    (state) => state.exchangeData,
-    (newValue) => {
-        localStorage.setItem('exchangeData', JSON.stringify(newValue))
-    },
-    { deep: true }
-)
+// Store.watch(
+//     (state) => state.exchangeData,
+//     (newValue) => {
+//         localStorage.setItem('exchangeData', JSON.stringify(newValue))
+//     },
+//     { deep: true }
+// )
 export default Store;

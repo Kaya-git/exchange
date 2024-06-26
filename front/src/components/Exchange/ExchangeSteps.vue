@@ -184,6 +184,7 @@ export default defineComponent({
                 this.steps[i].color = 'success';
                 this.steps[i].complete = true;
             }
+            this.loadExchangeData();
         }
     },
     watch: {
@@ -215,7 +216,8 @@ export default defineComponent({
     },
     methods: {
         ...mapActions([
-            'clearDataFromLocalStorage'
+            'clearDataFromLocalStorage',
+            'loadExchangeData'
         ]),
         errorStep(message = '', subtitle = '', statusTitle = '', statusSubtitle = '') {
             this.steps[this.curStep].error = true;

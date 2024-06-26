@@ -16,6 +16,11 @@
                     :model-value="wait"
                 ></WaitModal>
             </v-container>
+            <VerificationModal
+                v-if="$route.query.dev === 'y'"
+                :model-value="true"
+                :msg="'Загрузите фото для верификации вашей карты'">
+            </VerificationModal>
         </v-app>
 </template>
 
@@ -36,9 +41,9 @@ export default {
         WaitModal: defineAsyncComponent({
             loader: () => import("@/components/Modal/WaitModal"),
         }),
-        // StatusView: defineAsyncComponent({
-        //     loader: () => import("@/components/Exchange/StatusView"),
-        // }),
+        VerificationModal: defineAsyncComponent({
+            loader: () => import("@/components/Modal/VerificationModal"),
+        }),
     },
     data() {
         return {
@@ -50,7 +55,6 @@ export default {
             this.setUserEmail(getCookie('user_email'));
         }
         this.getApiUUID();
-        this.loadDataFromLocalStorage();
         this.checkAuth();
         this.requestRecaptchaPublicKey();
     },
@@ -65,13 +69,13 @@ export default {
     methods: {
         ...mapActions([
             'getApiUUID',
-            'loadDataFromLocalStorage',
             'checkAuth',
             'whereAmI',
             'requestRecaptchaPublicKey',
             'startCounter',
             'ttl',
             'getStatus',
+            'loadExchangeData',
         ]),
         ...mapMutations([
             'setUserEmail',

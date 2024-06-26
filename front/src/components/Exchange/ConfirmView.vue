@@ -151,7 +151,7 @@ export default defineComponent({
             this.disabled = true;
             await this.$emit('cancel');
             this.disabled = false;
-        }
+        },
     },
     computed: {
         ...mapGetters([

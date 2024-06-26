@@ -16,6 +16,7 @@
     "roboto-fontface": "*",
     "three": "^0.160.0",
     "v-mask": "^2.3.0",
+    "v3-img-preview": "^1.1.16",
     "vanta": "^0.5.24",
     "vue": "^3.2.13",
     "vue-chartjs": "^5.2.0",

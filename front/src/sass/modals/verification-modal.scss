@@ -1,0 +1,66 @@
+.verification-modal {
+  &__text {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  &__instruction-title {
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+  &__file-input-wrapper {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+  }
+  &__file-caption {
+    text-align: right;
+  }
+  &__chip {
+    color: $secondColor !important;
+  }
+  &__prepend-icon {
+    color: #80deea;
+    font-weight: 500;
+  }
+  &__verify-example-wrapper {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    span.verification-modal__verify-example {
+      font-size: rem(14px);
+      padding-bottom: 2px;
+      text-decoration: none;
+      background-image: linear-gradient(#80deea, #80deea);
+      background-position: 0 100%;
+      background-repeat: no-repeat;
+      background-size: 0 2px;
+      transition: background-size .3s, color .3s;
+    }
+    &:hover {
+      span {
+        background-size: 100% 2px;
+        color: #80deea;
+      }
+    }
+  }
+  &__img-preview {
+    display: inline-block;
+    border-radius: 3px;
+    overflow: hidden;
+    width: 60px;
+    height: 80px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+@media (min-width:$md2+px){
+  .verification-modal {
+    &__sheet {
+
+    }
+  }
+}

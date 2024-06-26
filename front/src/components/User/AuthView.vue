@@ -52,10 +52,15 @@
             </v-form>
         </div>
     </div>
+    <status-modal
+        v-model="statusModal.modelValue"
+        :status="statusModal.status"
+        :msg="statusModal.msg"
+    ></status-modal>
 </template>
 
 <script>
-import {defineComponent} from 'vue';
+import {defineComponent, defineAsyncComponent} from 'vue';
 import {setCookie, prepareData} from '@/helpers';
 import {mapMutations } from 'vuex';
 export default defineComponent({
@@ -71,8 +76,18 @@ export default defineComponent({
         },
         rules: {
             required: value => !!value || 'Обязательно для заполнения',
-        }
+        },
+        statusModal: {
+            modelValue: false,
+            status: 'reject',
+            msg: "",
+        },
     }),
+    components: {
+        StatusModal: defineAsyncComponent({
+            loader: () => import("@/components/Modal/StatusModal"),
+        }),
+    },
     methods: {
         ...mapMutations([
             'auth',
@@ -121,9 +136,11 @@ export default defineComponent({
                 this.$router.push({
                     name: 'AccountView',
                 });
-            } else {
-                this.loading = false;
+            } else if (response.status === 400) {
+                this.statusModal.msg = 'Неправильный логин/пароль. Попробуйте снова';
+                this.statusModal.modelValue = true;
             }
+            this.loading = false;
         }
     }
 });

@@ -752,10 +752,7 @@ export default defineComponent({
     mounted() {
         this.tabs = document.querySelectorAll('[data-tab-id]');
         this.ttl().then(() => {
-            this.formData.selectedGiveCurrency = this.getExchangeData ? this.getExchangeData.selectedGiveCurrency : '';
-            this.formData.selectedGetCurrency = this.getExchangeData ? this.getExchangeData.selectedGetCurrency : '';
-            if (this.getRequestFixedTime > 0 && this.formData.selectedGiveCurrency && this.formData.selectedGetCurrency) {
-                // this.loadExchangeData();
+            if (this.getRequestFixedTime > 0) {
                 this.whereAmI().then(() => {
                     if (this.getCurExchangeStep ) {
                         this.$router.push({
@@ -950,6 +947,9 @@ export default defineComponent({
                 exchangeData.get = result.client_buy_value;
                 exchangeData.selectedGetCurrency = result.client_buy_currency.name;
                 exchangeData.uuid = this.getUuid;
+
+                localStorage.setItem('selectedGetCurrency', exchangeData.selectedGetCurrency);
+                localStorage.setItem('selectedGiveCurrency', exchangeData.selectedGiveCurrency);
 
                 this.setExchangeData(exchangeData);
             }

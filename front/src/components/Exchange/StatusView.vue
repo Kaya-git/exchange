@@ -9,7 +9,7 @@
                     </v-icon>
                 </v-row>
                 <v-row class="status-page__row">
-                    <p class="status-page__text text-center">{{subtitle}}</p>
+                    <p class="status-page__text text-center" v-html="subtitle"></p>
                 </v-row>
                 <v-row class="status-page__row">
                     <v-sheet class="status-page__table-sheet" rounded>
